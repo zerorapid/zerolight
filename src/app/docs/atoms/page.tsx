@@ -737,10 +737,12 @@ export default function ZeroLightStudio() {
               <div className="space-y-2">
                 <label
                   onClick={() => setBillingPlan("monthly")}
-                  className="flex items-center justify-between p-2.5 rounded-xl border border-neutral-200 cursor-pointer hover:bg-neutral-50/60 transition-colors"
+                  className="flex items-center justify-between p-2.5 cursor-pointer hover:opacity-95 transition-all"
                   style={{
                     borderRadius: `${Math.max(8, scaledRadius - 4)}px`,
                     borderColor: billingPlan === "monthly" ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    backgroundColor: tokens.universalFillColor,
                   }}
                 >
                   <div className="flex items-center gap-2.5">
@@ -748,8 +750,9 @@ export default function ZeroLightStudio() {
                       style={{
                         borderColor: billingPlan === "monthly" ? tokens.primaryButtonColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
                       }}
-                      className="w-4 h-4 rounded-full flex items-center justify-center border bg-white"
+                      className="w-4 h-4 rounded-full flex items-center justify-center border"
                     >
                       {billingPlan === "monthly" && (
                         <div
@@ -769,10 +772,12 @@ export default function ZeroLightStudio() {
 
                 <label
                   onClick={() => setBillingPlan("annual")}
-                  className="flex items-center justify-between p-2.5 rounded-xl border border-neutral-200 cursor-pointer hover:bg-neutral-50/60 transition-colors"
+                  className="flex items-center justify-between p-2.5 cursor-pointer hover:opacity-95 transition-all"
                   style={{
                     borderRadius: `${Math.max(8, scaledRadius - 4)}px`,
                     borderColor: billingPlan === "annual" ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    backgroundColor: tokens.universalFillColor,
                   }}
                 >
                   <div className="flex items-center gap-2.5">
@@ -780,8 +785,9 @@ export default function ZeroLightStudio() {
                       style={{
                         borderColor: billingPlan === "annual" ? tokens.primaryButtonColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
                       }}
-                      className="w-4 h-4 rounded-full flex items-center justify-center border bg-white"
+                      className="w-4 h-4 rounded-full flex items-center justify-center border"
                     >
                       {billingPlan === "annual" && (
                         <div
@@ -1318,7 +1324,10 @@ export default function ZeroLightStudio() {
                   </div>
                 </div>
                 <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
-                  <div className="h-full bg-neutral-900 rounded-full" style={{ width: "68%" }} />
+                  <div
+                    style={{ width: "68%", backgroundColor: tokens.primaryButtonColor, transition: getTransitionStyle() }}
+                    className="h-full rounded-full"
+                  />
                 </div>
               </div>
             </div>
@@ -1329,7 +1338,10 @@ export default function ZeroLightStudio() {
 
               <div className="space-y-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin shrink-0" />
+                  <div
+                    style={{ borderTopColor: tokens.primaryButtonColor }}
+                    className="w-4 h-4 border-2 border-neutral-300 rounded-full animate-spin shrink-0"
+                  />
                   <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-500">Loading team members...</span>
                 </div>
 
