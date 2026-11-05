@@ -191,6 +191,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
     borderColor: tokens.universalBorderColor,
     borderWidth: `${tokens.borderWidth}px`,
     borderRadius: `${scaled.scaledCardRadius}px`,
+    boxShadow: scaled.cardShadow,
     transition: scaled.transitionStyle,
   };
 
@@ -766,7 +767,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: tokens.universalFillColor,
+                        backgroundColor: scaled.effectiveInputFill,
                         height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
                         paddingRight: `${scaled.scaledPaddingX}px`,
@@ -789,11 +790,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: tokens.textIconColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: tokens.universalFillColor,
+                        backgroundColor: scaled.effectiveInputFill,
                         height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
                         paddingRight: `${scaled.scaledPaddingX}px`,
-                        boxShadow: `0 0 0 3px ${tokens.textIconColor}12`,
+                        boxShadow: scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`,
                         transition: scaled.transitionStyle,
                       }}
                       className="flex items-center gap-2 border"
@@ -813,7 +814,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: "#EF4444",
                         borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: tokens.universalFillColor,
+                        backgroundColor: scaled.effectiveInputFill,
                         height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
                         paddingRight: `${scaled.scaledPaddingX}px`,
@@ -866,7 +867,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       borderRadius: `${scaled.scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
-                      backgroundColor: tokens.universalFillColor,
+                      backgroundColor: scaled.effectiveInputFill,
                       padding: `${scaled.scaledPaddingY}px ${scaled.scaledPaddingX}px`,
                       transition: scaled.transitionStyle,
                     }}
@@ -1369,11 +1370,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isInputFocused ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: tokens.universalFillColor,
+                        backgroundColor: scaled.effectiveInputFill,
                         height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
                         paddingRight: `${scaled.scaledPaddingX}px`,
-                        boxShadow: isInputFocused ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        boxShadow: isInputFocused
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                       }}
                       className="flex items-center gap-2.5 border"
@@ -1418,8 +1421,8 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           borderBottomLeftRadius: `${scaled.scaledRadius}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
-                          borderRightWidth: 0,
-                          backgroundColor: tokens.universalFillColor,
+                          borderRightWidth: scaled.isZeroBorder ? 0 : 0,
+                          backgroundColor: scaled.effectiveInputFill,
                           height: `${scaled.scaledHeight}px`,
                           paddingLeft: `${scaled.scaledPaddingX}px`,
                           paddingRight: `${scaled.scaledPaddingX}px`,
@@ -1435,6 +1438,16 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           className="w-full bg-transparent outline-none font-mono"
                         />
                       </div>
+                      {/* Hairline divider when border is 0 to prevent visual collision */}
+                      {scaled.isZeroBorder && (
+                        <div
+                          style={{
+                            width: "1px",
+                            height: `${Math.round(scaled.scaledHeight * 0.6)}px`,
+                            backgroundColor: scaled.conjoinedDivider,
+                          }}
+                        />
+                      )}
                       <motion.button
                         type="button"
                         whileTap={{ scale: 0.96 }}
@@ -1481,7 +1494,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       borderRadius: `${scaled.scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
-                      backgroundColor: tokens.universalFillColor,
+                      backgroundColor: scaled.effectiveInputFill,
                       height: `${scaled.scaledHeight}px`,
                       paddingLeft: `${scaled.scaledPaddingX}px`,
                       paddingRight: `${scaled.scaledPaddingX}px`,
@@ -1535,11 +1548,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isRoleOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: tokens.universalFillColor,
+                        backgroundColor: scaled.effectiveInputFill,
                         height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
                         paddingRight: `${scaled.scaledPaddingX}px`,
-                        boxShadow: isRoleOpen ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        boxShadow: isRoleOpen
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                       }}
                       className="w-full flex items-center justify-between text-left cursor-pointer border"
@@ -1660,10 +1675,12 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isTagOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: tokens.universalFillColor,
+                        backgroundColor: scaled.effectiveInputFill,
                         minHeight: `${scaled.scaledHeight}px`,
                         padding: `${scaled.scaledPaddingY}px ${scaled.scaledPaddingX}px`,
-                        boxShadow: isTagOpen ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        boxShadow: isTagOpen
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                       }}
                       className="w-full flex flex-wrap items-center gap-1.5 border"
@@ -2089,9 +2106,15 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
               {/* Border Width Slider */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span className="text-neutral-300">Border width</span>
-                  <span className="text-neutral-400 font-medium">{tokens.borderWidth}px</span>
+                  {tokens.borderWidth === 0 ? (
+                    <span className="text-[10px] text-amber-400 font-medium bg-amber-950/60 border border-amber-800/60 px-1.5 py-0.5 rounded">
+                      0px • Luminance Mode
+                    </span>
+                  ) : (
+                    <span className="text-neutral-400 font-medium">{tokens.borderWidth}px</span>
+                  )}
                 </div>
                 <input
                   type="range"
@@ -2102,6 +2125,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   onChange={(e) => setTokens((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))}
                   className="w-full cursor-pointer accent-white"
                 />
+                {tokens.borderWidth === 0 && (
+                  <p className="text-[10px] text-neutral-500 pt-0.5">
+                    Compensatory luminance fill & atmospheric elevation active to prevent edge bleed.
+                  </p>
+                )}
               </div>
 
               {/* Corner Radius */}
