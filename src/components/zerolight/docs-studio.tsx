@@ -23,6 +23,12 @@ import {
   Clock,
   Terminal,
   Zap,
+  Info,
+  ChevronRight,
+  TrendingUp,
+  DollarSign,
+  Type,
+  Minus,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -90,8 +96,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   // Atom interactive states
   const [radioValue, setRadioValue] = useState<"standard" | "pro">("pro");
   const [checkboxValue, setCheckboxValue] = useState<boolean>(true);
+  const [triCheckboxState, setTriCheckboxState] = useState<"unchecked" | "indeterminate" | "checked">("indeterminate");
   const [switchValue, setSwitchValue] = useState<boolean>(true);
   const [sliderValue, setSliderValue] = useState<number>(64);
+  const [progressValue, setProgressValue] = useState<number>(72);
+  const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
   const [activeIconStroke, setActiveIconStroke] = useState<1.5 | 2.0 | 2.5>(2.0);
 
   // Notifications
@@ -281,13 +290,28 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 <>
                   <div className="space-y-0.5">
                     <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Actions
+                      Foundation &amp; Type
+                    </div>
+                    <a href="#atom-typography" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Typography scale</span>
+                    </a>
+                    <a href="#atom-lucide-icons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Lucide icon atom</span>
+                    </a>
+                  </div>
+
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Actions &amp; Triggers
                     </div>
                     <a href="#atom-buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Button matrix</span>
                     </a>
                     <a href="#atom-icon-button" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Icon button</span>
+                    </a>
+                    <a href="#atom-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Tooltip trigger</span>
                     </a>
                   </div>
 
@@ -296,7 +320,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       Text &amp; Entry
                     </div>
                     <a href="#atom-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Input states</span>
+                      <span>Input &amp; Left-stripe</span>
                     </a>
                     <a href="#atom-textarea" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Textarea</span>
@@ -308,7 +332,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       Selection &amp; Controls
                     </div>
                     <a href="#atom-checkbox" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Checkbox</span>
+                      <span>Checkbox (Tri-state)</span>
                     </a>
                     <a href="#atom-radio" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Radio button</span>
@@ -323,10 +347,16 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Indicators &amp; Identity
+                      Data &amp; Telemetry
                     </div>
-                    <a href="#atom-lucide-icons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Lucide icon atom</span>
+                    <a href="#atom-tabular" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Tabular numerals</span>
+                    </a>
+                    <a href="#atom-progress" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Progress &amp; yield bar</span>
+                    </a>
+                    <a href="#atom-breadcrumbs" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Breadcrumb item</span>
                     </a>
                     <a href="#atom-badge" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Status badge</span>
@@ -426,6 +456,92 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "atoms" && (
               <>
+                {/* ── 0. TYPE SCALE & TYPOGRAPHY ATOM ── */}
+                <div id="atom-typography" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Type className="w-4 h-4 text-neutral-500" />
+                        Typography &amp; type scale
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Modular typographical scale derived from base {tokens.fontSize}px and {tokens.scaleMultiplier.toFixed(2)}x scaling.
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-mono bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-md border border-neutral-200">
+                      base {tokens.fontSize}px
+                    </span>
+                  </div>
+
+                  <div className="space-y-3 divide-y divide-neutral-100 pt-1">
+                    {/* Display */}
+                    <div className="flex items-baseline justify-between pt-2">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">Display / Hero</span>
+                        <div style={{ fontSize: `${Math.round(22 * scaled.scale)}px` }} className="font-bold text-neutral-900 leading-tight">
+                          Enterprise Design Scale
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-neutral-400">{Math.round(22 * scaled.scale)}px • Bold 700</span>
+                    </div>
+
+                    {/* Section Heading */}
+                    <div className="flex items-baseline justify-between pt-2">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">Section Header</span>
+                        <div style={{ fontSize: `${Math.round(17 * scaled.scale)}px` }} className="font-semibold text-neutral-900 leading-snug">
+                          Telemetry &amp; Operations
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-neutral-400">{Math.round(17 * scaled.scale)}px • Semibold 600</span>
+                    </div>
+
+                    {/* Card Heading / Label */}
+                    <div className="flex items-baseline justify-between pt-2">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">Card Header / Form Label</span>
+                        <div style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-800">
+                          Parameter Filter Deck
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-neutral-400">{scaled.headingFontSize}px • Semibold 600</span>
+                    </div>
+
+                    {/* Body Text */}
+                    <div className="flex items-baseline justify-between pt-2">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">Body &amp; Input Text</span>
+                        <div style={{ fontSize: `${scaled.scaledFontSize}px` }} className="text-neutral-700">
+                          Standard body copy for high-density tabular records, forms, and parameter controls.
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-neutral-400">{scaled.scaledFontSize}px • Regular 400</span>
+                    </div>
+
+                    {/* Micro / Caption */}
+                    <div className="flex items-baseline justify-between pt-2">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">Micro Caption / Table Header</span>
+                        <div style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="font-semibold uppercase tracking-wider text-neutral-500">
+                          INVOICE NO • VALUE ($) • STATUS
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-neutral-400">{scaled.sublabelFontSize}px • Semibold 600</span>
+                    </div>
+
+                    {/* Tabular Numerals */}
+                    <div className="flex items-baseline justify-between pt-2">
+                      <div className="space-y-0.5">
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">Tabular Mono Figures</span>
+                        <div style={{ fontSize: `${scaled.scaledFontSize}px` }} className="font-mono text-neutral-900 tracking-tight">
+                          $ 42,500.00 <span className="text-neutral-300">|</span> 1,840.50 kg <span className="text-neutral-300">|</span> <span className="text-emerald-600 font-semibold">+18.4%</span>
+                        </div>
+                      </div>
+                      <span className="text-[11px] font-mono text-neutral-400">{scaled.scaledFontSize}px • Tabular Numerals</span>
+                    </div>
+                  </div>
+                </div>
+
                 {/* ── 1. BUTTON ATOM (UNIVERSAL CORNER RADIUS & BLACK PRIMARY DEFAULT) ── */}
                 <div id="atom-buttons" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
@@ -749,6 +865,65 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
+                {/* ── 2B. TOOLTIP TRIGGER ATOM ── */}
+                <div id="atom-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <Info className="w-4 h-4 text-neutral-500" />
+                      Tooltip &amp; info trigger
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
+                      Contextual micro-popover
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-4 pt-1">
+                    <div className="relative inline-flex items-center gap-1.5">
+                      <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-medium text-neutral-700">
+                        Glaze percentage
+                      </span>
+                      <button
+                        type="button"
+                        onMouseEnter={() => setIsTooltipOpen(true)}
+                        onMouseLeave={() => setIsTooltipOpen(false)}
+                        onClick={() => setIsTooltipOpen((prev) => !prev)}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                        }}
+                        className="w-4 h-4 flex items-center justify-center text-[10px] font-bold cursor-pointer hover:bg-neutral-200 transition-colors"
+                      >
+                        ⓘ
+                      </button>
+
+                      {/* Floating Tooltip Card */}
+                      <AnimatePresence>
+                        {isTooltipOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                            transition={{ duration: 0.12 }}
+                            style={{
+                              borderRadius: `${scaled.scaledInnerRadius}px`,
+                              borderColor: tokens.universalBorderColor,
+                              borderWidth: `${tokens.borderWidth}px`,
+                              boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
+                            }}
+                            className="absolute bottom-full left-0 mb-2 w-64 p-2.5 bg-[#111111] text-white text-[11px] leading-relaxed z-30"
+                          >
+                            <p className="font-medium text-white/90">
+                              Sub-zero protective ice glaze added to frozen seafood to prevent freezer burn and dehydration.
+                            </p>
+                            <div className="w-2 h-2 bg-[#111111] rotate-45 absolute -bottom-1 left-4" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
+
                 {/* ── 3. INPUT ATOM (4 TRUTH STATES) ── */}
                 <div id="atom-input" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
@@ -854,6 +1029,34 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         className="w-full bg-transparent outline-none cursor-not-allowed"
                       />
                     </div>
+
+                    {/* Enterprise 4px Left-Stripe Input (AquaOps ERP Anchor) */}
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        borderLeftWidth: "4px",
+                        borderLeftColor: "#2563EB",
+                        backgroundColor: scaled.effectiveInputFill,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="flex items-center gap-2 border shadow-xs"
+                    >
+                      <input
+                        type="text"
+                        readOnly
+                        value="Enterprise 4px Left-Stripe (AquaOps ERP style)"
+                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
+                        className="w-full bg-transparent outline-none font-medium"
+                      />
+                      <span className="text-[10px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase">
+                        Left-Stripe
+                      </span>
+                    </div>
                   </div>
                 </div>
 
@@ -932,6 +1135,46 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       </motion.div>
                       <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
                         Active check
+                      </span>
+                    </label>
+
+                    {/* Tri-state Indeterminate Checkbox (Enterprise Bulk Selection) */}
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <motion.div
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => {
+                          setTriCheckboxState((prev) =>
+                            prev === "unchecked"
+                              ? "indeterminate"
+                              : prev === "indeterminate"
+                              ? "checked"
+                              : "unchecked"
+                          );
+                        }}
+                        style={{
+                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : Math.max(2, Math.round(scaled.scaledRadius * 0.35))}px`,
+                          backgroundColor:
+                            triCheckboxState !== "unchecked"
+                              ? tokens.primaryButtonColor
+                              : tokens.universalFillColor,
+                          borderColor:
+                            triCheckboxState !== "unchecked"
+                              ? tokens.primaryButtonColor
+                              : tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          transition: scaled.transitionStyle,
+                        }}
+                        className="w-4 h-4 flex items-center justify-center border cursor-pointer"
+                      >
+                        {triCheckboxState === "checked" && (
+                          <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                        )}
+                        {triCheckboxState === "indeterminate" && (
+                          <Minus className="w-3 h-3 text-white" strokeWidth={4} />
+                        )}
+                      </motion.div>
+                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
+                        Tri-state ({triCheckboxState})
                       </span>
                     </label>
 
@@ -1341,6 +1584,186 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       </span>
                     </div>
                   </div>
+                </div>
+
+                {/* ── 14. TABULAR NUMERAL & FINANCIAL CELL ATOM ── */}
+                <div id="atom-tabular" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-neutral-500" />
+                        Tabular numeral &amp; financial primitives
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Monospaced figure alignment guaranteeing zero column jitter across numerical audits and batch yields.
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-mono bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-md border border-neutral-200">
+                      tabular-nums
+                    </span>
+                  </div>
+
+                  {/* Financial Table Preview */}
+                  <div className="border border-neutral-200 rounded-xl overflow-hidden bg-white">
+                    <table className="w-full text-xs">
+                      <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
+                        <tr>
+                          <th className="py-2.5 px-3 text-left font-semibold uppercase tracking-wider text-[10px]">Invoice / Batch</th>
+                          <th className="py-2.5 px-3 text-right font-semibold uppercase tracking-wider text-[10px]">Weight (kg)</th>
+                          <th className="py-2.5 px-3 text-right font-semibold uppercase tracking-wider text-[10px]">Yield Delta</th>
+                          <th className="py-2.5 px-3 text-right font-semibold uppercase tracking-wider text-[10px]">Settled Value ($)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-neutral-100 font-mono">
+                        <tr className="hover:bg-neutral-50/70 transition-colors">
+                          <td className="py-2.5 px-3 font-medium text-neutral-900 font-sans">INV-2627-101</td>
+                          <td className="py-2.5 px-3 text-right text-neutral-700">1,840.50 kg</td>
+                          <td className="py-2.5 px-3 text-right text-emerald-600 font-semibold">
+                            <span className="inline-flex items-center gap-1 justify-end">
+                              <TrendingUp className="w-3 h-3" /> +14.8%
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-bold text-neutral-900">$ 42,500.00</td>
+                        </tr>
+                        <tr className="hover:bg-neutral-50/70 transition-colors">
+                          <td className="py-2.5 px-3 font-medium text-neutral-900 font-sans">INV-2627-102</td>
+                          <td className="py-2.5 px-3 text-right text-neutral-700">920.00 kg</td>
+                          <td className="py-2.5 px-3 text-right text-rose-600 font-semibold">
+                            -3.2%
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-bold text-neutral-900">$ 19,850.00</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* ── 15. PROGRESS & YIELD BAR ATOM ── */}
+                <div id="atom-progress" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-neutral-500" />
+                        Progress &amp; capacity bar
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Indivisible capacity indicator with semantic thresholds (Normal, Warning at 75%, Danger at 90%).
+                      </p>
+                    </div>
+                    <span className="text-xs font-mono font-bold text-neutral-900">
+                      {progressValue}%
+                    </span>
+                  </div>
+
+                  {/* Interactive Slider */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[11px] text-neutral-400">
+                      <span>Drag to test threshold triggers</span>
+                      <span>{progressValue}% fill</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={progressValue}
+                      onChange={(e) => setProgressValue(Number(e.target.value))}
+                      className="w-full cursor-pointer accent-neutral-900"
+                    />
+                  </div>
+
+                  {/* Dynamic Progress Bar */}
+                  <div className="space-y-3 pt-1">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-medium">
+                        <span className="text-neutral-700">Coldstore DFL-Unit-1 Capacity</span>
+                        <span className={progressValue >= 90 ? "text-rose-600 font-bold" : progressValue >= 75 ? "text-amber-600 font-bold" : "text-neutral-700"}>
+                          {progressValue}% {progressValue >= 90 ? "(Critical Limit)" : progressValue >= 75 ? "(Warning Threshold)" : "(Nominal)"}
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          height: "8px",
+                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="w-full overflow-hidden p-0.5 border border-neutral-200"
+                      >
+                        <motion.div
+                          animate={{ width: `${progressValue}%` }}
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                          style={{
+                            height: "100%",
+                            borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
+                            backgroundColor:
+                              progressValue >= 90
+                                ? "#EF4444"
+                                : progressValue >= 75
+                                ? "#F59E0B"
+                                : tokens.primaryButtonColor,
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Micro Progress Bar (4px table row height) */}
+                    <div className="space-y-1">
+                      <span className="text-[11px] text-neutral-400">Micro table cell track (4px height)</span>
+                      <div
+                        style={{
+                          height: "4px",
+                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="w-full overflow-hidden"
+                      >
+                        <div
+                          style={{
+                            width: `${progressValue}%`,
+                            height: "100%",
+                            backgroundColor: progressValue >= 90 ? "#EF4444" : tokens.primaryButtonColor,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── 16. BREADCRUMB ITEM WAYFINDING ATOM ── */}
+                <div id="atom-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-neutral-500" />
+                      Breadcrumb wayfinding primitive
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
+                      Deep ERP module hierarchy
+                    </span>
+                  </div>
+
+                  <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
+                    <a href="#root" className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+                      Operations
+                    </a>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <a href="#coldstore" className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+                      Coldstore Unit-1
+                    </a>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <a href="#batch" className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+                      Pre-Processing
+                    </a>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <span
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        color: tokens.textIconColor,
+                      }}
+                      className="px-2 py-0.5 font-semibold font-mono"
+                    >
+                      Batch #8812-B
+                    </span>
+                  </nav>
                 </div>
               </>
             )}
@@ -1919,6 +2342,186 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       vs. previous 30 days
                     </span>
                   </div>
+                </div>
+
+                {/* ── 14. TABULAR NUMERAL & FINANCIAL CELL ATOM ── */}
+                <div id="atom-tabular" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-neutral-500" />
+                        Tabular numeral &amp; financial primitives
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Monospaced figure alignment guaranteeing zero column jitter across numerical audits and batch yields.
+                      </p>
+                    </div>
+                    <span className="text-[11px] font-mono bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-md border border-neutral-200">
+                      tabular-nums
+                    </span>
+                  </div>
+
+                  {/* Financial Table Preview */}
+                  <div className="border border-neutral-200 rounded-xl overflow-hidden bg-white">
+                    <table className="w-full text-xs">
+                      <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
+                        <tr>
+                          <th className="py-2.5 px-3 text-left font-semibold uppercase tracking-wider text-[10px]">Invoice / Batch</th>
+                          <th className="py-2.5 px-3 text-right font-semibold uppercase tracking-wider text-[10px]">Weight (kg)</th>
+                          <th className="py-2.5 px-3 text-right font-semibold uppercase tracking-wider text-[10px]">Yield Delta</th>
+                          <th className="py-2.5 px-3 text-right font-semibold uppercase tracking-wider text-[10px]">Settled Value ($)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-neutral-100 font-mono">
+                        <tr className="hover:bg-neutral-50/70 transition-colors">
+                          <td className="py-2.5 px-3 font-medium text-neutral-900 font-sans">INV-2627-101</td>
+                          <td className="py-2.5 px-3 text-right text-neutral-700">1,840.50 kg</td>
+                          <td className="py-2.5 px-3 text-right text-emerald-600 font-semibold">
+                            <span className="inline-flex items-center gap-1 justify-end">
+                              <TrendingUp className="w-3 h-3" /> +14.8%
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-bold text-neutral-900">$ 42,500.00</td>
+                        </tr>
+                        <tr className="hover:bg-neutral-50/70 transition-colors">
+                          <td className="py-2.5 px-3 font-medium text-neutral-900 font-sans">INV-2627-102</td>
+                          <td className="py-2.5 px-3 text-right text-neutral-700">920.00 kg</td>
+                          <td className="py-2.5 px-3 text-right text-rose-600 font-semibold">
+                            -3.2%
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-bold text-neutral-900">$ 19,850.00</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* ── 15. PROGRESS & YIELD BAR ATOM ── */}
+                <div id="atom-progress" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-neutral-500" />
+                        Progress &amp; capacity bar
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Indivisible capacity indicator with semantic thresholds (Normal, Warning at 75%, Danger at 90%).
+                      </p>
+                    </div>
+                    <span className="text-xs font-mono font-bold text-neutral-900">
+                      {progressValue}%
+                    </span>
+                  </div>
+
+                  {/* Interactive Slider */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[11px] text-neutral-400">
+                      <span>Drag to test threshold triggers</span>
+                      <span>{progressValue}% fill</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={progressValue}
+                      onChange={(e) => setProgressValue(Number(e.target.value))}
+                      className="w-full cursor-pointer accent-neutral-900"
+                    />
+                  </div>
+
+                  {/* Dynamic Progress Bar */}
+                  <div className="space-y-3 pt-1">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs font-medium">
+                        <span className="text-neutral-700">Coldstore DFL-Unit-1 Capacity</span>
+                        <span className={progressValue >= 90 ? "text-rose-600 font-bold" : progressValue >= 75 ? "text-amber-600 font-bold" : "text-neutral-700"}>
+                          {progressValue}% {progressValue >= 90 ? "(Critical Limit)" : progressValue >= 75 ? "(Warning Threshold)" : "(Nominal)"}
+                        </span>
+                      </div>
+                      <div
+                        style={{
+                          height: "8px",
+                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="w-full overflow-hidden p-0.5 border border-neutral-200"
+                      >
+                        <motion.div
+                          animate={{ width: `${progressValue}%` }}
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                          style={{
+                            height: "100%",
+                            borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
+                            backgroundColor:
+                              progressValue >= 90
+                                ? "#EF4444"
+                                : progressValue >= 75
+                                ? "#F59E0B"
+                                : tokens.primaryButtonColor,
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Micro Progress Bar (4px table row height) */}
+                    <div className="space-y-1">
+                      <span className="text-[11px] text-neutral-400">Micro table cell track (4px height)</span>
+                      <div
+                        style={{
+                          height: "4px",
+                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="w-full overflow-hidden"
+                      >
+                        <div
+                          style={{
+                            width: `${progressValue}%`,
+                            height: "100%",
+                            backgroundColor: progressValue >= 90 ? "#EF4444" : tokens.primaryButtonColor,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── 16. BREADCRUMB ITEM WAYFINDING ATOM ── */}
+                <div id="atom-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-neutral-500" />
+                      Breadcrumb wayfinding primitive
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
+                      Deep ERP module hierarchy
+                    </span>
+                  </div>
+
+                  <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
+                    <a href="#root" className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+                      Operations
+                    </a>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <a href="#coldstore" className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+                      Coldstore Unit-1
+                    </a>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <a href="#batch" className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium">
+                      Pre-Processing
+                    </a>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <span
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        color: tokens.textIconColor,
+                      }}
+                      className="px-2 py-0.5 font-semibold font-mono"
+                    >
+                      Batch #8812-B
+                    </span>
+                  </nav>
                 </div>
               </>
             )}
