@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Atom,
 } from 'lucide-react';
 import * as Popover from '@radix-ui/react-popover';
 import { cn } from '@/lib/utils';
@@ -172,6 +173,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           icon: <Home className="w-4 h-4" />,
           active: activeTab === 'home',
           onClick: () => onSelectTab?.('home'),
+        },
+        {
+          id: 'atoms',
+          title: 'Atoms',
+          icon: <Atom className="w-4 h-4 text-emerald-500 stroke-[2.2]" />,
+          badge: 'UI/UX',
+          active: activeTab === 'atoms',
+          onClick: () => onSelectTab?.('atoms'),
         },
         {
           id: 'sales',

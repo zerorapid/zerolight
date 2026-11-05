@@ -25,6 +25,7 @@ interface TopNavbarProps {
 
 const TAB_BREADCRUMBS: Record<string, { section: string; module: string; page: string }> = {
   home: { section: 'Overview', module: 'Enterprise Operations', page: 'Operations Hub' },
+  atoms: { section: 'ZeroLight UI/UX', module: 'Atomic Model Architecture', page: 'Atoms & Molecules Studio' },
   'design-asset': { section: 'Design & Engineering', module: 'Design Tokens', page: 'Design Asset Library' },
   telemetry: { section: 'Operations', module: 'Telemetry Gateway', page: 'Real-Time Sensor Console' },
   sales: { section: 'Sales', module: 'Export Division', page: 'Sales Operations Overview' },

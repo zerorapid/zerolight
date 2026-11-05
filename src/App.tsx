@@ -8,9 +8,11 @@ import { BuyersManagementView } from '@/components/sales/buyers/BuyersManagement
 import { HomeDashboardView } from '@/components/home/HomeDashboardView';
 import { TopNavbar, BreadcrumbsBar } from '@/components/layout/TopNavbar';
 import { LoginView } from '@/components/auth/LoginView';
+import { AtomicDesignStudioView } from '@/components/studio/AtomicDesignStudioView';
 
 const VALID_TABS = [
   'home',
+  'atoms',
   'design-asset',
   'telemetry',
   'sales',
@@ -183,6 +185,10 @@ export const App: React.FC = () => {
 
               {activeTab === 'sales' && salesSubMenu === 'Buyers' && (
                 <BuyersManagementView onShowToast={showToast} />
+              )}
+
+              {activeTab === 'atoms' && (
+                <AtomicDesignStudioView />
               )}
 
               {activeTab === 'design-asset' && (
