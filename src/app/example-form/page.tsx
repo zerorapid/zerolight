@@ -160,12 +160,12 @@ export default function ExampleFormPage() {
 
         {/* Form Selector Tabs */}
         <div className="flex items-center bg-neutral-100 p-1 rounded-xl border border-neutral-200">
-          <div className="px-3 py-1 rounded-lg text-xs font-medium bg-white text-neutral-900 shadow-xs">
+          <div className="px-3 py-1 rounded-lg text-xs font-semibold bg-[#111111] text-white shadow-xs">
             Workspace Config
           </div>
           <Link
             href="/fresher-profile"
-            className="px-3 py-1 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+            className="px-3 py-1 rounded-lg text-xs font-medium text-neutral-500 hover:text-neutral-900 transition-colors"
           >
             Job Seeker Bio
           </Link>
@@ -296,7 +296,7 @@ export default function ExampleFormPage() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.97, y: -4 }}
                   transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="absolute top-full left-0 right-0 z-30 mt-2 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-lg space-y-1"
+                  className="absolute top-full left-0 right-0 z-30 mt-2 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-xl space-y-1"
                 >
                   <input
                     type="text"
@@ -304,7 +304,7 @@ export default function ExampleFormPage() {
                     value={roleFilter}
                     onChange={(e) => setRoleFilter(e.target.value)}
                     placeholder="Search roles..."
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-900 outline-none focus:border-neutral-900"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 bg-[#F4F4F5] text-xs text-neutral-900 outline-none focus:border-neutral-900 focus:bg-white transition-colors"
                   />
                   <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                     {filteredRoles.map((opt) => {
@@ -395,7 +395,7 @@ export default function ExampleFormPage() {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.97, y: -4 }}
                   transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="absolute top-full left-0 right-0 z-30 mt-2 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-lg space-y-1"
+                  className="absolute top-full left-0 right-0 z-30 mt-2 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-xl space-y-1"
                 >
                   <input
                     type="text"
@@ -403,7 +403,7 @@ export default function ExampleFormPage() {
                     value={tagFilter}
                     onChange={(e) => setTagFilter(e.target.value)}
                     placeholder="Search scopes..."
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-900 outline-none focus:border-neutral-900"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 bg-[#F4F4F5] text-xs text-neutral-900 outline-none focus:border-neutral-900 focus:bg-white transition-colors"
                   />
                   <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                     {filteredTags.map((opt) => {
@@ -455,14 +455,14 @@ export default function ExampleFormPage() {
                     type="button"
                     onClick={() => setBillingCycle(key as any)}
                     className={`px-3 py-1.5 text-xs font-medium rounded-lg cursor-pointer relative z-10 transition-colors select-none ${
-                      isSelected ? "text-neutral-900 font-semibold" : "text-neutral-500 hover:text-neutral-900"
+                      isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900"
                     }`}
                   >
                     {isSelected && (
                       <motion.div
                         layoutId="activeCyclePill"
                         transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                        className="absolute inset-0 bg-white rounded-lg shadow-xs -z-10"
+                        className="absolute inset-0 bg-[#111111] rounded-lg shadow-sm -z-10"
                       />
                     )}
                     {label}

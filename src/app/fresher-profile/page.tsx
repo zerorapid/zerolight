@@ -158,11 +158,11 @@ export default function FresherProfilePage() {
         <div className="flex items-center bg-neutral-100 p-1 rounded-xl border border-neutral-200">
           <Link
             href="/example-form"
-            className="px-3 py-1 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+            className="px-3 py-1 rounded-lg text-xs font-medium text-neutral-500 hover:text-neutral-900 transition-colors"
           >
             Workspace Config
           </Link>
-          <div className="px-3 py-1 rounded-lg text-xs font-medium bg-white text-neutral-900 shadow-xs">
+          <div className="px-3 py-1 rounded-lg text-xs font-semibold bg-[#111111] text-white shadow-xs">
             Job Seeker Bio
           </div>
         </div>
@@ -379,7 +379,7 @@ export default function FresherProfilePage() {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.97, y: -4 }}
                     transition={{ duration: 0.15, ease: "easeOut" }}
-                    className="absolute top-full left-0 right-0 z-30 mt-2 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-lg space-y-1"
+                    className="absolute top-full left-0 right-0 z-30 mt-2 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-xl space-y-1"
                   >
                     <input
                       type="text"
@@ -387,7 +387,7 @@ export default function FresherProfilePage() {
                       value={degreeFilter}
                       onChange={(e) => setDegreeFilter(e.target.value)}
                       placeholder="Search degree..."
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-900 outline-none focus:border-neutral-900"
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 bg-[#F4F4F5] text-xs text-neutral-900 outline-none focus:border-neutral-900 focus:bg-white transition-colors"
                     />
                     <div className="max-h-44 overflow-y-auto space-y-0.5 pt-1">
                       {filteredDegrees.map((opt) => {
@@ -437,14 +437,14 @@ export default function FresherProfilePage() {
                       type="button"
                       onClick={() => setGradYear(year)}
                       className={`relative z-10 flex-1 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer text-center ${
-                        isActive ? "text-neutral-900 font-semibold" : "text-neutral-500 hover:text-neutral-800"
+                        isActive ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-800"
                       }`}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="activeCohortPill"
                           transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                          className="absolute inset-0 bg-white rounded-lg shadow-xs border border-neutral-200/80 -z-10"
+                          className="absolute inset-0 bg-[#111111] rounded-lg shadow-sm -z-10"
                         />
                       )}
                       <span>Class of {year}</span>
@@ -508,7 +508,7 @@ export default function FresherProfilePage() {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.96, y: -4 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute top-full left-0 z-30 mt-2 w-56 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-lg space-y-1"
+                      className="absolute top-full left-0 z-30 mt-2 w-56 p-1.5 bg-white border border-[#D4D4D4] rounded-xl shadow-xl space-y-1"
                     >
                       <input
                         type="text"
@@ -516,7 +516,7 @@ export default function FresherProfilePage() {
                         value={skillFilter}
                         onChange={(e) => setSkillFilter(e.target.value)}
                         placeholder="Search skills..."
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 text-xs text-neutral-900 outline-none focus:border-neutral-900"
+                        className="w-full px-2.5 py-1.5 rounded-lg border border-neutral-200 bg-[#F4F4F5] text-xs text-neutral-900 outline-none focus:border-neutral-900 focus:bg-white transition-colors"
                       />
                       <div className="max-h-40 overflow-y-auto space-y-0.5 pt-1">
                         {filteredSkills.length === 0 ? (
@@ -571,14 +571,14 @@ export default function FresherProfilePage() {
                       type="button"
                       onClick={() => setWorkMode(mode)}
                       className={`relative z-10 flex-1 py-1.5 text-xs font-medium rounded-lg capitalize transition-colors cursor-pointer text-center ${
-                        isActive ? "text-neutral-900 font-semibold" : "text-neutral-500 hover:text-neutral-800"
+                        isActive ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-800"
                       }`}
                     >
                       {isActive && (
                         <motion.div
                           layoutId="activeWorkModePill"
                           transition={{ type: "spring", stiffness: 450, damping: 35 }}
-                          className="absolute inset-0 bg-white rounded-lg shadow-xs border border-neutral-200/80 -z-10"
+                          className="absolute inset-0 bg-[#111111] rounded-lg shadow-sm -z-10"
                         />
                       )}
                       <span>{mode}</span>

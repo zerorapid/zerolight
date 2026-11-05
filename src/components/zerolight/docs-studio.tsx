@@ -1608,12 +1608,12 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               borderRadius: `${scaled.scaledInnerRadius}px`,
                               borderColor: tokens.universalBorderColor,
                               borderWidth: `${tokens.borderWidth}px`,
-                              backgroundColor: tokens.universalFillColor,
+                              backgroundColor: scaled.effectiveInputFill,
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
                             }}
-                            className="w-full outline-none border"
+                            className="w-full outline-none border transition-colors focus:ring-1 focus:ring-neutral-900"
                           />
                           <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
                             {filteredRoles.map((opt) => {
@@ -1766,12 +1766,12 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               borderRadius: `${scaled.scaledInnerRadius}px`,
                               borderColor: tokens.universalBorderColor,
                               borderWidth: `${tokens.borderWidth}px`,
-                              backgroundColor: tokens.universalFillColor,
+                              backgroundColor: scaled.effectiveInputFill,
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
                             }}
-                            className="w-full outline-none border"
+                            className="w-full outline-none border transition-colors focus:ring-1 focus:ring-neutral-900"
                           />
                           <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
                             {filteredTags.map((opt) => {
@@ -1860,7 +1860,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               padding: `${Math.round(5 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                             }}
                             className={`font-medium cursor-pointer relative z-10 transition-colors select-none ${
-                              isSelected ? "text-neutral-900 font-semibold" : "text-neutral-500 hover:text-neutral-900"
+                              isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900"
                             }`}
                           >
                             {isSelected && (
@@ -1869,9 +1869,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
                                 style={{
                                   borderRadius: `${scaled.scaledInnerRadius}px`,
-                                  backgroundColor: tokens.universalFillColor,
+                                  backgroundColor: tokens.primaryButtonColor,
                                 }}
-                                className="absolute inset-0 shadow-xs -z-10"
+                                className="absolute inset-0 shadow-sm -z-10"
                               />
                             )}
                             {label}
