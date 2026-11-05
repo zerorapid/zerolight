@@ -58,18 +58,23 @@ const TAG_OPTIONS = [
 export default function ZeroLightStudio() {
   const [tokens, setTokens] = useState<ZeroLightTokens>(DEFAULT_TOKENS);
 
-  // Input states with focus tracking for zero-flicker transitions
+  // Form states
   const [textInput, setTextInput] = useState<string>("sarah.connor@acme.inc");
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
-  // Role select state
+  const [textareaValue, setTextareaValue] = useState<string>(
+    "ZeroLight provides rapid PoC design system atoms built for modern B2B SaaS micro-actions."
+  );
+  const [isTextareaFocused, setIsTextareaFocused] = useState<boolean>(false);
+
+  // Single select (Role)
   const [role, setRole] = useState<string>("Product Designer");
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [isRoleOpen, setIsRoleOpen] = useState<boolean>(false);
   const [hoveredRole, setHoveredRole] = useState<string | null>(null);
   const roleRef = useRef<HTMLDivElement>(null);
 
-  // Tags state
+  // Multi select (Tags)
   const [tags, setTags] = useState<string[]>([
     "Design System",
     "Frontend",
@@ -80,18 +85,24 @@ export default function ZeroLightStudio() {
   const [hoveredTag, setHoveredTag] = useState<string | null>(null);
   const tagRef = useRef<HTMLDivElement>(null);
 
-  // Toggles & slider
+  // Selection controls
+  const [billingPlan, setBillingPlan] = useState<"monthly" | "annual">("annual");
   const [emailDigest, setEmailDigest] = useState<boolean>(true);
   const [desktopNotifs, setDesktopNotifs] = useState<boolean>(true);
   const [seatLimit, setSeatLimit] = useState<number>(24);
 
+  // Issue tracking atoms
+  const [selectedPriority, setSelectedPriority] = useState<"urgent" | "high" | "medium" | "low">("high");
+  const [selectedState, setSelectedState] = useState<"todo" | "in_progress" | "done">("in_progress");
+
   // Action states
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [copied, setCopied] = useState<boolean>(false);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [savedSuccess, setSavedSuccess] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Close menus on outside click or Escape
+  // Outside click & Escape dismiss
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (roleRef.current && !roleRef.current.contains(e.target as Node)) {
@@ -138,11 +149,18 @@ export default function ZeroLightStudio() {
     setTags((prev) => prev.filter((item) => item !== t));
   };
 
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(true);
+    triggerToast("Commit SHA copied");
+    setTimeout(() => setCopiedCode(false), 1800);
+  };
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText("https://zerolight.dev");
-    setCopied(true);
+    setCopiedLink(true);
     triggerToast("Link copied to clipboard");
-    setTimeout(() => setCopied(false), 1800);
+    setTimeout(() => setCopiedLink(false), 1800);
   };
 
   const handleSave = () => {
@@ -164,10 +182,13 @@ export default function ZeroLightStudio() {
     opt.toLowerCase().includes(tagFilter.toLowerCase())
   );
 
-  // Dynamic Scale
+  // Universal Token Calculations
   const scale = tokens.scaleMultiplier;
   const scaledHeight = Math.round(tokens.heightDensity * scale);
   const scaledFontSize = Math.round(tokens.fontSize * scale);
+  const labelFontSize = Math.max(11, Math.round((tokens.fontSize - 1) * scale));
+  const sublabelFontSize = Math.max(10, Math.round((tokens.fontSize - 3) * scale));
+  const headingFontSize = Math.max(12, Math.round((tokens.fontSize) * scale));
   const scaledRadius = Math.round(tokens.cornerRadius * scale);
   const scaledPaddingX = Math.round(14 * scale);
   const scaledPaddingY = Math.round(8 * scale);
@@ -208,7 +229,7 @@ export default function ZeroLightStudio() {
       {/* 3-Column Studio Body */}
       <div className="flex-1 flex w-full">
         {/* ══════════════════════════════════════════════════════════
-            COLUMN 1: LEFT SIDEBAR (CLEAN HUMAN NAVIGATION)
+            COLUMN 1: LEFT SIDEBAR (HUMAN NAVIGATION DIRECTORY)
            ══════════════════════════════════════════════════════════ */}
         <aside className="w-60 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
           <div className="space-y-6">
@@ -235,74 +256,62 @@ export default function ZeroLightStudio() {
               {/* Form elements */}
               <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                 <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                  Inputs
+                  Inputs &amp; Selection
                 </div>
-                <a
-                  href="#text-input"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#text-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Text input</span>
                 </a>
-                <a
-                  href="#select-menu"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#textarea" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                  <span>Textarea</span>
+                </a>
+                <a href="#select-menu" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Select menu</span>
                 </a>
-                <a
-                  href="#tags"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#tags" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Tags</span>
                 </a>
-                <a
-                  href="#toggles"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#radio-choice" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                  <span>Radio group</span>
+                </a>
+                <a href="#toggles" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Checkbox &amp; switch</span>
                 </a>
-                <a
-                  href="#slider"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#slider" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Slider</span>
                 </a>
               </div>
 
-              {/* Actions */}
+              {/* Actions & Code */}
               <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                 <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                  Actions
+                  Actions &amp; Workflow
                 </div>
-                <a
-                  href="#buttons"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Buttons</span>
                 </a>
-                <a
-                  href="#micro-actions"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
-                  <span>Icon buttons</span>
+                <a href="#micro-actions" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                  <span>Icon buttons &amp; Kbd</span>
+                </a>
+                <a href="#developer-atoms" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                  <span>Code snippet &amp; Priority</span>
                 </a>
               </div>
 
-              {/* Feedback */}
+              {/* Data & AI */}
               <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                 <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                  Feedback
+                  Data, AI &amp; Feedback
                 </div>
-                <a
-                  href="#status-badges"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#financial-volume" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                  <span>Currency &amp; Volume</span>
+                </a>
+                <a href="#ai-streaming" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                  <span>AI Model &amp; Stream</span>
+                </a>
+                <a href="#status-badges" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Status badges</span>
                 </a>
-                <a
-                  href="#loading-states"
-                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-                >
+                <a href="#loading-states" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                   <span>Loading states</span>
                 </a>
               </div>
@@ -315,7 +324,7 @@ export default function ZeroLightStudio() {
         </aside>
 
         {/* ══════════════════════════════════════════════════════════
-            COLUMN 2: CENTER STAGE (NATURAL HUMAN ATOMS SHOWCASE)
+            COLUMN 2: CENTER STAGE (UNIVERSALLY SCALED ATOMS WORKBENCH)
            ══════════════════════════════════════════════════════════ */}
         <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start overflow-y-auto">
           <div className="w-full max-w-[500px] space-y-5 pb-24">
@@ -323,22 +332,20 @@ export default function ZeroLightStudio() {
             {/* Stage Title */}
             <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
               <div>
-                <h1 className="text-sm font-semibold text-neutral-900 tracking-tight">Atoms</h1>
-                <p className="text-xs text-neutral-500">Core interactive elements and micro-interactions.</p>
+                <h1 style={{ fontSize: `${headingFontSize + 2}px` }} className="font-semibold text-neutral-900 tracking-tight">Atoms</h1>
+                <p style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500">Core interactive elements and micro-interactions.</p>
               </div>
-              <span className="text-xs text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 rounded-full shadow-sm">
+              <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 rounded-full shadow-sm">
                 Scale: {tokens.scaleMultiplier.toFixed(2)}x
               </span>
             </div>
 
             {/* ── CARD 1: TEXT INPUT ── */}
             <div id="text-input" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Text input</h2>
-              </div>
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Text input</h2>
 
               <div className="space-y-1.5">
-                <label className="block text-xs font-medium text-neutral-700">Work email</label>
+                <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">Work email</label>
                 <div
                   style={{
                     borderRadius: `${scaledRadius}px`,
@@ -385,14 +392,48 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* ── CARD 2: SELECT MENU ── */}
-            <div id="select-menu" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Select menu</h2>
+            {/* ── CARD 2: TEXTAREA ── */}
+            <div id="textarea" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Textarea</h2>
+
+              <div className="space-y-1.5">
+                <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">Project description</label>
+                <div
+                  style={{
+                    borderRadius: `${scaledRadius}px`,
+                    borderColor: isTextareaFocused ? tokens.textIconColor : tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    backgroundColor: tokens.universalFillColor,
+                    padding: `${scaledPaddingY}px ${scaledPaddingX}px`,
+                    boxShadow: isTextareaFocused ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                    transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+                  }}
+                  className="flex items-start"
+                >
+                  <textarea
+                    rows={3}
+                    value={textareaValue}
+                    onFocus={() => setIsTextareaFocused(true)}
+                    onBlur={() => setIsTextareaFocused(false)}
+                    onChange={(e) => setTextareaValue(e.target.value)}
+                    placeholder="Write a brief overview..."
+                    style={{
+                      fontSize: `${scaledFontSize}px`,
+                      color: tokens.textIconColor,
+                      lineHeight: "1.5",
+                    }}
+                    className="w-full bg-transparent outline-none resize-none placeholder:text-neutral-400"
+                  />
+                </div>
               </div>
+            </div>
+
+            {/* ── CARD 3: SELECT MENU ── */}
+            <div id="select-menu" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Select menu</h2>
 
               <div ref={roleRef} className="relative space-y-1.5">
-                <label className="block text-xs font-medium text-neutral-700">Role</label>
+                <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">Role</label>
 
                 <button
                   type="button"
@@ -472,7 +513,7 @@ export default function ZeroLightStudio() {
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
                         color: tokens.textIconColor,
-                        fontSize: `${scaledFontSize - 2}px`,
+                        fontSize: `${sublabelFontSize}px`,
                         padding: `${Math.round(6 * scale)}px ${Math.round(10 * scale)}px`,
                         transition: getTransitionStyle(),
                       }}
@@ -480,7 +521,7 @@ export default function ZeroLightStudio() {
                     />
                     <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
                       {filteredRoles.length === 0 ? (
-                        <div className="py-2 text-center text-xs text-neutral-400">No role found</div>
+                        <div style={{ fontSize: `${sublabelFontSize}px` }} className="py-2 text-center text-neutral-400">No role found</div>
                       ) : (
                         filteredRoles.map((opt) => {
                           const isSelected = role === opt;
@@ -504,7 +545,7 @@ export default function ZeroLightStudio() {
                                   ? tokens.hoverBackplateTint
                                   : "transparent",
                                 color: isSelected ? "#FFFFFF" : tokens.textIconColor,
-                                fontSize: `${scaledFontSize - 1}px`,
+                                fontSize: `${labelFontSize}px`,
                                 padding: `${Math.round(7 * scale)}px ${Math.round(10 * scale)}px`,
                                 transition: getTransitionStyle(),
                               }}
@@ -526,14 +567,12 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* ── CARD 3: TAGS ── */}
+            {/* ── CARD 4: TAGS ── */}
             <div id="tags" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Tags</h2>
-              </div>
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Tags</h2>
 
               <div ref={tagRef} className="relative space-y-1.5">
-                <label className="block text-xs font-medium text-neutral-700">Project tags</label>
+                <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">Project tags</label>
 
                 <div
                   onClick={() => setIsTagOpen((prev) => !prev)}
@@ -551,7 +590,7 @@ export default function ZeroLightStudio() {
                 >
                   <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
                     {tags.length === 0 ? (
-                      <span className="text-neutral-400 text-xs font-normal">
+                      <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-normal">
                         Select tags...
                       </span>
                     ) : (
@@ -560,7 +599,7 @@ export default function ZeroLightStudio() {
                           key={item}
                           style={{
                             borderRadius: `${Math.max(4, scaledRadius - 8)}px`,
-                            fontSize: `${Math.max(11, scaledFontSize - 3)}px`,
+                            fontSize: `${sublabelFontSize}px`,
                             backgroundColor: tokens.hoverBackplateTint,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
@@ -572,7 +611,7 @@ export default function ZeroLightStudio() {
                           <button
                             type="button"
                             onClick={(e) => handleRemoveTag(item, e)}
-                            className="hover:text-red-600 transition-colors p-0.5 -mr-0.5"
+                            className="hover:text-red-600 transition-colors p-0.5 -mr-0.5 cursor-pointer"
                             title="Remove"
                           >
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
@@ -606,7 +645,7 @@ export default function ZeroLightStudio() {
                   </div>
                 </div>
 
-                {/* Popover Dropdown */}
+                {/* Dropdown Options */}
                 {isTagOpen && (
                   <div
                     style={{
@@ -633,7 +672,7 @@ export default function ZeroLightStudio() {
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
                         color: tokens.textIconColor,
-                        fontSize: `${scaledFontSize - 2}px`,
+                        fontSize: `${sublabelFontSize}px`,
                         padding: `${Math.round(6 * scale)}px ${Math.round(10 * scale)}px`,
                         transition: getTransitionStyle(),
                       }}
@@ -641,7 +680,7 @@ export default function ZeroLightStudio() {
                     />
                     <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
                       {filteredTags.length === 0 ? (
-                        <div className="py-2 text-center text-xs text-neutral-400">No tag found</div>
+                        <div style={{ fontSize: `${sublabelFontSize}px` }} className="py-2 text-center text-neutral-400">No tag found</div>
                       ) : (
                         filteredTags.map((opt) => {
                           const isSelected = tags.includes(opt);
@@ -656,7 +695,7 @@ export default function ZeroLightStudio() {
                                 borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
                                 backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
                                 color: tokens.textIconColor,
-                                fontSize: `${scaledFontSize - 1}px`,
+                                fontSize: `${labelFontSize}px`,
                                 padding: `${Math.round(7 * scale)}px ${Math.round(10 * scale)}px`,
                                 transition: getTransitionStyle(),
                               }}
@@ -691,11 +730,85 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* ── CARD 4: CHECKBOX & SWITCH ── */}
-            <div id="toggles" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Checkbox &amp; switch</h2>
+            {/* ── CARD 5: RADIO GROUP (NEW ATOM) ── */}
+            <div id="radio-choice" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Radio button</h2>
+
+              <div className="space-y-2">
+                <label
+                  onClick={() => setBillingPlan("monthly")}
+                  className="flex items-center justify-between p-2.5 rounded-xl border border-neutral-200 cursor-pointer hover:bg-neutral-50/60 transition-colors"
+                  style={{
+                    borderRadius: `${Math.max(8, scaledRadius - 4)}px`,
+                    borderColor: billingPlan === "monthly" ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                  }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      style={{
+                        borderColor: billingPlan === "monthly" ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                      }}
+                      className="w-4 h-4 rounded-full flex items-center justify-center border bg-white"
+                    >
+                      {billingPlan === "monthly" && (
+                        <div
+                          style={{ backgroundColor: tokens.primaryButtonColor }}
+                          className="w-2 h-2 rounded-full"
+                        />
+                      )}
+                    </div>
+                    <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
+                      Monthly billing
+                    </span>
+                  </div>
+                  <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500 font-medium">
+                    $24 / seat
+                  </span>
+                </label>
+
+                <label
+                  onClick={() => setBillingPlan("annual")}
+                  className="flex items-center justify-between p-2.5 rounded-xl border border-neutral-200 cursor-pointer hover:bg-neutral-50/60 transition-colors"
+                  style={{
+                    borderRadius: `${Math.max(8, scaledRadius - 4)}px`,
+                    borderColor: billingPlan === "annual" ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                  }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      style={{
+                        borderColor: billingPlan === "annual" ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                      }}
+                      className="w-4 h-4 rounded-full flex items-center justify-center border bg-white"
+                    >
+                      {billingPlan === "annual" && (
+                        <div
+                          style={{ backgroundColor: tokens.primaryButtonColor }}
+                          className="w-2 h-2 rounded-full"
+                        />
+                      )}
+                    </div>
+                    <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
+                      Annual billing
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ fontSize: `${sublabelFontSize - 1}px` }} className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
+                      Save 20%
+                    </span>
+                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500 font-medium">
+                      $19 / seat
+                    </span>
+                  </div>
+                </label>
               </div>
+            </div>
+
+            {/* ── CARD 6: CHECKBOX & SWITCH ── */}
+            <div id="toggles" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Checkbox &amp; switch</h2>
 
               <div className="space-y-3 pt-1">
                 {/* Checkbox */}
@@ -719,10 +832,10 @@ export default function ZeroLightStudio() {
                   </div>
                   <span
                     style={{
-                      fontSize: `${scaledFontSize}px`,
+                      fontSize: `${labelFontSize}px`,
                       color: tokens.textIconColor,
                     }}
-                    className="font-medium select-none text-xs"
+                    className="font-medium select-none"
                   >
                     Send weekly digest email
                   </span>
@@ -732,10 +845,10 @@ export default function ZeroLightStudio() {
                 <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
                   <span
                     style={{
-                      fontSize: `${scaledFontSize}px`,
+                      fontSize: `${labelFontSize}px`,
                       color: tokens.textIconColor,
                     }}
-                    className="font-medium select-none text-xs"
+                    className="font-medium select-none"
                   >
                     Desktop notifications
                   </span>
@@ -763,16 +876,14 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* ── CARD 5: SLIDER ── */}
+            {/* ── CARD 7: SLIDER ── */}
             <div id="slider" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Slider</h2>
-              </div>
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Slider</h2>
 
               <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-medium text-neutral-700">Monthly seat limit</span>
-                  <span className="font-semibold text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded text-[11px]">
+                <div className="flex justify-between items-center">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="font-medium text-neutral-700">Monthly seat limit</span>
+                  <span style={{ fontSize: `${sublabelFontSize}px` }} className="font-semibold text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded">
                     {seatLimit} seats
                   </span>
                 </div>
@@ -785,7 +896,7 @@ export default function ZeroLightStudio() {
                   onChange={(e) => setSeatLimit(Number(e.target.value))}
                   className="w-full cursor-pointer accent-neutral-900"
                 />
-                <div className="flex justify-between text-[11px] text-neutral-400">
+                <div style={{ fontSize: `${sublabelFontSize}px` }} className="flex justify-between text-neutral-400">
                   <span>5 seats</span>
                   <span>50 seats</span>
                   <span>100 seats</span>
@@ -793,11 +904,9 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* ── CARD 6: BUTTONS ── */}
+            {/* ── CARD 8: BUTTONS ── */}
             <div id="buttons" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Buttons</h2>
-              </div>
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Buttons</h2>
 
               <div className="space-y-2.5">
                 {/* Row 1: Primary & Secondary */}
@@ -809,7 +918,7 @@ export default function ZeroLightStudio() {
                       backgroundColor: tokens.primaryButtonColor,
                       borderRadius: `${scaledRadius}px`,
                       height: `${scaledHeight}px`,
-                      fontSize: `${scaledFontSize - 1}px`,
+                      fontSize: `${labelFontSize}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 text-white font-medium flex items-center justify-center gap-2 shadow-sm tactile-press active:opacity-90 cursor-pointer"
@@ -834,7 +943,7 @@ export default function ZeroLightStudio() {
                       backgroundColor: tokens.universalFillColor,
                       color: tokens.textIconColor,
                       height: `${scaledHeight}px`,
-                      fontSize: `${scaledFontSize - 1}px`,
+                      fontSize: `${labelFontSize}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 font-medium flex items-center justify-center gap-2 border hover:opacity-90 tactile-press shadow-sm cursor-pointer"
@@ -858,7 +967,7 @@ export default function ZeroLightStudio() {
                       backgroundColor: tokens.universalFillColor,
                       color: tokens.textIconColor,
                       height: `${scaledHeight}px`,
-                      fontSize: `${scaledFontSize - 1}px`,
+                      fontSize: `${labelFontSize}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 font-medium flex items-center justify-center gap-2 border hover:opacity-90 tactile-press shadow-sm cursor-pointer"
@@ -876,7 +985,7 @@ export default function ZeroLightStudio() {
                       borderRadius: `${scaledRadius}px`,
                       backgroundColor: tokens.universalFillColor,
                       height: `${scaledHeight}px`,
-                      fontSize: `${scaledFontSize - 1}px`,
+                      fontSize: `${labelFontSize}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 text-rose-600 font-medium flex items-center justify-center gap-2 border border-rose-200 hover:bg-rose-50/50 tactile-press shadow-sm cursor-pointer"
@@ -890,11 +999,9 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* ── CARD 7: MICRO ACTIONS ── */}
+            {/* ── CARD 9: MICRO ACTIONS & KBD ── */}
             <div id="micro-actions" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Icon buttons</h2>
-              </div>
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Icon buttons &amp; keyboard keys</h2>
 
               <div className="flex items-center gap-2.5">
                 {/* Settings Trigger */}
@@ -937,7 +1044,7 @@ export default function ZeroLightStudio() {
                   }}
                   className="border flex items-center justify-center hover:opacity-90 tactile-press shadow-sm cursor-pointer"
                 >
-                  {copied ? (
+                  {copiedLink ? (
                     <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
@@ -949,6 +1056,38 @@ export default function ZeroLightStudio() {
                   )}
                 </button>
 
+                {/* KBD Keyboard Keycaps */}
+                <div className="flex items-center gap-1.5 ml-1">
+                  <kbd
+                    style={{
+                      borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                      color: tokens.textIconColor,
+                      fontSize: `${sublabelFontSize}px`,
+                      padding: `${Math.round(3 * scale)}px ${Math.round(6 * scale)}px`,
+                    }}
+                    className="font-medium shadow-xs border inline-flex items-center justify-center"
+                  >
+                    ⌘K
+                  </kbd>
+                  <kbd
+                    style={{
+                      borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                      color: tokens.textIconColor,
+                      fontSize: `${sublabelFontSize}px`,
+                      padding: `${Math.round(3 * scale)}px ${Math.round(6 * scale)}px`,
+                    }}
+                    className="font-medium shadow-xs border inline-flex items-center justify-center"
+                  >
+                    Esc
+                  </kbd>
+                </div>
+
                 {/* Save status badge */}
                 <div
                   style={{
@@ -958,37 +1097,212 @@ export default function ZeroLightStudio() {
                     borderWidth: `${tokens.borderWidth}px`,
                     backgroundColor: tokens.universalFillColor,
                     color: tokens.textIconColor,
-                    fontSize: `${scaledFontSize - 2}px`,
+                    fontSize: `${sublabelFontSize}px`,
                   }}
                   className="ml-auto inline-flex items-center gap-2 px-3 border shadow-sm select-none"
                 >
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span>Changes saved</span>
+                  <span>Saved</span>
                 </div>
               </div>
             </div>
 
-            {/* ── CARD 8: STATUS BADGES ── */}
-            <div id="status-badges" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Status badges</h2>
+            {/* ── CARD 10: WORKFLOW & DEVELOPER ATOMS ── */}
+            <div id="developer-atoms" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Developer &amp; workflow atoms</h2>
+
+              <div className="space-y-3">
+                {/* Inline Code Snippet */}
+                <div className="flex items-center justify-between">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-700 font-medium">Git commit SHA</span>
+                  <div
+                    onClick={() => handleCopyCode("f6c1d24a9e")}
+                    style={{
+                      borderRadius: `${Math.max(4, scaledRadius - 8)}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                      color: tokens.textIconColor,
+                      fontSize: `${sublabelFontSize}px`,
+                      padding: `${Math.round(3 * scale)}px ${Math.round(8 * scale)}px`,
+                    }}
+                    className="font-mono flex items-center gap-2 border cursor-pointer hover:opacity-80 transition-opacity"
+                    title="Click to copy SHA"
+                  >
+                    <span>f6c1d24a9e</span>
+                    {copiedCode ? (
+                      <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3 h-3 text-neutral-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                {/* Priority Glyphs */}
+                <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-700 font-medium">Issue priority</span>
+                  <div className="flex items-center gap-1.5">
+                    {(
+                      [
+                        { key: "urgent", label: "Urgent", color: "text-rose-600" },
+                        { key: "high", label: "High", color: "text-amber-600" },
+                        { key: "medium", label: "Medium", color: "text-blue-600" },
+                        { key: "low", label: "Low", color: "text-neutral-500" },
+                      ] as const
+                    ).map(({ key, label, color }) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setSelectedPriority(key)}
+                        style={{
+                          borderRadius: `${Math.max(4, scaledRadius - 8)}px`,
+                          backgroundColor: selectedPriority === key ? tokens.hoverBackplateTint : "transparent",
+                          borderColor: selectedPriority === key ? tokens.textIconColor : tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          fontSize: `${sublabelFontSize}px`,
+                          padding: `${Math.round(2 * scale)}px ${Math.round(6 * scale)}px`,
+                        }}
+                        className={`border flex items-center gap-1 font-medium cursor-pointer ${color}`}
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                        <span>{label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Issue Lifecycle Dots */}
+                <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-700 font-medium">Lifecycle state</span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      onClick={() => setSelectedState("todo")}
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border cursor-pointer ${
+                        selectedState === "todo" ? "bg-neutral-100 font-semibold" : "opacity-60"
+                      }`}
+                      style={{ fontSize: `${sublabelFontSize}px` }}
+                    >
+                      <span className="w-2 h-2 rounded-full border border-neutral-500" />
+                      <span>Todo</span>
+                    </span>
+                    <span
+                      onClick={() => setSelectedState("in_progress")}
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border cursor-pointer ${
+                        selectedState === "in_progress" ? "bg-amber-50 text-amber-900 border-amber-200 font-semibold" : "opacity-60"
+                      }`}
+                      style={{ fontSize: `${sublabelFontSize}px` }}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-amber-500" />
+                      <span>In progress</span>
+                    </span>
+                    <span
+                      onClick={() => setSelectedState("done")}
+                      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border cursor-pointer ${
+                        selectedState === "done" ? "bg-emerald-50 text-emerald-900 border-emerald-200 font-semibold" : "opacity-60"
+                      }`}
+                      style={{ fontSize: `${sublabelFontSize}px` }}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span>Done</span>
+                    </span>
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* ── CARD 11: FINTECH & VOLUME ATOMS ── */}
+            <div id="financial-volume" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Financial &amp; volume atoms</h2>
+
+              <div className="space-y-3">
+                {/* Formatted Currency Amount */}
+                <div className="flex items-center justify-between">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-700 font-medium">Billed revenue</span>
+                  <div className="flex items-baseline gap-1">
+                    <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-500 font-medium">$</span>
+                    <span style={{ fontSize: `${headingFontSize + 4}px`, color: tokens.textIconColor }} className="font-bold tracking-tight">1,420</span>
+                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-medium">.00</span>
+                    <span style={{ fontSize: `${sublabelFontSize - 1}px` }} className="ml-1 px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-600 font-medium">
+                      USD
+                    </span>
+                  </div>
+                </div>
+
+                {/* Byte Volume */}
+                <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-700 font-medium">Database volume</span>
+                  <div className="flex items-center gap-1.5">
+                    <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                      4.2 GB
+                    </span>
+                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400">
+                      of 10 GB limit
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 12: AI MODEL & STREAMING BEAM ── */}
+            <div id="ai-streaming" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">AI model &amp; stream atoms</h2>
+
+              <div className="space-y-3">
+                {/* Model Pill */}
+                <div className="flex items-center justify-between">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-700 font-medium">Active agent model</span>
+                  <span
+                    style={{
+                      borderRadius: `${scaledRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                      color: tokens.textIconColor,
+                      fontSize: `${sublabelFontSize}px`,
+                      padding: `${Math.round(3 * scale)}px ${Math.round(8 * scale)}px`,
+                    }}
+                    className="inline-flex items-center gap-1.5 border font-medium shadow-xs"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                    <span>Claude 3.7 Sonnet</span>
+                  </span>
+                </div>
+
+                {/* Streaming Cursor */}
+                <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-700 font-medium">Live generation stream</span>
+                  <div className="flex items-center gap-1 font-mono text-xs">
+                    <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }}>Synthesizing AST</span>
+                    <span className="inline-block w-2 h-4 bg-neutral-900 animate-pulse ml-0.5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 13: STATUS BADGES ── */}
+            <div id="status-badges" style={cardStyle} className="p-5 shadow-sm space-y-3">
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Status badges</h2>
 
               {/* Status Pills */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200">
+                <span style={{ fontSize: `${sublabelFontSize}px` }} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   <span>Active</span>
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-medium border border-amber-200">
+                <span style={{ fontSize: `${sublabelFontSize}px` }} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-medium border border-amber-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                   <span>In review</span>
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium border border-neutral-200">
+                <span style={{ fontSize: `${sublabelFontSize}px` }} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-medium border border-neutral-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
                   <span>Draft</span>
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-xs font-medium border border-rose-200">
+                <span style={{ fontSize: `${sublabelFontSize}px` }} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-medium border border-rose-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                   <span>Paused</span>
                 </span>
@@ -996,11 +1310,11 @@ export default function ZeroLightStudio() {
 
               {/* Quota Progress */}
               <div className="space-y-1.5 pt-2 border-t border-neutral-100">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-neutral-600 font-medium">Storage limit</span>
+                <div className="flex justify-between items-center">
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-600 font-medium">Storage limit</span>
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-neutral-900">68%</span>
-                    <span className="text-[11px] text-emerald-600 font-medium">+4.2% this month</span>
+                    <span style={{ fontSize: `${labelFontSize}px` }} className="font-semibold text-neutral-900">68%</span>
+                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-emerald-600 font-medium">+4.2% this month</span>
                   </div>
                 </div>
                 <div className="w-full h-1.5 rounded-full bg-neutral-100 overflow-hidden">
@@ -1009,16 +1323,14 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* ── CARD 9: LOADING STATES ── */}
+            {/* ── CARD 14: LOADING STATES ── */}
             <div id="loading-states" style={cardStyle} className="p-5 shadow-sm space-y-3">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-semibold text-neutral-900">Loading states</h2>
-              </div>
+              <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">Loading states</h2>
 
               <div className="space-y-3">
                 <div className="flex items-center gap-2.5">
                   <div className="w-4 h-4 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin shrink-0" />
-                  <span className="text-xs text-neutral-500">Loading team members...</span>
+                  <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-500">Loading team members...</span>
                 </div>
 
                 <div className="space-y-1.5 pt-1">
@@ -1032,31 +1344,31 @@ export default function ZeroLightStudio() {
         </main>
 
         {/* ══════════════════════════════════════════════════════════
-            COLUMN 3: RIGHT SIDEBAR (NATURAL VISUAL STUDIO INSPECTOR)
+            COLUMN 3: RIGHT SIDEBAR (DARK MODE "VISUAL STUDIO" DOCK)
            ══════════════════════════════════════════════════════════ */}
-        <aside className="w-72 border-l border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden xl:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
+        <aside className="w-72 border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 hidden xl:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
           <div className="space-y-5">
-            {/* Header with Reset */}
-            <div className="flex justify-between items-center pb-2 border-b border-neutral-100">
-              <span className="text-xs font-semibold text-neutral-900">
+            {/* Dark Mode Header with Reset */}
+            <div className="flex justify-between items-center pb-2 border-b border-[#27272A]">
+              <span className="text-xs font-semibold tracking-wide text-white">
                 Visual Studio
               </span>
               <button
                 type="button"
                 onClick={handleResetDefaults}
-                className="text-xs text-neutral-400 hover:text-neutral-900 transition-colors font-medium cursor-pointer"
+                className="text-xs text-neutral-400 hover:text-white transition-colors font-medium cursor-pointer"
               >
                 Reset
               </button>
             </div>
 
-            {/* Scale Controller */}
-            <div className="space-y-2 p-3 rounded-xl bg-neutral-50 border border-neutral-200">
+            {/* Dark Mode Scale Multiplier Controller */}
+            <div className="space-y-2 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-neutral-800">
+                <span className="text-xs font-medium text-neutral-300">
                   Scale multiplier
                 </span>
-                <span className="text-xs font-medium text-neutral-700 bg-white border border-neutral-200 px-1.5 py-0.5 rounded shadow-sm">
+                <span className="text-xs font-medium text-white bg-[#27272A] border border-[#3F3F46] px-1.5 py-0.5 rounded shadow-sm">
                   {tokens.scaleMultiplier.toFixed(2)}x
                 </span>
               </div>
@@ -1070,7 +1382,7 @@ export default function ZeroLightStudio() {
                 onChange={(e) =>
                   setTokens((prev) => ({ ...prev, scaleMultiplier: Number(e.target.value) }))
                 }
-                className="w-full cursor-pointer accent-neutral-900"
+                className="w-full cursor-pointer accent-white"
               />
 
               <div className="grid grid-cols-4 gap-1 pt-1">
@@ -1086,8 +1398,8 @@ export default function ZeroLightStudio() {
                     onClick={() => setTokens((prev) => ({ ...prev, scaleMultiplier: val }))}
                     className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
                       tokens.scaleMultiplier === val
-                        ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                        : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
                     }`}
                   >
                     {label}
@@ -1096,21 +1408,21 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* Colors */}
-            <div className="space-y-2.5 pt-2 border-t border-neutral-100">
+            {/* Dark Mode Colors Section */}
+            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
               <div className="text-xs font-medium text-neutral-400">
                 Colors
               </div>
 
-              {/* Border Color */}
+              {/* Universal Border Color */}
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-700">Border</span>
+                <span className="text-neutral-300">Border</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400">{tokens.universalBorderColor.toUpperCase()}</span>
+                  <span className="text-[11px] text-neutral-500 font-mono">{tokens.universalBorderColor.toUpperCase()}</span>
                   <label className="relative cursor-pointer">
                     <span
                       style={{ backgroundColor: tokens.universalBorderColor }}
-                      className="w-5 h-5 rounded border border-black/10 shadow-sm block transition-transform hover:scale-105"
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
                     />
                     <input
                       type="color"
@@ -1122,15 +1434,15 @@ export default function ZeroLightStudio() {
                 </div>
               </div>
 
-              {/* Surface Fill */}
+              {/* Universal Fill Color */}
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-700">Surface</span>
+                <span className="text-neutral-300">Surface</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400">{tokens.universalFillColor.toUpperCase()}</span>
+                  <span className="text-[11px] text-neutral-500 font-mono">{tokens.universalFillColor.toUpperCase()}</span>
                   <label className="relative cursor-pointer">
                     <span
                       style={{ backgroundColor: tokens.universalFillColor }}
-                      className="w-5 h-5 rounded border border-black/15 shadow-sm block transition-transform hover:scale-105"
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
                     />
                     <input
                       type="color"
@@ -1144,13 +1456,13 @@ export default function ZeroLightStudio() {
 
               {/* Text & Icon Color */}
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-700">Text &amp; icons</span>
+                <span className="text-neutral-300">Text &amp; icons</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400">{tokens.textIconColor.toUpperCase()}</span>
+                  <span className="text-[11px] text-neutral-500 font-mono">{tokens.textIconColor.toUpperCase()}</span>
                   <label className="relative cursor-pointer">
                     <span
                       style={{ backgroundColor: tokens.textIconColor }}
-                      className="w-5 h-5 rounded border border-black/10 shadow-sm block transition-transform hover:scale-105"
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
                     />
                     <input
                       type="color"
@@ -1164,13 +1476,13 @@ export default function ZeroLightStudio() {
 
               {/* Primary Action Color */}
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-700">Primary action</span>
+                <span className="text-neutral-300">Primary action</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400">{tokens.primaryButtonColor.toUpperCase()}</span>
+                  <span className="text-[11px] text-neutral-500 font-mono">{tokens.primaryButtonColor.toUpperCase()}</span>
                   <label className="relative cursor-pointer">
                     <span
                       style={{ backgroundColor: tokens.primaryButtonColor }}
-                      className="w-5 h-5 rounded border border-black/10 shadow-sm block transition-transform hover:scale-105"
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
                     />
                     <input
                       type="color"
@@ -1184,13 +1496,13 @@ export default function ZeroLightStudio() {
 
               {/* Hover Backplate Tint */}
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-700">Hover tint</span>
+                <span className="text-neutral-300">Hover tint</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400">{tokens.hoverBackplateTint.toUpperCase()}</span>
+                  <span className="text-[11px] text-neutral-500 font-mono">{tokens.hoverBackplateTint.toUpperCase()}</span>
                   <label className="relative cursor-pointer">
                     <span
                       style={{ backgroundColor: tokens.hoverBackplateTint }}
-                      className="w-5 h-5 rounded border border-black/10 shadow-sm block transition-transform hover:scale-105"
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
                     />
                     <input
                       type="color"
@@ -1203,8 +1515,8 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* Geometry */}
-            <div className="space-y-2.5 pt-2 border-t border-neutral-100">
+            {/* Dark Mode Geometry Section */}
+            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
               <div className="text-xs font-medium text-neutral-400">
                 Geometry
               </div>
@@ -1212,8 +1524,8 @@ export default function ZeroLightStudio() {
               {/* Border Width Slider */}
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-neutral-700">Border width</span>
-                  <span className="text-neutral-500 font-medium">{tokens.borderWidth}px</span>
+                  <span className="text-neutral-300">Border width</span>
+                  <span className="text-neutral-400 font-medium">{tokens.borderWidth}px</span>
                 </div>
                 <input
                   type="range"
@@ -1222,15 +1534,15 @@ export default function ZeroLightStudio() {
                   step="1"
                   value={tokens.borderWidth}
                   onChange={(e) => setTokens((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))}
-                  className="w-full cursor-pointer accent-neutral-900"
+                  className="w-full cursor-pointer accent-white"
                 />
               </div>
 
               {/* Corner Radius */}
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-neutral-700">Corner radius</span>
-                  <span className="text-neutral-500 font-medium">{tokens.cornerRadius}px</span>
+                  <span className="text-neutral-300">Corner radius</span>
+                  <span className="text-neutral-400 font-medium">{tokens.cornerRadius}px</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1">
                   {([0, 8, 16, 24] as CornerRadiusPreset[]).map((r) => (
@@ -1240,8 +1552,8 @@ export default function ZeroLightStudio() {
                       onClick={() => setTokens((prev) => ({ ...prev, cornerRadius: r }))}
                       className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
                         tokens.cornerRadius === r
-                          ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                          : "bg-neutral-50 text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
                       }`}
                     >
                       {r === 0 ? "0px" : `${r}px`}
@@ -1253,8 +1565,8 @@ export default function ZeroLightStudio() {
               {/* Height Density */}
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-neutral-700">Height density</span>
-                  <span className="text-neutral-500 font-medium">{tokens.heightDensity}px</span>
+                  <span className="text-neutral-300">Height density</span>
+                  <span className="text-neutral-400 font-medium">{tokens.heightDensity}px</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1">
                   {([40, 44, 48, 52] as HeightDensityPreset[]).map((h) => (
@@ -1264,8 +1576,8 @@ export default function ZeroLightStudio() {
                       onClick={() => setTokens((prev) => ({ ...prev, heightDensity: h }))}
                       className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
                         tokens.heightDensity === h
-                          ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                          : "bg-neutral-50 text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
                       }`}
                     >
                       {h}px
@@ -1277,8 +1589,8 @@ export default function ZeroLightStudio() {
               {/* Menu Offset */}
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-neutral-700">Menu offset</span>
-                  <span className="text-neutral-500 font-medium">{tokens.menuOffsetGap}px</span>
+                  <span className="text-neutral-300">Menu offset</span>
+                  <span className="text-neutral-400 font-medium">{tokens.menuOffsetGap}px</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1">
                   {([4, 8, 10, 14] as MenuOffsetPreset[]).map((g) => (
@@ -1288,8 +1600,8 @@ export default function ZeroLightStudio() {
                       onClick={() => setTokens((prev) => ({ ...prev, menuOffsetGap: g }))}
                       className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
                         tokens.menuOffsetGap === g
-                          ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                          : "bg-neutral-50 text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
                       }`}
                     >
                       {g}px
@@ -1299,31 +1611,36 @@ export default function ZeroLightStudio() {
               </div>
             </div>
 
-            {/* Typography */}
-            <div className="space-y-2 pt-2 border-t border-neutral-100">
+            {/* Dark Mode Typography Section (Universally Calibrating) */}
+            <div className="space-y-2 pt-2 border-t border-[#27272A]">
               <div className="text-xs font-medium text-neutral-400">
-                Typography
+                Universal Typography
               </div>
 
               <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-neutral-700">Font size</span>
-                  <span className="text-neutral-500 font-medium">{tokens.fontSize}px</span>
+                  <span className="text-neutral-300">Base font scale</span>
+                  <span className="text-neutral-400 font-medium">{tokens.fontSize}px</span>
                 </div>
                 <input
                   type="range"
-                  min="13"
-                  max="16"
+                  min="12"
+                  max="18"
                   step="1"
                   value={tokens.fontSize}
                   onChange={(e) => setTokens((prev) => ({ ...prev, fontSize: Number(e.target.value) }))}
-                  className="w-full cursor-pointer accent-neutral-900"
+                  className="w-full cursor-pointer accent-white"
                 />
+                <div className="flex justify-between text-[10px] text-neutral-500 pt-0.5">
+                  <span>12px Compact</span>
+                  <span>14px Standard</span>
+                  <span>18px Roomy</span>
+                </div>
               </div>
             </div>
 
-            {/* Motion */}
-            <div className="space-y-2 pt-2 border-t border-neutral-100">
+            {/* Dark Mode Motion Section */}
+            <div className="space-y-2 pt-2 border-t border-[#27272A]">
               <div className="text-xs font-medium text-neutral-400">
                 Motion
               </div>
@@ -1342,8 +1659,8 @@ export default function ZeroLightStudio() {
                     onClick={() => setTokens((prev) => ({ ...prev, motionPhysics: key }))}
                     className={`py-1.5 rounded text-xs font-medium border transition-colors cursor-pointer ${
                       tokens.motionPhysics === key
-                        ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                        : "bg-neutral-50 text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
                     }`}
                   >
                     {label}
@@ -1353,9 +1670,9 @@ export default function ZeroLightStudio() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-400">
-            <span>Tokens active</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <div className="pt-4 border-t border-[#27272A] flex items-center justify-between text-xs text-neutral-500">
+            <span>Visual Studio Engine</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
           </div>
         </aside>
       </div>
