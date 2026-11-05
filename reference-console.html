@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaFlow SaaS — Industrial Operations Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* =========================================================
+       DESIGN TOKENS (Apple HIG + Uber Precision + 10% Ocean Electric Accent)
+       Strict 60-30-10 color balance, 8pt spatial grid, tactile micro-interactions
+       ========================================================= */
+    :root {
+      --bg-canvas: #F4F5F8;
+      --surface-card: #FFFFFF;
+      --surface-subtle: #F0F2F6;
+      --surface-hover: #E6E9EE;
+
+      --text-main: #0B0F19;
+      --text-muted: #5E697D;
+      --text-tertiary: #929EB2;
+
+      --border-subtle: #DFE3EB;
+      --border-focus: #0B0F19;
+
+      /* 10% Dominant Brand Ocean Tint */
+      --brand-accent: #0077EE;
+      --brand-accent-hover: #0066CC;
+      --brand-accent-glow: rgba(0, 119, 238, 0.15);
+      --brand-accent-tint: #EBF4FE;
+
+      /* Functional States (Warning, Error, Success) */
+      --color-error: #EF4444;
+      --color-error-tint: #FEF2F2;
+      --color-warning: #F59E0B;
+      --color-warning-tint: #FFFBEB;
+      --color-success: #10B981;
+      --color-success-tint: #ECFDF5;
+
+      --radius-pill: 9999px;
+      --radius-card: 24px;
+      --radius-menu: 18px;
+      --radius-button: 14px;
+
+      --shadow-subtle: 0 4px 18px rgba(11, 15, 25, 0.03), 0 1px 3px rgba(11, 15, 25, 0.02);
+      --shadow-floating: 0 16px 40px rgba(11, 15, 25, 0.10), 0 2px 8px rgba(11, 15, 25, 0.04);
+
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px 28px 64px;
+    }
+
+    .shell {
+      max-width: 1480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* -------------------------------------------------------------
+       HEADER / MASTHEAD
+    ------------------------------------------------------------- */
+    .top-masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 4px;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      background: var(--brand-accent);
+      color: #FFFFFF;
+      border-radius: var(--radius-button);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px var(--brand-accent-glow);
+    }
+
+    .brand-mark i {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2.3;
+    }
+
+    .brand-headings {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .masthead-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* -------------------------------------------------------------
+       BUTTONS (Apple Tactile States)
+    ------------------------------------------------------------- */
+    .btn {
+      height: 42px;
+      padding: 0 18px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.16s var(--ease);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn i {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.2;
+    }
+
+    .btn-brand {
+      background: var(--brand-accent);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px var(--brand-accent-glow);
+    }
+
+    .btn-brand:hover {
+      background: var(--brand-accent-hover);
+      transform: translateY(-0.5px);
+    }
+
+    .btn-brand:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: var(--surface-card);
+      border-color: var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-subtle);
+    }
+
+    /* -------------------------------------------------------------
+       CARD PANELS
+    ------------------------------------------------------------- */
+    .panel {
+      background: var(--surface-card);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-subtle);
+      padding: 26px 28px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .panel-title i {
+      width: 16px;
+      height: 16px;
+      color: var(--brand-accent);
+      stroke-width: 2.4;
+    }
+
+    /* -------------------------------------------------------------
+       CLUSTER GRID (Strict Logical Organization)
+    ------------------------------------------------------------- */
+    .quad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1240px) {
+      .quad-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 680px) {
+      .quad-grid { grid-template-columns: 1fr; }
+    }
+
+    .cluster-box {
+      background: #FAFBFC;
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid #EDF1F7;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cluster-badge {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 2px;
+    }
+
+    .cluster-badge i {
+      width: 13px;
+      height: 13px;
+      color: var(--brand-accent);
+      stroke-width: 2.2;
+    }
+
+    .field-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-left: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .field-error-msg {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-error);
+      display: none;
+      margin-right: 8px;
+    }
+
+    /* -------------------------------------------------------------
+       PILL INPUTS (No Sharp Edges, Rounded Profiles)
+    ------------------------------------------------------------- */
+    .pill-input {
+      height: 42px;
+      background: #FFFFFF;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.16s var(--ease);
+      position: relative;
+    }
+
+    .pill-input:hover {
+      border-color: #B9C3D3;
+    }
+
+    .pill-input:focus-within {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--brand-accent-glow);
+    }
+
+    .pill-input input {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .pill-input input::placeholder {
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .unit-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      user-select: none;
+    }
+
+    /* Error Validation State */
+    .field-wrapper.has-error .pill-input,
+    .field-wrapper.has-error .select-trigger {
+      border-color: var(--color-error) !important;
+      background: var(--color-error-tint) !important;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+    }
+
+    .field-wrapper.has-error .field-error-msg {
+      display: inline-block;
+    }
+
+    /* -------------------------------------------------------------
+       CUSTOM POPUP DROPDOWNS (SEARCHABLE & MULTI-SELECT)
+    ------------------------------------------------------------- */
+    .custom-dropdown {
+      position: relative;
+    }
+
+    .select-trigger {
+      height: 42px;
+      background: #FFFFFF;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.16s var(--ease);
+    }
+
+    .select-trigger:hover {
+      border-color: #B9C3D3;
+    }
+
+    .custom-dropdown.active .select-trigger {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--brand-accent-glow);
+    }
+
+    .trigger-content {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .trigger-chevron {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.2;
+      color: var(--text-muted);
+      transition: transform 0.2s var(--ease);
+      flex-shrink: 0;
+    }
+
+    .custom-dropdown.active .trigger-chevron {
+      transform: rotate(180deg);
+      color: var(--brand-accent);
+    }
+
+    .dropdown-popup {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-menu);
+      box-shadow: var(--shadow-floating);
+      padding: 8px;
+      z-index: 120;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      animation: floatIn 0.18s var(--ease);
+    }
+
+    .custom-dropdown.active .dropdown-popup {
+      display: flex;
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-search-bar {
+      height: 36px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-pill);
+      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .dropdown-search-bar i {
+      width: 13px;
+      height: 13px;
+      color: var(--text-muted);
+      stroke-width: 2.2;
+    }
+
+    .dropdown-search-bar input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 500;
+      width: 100%;
+      color: var(--text-main);
+    }
+
+    .dropdown-list {
+      max-height: 170px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .dropdown-item {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-main);
+      transition: background 0.12s var(--ease);
+    }
+
+    .dropdown-item:hover {
+      background: var(--surface-subtle);
+    }
+
+    .dropdown-item.selected {
+      background: var(--brand-accent-tint);
+      color: var(--brand-accent);
+      font-weight: 600;
+    }
+
+    /* Multi-Select Item Checkboxes */
+    .dropdown-item .checkbox-indicator {
+      width: 16px;
+      height: 16px;
+      border-radius: 5px;
+      border: 1.5px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.14s var(--ease);
+    }
+
+    .dropdown-item.selected .checkbox-indicator {
+      background: var(--brand-accent);
+      border-color: var(--brand-accent);
+      color: #FFFFFF;
+    }
+
+    .dropdown-item .checkbox-indicator i {
+      width: 11px;
+      height: 11px;
+      stroke-width: 3;
+      display: none;
+    }
+
+    .dropdown-item.selected .checkbox-indicator i {
+      display: block;
+    }
+
+    /* -------------------------------------------------------------
+       POPOVER CALENDAR PICKER (Custom Minimalist UI)
+    ------------------------------------------------------------- */
+    .calendar-container {
+      width: 250px;
+      padding: 10px 8px;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding: 0 4px;
+    }
+
+    .calendar-month-label {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .calendar-nav-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+
+    .calendar-nav-btn:hover {
+      background: var(--surface-subtle);
+      color: var(--text-main);
+    }
+
+    .calendar-nav-btn i {
+      width: 12px;
+      height: 12px;
+      stroke-width: 2.2;
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+
+    .calendar-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+
+    .cal-day {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.12s var(--ease);
+      user-select: none;
+    }
+
+    .cal-day:hover:not(.empty) {
+      background: var(--surface-subtle);
+    }
+
+    .cal-day.today {
+      border: 1.5px solid var(--brand-accent);
+    }
+
+    .cal-day.active {
+      background: var(--brand-accent) !important;
+      color: #FFFFFF !important;
+      font-weight: 700;
+    }
+
+    .cal-day.empty {
+      cursor: default;
+    }
+
+    /* -------------------------------------------------------------
+       SEGMENTED CAPSULE CONTROL
+    ------------------------------------------------------------- */
+    .capsule-group {
+      height: 42px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-pill);
+      padding: 3px;
+      display: flex;
+      gap: 3px;
+    }
+
+    .capsule-option {
+      flex: 1;
+      height: 100%;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.16s var(--ease);
+    }
+
+    .capsule-option.active {
+      background: #FFFFFF;
+      color: var(--text-main);
+      box-shadow: 0 1px 4px rgba(11, 15, 25, 0.08);
+    }
+
+    /* -------------------------------------------------------------
+       MULTI-CHIP TAG DECK
+    ------------------------------------------------------------- */
+    .tag-deck {
+      background: #FFFFFF;
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 42px;
+      transition: all 0.16s var(--ease);
+    }
+
+    .tag-deck:focus-within {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--brand-accent-glow);
+    }
+
+    .tag-pill {
+      background: var(--brand-accent-tint);
+      color: var(--brand-accent);
+      border-radius: var(--radius-pill);
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .tag-remove:hover {
+      opacity: 1;
+    }
+
+    .tag-deck input {
+      flex: 1;
+      min-width: 80px;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 2px 0;
+    }
+
+    /* Form Bottom Submit Row */
+    .form-submit-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* -------------------------------------------------------------
+       DATA TABLE SECTION
+    ------------------------------------------------------------- */
+    .table-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .table-search-pill {
+      height: 40px;
+      width: 260px;
+      background: var(--surface-subtle);
+      border-radius: var(--radius-pill);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid transparent;
+      transition: all 0.16s var(--ease);
+    }
+
+    .table-search-pill:focus-within {
+      background: #FFFFFF;
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--brand-accent-glow);
+    }
+
+    .table-search-pill i {
+      width: 13px;
+      height: 13px;
+      color: var(--text-muted);
+      stroke-width: 2.2;
+    }
+
+    .table-search-pill input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 500;
+      width: 100%;
+    }
+
+    .table-viewport {
+      overflow-x: auto;
+      border-radius: 18px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    thead th {
+      background: #F8FAFC;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-weight: 500;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: #F9FAFC;
+    }
+
+    .inline-table-input {
+      height: 32px;
+      width: 74px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      background: #FFFFFF;
+      padding: 0 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      outline: none;
+      transition: all 0.16s var(--ease);
+    }
+
+    .inline-table-input:focus {
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 2px var(--brand-accent-glow);
+    }
+
+    /* Status Pills */
+    .badge-pill-button {
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-good { background: var(--color-success-tint); color: var(--color-success); }
+    .badge-warn { background: var(--color-warning-tint); color: var(--color-warning); }
+    .badge-crit { background: var(--color-error-tint); color: var(--color-error); }
+
+    .action-icon-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.14s var(--ease);
+    }
+
+    .action-icon-circle:hover {
+      background: var(--surface-subtle);
+      color: var(--text-main);
+    }
+
+    .action-icon-circle.delete:hover {
+      background: var(--color-error-tint);
+      color: var(--color-error);
+    }
+
+    .action-icon-circle i {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.2;
+    }
+
+    /* Toast Notification for validation feedback */
+    .toast-pill {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0B0F19;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.22s var(--ease);
+      pointer-events: none;
+    }
+
+    .toast-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast-pill.error {
+      background: var(--color-error);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shell">
+    <!-- Platform Masthead -->
+    <header class="top-masthead">
+      <div class="brand-cluster">
+        <div class="brand-mark">
+          <i data-lucide="waves"></i>
+        </div>
+        <div class="brand-headings">
+          <span class="brand-title">AquaFlow Enterprise</span>
+          <span class="brand-meta">Precision Aquaculture Telemetry</span>
+        </div>
+      </div>
+      <div class="masthead-actions">
+        <button class="btn btn-secondary" onclick="exportDataCSV()">
+          <i data-lucide="download"></i> Export CSV
+        </button>
+        <button class="btn btn-brand" onclick="scrollToForm()">
+          <i data-lucide="plus"></i> New Telemetry Log
+        </button>
+      </div>
+    </header>
+
+    <!-- SECTION 1: 4 STRUCTURED CLUSTERS WITH ADVANCED INPUTS -->
+    <section class="panel" id="formPanel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <i data-lucide="sliders-horizontal"></i> Real-Time Telemetry Dosing & Water Record
+        </div>
+        <span class="unit-tag" style="color: var(--brand-accent); font-weight: 700;">Zone: Sector Alpha &bull; Live Sensor Gateway</span>
+      </div>
+
+      <form id="telemetryForm" onsubmit="validateAndSubmit(event)" novalidate>
+        <div class="quad-grid">
+
+          <!-- CLUSTER 1: LOCATION & INVENTORY -->
+          <div class="cluster-box">
+            <div class="cluster-badge">
+              <i data-lucide="map-pin"></i> 1. Location & Species
+            </div>
+
+            <!-- Field 1: Pond Text with Required Validation -->
+            <div class="field-wrapper" id="wrap_pond">
+              <div class="field-label">
+                <span>Pond ID</span>
+                <span class="field-error-msg">Required field</span>
+              </div>
+              <div class="pill-input">
+                <input type="text" id="f_pond" placeholder="e.g., Pond 04" value="Pond 04">
+              </div>
+            </div>
+
+            <!-- Field 2: Custom Searchable Dropdown (Species) -->
+            <div class="field-wrapper" id="wrap_species">
+              <div class="field-label">
+                <span>Target Species</span>
+                <span class="field-error-msg">Select one</span>
+              </div>
+              <div class="custom-dropdown" id="speciesDropdown">
+                <div class="select-trigger" onclick="toggleDropdown('speciesDropdown')">
+                  <span class="trigger-content" id="speciesVal">P. vannamei (Pacific White Shrimp)</span>
+                  <i data-lucide="chevron-down" class="trigger-chevron"></i>
+                </div>
+                <div class="dropdown-popup">
+                  <div class="dropdown-search-bar">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Filter species..." oninput="filterDropdown(this)">
+                  </div>
+                  <div class="dropdown-list">
+                    <div class="dropdown-item selected" onclick="selectSingleOption('speciesDropdown', 'speciesVal', 'P. vannamei (Pacific White Shrimp)')">P. vannamei (Pacific White Shrimp)</div>
+                    <div class="dropdown-item" onclick="selectSingleOption('speciesDropdown', 'speciesVal', 'P. monodon (Black Tiger Shrimp)')">P. monodon (Black Tiger Shrimp)</div>
+                    <div class="dropdown-item" onclick="selectSingleOption('speciesDropdown', 'speciesVal', 'O. niloticus (Nile Tilapia)')">O. niloticus (Nile Tilapia)</div>
+                    <div class="dropdown-item" onclick="selectSingleOption('speciesDropdown', 'speciesVal', 'L. calcarifer (Barramundi)')">L. calcarifer (Barramundi)</div>
+                    <div class="dropdown-item" onclick="selectSingleOption('speciesDropdown', 'speciesVal', 'Salmo salar (Atlantic Salmon)')">Salmo salar (Atlantic Salmon)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Field 3: Calendar Date Picker with Popup Calendar -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Log Date</span>
+              </div>
+              <div class="custom-dropdown" id="datePickerDropdown">
+                <div class="select-trigger" onclick="toggleDropdown('datePickerDropdown')">
+                  <span class="trigger-content" id="selectedDateLabel">Oct 29, 2026</span>
+                  <i data-lucide="calendar" class="trigger-chevron"></i>
+                </div>
+                <div class="dropdown-popup calendar-container">
+                  <div class="calendar-header">
+                    <button type="button" class="calendar-nav-btn" onclick="prevCalMonth(event)"><i data-lucide="chevron-left"></i></button>
+                    <span class="calendar-month-label" id="calMonthYear">October 2026</span>
+                    <button type="button" class="calendar-nav-btn" onclick="nextCalMonth(event)"><i data-lucide="chevron-right"></i></button>
+                  </div>
+                  <div class="calendar-weekdays">
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                  </div>
+                  <div class="calendar-days-grid" id="calDaysGrid">
+                    <!-- Days generated dynamically -->
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="f_date" value="Oct 29, 2026">
+            </div>
+
+            <!-- Field 4: Growth Phase Segmented Control -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Culture Phase</span>
+              </div>
+              <div class="capsule-group" id="phaseSegment">
+                <button type="button" class="capsule-option" onclick="setPhase(this, 'Seedling')">Seed</button>
+                <button type="button" class="capsule-option active" onclick="setPhase(this, 'Grow-out')">Grow</button>
+                <button type="button" class="capsule-option" onclick="setPhase(this, 'Harvest')">Harvest</button>
+              </div>
+              <input type="hidden" id="f_phase" value="Grow-out">
+            </div>
+
+            <!-- Field 5: Standing Stock Biomass -->
+            <div class="field-wrapper" id="wrap_biomass">
+              <div class="field-label">
+                <span>Standing Biomass</span>
+                <span class="field-error-msg">Min 100 kg</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_biomass" value="8400" step="100">
+                <span class="unit-tag">kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLUSTER 2: WATER TELEMETRY SENSORS -->
+          <div class="cluster-box">
+            <div class="cluster-badge">
+              <i data-lucide="droplets"></i> 2. Water Quality
+            </div>
+
+            <!-- Field 6: Temperature with Range Checking -->
+            <div class="field-wrapper" id="wrap_temp">
+              <div class="field-label">
+                <span>Water Temp</span>
+                <span class="field-error-msg">10-40 °C required</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_temp" value="28.4" step="0.1" required>
+                <span class="unit-tag">°C</span>
+              </div>
+            </div>
+
+            <!-- Field 7: Dissolved Oxygen (DO) -->
+            <div class="field-wrapper" id="wrap_do">
+              <div class="field-label">
+                <span>Dissolved Oxygen</span>
+                <span class="field-error-msg">Must be &gt; 0</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_do" value="6.5" step="0.1" required>
+                <span class="unit-tag">mg/L</span>
+              </div>
+            </div>
+
+            <!-- Field 8: Water pH with Float Validation -->
+            <div class="field-wrapper" id="wrap_ph">
+              <div class="field-label">
+                <span>Water pH</span>
+                <span class="field-error-msg">Range 4.0 - 10.0</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_ph" value="7.85" step="0.05" required>
+                <span class="unit-tag">pH</span>
+              </div>
+            </div>
+
+            <!-- Field 9: Salinity Content -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Salinity</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_salinity" value="18" step="1">
+                <span class="unit-tag">ppt</span>
+              </div>
+            </div>
+
+            <!-- Field 10: Secchi Disk Water Clarity -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Secchi Clarity</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_clarity" value="35" step="1">
+                <span class="unit-tag">cm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLUSTER 3: CHEMISTRY & MULTI-SELECT DIAGNOSTICS -->
+          <div class="cluster-box">
+            <div class="cluster-badge">
+              <i data-lucide="shield-alert"></i> 3. Chemistry & Tests
+            </div>
+
+            <!-- Field 11: Total Ammonia Nitrogen (TAN) -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Ammonia (TAN)</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_ammonia" value="0.12" step="0.01">
+                <span class="unit-tag">mg/L</span>
+              </div>
+            </div>
+
+            <!-- Field 12: Nitrite Toxicity -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Nitrite (NO2)</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_nitrite" value="0.03" step="0.01">
+                <span class="unit-tag">mg/L</span>
+              </div>
+            </div>
+
+            <!-- Field 13: Total Alkalinity -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Total Alkalinity</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_alkalinity" value="140" step="5">
+                <span class="unit-tag">ppm</span>
+              </div>
+            </div>
+
+            <!-- Field 14: Multiple Selection Dropdown with Search & Checkboxes (Water Diagnostics) -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Laboratory Tests Executed</span>
+              </div>
+              <div class="custom-dropdown" id="testsMultiDropdown">
+                <div class="select-trigger" onclick="toggleDropdown('testsMultiDropdown')">
+                  <span class="trigger-content" id="multiTestsVal">Vibrio Plate, Microalgae</span>
+                  <i data-lucide="chevron-down" class="trigger-chevron"></i>
+                </div>
+                <div class="dropdown-popup">
+                  <div class="dropdown-search-bar">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Search tests..." oninput="filterDropdown(this)">
+                  </div>
+                  <div class="dropdown-list" id="testsMultiList">
+                    <div class="dropdown-item selected" onclick="toggleMultiOption(this, 'Vibrio Plate')">
+                      <span>Vibrio TCBS Count</span>
+                      <div class="checkbox-indicator"><i data-lucide="check"></i></div>
+                    </div>
+                    <div class="dropdown-item selected" onclick="toggleMultiOption(this, 'Microalgae')">
+                      <span>Microalgae Density</span>
+                      <div class="checkbox-indicator"><i data-lucide="check"></i></div>
+                    </div>
+                    <div class="dropdown-item" onclick="toggleMultiOption(this, 'Heavy Metals')">
+                      <span>Heavy Metals ICP</span>
+                      <div class="checkbox-indicator"><i data-lucide="check"></i></div>
+                    </div>
+                    <div class="dropdown-item" onclick="toggleMultiOption(this, 'WSSV PCR')">
+                      <span>WSSV / EHP PCR Screen</span>
+                      <div class="checkbox-indicator"><i data-lucide="check"></i></div>
+                    </div>
+                    <div class="dropdown-item" onclick="toggleMultiOption(this, 'Total Hardness')">
+                      <span>Ca/Mg Hardness Ratio</span>
+                      <div class="checkbox-indicator"><i data-lucide="check"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Field 15: Daily Mortality Losses -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Daily Mortality Loss</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_deaths" value="6" step="1">
+                <span class="unit-tag">heads</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLUSTER 4: FEEDING, ADDITIVES & POWER -->
+          <div class="cluster-box">
+            <div class="cluster-badge">
+              <i data-lucide="package"></i> 4. Feeding & Power
+            </div>
+
+            <!-- Field 16: Daily Feed Ration -->
+            <div class="field-wrapper" id="wrap_feed">
+              <div class="field-label">
+                <span>Daily Feed Ration</span>
+                <span class="field-error-msg">Required kg</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_feed" value="230" step="1">
+                <span class="unit-tag">kg/day</span>
+              </div>
+            </div>
+
+            <!-- Field 17: Water Turnover Exchange -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Water Exchange Rate</span>
+              </div>
+              <div class="pill-input">
+                <input type="number" id="f_exchange" value="10" step="1">
+                <span class="unit-tag">% vol</span>
+              </div>
+            </div>
+
+            <!-- Field 18: Searchable Aeration Profile Dropdown -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Aeration Equipment Mode</span>
+              </div>
+              <div class="custom-dropdown" id="aeratorDropdown">
+                <div class="select-trigger" onclick="toggleDropdown('aeratorDropdown')">
+                  <span class="trigger-content" id="aeratorVal">Automated VFD Surge</span>
+                  <i data-lucide="chevron-down" class="trigger-chevron"></i>
+                </div>
+                <div class="dropdown-popup">
+                  <div class="dropdown-search-bar">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Search profiles..." oninput="filterDropdown(this)">
+                  </div>
+                  <div class="dropdown-list">
+                    <div class="dropdown-item selected" onclick="selectSingleOption('aeratorDropdown', 'aeratorVal', 'Automated VFD Surge')">Automated VFD Surge (Eco)</div>
+                    <div class="dropdown-item" onclick="selectSingleOption('aeratorDropdown', 'aeratorVal', 'Continuous 100% Rate')">Continuous 100% High Flow</div>
+                    <div class="dropdown-item" onclick="selectSingleOption('aeratorDropdown', 'aeratorVal', 'Night Jet Aeration (18kW)')">Night Jet Aeration (18kW)</div>
+                    <div class="dropdown-item" onclick="selectSingleOption('aeratorDropdown', 'aeratorVal', 'Solar-Hybrid Daytime')">Solar-Hybrid Daytime</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Field 19 & 20: Additives Multi-Chip Field with Enter key & deletion -->
+            <div class="field-wrapper">
+              <div class="field-label">
+                <span>Probiotics & Minerals (Press Enter)</span>
+              </div>
+              <div class="tag-deck" id="chipContainer" onclick="document.getElementById('additiveInput').focus()">
+                <div class="tag-pill">B. subtilis <span class="tag-remove" onclick="removeTag(this, event)">&times;</span></div>
+                <div class="tag-pill">Molasses <span class="tag-remove" onclick="removeTag(this, event)">&times;</span></div>
+                <input type="text" id="additiveInput" placeholder="Add..." autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-submit-row">
+          <button type="button" class="btn btn-secondary" onclick="resetFormFields()">Reset Defaults</button>
+          <button type="submit" class="btn btn-brand">
+            <i data-lucide="check"></i> Commit & Log Telemetry
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- SECTION 2: LIVE TELEMETRY DATA TABLE -->
+    <section class="panel">
+      <div class="table-top-bar">
+        <div class="panel-title">
+          <i data-lucide="table"></i> Telemetry Logs & Real-Time Node Status
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div class="table-search-pill">
+            <i data-lucide="search"></i>
+            <input type="text" id="tableSearchBox" placeholder="Filter ponds, species..." oninput="filterTableRecords()">
+          </div>
+
+          <!-- Custom Status Dropdown Filter -->
+          <div class="custom-dropdown" id="statusFilterDropdown" style="width: 150px;">
+            <div class="select-trigger" onclick="toggleDropdown('statusFilterDropdown')">
+              <span class="trigger-content" id="statusFilterVal">All States</span>
+              <i data-lucide="chevron-down" class="trigger-chevron"></i>
+            </div>
+            <div class="dropdown-popup">
+              <div class="dropdown-item selected" onclick="filterByState('ALL', 'All States')">All States</div>
+              <div class="dropdown-item" onclick="filterByState('Normal', 'Normal')">Normal</div>
+              <div class="dropdown-item" onclick="filterByState('Attention', 'Attention')">Attention</div>
+              <div class="dropdown-item" onclick="filterByState('Critical', 'Critical')">Critical</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-viewport">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Pond</th>
+              <th>Species</th>
+              <th>Phase</th>
+              <th>Temp</th>
+              <th>DO (mg/L)</th>
+              <th>pH</th>
+              <th>Feed (kg)</th>
+              <th>Biomass</th>
+              <th>Additives</th>
+              <th>Diagnostics</th>
+              <th>Condition</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="telemetryTableBody">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast Notification element -->
+  <div class="toast-pill" id="systemToast">
+    <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+    <span id="toastMessage">Telemetry recorded successfully</span>
+  </div>
+
+  <script>
+    // -------------------------------------------------------------
+    // TELEMETRY STATE REPOSITORY
+    // -------------------------------------------------------------
+    let telemetryLogs = [
+      {
+        id: "REC-101",
+        date: "Oct 29, 2026",
+        pond: "Pond 01",
+        species: "P. vannamei",
+        phase: "Seed",
+        temp: 29.2,
+        do: 7.1,
+        ph: 7.9,
+        feed: 85,
+        biomass: 3200,
+        additives: ["B. subtilis"],
+        tests: ["Vibrio Plate"],
+        condition: "Normal"
+      },
+      {
+        id: "REC-102",
+        date: "Oct 29, 2026",
+        pond: "Pond 02",
+        species: "P. vannamei",
+        phase: "Grow-out",
+        temp: 28.6,
+        do: 5.3,
+        ph: 7.6,
+        feed: 210,
+        biomass: 7800,
+        additives: ["Molasses", "Limestone"],
+        tests: ["Vibrio Plate", "Microalgae"],
+        condition: "Attention"
+      },
+      {
+        id: "REC-103",
+        date: "Oct 28, 2026",
+        pond: "Pond 03",
+        species: "O. niloticus",
+        phase: "Grow-out",
+        temp: 27.5,
+        do: 4.1,
+        ph: 7.3,
+        feed: 310,
+        biomass: 11200,
+        additives: ["Minerals"],
+        tests: ["Total Hardness"],
+        condition: "Critical"
+      },
+      {
+        id: "REC-104",
+        date: "Oct 27, 2026",
+        pond: "Pond 04",
+        species: "P. vannamei",
+        phase: "Harvest",
+        temp: 28.4,
+        do: 6.5,
+        ph: 7.8,
+        feed: 230,
+        biomass: 8400,
+        additives: ["B. subtilis", "Molasses"],
+        tests: ["Vibrio Plate", "Microalgae"],
+        condition: "Normal"
+      }
+    ];
+
+    let currentFilterStatus = "ALL";
+
+    // -------------------------------------------------------------
+    // DROPDOWN ENGINE: POPUP TOGGLING & SEARCH FILTERING
+    // -------------------------------------------------------------
+    function toggleDropdown(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      const isCurrentlyActive = dropdown.classList.contains("active");
+      closeAllPopups();
+      if (!isCurrentlyActive) {
+        dropdown.classList.add("active");
+        const searchInput = dropdown.querySelector(".dropdown-search-bar input");
+        if (searchInput) {
+          searchInput.value = "";
+          filterDropdown(searchInput);
+          setTimeout(() => searchInput.focus(), 60);
+        }
+      }
+    }
+
+    function selectSingleOption(dropdownId, labelId, value) {
+      document.getElementById(labelId).textContent = value;
+      const dropdown = document.getElementById(dropdownId);
+      dropdown.querySelectorAll(".dropdown-item").forEach(item => {
+        item.classList.toggle("selected", item.textContent.trim().startsWith(value));
+      });
+      dropdown.classList.remove("active");
+    }
+
+    function filterDropdown(input) {
+      const query = input.value.toLowerCase();
+      const items = input.closest(".dropdown-popup").querySelectorAll(".dropdown-list .dropdown-item");
+      items.forEach(el => {
+        const text = el.textContent.toLowerCase();
+        el.style.display = text.includes(query) ? "flex" : "none";
+      });
+    }
+
+    function closeAllPopups() {
+      document.querySelectorAll(".custom-dropdown.active").forEach(dd => {
+        dd.classList.remove("active");
+      });
+    }
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".custom-dropdown")) {
+        closeAllPopups();
+      }
+    });
+
+    // -------------------------------------------------------------
+    // MULTIPLE SELECTION DROPDOWN HANDLER
+    // -------------------------------------------------------------
+    let selectedDiagnostics = ["Vibrio Plate", "Microalgae"];
+
+    function toggleMultiOption(element, testName) {
+      if (selectedDiagnostics.includes(testName)) {
+        selectedDiagnostics = selectedDiagnostics.filter(t => t !== testName);
+        element.classList.remove("selected");
+      } else {
+        selectedDiagnostics.push(testName);
+        element.classList.add("selected");
+      }
+
+      const displayLabel = document.getElementById("multiTestsVal");
+      if (selectedDiagnostics.length === 0) {
+        displayLabel.textContent = "None selected";
+      } else {
+        displayLabel.textContent = selectedDiagnostics.join(", ");
+      }
+      lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------
+    // CUSTOM CALENDAR GENERATOR
+    // -------------------------------------------------------------
+    let currentCalDate = new Date(2026, 9, 29); // Oct 29, 2026
+    let selectedCalDay = 29;
+
+    function renderCalendar() {
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const year = currentCalDate.getFullYear();
+      const month = currentCalDate.getMonth();
+
+      document.getElementById("calMonthYear").textContent = `${monthNames[month]} ${year}`;
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const daysGrid = document.getElementById("calDaysGrid");
+      daysGrid.innerHTML = "";
+
+      // Empty padding cells
+      for (let i = 0; i < firstDayIndex; i++) {
+        const emptyCell = document.createElement("div");
+        emptyCell.className = "cal-day empty";
+        daysGrid.appendChild(emptyCell);
+      }
+
+      // Day cells
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement("div");
+        dayCell.className = "cal-day";
+        dayCell.textContent = day;
+
+        if (day === selectedCalDay && month === 9 && year === 2026) {
+          dayCell.classList.add("active");
+        }
+
+        dayCell.onclick = (e) => {
+          e.stopPropagation();
+          selectedCalDay = day;
+          const formatted = `${monthNames[month].slice(0, 3)} ${day < 10 ? '0' + day : day}, ${year}`;
+          document.getElementById("selectedDateLabel").textContent = formatted;
+          document.getElementById("f_date").value = formatted;
+          document.getElementById("datePickerDropdown").classList.remove("active");
+          renderCalendar();
+        };
+
+        daysGrid.appendChild(dayCell);
+      }
+    }
+
+    function prevCalMonth(e) {
+      e.stopPropagation();
+      currentCalDate.setMonth(currentCalDate.getMonth() - 1);
+      renderCalendar();
+      lucide.createIcons();
+    }
+
+    function nextCalMonth(e) {
+      e.stopPropagation();
+      currentCalDate.setMonth(currentCalDate.getMonth() + 1);
+      renderCalendar();
+      lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------
+    // MULTI-CHIP ADDITIVES TAG INPUT
+    // -------------------------------------------------------------
+    const additiveInput = document.getElementById("additiveInput");
+    const chipContainer = document.getElementById("chipContainer");
+
+    additiveInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && additiveInput.value.trim()) {
+        e.preventDefault();
+        const tag = document.createElement("div");
+        tag.className = "tag-pill";
+        tag.innerHTML = `${additiveInput.value.trim()} <span class="tag-remove" onclick="removeTag(this, event)">&times;</span>`;
+        chipContainer.insertBefore(tag, additiveInput);
+        additiveInput.value = "";
+      } else if (e.key === "Backspace" && !additiveInput.value) {
+        const tags = chipContainer.querySelectorAll(".tag-pill");
+        if (tags.length) tags[tags.length - 1].remove();
+      }
+    });
+
+    function removeTag(element, e) {
+      e.stopPropagation();
+      element.closest(".tag-pill").remove();
+    }
+
+    function readAdditiveTags() {
+      return Array.from(chipContainer.querySelectorAll(".tag-pill")).map(t => t.textContent.replace("×", "").trim());
+    }
+
+    // Segmented Phase Pill Switcher
+    function setPhase(btn, phase) {
+      document.querySelectorAll("#phaseSegment .capsule-option").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("f_phase").value = phase;
+    }
+
+    // -------------------------------------------------------------
+    // FORM VALIDATION & ERROR STATES
+    // -------------------------------------------------------------
+    function clearErrorStates() {
+      document.querySelectorAll(".field-wrapper").forEach(w => w.classList.remove("has-error"));
+    }
+
+    function triggerToast(message, isError = false) {
+      const toast = document.getElementById("systemToast");
+      const label = document.getElementById("toastMessage");
+      label.textContent = message;
+      toast.classList.toggle("error", isError);
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    function validateAndSubmit(e) {
+      e.preventDefault();
+      clearErrorStates();
+
+      let hasError = false;
+
+      // 1. Pond ID Validation
+      const pondVal = document.getElementById("f_pond").value.trim();
+      if (!pondVal) {
+        document.getElementById("wrap_pond").classList.add("has-error");
+        hasError = true;
+      }
+
+      // 2. Temp Validation (10 - 40 C)
+      const tempVal = parseFloat(document.getElementById("f_temp").value);
+      if (isNaN(tempVal) || tempVal < 10 || tempVal > 40) {
+        document.getElementById("wrap_temp").classList.add("has-error");
+        hasError = true;
+      }
+
+      // 3. DO Validation (> 0)
+      const doVal = parseFloat(document.getElementById("f_do").value);
+      if (isNaN(doVal) || doVal <= 0) {
+        document.getElementById("wrap_do").classList.add("has-error");
+        hasError = true;
+      }
+
+      // 4. pH Validation (4.0 - 10.0)
+      const phVal = parseFloat(document.getElementById("f_ph").value);
+      if (isNaN(phVal) || phVal < 4.0 || phVal > 10.0) {
+        document.getElementById("wrap_ph").classList.add("has-error");
+        hasError = true;
+      }
+
+      // 5. Biomass Validation (> 100)
+      const biomassVal = parseFloat(document.getElementById("f_biomass").value);
+      if (isNaN(biomassVal) || biomassVal < 100) {
+        document.getElementById("wrap_biomass").classList.add("has-error");
+        hasError = true;
+      }
+
+      if (hasError) {
+        triggerToast("Please correct highlighted input errors.", true);
+        return;
+      }
+
+      // Construct New Record
+      const newEntry = {
+        id: "REC-" + Math.floor(100 + Math.random() * 900),
+        date: document.getElementById("f_date").value,
+        pond: pondVal,
+        species: document.getElementById("speciesVal").textContent.split("(")[0].trim(),
+        phase: document.getElementById("f_phase").value,
+        temp: tempVal,
+        do: doVal,
+        ph: phVal,
+        feed: parseFloat(document.getElementById("f_feed").value) || 0,
+        biomass: biomassVal,
+        additives: readAdditiveTags(),
+        tests: [...selectedDiagnostics],
+        condition: doVal < 4.5 ? "Critical" : (doVal < 5.5 ? "Attention" : "Normal")
+      };
+
+      telemetryLogs.unshift(newEntry);
+      renderTable();
+      triggerToast(`Telemetry for ${newEntry.pond} committed successfully.`);
+    }
+
+    function resetFormFields() {
+      document.getElementById("telemetryForm").reset();
+      clearErrorStates();
+      selectSingleOption("speciesDropdown", "speciesVal", "P. vannamei (Pacific White Shrimp)");
+      selectSingleOption("aeratorDropdown", "aeratorVal", "Automated VFD Surge");
+      setPhase(document.querySelectorAll("#phaseSegment .capsule-option")[1], "Grow-out");
+      selectedDiagnostics = ["Vibrio Plate", "Microalgae"];
+      document.getElementById("multiTestsVal").textContent = selectedDiagnostics.join(", ");
+    }
+
+    function scrollToForm() {
+      document.getElementById("formPanel").scrollIntoView({ behavior: "smooth" });
+      document.getElementById("f_pond").focus();
+    }
+
+    // -------------------------------------------------------------
+    // DATA TABLE RENDERING & INLINE EDITS
+    // -------------------------------------------------------------
+    function renderTable(data = telemetryLogs) {
+      const tbody = document.getElementById("telemetryTableBody");
+      tbody.innerHTML = "";
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: var(--text-muted); padding: 32px;">No matching aquaculture records located.</td></tr>`;
+        return;
+      }
+
+      data.forEach(item => {
+        const tr = document.createElement("tr");
+
+        let badgeClass = "badge-good";
+        if (item.condition === "Attention") badgeClass = "badge-warn";
+        if (item.condition === "Critical") badgeClass = "badge-crit";
+
+        const tagsHtml = (item.additives || []).map(t => `<span class="tag-pill" style="font-size: 10px; padding: 2px 7px;">${t}</span>`).join(" ");
+        const testsHtml = (item.tests || []).map(t => `<span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">${t}</span>`).join(", ");
+
+        tr.innerHTML = `
+          <td style="color: var(--text-muted); font-size: 12px;">${item.date}</td>
+          <td><strong>${item.pond}</strong></td>
+          <td>${item.species}</td>
+          <td><span style="font-size: 12px; font-weight: 600;">${item.phase}</span></td>
+          <td>${item.temp.toFixed(1)}°C</td>
+          <td><input type="number" step="0.1" class="inline-table-input" value="${item.do}" onchange="updateRowParam('${item.id}', 'do', this.value)"></td>
+          <td>${item.ph.toFixed(2)}</td>
+          <td><input type="number" step="1" class="inline-table-input" value="${item.feed}" onchange="updateRowParam('${item.id}', 'feed', this.value)"></td>
+          <td>${Number(item.biomass).toLocaleString()} kg</td>
+          <td>${tagsHtml || '<span style="color: var(--text-tertiary);">&mdash;</span>'}</td>
+          <td>${testsHtml || '<span style="color: var(--text-tertiary);">&mdash;</span>'}</td>
+          <td>
+            <div class="custom-dropdown" id="status-${item.id}">
+              <button type="button" class="badge-pill-button ${badgeClass}" onclick="toggleDropdown('status-${item.id}')">
+                <span>${item.condition}</span>
+                <i data-lucide="chevron-down" style="width: 10px; height: 10px;"></i>
+              </button>
+              <div class="dropdown-popup" style="min-width: 110px;">
+                <div class="dropdown-item" onclick="setRowCondition('${item.id}', 'Normal')">Normal</div>
+                <div class="dropdown-item" onclick="setRowCondition('${item.id}', 'Attention')">Attention</div>
+                <div class="dropdown-item" onclick="setRowCondition('${item.id}', 'Critical')">Critical</div>
+              </div>
+            </div>
+          </td>
+          <td style="text-align: right;">
+            <button type="button" class="action-icon-circle delete" title="Delete record" onclick="deleteTableRow('${item.id}')">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      lucide.createIcons();
+    }
+
+    function updateRowParam(id, key, val) {
+      const record = telemetryLogs.find(r => r.id === id);
+      if (record) {
+        record[key] = parseFloat(val) || val;
+        triggerToast(`Updated ${key} for ${record.pond}`);
+      }
+    }
+
+    function setRowCondition(id, newCondition) {
+      const record = telemetryLogs.find(r => r.id === id);
+      if (record) {
+        record.condition = newCondition;
+        closeAllPopups();
+        renderTable();
+      }
+    }
+
+    function deleteTableRow(id) {
+      telemetryLogs = telemetryLogs.filter(r => r.id !== id);
+      renderTable();
+      triggerToast("Entry deleted.");
+    }
+
+    // -------------------------------------------------------------
+    // SEARCH & FILTER FUNCTIONALITY
+    // -------------------------------------------------------------
+    function filterTableRecords() {
+      const query = document.getElementById("tableSearchBox").value.toLowerCase();
+
+      const filtered = telemetryLogs.filter(row => {
+        const matchesCondition = (currentFilterStatus === "ALL" || row.condition === currentFilterStatus);
+        const matchesQuery = !query ||
+          row.pond.toLowerCase().includes(query) ||
+          row.species.toLowerCase().includes(query) ||
+          (row.additives || []).some(t => t.toLowerCase().includes(query));
+        return matchesCondition && matchesQuery;
+      });
+
+      renderTable(filtered);
+    }
+
+    function filterByState(stateKey, displayLabel) {
+      currentFilterStatus = stateKey;
+      document.getElementById("statusFilterVal").textContent = displayLabel;
+      document.getElementById("statusFilterDropdown").classList.remove("active");
+      filterTableRecords();
+    }
+
+    function exportDataCSV() {
+      let csv = "ID,Date,Pond,Species,Phase,Temp (C),DO (mg/L),pH,Feed (kg),Biomass (kg),Condition\n";
+      telemetryLogs.forEach(r => {
+        csv += `"${r.id}","${r.date}","${r.pond}","${r.species}","${r.phase}",${r.temp},${r.do},${r.ph},${r.feed},${r.biomass},"${r.condition}"\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "aquaflow_telemetry.csv";
+      link.click();
+      triggerToast("Exported CSV successfully.");
+    }
+
+    // DOM Initialization
+    document.addEventListener("DOMContentLoaded", () => {
+      renderCalendar();
+      renderTable();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

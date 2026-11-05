@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production build outputs
+dist/
+build/
+
+# Archives & Temporary files
+*.zip
+*.tar.gz
+*.log
+.DS_Store
+Thumbs.db
+
+# Environment variables & local secrets
+.env
+.env.local
+.env.*.local
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
