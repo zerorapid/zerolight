@@ -837,22 +837,106 @@ export const FluidVisualStudioDock: React.FC<FluidVisualStudioDockProps> = ({
 };
 
 // ==========================================
-// 6. MAIN STUDIO CONTAINER (COMPLETE ZERO LIGHT SUITE)
+// 6. PRE-BUILT SAAS POC TEMPLATE FORM
+// ==========================================
+
+export const SaaSPocForm: React.FC<{ settings: FluidStudioSettings }> = ({ settings }) => {
+  const [workspaceName, setWorkspaceName] = useState('Acme SaaS Core');
+  const [region, setRegion] = useState('North America (us-east-1)');
+  const [permissions, setPermissions] = useState<string[]>([
+    'View Invoices',
+    'Manage Approvals',
+  ]);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+    setTimeout(() => setSubmitted(false), 3000);
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="p-7 bg-white rounded-[28px] border border-neutral-300 shadow-subtle space-y-6 w-full"
+    >
+      <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
+        <div>
+          <h2 className="text-base font-bold text-neutral-900 tracking-tight">
+            Create New SaaS Workspace
+          </h2>
+          <p className="text-xs text-neutral-500 mt-0.5">
+            ZeroLight-powered rapid PoC workflow
+          </p>
+        </div>
+        <span className="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full bg-emerald-100 text-emerald-800">
+          PoC Live
+        </span>
+      </div>
+
+      <FluidStandardInput
+        value={workspaceName}
+        onChange={setWorkspaceName}
+        placeholder="Enter workspace name..."
+        settings={settings}
+      />
+
+      <FluidSearchableSelect
+        options={REGION_OPTIONS}
+        value={region}
+        onChange={setRegion}
+        placeholder="Select deployment cloud region..."
+        settings={settings}
+      />
+
+      <FluidMultiSelect
+        options={PERMISSION_OPTIONS}
+        selected={permissions}
+        onChange={setPermissions}
+        placeholder="Assign access roles & permissions..."
+        settings={settings}
+      />
+
+      <button
+        type="submit"
+        style={{
+          borderRadius: settings.radius >= 20 ? '9999px' : `${settings.radius}px`,
+          height: `${settings.height}px`,
+          fontSize: `${settings.fontSize}px`,
+        }}
+        className="tactile-press w-full bg-neutral-900 hover:bg-neutral-800 text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
+      >
+        <span>{submitted ? '✓ Workspace Provisioned!' : 'Launch SaaS PoC Workspace'}</span>
+      </button>
+
+      {submitted && (
+        <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-[11px] text-neutral-600 font-mono overflow-x-auto">
+          {JSON.stringify({ workspaceName, region, permissions }, null, 2)}
+        </div>
+      )}
+    </form>
+  );
+};
+
+// ==========================================
+// 7. MAIN STUDIO CONTAINER (COMPLETE ZERO LIGHT SUITE)
 // ==========================================
 
 export const FluidInputAtomsStudio: React.FC = () => {
   const [settings, setSettings] = useState<FluidStudioSettings>(DEFAULT_FLUID_SETTINGS);
+  const [viewMode, setViewMode] = useState<'atoms' | 'poc'>('atoms');
   const [inputValue, setInputValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>(['View Invoices']);
   const [copied, setCopied] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportTab, setExportTab] = useState<'css' | 'tailwind' | 'cli'>('css');
 
   const handleReset = () => {
     setSettings(DEFAULT_FLUID_SETTINGS);
   };
 
-  const handleCopyCss = () => {
-    const css = `:root {
+  const getCssVariables = () => `:root {
   --fluid-border-color: ${settings.borderColor};
   --fluid-fill-color: ${settings.fillColor};
   --fluid-text-color: ${settings.textColor};
@@ -864,7 +948,37 @@ export const FluidInputAtomsStudio: React.FC = () => {
   --fluid-menu-gap: ${settings.gap}px;
   --fluid-spring: ${SPRING_PRESETS[settings.spring].cubic};
 }`;
-    navigator.clipboard.writeText(css);
+
+  const getTailwindConfig = () => `// tailwind.config.js - ZeroLight Extension
+export default {
+  theme: {
+    extend: {
+      borderRadius: {
+        'fluid-outer': '${settings.radius}px',
+        'fluid-inner': '${Math.max(0, Math.round(settings.radius * 0.65))}px',
+        'fluid-tag': '${settings.radius >= 20 ? '9999px' : `${Math.max(0, Math.round(settings.radius * 0.75))}px`}',
+      },
+      colors: {
+        'fluid-border': '${settings.borderColor}',
+        'fluid-fill': '${settings.fillColor}',
+        'fluid-text': '${settings.textColor}',
+        'fluid-backplate': '${settings.backplateColor}',
+      },
+    },
+  },
+};`;
+
+  const getCliCommand = () => `# 1. Initialize ZeroLight in your new SaaS PoC:
+npx zerolight init
+
+# 2. Add components into your project:
+npx zerolight add input
+npx zerolight add select
+npx zerolight add multi-select
+npx zerolight add poc-form`;
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -877,49 +991,163 @@ export const FluidInputAtomsStudio: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
             <h1 className="text-sm font-bold tracking-tight text-neutral-900">
-              ZeroLight • Fluid Input Atoms Studio
+              ZeroLight • SaaS Design System Studio
             </h1>
           </div>
-          <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
-            React 18 + TS
-          </span>
+          <button
+            onClick={() => setShowExportModal(true)}
+            className="text-xs font-semibold text-neutral-800 bg-neutral-100 hover:bg-neutral-200 px-3 py-1 rounded-full transition-colors cursor-pointer flex items-center gap-1.5"
+          >
+            <Copy className="w-3 h-3" />
+            <span>Export Tokens</span>
+          </button>
         </div>
 
-        {/* 1. COMPONENT SHOWCASE CARD */}
-        <div className="p-7 bg-white rounded-[28px] border border-neutral-300 shadow-subtle space-y-6">
-          {/* Field 1: Standard Input */}
-          <FluidStandardInput
-            value={inputValue}
-            onChange={setInputValue}
-            settings={settings}
-          />
-
-          {/* Field 2: Searchable Dropdown */}
-          <FluidSearchableSelect
-            options={REGION_OPTIONS}
-            value={searchValue}
-            onChange={setSearchValue}
-            settings={settings}
-          />
-
-          {/* Field 3: Multi-Select Dropdown with Dynamic-Radius Tags */}
-          <FluidMultiSelect
-            options={PERMISSION_OPTIONS}
-            selected={selectedTags}
-            onChange={setSelectedTags}
-            settings={settings}
-          />
+        {/* View Mode Switcher: Atoms vs SaaS PoC Form */}
+        <div className="flex bg-neutral-200/80 p-1 rounded-full text-xs font-semibold text-neutral-600">
+          <button
+            type="button"
+            onClick={() => setViewMode('atoms')}
+            className={`flex-1 py-1.5 rounded-full transition-all cursor-pointer ${
+              viewMode === 'atoms' ? 'bg-white text-neutral-900 shadow-xs' : 'hover:text-neutral-900'
+            }`}
+          >
+            1. Atomic Inputs
+          </button>
+          <button
+            type="button"
+            onClick={() => setViewMode('poc')}
+            className={`flex-1 py-1.5 rounded-full transition-all cursor-pointer ${
+              viewMode === 'poc' ? 'bg-white text-neutral-900 shadow-xs' : 'hover:text-neutral-900'
+            }`}
+          >
+            2. SaaS PoC Form Preview
+          </button>
         </div>
+
+        {/* Dynamic Display: Atoms Showcase or SaaS PoC Form */}
+        {viewMode === 'atoms' ? (
+          <div className="p-7 bg-white rounded-[28px] border border-neutral-300 shadow-subtle space-y-6">
+            <FluidStandardInput
+              value={inputValue}
+              onChange={setInputValue}
+              settings={settings}
+            />
+
+            <FluidSearchableSelect
+              options={REGION_OPTIONS}
+              value={searchValue}
+              onChange={setSearchValue}
+              settings={settings}
+            />
+
+            <FluidMultiSelect
+              options={PERMISSION_OPTIONS}
+              selected={selectedTags}
+              onChange={setSelectedTags}
+              settings={settings}
+            />
+          </div>
+        ) : (
+          <SaaSPocForm settings={settings} />
+        )}
 
         {/* 2. FLUID VISUAL STUDIO DOCK */}
         <FluidVisualStudioDock
           settings={settings}
           onChange={setSettings}
           onReset={handleReset}
-          onCopyCss={handleCopyCss}
+          onCopyCss={() => setShowExportModal(true)}
           isCopied={copied}
         />
       </div>
+
+      {/* Export Tokens Modal for Designers & Developers */}
+      {showExportModal && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-[28px] border border-neutral-300 max-w-lg w-full p-6 shadow-floating space-y-5 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">
+                  Export ZeroLight Tokens & CLI
+                </h3>
+                <p className="text-xs text-neutral-500">
+                  Handoff between designers and developers for new SaaS PoCs
+                </p>
+              </div>
+              <button
+                onClick={() => setShowExportModal(false)}
+                className="w-7 h-7 rounded-full bg-neutral-100 hover:bg-neutral-200 flex items-center justify-center text-xs cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Tabs */}
+            <div className="flex bg-neutral-100 p-1 rounded-full text-xs font-semibold">
+              <button
+                onClick={() => setExportTab('css')}
+                className={`flex-1 py-1 rounded-full transition-all cursor-pointer ${
+                  exportTab === 'css' ? 'bg-white shadow-xs text-neutral-900' : 'text-neutral-500'
+                }`}
+              >
+                CSS Variables
+              </button>
+              <button
+                onClick={() => setExportTab('tailwind')}
+                className={`flex-1 py-1 rounded-full transition-all cursor-pointer ${
+                  exportTab === 'tailwind' ? 'bg-white shadow-xs text-neutral-900' : 'text-neutral-500'
+                }`}
+              >
+                Tailwind Config
+              </button>
+              <button
+                onClick={() => setExportTab('cli')}
+                className={`flex-1 py-1 rounded-full transition-all cursor-pointer ${
+                  exportTab === 'cli' ? 'bg-white shadow-xs text-neutral-900' : 'text-neutral-500'
+                }`}
+              >
+                npx CLI
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="relative">
+              <pre className="p-4 bg-neutral-900 text-neutral-100 text-xs rounded-2xl overflow-x-auto max-h-56">
+                <code>
+                  {exportTab === 'css' && getCssVariables()}
+                  {exportTab === 'tailwind' && getTailwindConfig()}
+                  {exportTab === 'cli' && getCliCommand()}
+                </code>
+              </pre>
+
+              <button
+                onClick={() => {
+                  const text =
+                    exportTab === 'css'
+                      ? getCssVariables()
+                      : exportTab === 'tailwind'
+                      ? getTailwindConfig()
+                      : getCliCommand();
+                  handleCopy(text);
+                }}
+                className="absolute top-3 right-3 bg-white/20 hover:bg-white/30 text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg backdrop-blur-xs transition-colors cursor-pointer"
+              >
+                {copied ? '✓ Copied' : 'Copy'}
+              </button>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowExportModal(false)}
+                className="px-5 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-semibold rounded-full cursor-pointer"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

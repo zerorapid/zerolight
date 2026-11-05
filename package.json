@@ -1,8 +1,12 @@
 {
-  "name": "aquaflow-saas",
-  "private": true,
-  "version": "1.0.0",
+  "name": "@zerorapid/zerolight",
+  "private": false,
+  "version": "0.1.0",
+  "description": "Fluid Input Atoms Studio & Standalone SaaS Design System for rapid PoC engineering",
   "type": "module",
+  "bin": {
+    "zerolight": "./bin/zerolight.js"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
