@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ZeroLight | SaaS Atom Studio",
-  description: "Minimalist Apple and Airbnb style atomic UI components for rapid SaaS engineering.",
+  description: "Minimalist atomic UI components for rapid SaaS engineering.",
 };
 
 export default function RootLayout({
