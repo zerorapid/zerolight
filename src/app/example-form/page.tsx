@@ -158,6 +158,19 @@ export default function ExampleFormPage() {
           <span>Sample Form</span>
         </Link>
 
+        {/* Form Selector Tabs */}
+        <div className="flex items-center bg-neutral-100 p-1 rounded-xl border border-neutral-200">
+          <div className="px-3 py-1 rounded-lg text-xs font-medium bg-white text-neutral-900 shadow-xs">
+            Workspace Config
+          </div>
+          <Link
+            href="/fresher-profile"
+            className="px-3 py-1 rounded-lg text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-colors"
+          >
+            Job Seeker Bio
+          </Link>
+        </div>
+
         <div className="flex items-center gap-2">
           <Link
             href="/docs/atoms"
