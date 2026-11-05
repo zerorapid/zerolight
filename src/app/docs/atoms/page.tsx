@@ -9,6 +9,7 @@ export type MenuOffsetPreset = 4 | 8 | 10 | 14;
 export type MotionPhysicsPreset = "linear" | "damped" | "elastic";
 
 export interface ZeroLightTokens {
+  scaleMultiplier: number;
   universalBorderColor: string;
   universalFillColor: string;
   textIconColor: string;
@@ -23,6 +24,7 @@ export interface ZeroLightTokens {
 }
 
 const DEFAULT_TOKENS: ZeroLightTokens = {
+  scaleMultiplier: 1.0,
   universalBorderColor: "#D4D4D4",
   universalFillColor: "#FFFFFF",
   textIconColor: "#111111",
@@ -53,27 +55,30 @@ const PERMISSION_OPTIONS = [
 export default function ZeroLightStudio() {
   const [tokens, setTokens] = useState<ZeroLightTokens>(DEFAULT_TOKENS);
 
-  // Live Input Atom States
-  const [textInput, setTextInput] = useState<string>("");
-
-  // Select Atom State
-  const [region, setRegion] = useState<string>("");
+  // Live Atom States
+  const [textInput, setTextInput] = useState<string>("acme-workspace-prod");
+  const [region, setRegion] = useState<string>("North America (us-east-1)");
   const [regionFilter, setRegionFilter] = useState<string>("");
   const [isRegionOpen, setIsRegionOpen] = useState<boolean>(false);
   const regionRef = useRef<HTMLDivElement>(null);
 
-  // Multi-Select Tags State
-  const [permissions, setPermissions] = useState<string[]>(["View Invoices"]);
+  const [permissions, setPermissions] = useState<string[]>([
+    "View Invoices",
+    "Manage Approvals",
+  ]);
   const [isPermOpen, setIsPermOpen] = useState<boolean>(false);
   const permRef = useRef<HTMLDivElement>(null);
 
-  // Action Atom States
+  const [checkboxChecked, setCheckboxChecked] = useState<boolean>(true);
+  const [switchEnabled, setSwitchEnabled] = useState<boolean>(true);
+  const [sliderValue, setSliderValue] = useState<number>(64);
+
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
   const [confirmed, setConfirmed] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Dismiss dropdowns on outside click or Escape key
+  // Outside click & Escape dismiss
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (regionRef.current && !regionRef.current.contains(e.target as Node)) {
@@ -141,7 +146,15 @@ export default function ZeroLightStudio() {
     opt.toLowerCase().includes(regionFilter.toLowerCase())
   );
 
-  // Transition curve mapping
+  // Dynamic Scale Calculations
+  const scale = tokens.scaleMultiplier;
+  const scaledHeight = Math.round(tokens.heightDensity * scale);
+  const scaledFontSize = Math.round(tokens.fontSize * scale);
+  const scaledRadius = Math.round(tokens.cornerRadius * scale);
+  const scaledPaddingX = Math.round(16 * scale);
+  const scaledPaddingY = Math.round(10 * scale);
+  const scaledCardRadius = Math.round(24 * scale);
+
   const getTransitionStyle = () => {
     switch (tokens.motionPhysics) {
       case "linear":
@@ -152,6 +165,15 @@ export default function ZeroLightStudio() {
       default:
         return "all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)";
     }
+  };
+
+  // Reusable card styling
+  const cardStyle = {
+    backgroundColor: tokens.universalFillColor,
+    borderColor: tokens.universalBorderColor,
+    borderWidth: `${tokens.borderWidth}px`,
+    borderRadius: `${scaledCardRadius}px`,
+    transition: getTransitionStyle(),
   };
 
   return (
@@ -185,353 +207,542 @@ export default function ZeroLightStudio() {
             <nav className="space-y-4">
               <div className="space-y-1">
                 <div className="px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase text-neutral-400">
-                  Navigation
+                  Directory
                 </div>
-                <div className="px-3 py-2 rounded-xl bg-neutral-100 text-neutral-900 font-semibold text-xs flex items-center justify-between cursor-pointer">
+                <div className="px-3 py-2 rounded-xl bg-neutral-100 text-neutral-900 font-semibold text-xs flex items-center justify-between">
                   <span>Atoms Studio</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-[#111111]" />
                 </div>
+              </div>
+
+              {/* Data Capture Atoms */}
+              <div className="space-y-1 pt-2 border-t border-neutral-100">
+                <div className="px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase text-neutral-400">
+                  Data Capture Atoms
+                </div>
                 <a
-                  href="#input-atoms"
-                  className="block px-3 py-2 rounded-xl text-xs text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 transition-colors"
+                  href="#text-input"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
                 >
-                  Input Atoms
+                  <span>Text Input</span>
+                  <span className="text-[10px] text-neutral-400">Capture</span>
                 </a>
                 <a
-                  href="#action-atoms"
-                  className="block px-3 py-2 rounded-xl text-xs text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 transition-colors"
+                  href="#search-select"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
                 >
-                  Action Atoms
+                  <span>Search Select</span>
+                  <span className="text-[10px] text-neutral-400">Choice</span>
+                </a>
+                <a
+                  href="#tag-select"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
+                >
+                  <span>Tag Select</span>
+                  <span className="text-[10px] text-neutral-400">Multi</span>
+                </a>
+                <a
+                  href="#binary-toggles"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
+                >
+                  <span>Checkbox &amp; Switch</span>
+                  <span className="text-[10px] text-neutral-400">Toggle</span>
+                </a>
+                <a
+                  href="#slider"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
+                >
+                  <span>Slider Atom</span>
+                  <span className="text-[10px] text-neutral-400">Range</span>
                 </a>
               </div>
 
+              {/* Action Atoms */}
               <div className="space-y-1 pt-2 border-t border-neutral-100">
                 <div className="px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase text-neutral-400">
-                  SaaS Atoms Index
+                  Action Atoms
                 </div>
-                <div className="px-3 py-1.5 text-xs text-neutral-600 flex items-center justify-between">
-                  <span>Text Input</span>
-                  <span className="text-[10px] text-neutral-400">Capture</span>
-                </div>
-                <div className="px-3 py-1.5 text-xs text-neutral-600 flex items-center justify-between">
-                  <span>Search Select</span>
-                  <span className="text-[10px] text-neutral-400">Dropdown</span>
-                </div>
-                <div className="px-3 py-1.5 text-xs text-neutral-600 flex items-center justify-between">
-                  <span>Tag Select</span>
-                  <span className="text-[10px] text-neutral-400">Multi</span>
-                </div>
-                <div className="px-3 py-1.5 text-xs text-neutral-600 flex items-center justify-between">
+                <a
+                  href="#action-buttons"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
+                >
                   <span>Action Buttons</span>
                   <span className="text-[10px] text-neutral-400">Exec</span>
+                </a>
+                <a
+                  href="#micro-actions"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
+                >
+                  <span>Micro Actions</span>
+                  <span className="text-[10px] text-neutral-400">Utility</span>
+                </a>
+              </div>
+
+              {/* Feedback Atoms */}
+              <div className="space-y-1 pt-2 border-t border-neutral-100">
+                <div className="px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase text-neutral-400">
+                  Telemetry &amp; Perception
                 </div>
+                <a
+                  href="#telemetry"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
+                >
+                  <span>Status &amp; Telemetry</span>
+                  <span className="text-[10px] text-neutral-400">Metric</span>
+                </a>
+                <a
+                  href="#loading-placeholders"
+                  className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
+                >
+                  <span>Loading &amp; Shimmer</span>
+                  <span className="text-[10px] text-neutral-400">State</span>
+                </a>
               </div>
             </nav>
           </div>
 
           <div className="text-[11px] text-neutral-400 font-normal leading-relaxed pt-4 border-t border-neutral-100">
             ZeroLight Atomic Studio
-            <div className="text-neutral-300 text-[10px]">Pure First Principles</div>
+            <div className="text-neutral-300 text-[10px]">Scale: {tokens.scaleMultiplier.toFixed(2)}x</div>
           </div>
         </aside>
 
         {/* ══════════════════════════════════════════════════════════
-            COLUMN 2: CENTER STAGE (LIVE ATOMS WORKBENCH)
+            COLUMN 2: CENTER STAGE (INDIVIDUAL ATOMS SHOWCASE)
            ══════════════════════════════════════════════════════════ */}
         <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start overflow-y-auto">
-          <div className="w-full max-w-[460px] space-y-6">
-            {/* Live Atoms Card */}
-            <div
-              style={{
-                backgroundColor: tokens.universalFillColor,
-                borderColor: tokens.universalBorderColor,
-                borderWidth: `${tokens.borderWidth}px`,
-                borderRadius: "28px",
-                transition: getTransitionStyle(),
-              }}
-              className="border shadow-[0_2px_16px_rgba(0,0,0,0.04)] p-7 space-y-7"
-            >
-              {/* --- INPUT ATOMS --- */}
-              <div id="input-atoms" className="space-y-4">
-                <span className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase select-none block">
-                  INPUT ATOMS
-                </span>
+          <div className="w-full max-w-[540px] space-y-6 pb-24">
+            
+            {/* Stage Title */}
+            <div className="flex items-center justify-between pb-2 border-b border-neutral-200">
+              <div>
+                <h1 className="text-base font-bold text-neutral-900 tracking-tight">ZeroLight Atoms Workbench</h1>
+                <p className="text-xs text-neutral-500">Individually calibrated and tested across micro-interactions.</p>
+              </div>
+              <span className="text-[11px] font-semibold text-neutral-600 bg-white border border-neutral-200 px-2.5 py-1 rounded-full shadow-sm">
+                Scale: {tokens.scaleMultiplier.toFixed(2)}x
+              </span>
+            </div>
 
-                {/* 1. Text Input */}
-                <div className="space-y-1.5">
-                  <div className="flex justify-between items-center" style={{ fontSize: `${tokens.fontSize - 2}px` }}>
-                    <span className="font-medium text-neutral-800">1. Text Input</span>
-                    <span className="text-neutral-400 font-normal">Leading Icon</span>
+            {/* ── CARD 1: TEXT INPUT ATOM ── */}
+            <div id="text-input" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">1. Text Input Atom</h2>
+                  <p className="text-[11px] text-neutral-400">Single-line data capture with leading glyph and tactile clear action</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Capture
+                </span>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-medium text-neutral-700">Workspace Identifier</span>
+                  <span className="text-[10px] text-neutral-400">{textInput.length} chars</span>
+                </div>
+                <div
+                  style={{
+                    borderRadius: `${scaledRadius}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    height: `${scaledHeight}px`,
+                    paddingLeft: `${scaledPaddingX}px`,
+                    paddingRight: `${scaledPaddingX}px`,
+                    transition: getTransitionStyle(),
+                  }}
+                  className="bg-white flex items-center gap-2.5 shadow-sm focus-within:border-neutral-900 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-shadow"
+                >
+                  <svg className="w-4 h-4 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                  </svg>
+                  <input
+                    type="text"
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    placeholder="Search invoices or customer ID..."
+                    style={{
+                      fontSize: `${scaledFontSize}px`,
+                      color: tokens.textIconColor,
+                    }}
+                    className="w-full bg-transparent outline-none placeholder:text-neutral-400"
+                  />
+                  {textInput && (
+                    <button
+                      type="button"
+                      onClick={() => setTextInput("")}
+                      className="p-1 text-neutral-400 hover:text-neutral-700 rounded-full hover:bg-neutral-100 transition-colors"
+                      title="Clear field"
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 2: SEARCHABLE SELECT ATOM ── */}
+            <div id="search-select" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">2. Searchable Select Atom</h2>
+                  <p className="text-[11px] text-neutral-400">Contextual popover menu with query filtering and outside-click dismiss</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Choice
+                </span>
+              </div>
+
+              <div ref={regionRef} className="relative space-y-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-medium text-neutral-700">Cluster Region</span>
+                  <span className="text-[10px] text-neutral-400">Regional Gateway</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsRegionOpen((prev) => !prev)}
+                  style={{
+                    borderRadius: `${scaledRadius}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    height: `${scaledHeight}px`,
+                    paddingLeft: `${scaledPaddingX}px`,
+                    paddingRight: `${scaledPaddingX}px`,
+                    transition: getTransitionStyle(),
+                  }}
+                  className="w-full bg-white flex items-center justify-between shadow-sm hover:bg-neutral-50/60 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 text-left"
+                >
+                  <div className="flex items-center gap-2.5 truncate">
+                    <svg className="w-4 h-4 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                      <circle cx="12" cy="12" r="10" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20" />
+                    </svg>
+                    <span
+                      style={{
+                        fontSize: `${scaledFontSize}px`,
+                        color: region ? tokens.textIconColor : "#A3A3A3",
+                      }}
+                      className="truncate font-normal"
+                    >
+                      {region || "Select cluster region..."}
+                    </span>
                   </div>
                   <div
                     style={{
-                      height: `${tokens.heightDensity}px`,
-                      borderRadius: `${tokens.cornerRadius}px`,
-                      borderColor: tokens.universalBorderColor,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      fontSize: `${tokens.fontSize}px`,
+                      borderRadius: `${Math.max(6, scaledRadius - 8)}px`,
                       transition: getTransitionStyle(),
                     }}
-                    className="px-3.5 flex items-center bg-white border focus-within:border-neutral-900 focus-within:ring-2 focus-within:ring-neutral-900/10"
+                    className="w-6 h-6 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-500 shrink-0"
                   >
                     <svg
-                      className="w-4 h-4 text-neutral-400 mr-2.5 flex-shrink-0"
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${isRegionOpen ? "rotate-180" : ""}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </div>
+                </button>
+
+                {/* Popover Dropdown */}
+                {isRegionOpen && (
+                  <div
+                    style={{
+                      marginTop: `${tokens.menuOffsetGap}px`,
+                      borderRadius: `${scaledRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      transition: getTransitionStyle(),
+                    }}
+                    className="absolute top-full left-0 right-0 z-30 bg-white shadow-xl p-2 space-y-1.5"
+                  >
+                    <input
+                      type="text"
+                      autoFocus
+                      value={regionFilter}
+                      onChange={(e) => setRegionFilter(e.target.value)}
+                      placeholder="Filter regions..."
+                      className="w-full px-3 py-1.5 bg-neutral-50 rounded-lg text-xs outline-none border border-neutral-200 focus:border-neutral-900"
+                    />
+                    <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
+                      {filteredRegions.length === 0 ? (
+                        <div className="py-2 text-center text-xs text-neutral-400">No match found</div>
+                      ) : (
+                        filteredRegions.map((opt) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            onClick={() => {
+                              setRegion(opt);
+                              setIsRegionOpen(false);
+                              setRegionFilter("");
+                            }}
+                            className={`w-full px-3 py-2 rounded-lg text-xs text-left flex items-center justify-between transition-colors ${
+                              region === opt
+                                ? "bg-neutral-900 text-white font-medium"
+                                : "hover:bg-neutral-100 text-neutral-700"
+                            }`}
+                          >
+                            <span>{opt}</span>
+                            {region === opt && (
+                              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                              </svg>
+                            )}
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── CARD 3: MULTI-SELECT TAGS ATOM ── */}
+            <div id="tag-select" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">3. Multi-Select Tags Atom</h2>
+                  <p className="text-[11px] text-neutral-400">Removable chip tags with quick permission scope assigner</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Multi
+                </span>
+              </div>
+
+              <div ref={permRef} className="relative space-y-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-medium text-neutral-700">Security Scopes</span>
+                  <span className="text-[10px] text-neutral-400">{permissions.length} selected</span>
+                </div>
+
+                <div
+                  onClick={() => setIsPermOpen((prev) => !prev)}
+                  style={{
+                    borderRadius: `${scaledRadius}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    minHeight: `${scaledHeight}px`,
+                    padding: `${scaledPaddingY}px ${scaledPaddingX}px`,
+                    transition: getTransitionStyle(),
+                  }}
+                  className="bg-white flex flex-wrap items-center gap-1.5 shadow-sm cursor-pointer hover:bg-neutral-50/60"
+                >
+                  <svg className="w-4 h-4 text-neutral-400 shrink-0 mr-1" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                  </svg>
+
+                  {permissions.map((perm) => (
+                    <span
+                      key={perm}
+                      style={{
+                        borderRadius: `${Math.max(6, scaledRadius - 8)}px`,
+                        fontSize: `${Math.max(10, scaledFontSize - 3)}px`,
+                      }}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-neutral-100 text-neutral-800 font-medium border border-neutral-200"
+                    >
+                      <span>{perm}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => handleRemovePermission(perm, e)}
+                        className="hover:text-red-600 transition-colors"
+                        title="Remove tag"
+                      >
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </span>
+                  ))}
+
+                  <span className="text-neutral-400 text-xs ml-auto flex items-center gap-1">
+                    <span>Add</span>
+                    <svg
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${isPermOpen ? "rotate-180" : ""}`}
                       fill="none"
                       viewBox="0 0 24 24"
                       strokeWidth={2}
                       stroke="currentColor"
                     >
-                      <circle cx="11" cy="11" r="8" />
-                      <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
-                    <input
-                      type="text"
-                      value={textInput}
-                      onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Search invoices or customer ID..."
-                      style={{ color: tokens.textIconColor }}
-                      className="w-full bg-transparent placeholder:text-neutral-400 focus:outline-none"
-                    />
-                    {textInput && (
-                      <button
-                        type="button"
-                        onClick={() => setTextInput("")}
-                        aria-label="Clear input"
-                        className="text-neutral-400 hover:text-neutral-700 p-1 transition-colors"
-                      >
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
+                  </span>
                 </div>
 
-                {/* 2. Searchable Select */}
-                <div ref={regionRef} className="space-y-1.5 relative">
-                  <div className="flex justify-between items-center" style={{ fontSize: `${tokens.fontSize - 2}px` }}>
-                    <span className="font-medium text-neutral-800">2. Searchable Select</span>
-                    <span className="text-neutral-400 font-normal">Regional Gateway</span>
-                  </div>
+                {/* Dropdown Options */}
+                {isPermOpen && (
                   <div
-                    onClick={() => setIsRegionOpen(!isRegionOpen)}
-                    role="button"
-                    tabIndex={0}
                     style={{
-                      height: `${tokens.heightDensity}px`,
-                      borderRadius: `${tokens.cornerRadius}px`,
+                      marginTop: `${tokens.menuOffsetGap}px`,
+                      borderRadius: `${scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
-                      fontSize: `${tokens.fontSize}px`,
                       transition: getTransitionStyle(),
                     }}
-                    className="px-3.5 flex items-center justify-between bg-white border cursor-pointer select-none hover:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/10"
+                    className="absolute top-full left-0 right-0 z-30 bg-white shadow-xl p-2 space-y-1"
                   >
-                    <div className="flex items-center min-w-0 mr-2">
-                      <svg
-                        className="w-4 h-4 text-neutral-400 mr-2.5 flex-shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.8}
-                        stroke="currentColor"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20" strokeLinecap="round" />
-                      </svg>
-                      <span className={`truncate ${region ? "text-neutral-900 font-medium" : "text-neutral-400"}`}>
-                        {region || "Select cluster region..."}
-                      </span>
-                    </div>
-                    <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className={`w-3.5 h-3.5 text-neutral-500 transition-transform duration-200 ${isRegionOpen ? "rotate-180" : ""}`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Dropdown Popover */}
-                  {isRegionOpen && (
-                    <div
-                      style={{
-                        top: `calc(${tokens.heightDensity}px + ${tokens.menuOffsetGap}px + 20px)`,
-                        borderRadius: `${Math.max(12, tokens.cornerRadius)}px`,
-                        transition: getTransitionStyle(),
-                      }}
-                      className="absolute left-0 right-0 z-30 bg-white border border-[#E5E5E5] shadow-xl p-2 space-y-1"
-                    >
-                      <div className="px-2 pb-1.5 pt-0.5 border-b border-neutral-100">
-                        <input
-                          type="text"
-                          value={regionFilter}
-                          onChange={(e) => setRegionFilter(e.target.value)}
-                          placeholder="Search regions..."
-                          autoFocus
-                          className="w-full bg-neutral-50 px-2.5 py-1 text-xs rounded-lg text-neutral-900 placeholder:text-neutral-400 focus:outline-none"
-                        />
-                      </div>
-                      <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
-                        {filteredRegions.length === 0 ? (
-                          <div className="px-3 py-2 text-xs text-neutral-400 text-center">No matching regions</div>
-                        ) : (
-                          filteredRegions.map((opt) => (
-                            <div
-                              key={opt}
-                              onClick={() => {
-                                setRegion(opt);
-                                setIsRegionOpen(false);
-                                setRegionFilter("");
-                              }}
-                              className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs cursor-pointer transition-colors ${
-                                region === opt
-                                  ? "bg-neutral-100 text-neutral-900 font-semibold"
-                                  : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
-                              }`}
-                            >
-                              <span>{opt}</span>
-                              {region === opt && (
-                                <svg className="w-3.5 h-3.5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                </svg>
-                              )}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* 3. Multi-Select Tags */}
-                <div ref={permRef} className="space-y-1.5 relative">
-                  <div className="flex justify-between items-center" style={{ fontSize: `${tokens.fontSize - 2}px` }}>
-                    <span className="font-medium text-neutral-800">3. Multi-Select Tags</span>
-                    <span className="text-neutral-400 font-normal">Security Scopes</span>
-                  </div>
-                  <div
-                    onClick={() => setIsPermOpen(!isPermOpen)}
-                    role="button"
-                    tabIndex={0}
-                    style={{
-                      minHeight: `${tokens.heightDensity}px`,
-                      borderRadius: `${tokens.cornerRadius}px`,
-                      borderColor: tokens.universalBorderColor,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      fontSize: `${tokens.fontSize}px`,
-                      transition: getTransitionStyle(),
-                    }}
-                    className="px-3.5 py-1.5 flex items-center justify-between bg-white border cursor-pointer select-none hover:border-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/10"
-                  >
-                    <div className="flex items-center flex-wrap gap-1.5 min-w-0 mr-2 py-0.5">
-                      <svg
-                        className="w-4 h-4 text-neutral-400 mr-1 flex-shrink-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.8}
-                        stroke="currentColor"
-                      >
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-
-                      {permissions.length === 0 ? (
-                        <span className="text-xs text-neutral-400">Assign permissions...</span>
-                      ) : (
-                        permissions.map((p) => (
-                          <span
-                            key={p}
-                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-neutral-100 text-neutral-900 text-[11px] font-medium border border-neutral-200"
-                          >
-                            <span>{p}</span>
-                            <button
-                              type="button"
-                              onClick={(e) => handleRemovePermission(p, e)}
-                              className="hover:text-neutral-500 rounded p-0.5"
-                            >
-                              <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                              </svg>
-                            </button>
+                    {PERMISSION_OPTIONS.map((opt) => {
+                      const isSelected = permissions.includes(opt);
+                      return (
+                        <div
+                          key={opt}
+                          onClick={() => handleTogglePermission(opt)}
+                          className="px-3 py-2 rounded-lg text-xs flex items-center justify-between cursor-pointer hover:bg-neutral-100 transition-colors"
+                        >
+                          <span className={isSelected ? "font-semibold text-neutral-900" : "text-neutral-600"}>
+                            {opt}
                           </span>
-                        ))
-                      )}
-                    </div>
-
-                    <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                      <svg
-                        className={`w-3.5 h-3.5 text-neutral-500 transition-transform duration-200 ${isPermOpen ? "rotate-180" : ""}`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Multi-Select Menu */}
-                  {isPermOpen && (
-                    <div
-                      style={{
-                        top: `calc(${tokens.heightDensity}px + ${tokens.menuOffsetGap}px + 20px)`,
-                        borderRadius: `${Math.max(12, tokens.cornerRadius)}px`,
-                        transition: getTransitionStyle(),
-                      }}
-                      className="absolute left-0 right-0 z-30 bg-white border border-[#E5E5E5] shadow-xl p-2 space-y-1"
-                    >
-                      {PERMISSION_OPTIONS.map((perm) => {
-                        const isSelected = permissions.includes(perm);
-                        return (
                           <div
-                            key={perm}
-                            onClick={() => handleTogglePermission(perm)}
-                            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                            className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                              isSelected
+                                ? "bg-neutral-900 border-neutral-900 text-white"
+                                : "border-neutral-300 bg-white"
+                            }`}
                           >
-                            <span className={isSelected ? "font-semibold text-neutral-900" : "text-neutral-600"}>
-                              {perm}
-                            </span>
-                            <div
-                              className={`w-4 h-4 rounded-md border flex items-center justify-center transition-all ${
-                                isSelected
-                                  ? "bg-neutral-900 border-neutral-900 text-white"
-                                  : "border-neutral-300 bg-white"
-                              }`}
-                            >
-                              {isSelected && (
-                                <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                </svg>
-                              )}
-                            </div>
+                            {isSelected && (
+                              <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                              </svg>
+                            )}
                           </div>
-                        );
-                      })}
-                    </div>
-                  )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ── CARD 4: CHECKBOX & SWITCH ATOMS ── */}
+            <div id="binary-toggles" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">4. Binary Selection Atoms</h2>
+                  <p className="text-[11px] text-neutral-400">Tactile checkmark and sliding kinetic switch with optical centering</p>
                 </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Boolean
+                </span>
               </div>
 
-              {/* --- ACTION ATOMS --- */}
-              <div id="action-atoms" className="space-y-3.5 pt-1">
-                <span className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase select-none block">
-                  ACTION ATOMS
-                </span>
+              <div className="space-y-3 pt-1">
+                {/* Checkbox Atom */}
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div
+                    onClick={() => setCheckboxChecked((prev) => !prev)}
+                    style={{
+                      borderRadius: `${Math.max(6, scaledRadius - 10)}px`,
+                      transition: getTransitionStyle(),
+                    }}
+                    className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
+                      checkboxChecked
+                        ? "bg-neutral-900 border-neutral-900 text-white"
+                        : "border-neutral-300 bg-white group-hover:border-neutral-400"
+                    }`}
+                  >
+                    {checkboxChecked && (
+                      <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      </svg>
+                    )}
+                  </div>
+                  <span style={{ fontSize: `${scaledFontSize}px` }} className="text-neutral-700 font-medium">
+                    Enable automated settlement notifications
+                  </span>
+                </label>
 
-                {/* Row 1: Confirm & Export */}
+                {/* Switch Atom */}
+                <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                  <span style={{ fontSize: `${scaledFontSize}px` }} className="text-neutral-700 font-medium">
+                    Real-time telemetry stream
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSwitchEnabled((prev) => !prev)}
+                    style={{
+                      transition: getTransitionStyle(),
+                    }}
+                    className={`w-11 h-6 flex items-center rounded-full p-1 cursor-pointer transition-colors ${
+                      switchEnabled ? "bg-neutral-900" : "bg-neutral-300"
+                    }`}
+                  >
+                    <div
+                      style={{
+                        transition: getTransitionStyle(),
+                      }}
+                      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+                        switchEnabled ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 5: SLIDER ATOM ── */}
+            <div id="slider" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">5. Continuous Value Slider Atom</h2>
+                  <p className="text-[11px] text-neutral-400">Smooth range selector with live readouts and physical stops</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Range
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-medium text-neutral-700">Allocated Memory Capacity</span>
+                  <span className="font-semibold text-neutral-900 bg-neutral-100 px-2 py-0.5 rounded">
+                    {sliderValue} GB
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="4"
+                  max="128"
+                  step="4"
+                  value={sliderValue}
+                  onChange={(e) => setSliderValue(Number(e.target.value))}
+                  className="w-full cursor-pointer accent-neutral-900"
+                />
+                <div className="flex justify-between text-[10px] text-neutral-400">
+                  <span>4 GB (Base)</span>
+                  <span>64 GB (Standard)</span>
+                  <span>128 GB (Max)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 6: ACTION BUTTONS ATOM ── */}
+            <div id="action-buttons" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">6. Action Buttons Atom</h2>
+                  <p className="text-[11px] text-neutral-400">Physical click deflection (`active:scale-[0.985]`) and semantic states</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Interactive
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                {/* Row 1: Primary Confirm & Secondary Export */}
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={handleConfirm}
                     style={{
                       backgroundColor: tokens.primaryButtonColor,
-                      borderRadius: `${tokens.cornerRadius}px`,
-                      height: `${tokens.heightDensity}px`,
-                      fontSize: `${tokens.fontSize - 1}px`,
+                      borderRadius: `${scaledRadius}px`,
+                      height: `${scaledHeight}px`,
+                      fontSize: `${scaledFontSize - 1}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 text-white font-semibold flex items-center justify-center gap-2 shadow-sm tactile-press active:opacity-90"
@@ -544,13 +755,13 @@ export default function ZeroLightStudio() {
 
                   <button
                     type="button"
-                    onClick={() => triggerToast("Exporting payload...")}
+                    onClick={() => triggerToast("Exporting data bundle...")}
                     style={{
-                      borderRadius: `${tokens.cornerRadius}px`,
+                      borderRadius: `${scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
-                      height: `${tokens.heightDensity}px`,
-                      fontSize: `${tokens.fontSize - 1}px`,
+                      height: `${scaledHeight}px`,
+                      fontSize: `${scaledFontSize - 1}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 bg-white text-[#111111] font-semibold flex items-center justify-center gap-2 border hover:bg-neutral-50 tactile-press"
@@ -562,17 +773,17 @@ export default function ZeroLightStudio() {
                   </button>
                 </div>
 
-                {/* Row 2: Next Step & Revoke */}
+                {/* Row 2: Directional Step & Destructive Revoke */}
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() => triggerToast("Next step initiated")}
+                    onClick={() => triggerToast("Proceeding to next step")}
                     style={{
-                      borderRadius: `${tokens.cornerRadius}px`,
+                      borderRadius: `${scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
-                      height: `${tokens.heightDensity}px`,
-                      fontSize: `${tokens.fontSize - 1}px`,
+                      height: `${scaledHeight}px`,
+                      fontSize: `${scaledFontSize - 1}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 bg-white text-[#111111] font-semibold flex items-center justify-center gap-2 border hover:bg-neutral-50 tactile-press"
@@ -585,11 +796,11 @@ export default function ZeroLightStudio() {
 
                   <button
                     type="button"
-                    onClick={() => triggerToast("Action revoked")}
+                    onClick={() => triggerToast("Revoked security token")}
                     style={{
-                      borderRadius: `${tokens.cornerRadius}px`,
-                      height: `${tokens.heightDensity}px`,
-                      fontSize: `${tokens.fontSize - 1}px`,
+                      borderRadius: `${scaledRadius}px`,
+                      height: `${scaledHeight}px`,
+                      fontSize: `${scaledFontSize - 1}px`,
                       transition: getTransitionStyle(),
                     }}
                     className="px-4 bg-white text-[#E11D48] font-semibold flex items-center justify-center gap-2 border border-[#FECDD3] hover:bg-rose-50/50 tactile-press"
@@ -600,58 +811,159 @@ export default function ZeroLightStudio() {
                     <span>Revoke</span>
                   </button>
                 </div>
+              </div>
+            </div>
 
-                {/* Row 3: Square Icon Triggers & Status Indicator */}
-                <div className="flex items-center gap-2.5 pt-1">
-                  <button
-                    type="button"
-                    title="Settings"
-                    onClick={() => triggerToast("Opening settings")}
-                    style={{
-                      borderRadius: `${Math.max(10, tokens.cornerRadius - 4)}px`,
-                      borderColor: tokens.universalBorderColor,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      transition: getTransitionStyle(),
-                    }}
-                    className="w-10 h-10 bg-white border flex items-center justify-center text-neutral-600 hover:text-neutral-900 tactile-press"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
-                      <circle cx="12" cy="12" r="3" />
+            {/* ── CARD 7: MICRO ACTION ATOMS ── */}
+            <div id="micro-actions" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">7. Micro Actions &amp; Utility Atoms</h2>
+                  <p className="text-[11px] text-neutral-400">Compact square triggers and live background sync indicators</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Utility
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Settings Trigger */}
+                <button
+                  type="button"
+                  title="Settings"
+                  onClick={() => triggerToast("Opening settings dock")}
+                  style={{
+                    borderRadius: `${Math.max(8, scaledRadius - 6)}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    width: `${Math.round(40 * scale)}px`,
+                    height: `${Math.round(40 * scale)}px`,
+                    transition: getTransitionStyle(),
+                  }}
+                  className="bg-white border flex items-center justify-center text-neutral-600 hover:text-neutral-900 tactile-press shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </button>
+
+                {/* Copy Trigger */}
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  title="Copy link"
+                  style={{
+                    borderRadius: `${Math.max(8, scaledRadius - 6)}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    width: `${Math.round(40 * scale)}px`,
+                    height: `${Math.round(40 * scale)}px`,
+                    transition: getTransitionStyle(),
+                  }}
+                  className="bg-white border flex items-center justify-center text-neutral-600 hover:text-neutral-900 tactile-press shadow-sm"
+                >
+                  {copied ? (
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
-                  </button>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  )}
+                </button>
 
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    title="Copy identifier"
-                    style={{
-                      borderRadius: `${Math.max(10, tokens.cornerRadius - 4)}px`,
-                      borderColor: tokens.universalBorderColor,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      transition: getTransitionStyle(),
-                    }}
-                    className="w-10 h-10 bg-white border flex items-center justify-center text-neutral-600 hover:text-neutral-900 tactile-press"
-                  >
-                    {copied ? (
-                      <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                      </svg>
-                    ) : (
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                      </svg>
-                    )}
-                  </button>
-
-                  <div className="ml-auto inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-[#E5E5E5] text-xs font-medium text-neutral-600 shadow-sm select-none">
-                    <span className="w-2 h-2 rounded-full border-2 border-neutral-400 border-t-neutral-800 animate-spin" />
-                    <span>{isSyncing ? "Syncing..." : "Live"}</span>
-                  </div>
+                {/* Live Sync Status Pill */}
+                <div
+                  style={{
+                    height: `${Math.round(38 * scale)}px`,
+                    borderRadius: `${scaledRadius}px`,
+                    fontSize: `${scaledFontSize - 2}px`,
+                  }}
+                  className="ml-auto inline-flex items-center gap-2 px-3.5 bg-white border border-[#E5E5E5] font-medium text-neutral-600 shadow-sm select-none"
+                >
+                  <span className="w-2 h-2 rounded-full border-2 border-neutral-400 border-t-neutral-800 animate-spin" />
+                  <span>{isSyncing ? "Syncing..." : "Live Runtime"}</span>
                 </div>
               </div>
             </div>
+
+            {/* ── CARD 8: TELEMETRY & STATUS ATOMS ── */}
+            <div id="telemetry" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">8. Status &amp; Telemetry Atoms</h2>
+                  <p className="text-[11px] text-neutral-400">Semantic status indicators, pulse dots, and quantitative delta tags</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Feedback
+                </span>
+              </div>
+
+              {/* Status Pills */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Active</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 text-xs font-medium border border-amber-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  <span>Pending Approval</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium border border-neutral-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
+                  <span>Offline</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 text-xs font-medium border border-rose-200">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                  <span>Degraded</span>
+                </span>
+              </div>
+
+              {/* Progress & Deltas */}
+              <div className="space-y-2 pt-2 border-t border-neutral-100">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-neutral-600 font-medium">Cluster Storage Quota</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-neutral-900">76%</span>
+                    <span className="inline-flex items-center text-[10px] text-emerald-600 font-medium">
+                      +14.2% MoM
+                    </span>
+                  </div>
+                </div>
+                <div className="w-full h-2 rounded-full bg-neutral-100 overflow-hidden">
+                  <div className="h-full bg-neutral-900 rounded-full" style={{ width: "76%" }} />
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 9: LOADING & PLACEHOLDER ATOMS ── */}
+            <div id="loading-placeholders" style={cardStyle} className="p-5 sm:p-6 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-800">9. Loading &amp; Placeholder Atoms</h2>
+                  <p className="text-[11px] text-neutral-400">Kinetic spinning loader and shimmer skeleton bar</p>
+                </div>
+                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-neutral-100 text-neutral-600">
+                  Perception
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 border-2 border-neutral-300 border-t-neutral-900 rounded-full animate-spin shrink-0" />
+                  <span className="text-xs text-neutral-500">Resolving DNS route across distributed regions...</span>
+                </div>
+
+                <div className="space-y-1.5 pt-1">
+                  <div className="h-3 w-3/4 bg-neutral-200 rounded animate-pulse" />
+                  <div className="h-3 w-1/2 bg-neutral-200 rounded animate-pulse" />
+                </div>
+              </div>
+            </div>
+
           </div>
         </main>
 
@@ -659,7 +971,7 @@ export default function ZeroLightStudio() {
             COLUMN 3: RIGHT SIDEBAR ("VISUAL STUDIO" TOKEN INSPECTOR)
            ══════════════════════════════════════════════════════════ */}
         <aside className="w-80 border-l border-[#EBEBEB] bg-[#FFFFFF] p-6 hidden xl:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Header with Reset Default */}
             <div className="flex justify-between items-center pb-2 border-b border-neutral-100">
               <span className="text-xs font-bold uppercase tracking-wider text-neutral-900">
@@ -674,8 +986,54 @@ export default function ZeroLightStudio() {
               </button>
             </div>
 
+            {/* 0. MASTER ATOM SCALE CONTROLLER */}
+            <div className="space-y-2.5 p-3 rounded-2xl bg-neutral-50 border border-neutral-200">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-neutral-900">
+                  Atom Scale Multiplier
+                </span>
+                <span className="text-xs font-semibold text-neutral-900 bg-white border border-neutral-200 px-2 py-0.5 rounded-md shadow-sm">
+                  {tokens.scaleMultiplier.toFixed(2)}x
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="0.80"
+                max="1.30"
+                step="0.05"
+                value={tokens.scaleMultiplier}
+                onChange={(e) =>
+                  setTokens((prev) => ({ ...prev, scaleMultiplier: Number(e.target.value) }))
+                }
+                className="w-full cursor-pointer accent-neutral-900"
+              />
+
+              <div className="grid grid-cols-4 gap-1 pt-1">
+                {[
+                  { label: "0.85x", val: 0.85 },
+                  { label: "1.00x", val: 1.0 },
+                  { label: "1.15x", val: 1.15 },
+                  { label: "1.30x", val: 1.3 },
+                ].map(({ label, val }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, scaleMultiplier: val }))}
+                    className={`py-1 rounded-lg text-[10px] font-semibold border transition-colors ${
+                      tokens.scaleMultiplier === val
+                        ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
+                        : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* 1. COLOR TOKENS */}
-            <div className="space-y-3">
+            <div className="space-y-2.5 pt-2 border-t border-neutral-100">
               <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                 1. Color Tokens
               </div>
@@ -782,13 +1140,13 @@ export default function ZeroLightStudio() {
             </div>
 
             {/* 2. GEOMETRY & SPATIAL TOKENS */}
-            <div className="space-y-3 pt-3 border-t border-neutral-100">
+            <div className="space-y-2.5 pt-2 border-t border-neutral-100">
               <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                 2. Geometry &amp; Spatial Tokens
               </div>
 
               {/* Border Width Scale Slider (0px to 5px) */}
-              <div className="space-y-1.5 text-xs">
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-neutral-700">Border Width Scale</span>
                   <span className="text-neutral-500 font-medium">{tokens.borderWidth}px</span>
@@ -800,12 +1158,12 @@ export default function ZeroLightStudio() {
                   step="1"
                   value={tokens.borderWidth}
                   onChange={(e) => setTokens((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))}
-                  className="w-full"
+                  className="w-full cursor-pointer accent-neutral-900"
                 />
               </div>
 
               {/* Universal Corner Radius (0px, 8px, 16px, 24px) */}
-              <div className="space-y-1.5 text-xs">
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-neutral-700">Universal Corner Radius</span>
                   <span className="text-neutral-500 font-medium">{tokens.cornerRadius}px</span>
@@ -829,7 +1187,7 @@ export default function ZeroLightStudio() {
               </div>
 
               {/* Universal Height Density (40px, 44px, 48px, 52px) */}
-              <div className="space-y-1.5 text-xs">
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-neutral-700">Universal Height Density</span>
                   <span className="text-neutral-500 font-medium">{tokens.heightDensity}px</span>
@@ -853,7 +1211,7 @@ export default function ZeroLightStudio() {
               </div>
 
               {/* Menu Offset Gap (4px, 8px, 10px, 14px) */}
-              <div className="space-y-1.5 text-xs">
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-neutral-700">Menu Offset Gap</span>
                   <span className="text-neutral-500 font-medium">{tokens.menuOffsetGap}px</span>
@@ -878,13 +1236,13 @@ export default function ZeroLightStudio() {
             </div>
 
             {/* 3. TYPOGRAPHY TOKEN */}
-            <div className="space-y-3 pt-3 border-t border-neutral-100">
+            <div className="space-y-2 pt-2 border-t border-neutral-100">
               <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                 3. Typography Token
               </div>
 
               {/* Font Size Scale (13px to 16px) */}
-              <div className="space-y-1.5 text-xs">
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span className="text-neutral-700">Font Size Scale</span>
                   <span className="text-neutral-500 font-medium">{tokens.fontSize}px</span>
@@ -896,13 +1254,13 @@ export default function ZeroLightStudio() {
                   step="1"
                   value={tokens.fontSize}
                   onChange={(e) => setTokens((prev) => ({ ...prev, fontSize: Number(e.target.value) }))}
-                  className="w-full"
+                  className="w-full cursor-pointer accent-neutral-900"
                 />
               </div>
             </div>
 
             {/* 4. MOTION & ANIMATION TOKEN */}
-            <div className="space-y-3 pt-3 border-t border-neutral-100">
+            <div className="space-y-2 pt-2 border-t border-neutral-100">
               <div className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
                 4. Motion &amp; Animation Token
               </div>
