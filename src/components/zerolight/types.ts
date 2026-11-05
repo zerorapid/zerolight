@@ -23,7 +23,7 @@ export const DEFAULT_TOKENS: ZeroLightTokens = {
   universalBorderColor: "#D4D4D4",
   universalFillColor: "#FFFFFF",
   textIconColor: "#111111",
-  primaryButtonColor: "#0E625B",
+  primaryButtonColor: "#111111", // Default black for primary actions
   hoverBackplateTint: "#F4F4F5",
   borderWidth: 1,
   cornerRadius: 16,
@@ -42,7 +42,7 @@ export interface ScaledTokens {
   ctaFontSize: number;
   headingFontSize: number;
   scaledRadius: number;
-  scaledPillRadius: number;
+  scaledInnerRadius: number;
   scaledPaddingX: number;
   scaledPaddingY: number;
   scaledCardRadius: number;
@@ -65,6 +65,25 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     }
   };
 
+  // True universal corner radius scaling
+  let scaledRadius = 0;
+  let scaledCardRadius = 0;
+  let scaledInnerRadius = 0;
+
+  if (tokens.cornerRadius === 999) {
+    scaledRadius = 9999;
+    scaledCardRadius = Math.round(28 * scale);
+    scaledInnerRadius = 9999;
+  } else if (tokens.cornerRadius === 0) {
+    scaledRadius = 0;
+    scaledCardRadius = 0;
+    scaledInnerRadius = 0;
+  } else {
+    scaledRadius = Math.round(tokens.cornerRadius * scale);
+    scaledCardRadius = Math.round((tokens.cornerRadius + 4) * scale);
+    scaledInnerRadius = Math.max(2, Math.round((tokens.cornerRadius - 4) * scale));
+  }
+
   return {
     scale,
     scaledHeight: Math.round(tokens.heightDensity * scale),
@@ -73,11 +92,11 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     sublabelFontSize: Math.max(10, Math.round((baseFont - 2) * scale)),
     ctaFontSize: Math.max(11, Math.round((baseFont - 2) * scale)),
     headingFontSize: Math.max(13, Math.round((baseFont + 2) * scale)),
-    scaledRadius: tokens.cornerRadius === 999 ? 9999 : Math.round(tokens.cornerRadius * scale),
-    scaledPillRadius: 9999,
+    scaledRadius,
+    scaledInnerRadius,
     scaledPaddingX: Math.round(14 * scale),
     scaledPaddingY: Math.round(8 * scale),
-    scaledCardRadius: Math.round(20 * scale),
+    scaledCardRadius,
     transitionStyle: getTransitionStyle(),
   };
 }
