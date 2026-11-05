@@ -1,42 +1,16 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-
-export type CornerRadiusPreset = 0 | 8 | 16 | 24 | 999;
-export type HeightDensityPreset = 36 | 40 | 44 | 48 | 52;
-export type MenuOffsetPreset = 4 | 8 | 10 | 14;
-export type MotionPhysicsPreset = "linear" | "damped" | "elastic";
-
-export interface ZeroLightTokens {
-  scaleMultiplier: number;
-  universalBorderColor: string;
-  universalFillColor: string;
-  textIconColor: string;
-  primaryButtonColor: string;
-  hoverBackplateTint: string;
-  borderWidth: number;
-  cornerRadius: CornerRadiusPreset;
-  heightDensity: HeightDensityPreset;
-  menuOffsetGap: MenuOffsetPreset;
-  fontSize: number;
-  motionPhysics: MotionPhysicsPreset;
-}
-
-const DEFAULT_TOKENS: ZeroLightTokens = {
-  scaleMultiplier: 1.0,
-  universalBorderColor: "#D4D4D4",
-  universalFillColor: "#FFFFFF",
-  textIconColor: "#111111",
-  primaryButtonColor: "#0E625B",
-  hoverBackplateTint: "#F4F4F5",
-  borderWidth: 1,
-  cornerRadius: 16,
-  heightDensity: 44,
-  menuOffsetGap: 8,
-  fontSize: 14,
-  motionPhysics: "damped",
-};
+import {
+  ZeroLightTokens,
+  DEFAULT_TOKENS,
+  CornerRadiusPreset,
+  HeightDensityPreset,
+  MenuOffsetPreset,
+  MotionPhysicsPreset,
+  computeScaledTokens,
+} from "./types";
 
 const ROLE_OPTIONS = [
   "Administrator",
@@ -59,7 +33,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   const [tokens, setTokens] = useState<ZeroLightTokens>(DEFAULT_TOKENS);
   const [activeTier, setActiveTier] = useState<"atoms" | "molecules">(initialTier);
 
-  // Input states
+  // Form input interactive state
   const [textInput, setTextInput] = useState<string>("sarah.connor@acme.inc");
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [textareaValue, setTextareaValue] = useState<string>(
@@ -91,7 +65,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   // Molecule: Segmented Control state
   const [segmentValue, setSegmentValue] = useState<"monthly" | "quarterly" | "annual">("quarterly");
 
-  // Atom state selections
+  // Atom interactive states
   const [radioValue, setRadioValue] = useState<"standard" | "pro">("pro");
   const [checkboxValue, setCheckboxValue] = useState<boolean>(true);
   const [switchValue, setSwitchValue] = useState<boolean>(true);
@@ -100,7 +74,43 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   // Notifications
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Outside click & Escape dismiss
+  // Memory leak protection: references for active timers
+  const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const copyTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const triggerToast = useCallback((msg: string) => {
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
+    setToastMessage(msg);
+    toastTimerRef.current = setTimeout(() => {
+      setToastMessage(null);
+      toastTimerRef.current = null;
+    }, 2200);
+  }, []);
+
+  const handleCopyApiKey = useCallback(() => {
+    if (copyTimerRef.current) {
+      clearTimeout(copyTimerRef.current);
+    }
+    navigator.clipboard.writeText(apiKey);
+    setIsApiKeyCopied(true);
+    triggerToast("API Key copied to clipboard");
+    copyTimerRef.current = setTimeout(() => {
+      setIsApiKeyCopied(false);
+      copyTimerRef.current = null;
+    }, 1800);
+  }, [apiKey, triggerToast]);
+
+  // Clean up all timer references on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
+  // Outside click & Escape dismiss listeners with robust cleanup
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (roleRef.current && !roleRef.current.contains(e.target as Node)) {
@@ -126,11 +136,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
     };
   }, []);
 
-  const triggerToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 2200);
-  };
-
   const handleResetDefaults = () => {
     setTokens(DEFAULT_TOKENS);
     triggerToast("Restored default tokens");
@@ -147,13 +152,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
     setTags((prev) => prev.filter((item) => item !== t));
   };
 
-  const handleCopyApiKey = () => {
-    navigator.clipboard.writeText(apiKey);
-    setIsApiKeyCopied(true);
-    triggerToast("API Key copied to clipboard");
-    setTimeout(() => setIsApiKeyCopied(false), 1800);
-  };
-
   const filteredRoles = ROLE_OPTIONS.filter((opt) =>
     opt.toLowerCase().includes(roleFilter.toLowerCase())
   );
@@ -162,45 +160,20 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
     opt.toLowerCase().includes(tagFilter.toLowerCase())
   );
 
-  // Dynamic token mathematics for Universal Studio scaling
-  const scale = tokens.scaleMultiplier;
-  const baseFont = tokens.fontSize;
+  // Scaled tokens dynamically recomputed for visual accuracy
+  const scaled = computeScaledTokens(tokens);
 
-  const scaledHeight = Math.round(tokens.heightDensity * scale);
-  const scaledFontSize = Math.round(baseFont * scale);
-  const labelFontSize = Math.round(baseFont * scale);
-  const sublabelFontSize = Math.max(10, Math.round((baseFont - 2) * scale));
-  const ctaFontSize = Math.max(11, Math.round((baseFont - 2) * scale));
-  const headingFontSize = Math.max(13, Math.round((baseFont + 2) * scale));
-  const scaledRadius = tokens.cornerRadius === 999 ? 9999 : Math.round(tokens.cornerRadius * scale);
-  const scaledPillRadius = 9999;
-  const scaledPaddingX = Math.round(14 * scale);
-  const scaledPaddingY = Math.round(8 * scale);
-  const scaledCardRadius = Math.round(20 * scale);
-
-  const getTransitionStyle = () => {
-    switch (tokens.motionPhysics) {
-      case "linear":
-        return "all 0.15s linear";
-      case "elastic":
-        return "all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
-      case "damped":
-      default:
-        return "all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)";
-    }
-  };
-
-  const cardStyle = {
+  const cardStyle: React.CSSProperties = {
     backgroundColor: tokens.universalFillColor,
     borderColor: tokens.universalBorderColor,
     borderWidth: `${tokens.borderWidth}px`,
-    borderRadius: `${scaledCardRadius}px`,
-    transition: getTransitionStyle(),
+    borderRadius: `${scaled.scaledCardRadius}px`,
+    transition: scaled.transitionStyle,
   };
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200">
-      {/* Toast Notification */}
+      {/* Toast Notification with memory-safe timer */}
       {toastMessage && (
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#111111] text-white text-xs font-medium px-3.5 py-1.5 rounded-lg shadow-lg flex items-center gap-2">
           <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
@@ -213,7 +186,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
       {/* 3-Column Studio Body */}
       <div className="flex-1 flex w-full">
         {/* ══════════════════════════════════════════════════════════
-            COLUMN 1: LEFT SIDEBAR (CLEAN HIERARCHICAL DIRECTORY)
+            COLUMN 1: LEFT SIDEBAR (HIERARCHICAL DIRECTORY)
            ══════════════════════════════════════════════════════════ */}
         <aside className="w-60 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
           <div className="space-y-6">
@@ -261,7 +234,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       Action Primitives
                     </div>
                     <a href="#atom-buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Button state matrix</span>
+                      <span>Button matrix</span>
                     </a>
                     <a href="#atom-icon-buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Icon button</span>
@@ -288,7 +261,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Indicators &amp; Micro Primitives
+                      Tokens &amp; Indicators
                     </div>
                     <a href="#atom-chips-triggers" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Tag chip &amp; trigger</span>
@@ -297,7 +270,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       <span>Status badge &amp; Kbd</span>
                     </a>
                     <a href="#atom-avatar-loader" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Avatar &amp; spinner</span>
+                      <span>Avatar &amp; loader</span>
                     </a>
                   </div>
                 </>
@@ -320,7 +293,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Selection &amp; Control Molecules
+                      Selection &amp; Control
                     </div>
                     <a href="#mol-search-select" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Searchable select</span>
@@ -335,7 +308,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Feedback Molecules
+                      Feedback
                     </div>
                     <a href="#mol-metric-stat" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Metric stat card</span>
@@ -360,53 +333,51 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
             {/* Stage Title */}
             <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
               <div>
-                <h1 style={{ fontSize: `${headingFontSize + 3}px` }} className="font-semibold text-neutral-900 tracking-tight">
+                <h1 style={{ fontSize: `${scaled.headingFontSize + 3}px` }} className="font-semibold text-neutral-900 tracking-tight">
                   {activeTier === "atoms" ? "Atoms Directory" : "Molecules Directory"}
                 </h1>
-                <p style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500">
+                <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                   {activeTier === "atoms"
-                    ? "Indivisible primitives across variants, interaction states, and design tokens."
+                    ? "Indivisible primitives across variants, interaction states, and tokens."
                     : "Atomic compositions combining two or more primitives for cohesive tasks."}
                 </p>
               </div>
-              <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 rounded-full shadow-sm">
+              <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 rounded-full shadow-sm">
                 Scale: {tokens.scaleMultiplier.toFixed(2)}x
               </span>
             </div>
 
             {/* ══════════════════════════════════════════════════════════
-                VIEW A: PURE ATOMS (PRIMITIVES & COMPLETE MATRIX)
+                VIEW A: PURE ATOMS (STANDARDIZED PERMUTATION TESTING)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "atoms" && (
               <>
-                {/* ── ATOM 1: COMPLETE BUTTON STATE & VARIANT MATRIX ── */}
+                {/* ── ATOM 1: BUTTON PERMUTATION MATRIX ── */}
                 <div id="atom-buttons" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
-                        Button state &amp; variant matrix
-                      </h2>
-                      <p style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500">
-                        Indivisible CTA primitives across all 7 design system variants and 4 interaction states.
-                      </p>
-                    </div>
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Button state &amp; variant matrix
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Indivisible CTA primitives across canonical variants and standard interaction truth states.
+                    </p>
                   </div>
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="border-b border-neutral-100">
-                          <th style={{ fontSize: `${sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium">Variant</th>
-                          <th style={{ fontSize: `${sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Rest</th>
-                          <th style={{ fontSize: `${sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Hover</th>
-                          <th style={{ fontSize: `${sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Focused</th>
-                          <th style={{ fontSize: `${sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Disabled</th>
+                          <th style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium">Variant</th>
+                          <th style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Rest</th>
+                          <th style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Hover</th>
+                          <th style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Focused</th>
+                          <th style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="pb-3 text-neutral-400 font-medium text-center">Disabled</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-neutral-100">
                         {/* 1. Primary Solid */}
                         <tr>
-                          <td style={{ fontSize: `${sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
+                          <td style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
                             Primary solid
                           </td>
                           <td className="py-2.5 text-center">
@@ -414,9 +385,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               type="button"
                               style={{
                                 backgroundColor: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="text-white font-medium shadow-xs"
                             >
@@ -428,9 +399,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               type="button"
                               style={{
                                 backgroundColor: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="text-white font-medium brightness-125 shadow-sm"
                             >
@@ -442,9 +413,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               type="button"
                               style={{
                                 backgroundColor: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                                 boxShadow: `0 0 0 3px ${tokens.primaryButtonColor}40`,
                               }}
                               className="text-white font-medium"
@@ -458,9 +429,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               disabled
                               style={{
                                 backgroundColor: "#CBD5E1",
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="text-white font-medium opacity-60 cursor-not-allowed"
                             >
@@ -471,7 +442,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                         {/* 2. Secondary Outline */}
                         <tr>
-                          <td style={{ fontSize: `${sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
+                          <td style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
                             Secondary outline
                           </td>
                           <td className="py-2.5 text-center">
@@ -482,9 +453,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                 borderWidth: `${tokens.borderWidth}px`,
                                 backgroundColor: "transparent",
                                 color: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="border font-medium shadow-xs"
                             >
@@ -499,9 +470,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                 borderWidth: `${tokens.borderWidth}px`,
                                 backgroundColor: `${tokens.primaryButtonColor}0A`,
                                 color: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="border font-medium shadow-xs"
                             >
@@ -516,9 +487,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                 borderWidth: `${tokens.borderWidth}px`,
                                 backgroundColor: "transparent",
                                 color: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                                 boxShadow: `0 0 0 3px ${tokens.primaryButtonColor}35`,
                               }}
                               className="border font-medium"
@@ -535,9 +506,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                 borderWidth: `${tokens.borderWidth}px`,
                                 backgroundColor: "transparent",
                                 color: "#94A3B8",
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="border font-medium cursor-not-allowed opacity-50"
                             >
@@ -546,163 +517,19 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           </td>
                         </tr>
 
-                        {/* 3. Secondary Gray */}
+                        {/* 3. Ghost / Tertiary */}
                         <tr>
-                          <td style={{ fontSize: `${sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Secondary gray
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                borderColor: tokens.universalBorderColor,
-                                borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.universalFillColor,
-                                color: tokens.textIconColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                              }}
-                              className="border font-medium shadow-xs"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                borderColor: tokens.universalBorderColor,
-                                borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.hoverBackplateTint,
-                                color: tokens.textIconColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                              }}
-                              className="border font-medium shadow-xs"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                borderColor: tokens.universalBorderColor,
-                                borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.universalFillColor,
-                                color: tokens.textIconColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                                boxShadow: `0 0 0 3px ${tokens.primaryButtonColor}35`,
-                              }}
-                              className="border font-medium"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              disabled
-                              style={{
-                                borderColor: "#E2E8F0",
-                                borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: "transparent",
-                                color: "#94A3B8",
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                              }}
-                              className="border font-medium cursor-not-allowed opacity-50"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                        </tr>
-
-                        {/* 4. Tertiary Main */}
-                        <tr>
-                          <td style={{ fontSize: `${sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Tertiary main
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                color: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                              }}
-                              className="font-medium bg-transparent"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                backgroundColor: `${tokens.primaryButtonColor}14`,
-                                color: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                              }}
-                              className="font-medium"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                backgroundColor: "transparent",
-                                color: tokens.primaryButtonColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                                boxShadow: `0 0 0 3px ${tokens.primaryButtonColor}35`,
-                              }}
-                              className="font-medium"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              disabled
-                              style={{
-                                color: "#94A3B8",
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                              }}
-                              className="font-medium cursor-not-allowed opacity-40 bg-transparent"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                        </tr>
-
-                        {/* 5. Tertiary Gray */}
-                        <tr>
-                          <td style={{ fontSize: `${sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Tertiary gray
+                          <td style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
+                            Ghost / Tertiary
                           </td>
                           <td className="py-2.5 text-center">
                             <button
                               type="button"
                               style={{
                                 color: tokens.textIconColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="font-medium bg-transparent"
                             >
@@ -715,9 +542,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               style={{
                                 backgroundColor: tokens.hoverBackplateTint,
                                 color: tokens.textIconColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="font-medium"
                             >
@@ -730,9 +557,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               style={{
                                 backgroundColor: "transparent",
                                 color: tokens.textIconColor,
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                                 boxShadow: `0 0 0 3px ${tokens.primaryButtonColor}35`,
                               }}
                               className="font-medium"
@@ -746,133 +573,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               disabled
                               style={{
                                 color: "#94A3B8",
-                                borderRadius: `${scaledPillRadius}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(4 * scale)}px ${Math.round(12 * scale)}px`,
-                              }}
-                              className="font-medium cursor-not-allowed opacity-40 bg-transparent"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                        </tr>
-
-                        {/* 6. Link Main */}
-                        <tr>
-                          <td style={{ fontSize: `${sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Link main
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                color: tokens.primaryButtonColor,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
-                              }}
-                              className="font-medium bg-transparent cursor-pointer"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                color: tokens.primaryButtonColor,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
-                              }}
-                              className="font-medium bg-transparent underline cursor-pointer"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                color: tokens.primaryButtonColor,
-                                borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
-                                boxShadow: `0 0 0 3px ${tokens.primaryButtonColor}35`,
-                              }}
-                              className="font-medium bg-transparent"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              disabled
-                              style={{
-                                color: "#94A3B8",
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
-                              }}
-                              className="font-medium cursor-not-allowed opacity-40 bg-transparent"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                        </tr>
-
-                        {/* 7. Link Gray */}
-                        <tr>
-                          <td style={{ fontSize: `${sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Link gray
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                color: tokens.textIconColor,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
-                              }}
-                              className="font-medium bg-transparent cursor-pointer"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                color: tokens.textIconColor,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
-                              }}
-                              className="font-medium bg-transparent underline cursor-pointer"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                color: tokens.textIconColor,
-                                borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
-                                boxShadow: `0 0 0 3px ${tokens.primaryButtonColor}35`,
-                              }}
-                              className="font-medium bg-transparent"
-                            >
-                              Button CTA
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              disabled
-                              style={{
-                                color: "#94A3B8",
-                                fontSize: `${ctaFontSize}px`,
-                                padding: `${Math.round(2 * scale)}px ${Math.round(8 * scale)}px`,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="font-medium cursor-not-allowed opacity-40 bg-transparent"
                             >
@@ -885,13 +588,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── ATOM 2: ICON BUTTON PRIMITIVES ── */}
+                {/* ── ATOM 2: ICON BUTTON PERMUTATIONS ── */}
                 <div id="atom-icon-buttons" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Icon button primitives
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Icon button permutations
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Primary, outline &amp; ghost variants
                     </span>
                   </div>
@@ -902,9 +605,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       type="button"
                       style={{
                         backgroundColor: tokens.primaryButtonColor,
-                        borderRadius: `${scaledRadius}px`,
-                        width: `${scaledHeight}px`,
-                        height: `${scaledHeight}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        width: `${scaled.scaledHeight}px`,
+                        height: `${scaled.scaledHeight}px`,
                       }}
                       className="text-white flex items-center justify-center shadow-xs cursor-pointer hover:brightness-110 active:scale-95 transition-transform"
                       title="Add item"
@@ -922,9 +625,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
                         color: tokens.textIconColor,
-                        borderRadius: `${scaledRadius}px`,
-                        width: `${scaledHeight}px`,
-                        height: `${scaledHeight}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        width: `${scaled.scaledHeight}px`,
+                        height: `${scaled.scaledHeight}px`,
                       }}
                       className="border flex items-center justify-center shadow-xs cursor-pointer hover:bg-neutral-50 active:scale-95 transition-all"
                       title="Filter"
@@ -940,9 +643,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       style={{
                         backgroundColor: tokens.hoverBackplateTint,
                         color: tokens.textIconColor,
-                        borderRadius: `${scaledRadius}px`,
-                        width: `${scaledHeight}px`,
-                        height: `${scaledHeight}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        width: `${scaled.scaledHeight}px`,
+                        height: `${scaled.scaledHeight}px`,
                       }}
                       className="flex items-center justify-center cursor-pointer hover:brightness-95 active:scale-95 transition-all"
                       title="Settings"
@@ -955,13 +658,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── ATOM 3: RAW INPUT ATOM (STATES) ── */}
+                {/* ── ATOM 3: INPUT ATOM PERMUTATIONS ── */}
                 <div id="atom-input" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Input atom states
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Input atom permutations
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Zero-flicker rasterization
                     </span>
                   </div>
@@ -970,13 +673,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     {/* Default state */}
                     <div
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
-                        height: `${scaledHeight}px`,
-                        paddingLeft: `${scaledPaddingX}px`,
-                        paddingRight: `${scaledPaddingX}px`,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
                       }}
                       className="flex items-center gap-2 border"
                     >
@@ -984,7 +687,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         type="text"
                         readOnly
                         value="Rest state"
-                        style={{ fontSize: `${scaledFontSize}px`, color: tokens.textIconColor }}
+                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
                       />
                     </div>
@@ -992,13 +695,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     {/* Focused state */}
                     <div
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: tokens.textIconColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
-                        height: `${scaledHeight}px`,
-                        paddingLeft: `${scaledPaddingX}px`,
-                        paddingRight: `${scaledPaddingX}px`,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
                         boxShadow: `0 0 0 3px ${tokens.textIconColor}12`,
                       }}
                       className="flex items-center gap-2 border"
@@ -1007,7 +710,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         type="text"
                         readOnly
                         value="Focused state (zero flicker)"
-                        style={{ fontSize: `${scaledFontSize}px`, color: tokens.textIconColor }}
+                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
                       />
                     </div>
@@ -1015,13 +718,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     {/* Error / Invalid state */}
                     <div
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: "#EF4444",
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
-                        height: `${scaledHeight}px`,
-                        paddingLeft: `${scaledPaddingX}px`,
-                        paddingRight: `${scaledPaddingX}px`,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
                         boxShadow: "0 0 0 3px rgba(239, 68, 68, 0.12)",
                       }}
                       className="flex items-center gap-2 border"
@@ -1030,7 +733,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         type="text"
                         readOnly
                         value="Invalid email format"
-                        style={{ fontSize: `${scaledFontSize}px`, color: "#DC2626" }}
+                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: "#DC2626" }}
                         className="w-full bg-transparent outline-none"
                       />
                     </div>
@@ -1038,13 +741,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     {/* Disabled state */}
                     <div
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
-                        height: `${scaledHeight}px`,
-                        paddingLeft: `${scaledPaddingX}px`,
-                        paddingRight: `${scaledPaddingX}px`,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
                       }}
                       className="flex items-center gap-2 border opacity-45 cursor-not-allowed"
                     >
@@ -1052,7 +755,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         type="text"
                         disabled
                         value="Disabled state"
-                        style={{ fontSize: `${scaledFontSize}px`, color: tokens.textIconColor }}
+                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none cursor-not-allowed"
                       />
                     </div>
@@ -1061,16 +764,16 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                 {/* ── ATOM 4: TEXTAREA ATOM ── */}
                 <div id="atom-textarea" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Textarea atom
                   </h2>
                   <div
                     style={{
-                      borderRadius: `${scaledRadius}px`,
+                      borderRadius: `${scaled.scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
                       backgroundColor: tokens.universalFillColor,
-                      padding: `${scaledPaddingY}px ${scaledPaddingX}px`,
+                      padding: `${scaled.scaledPaddingY}px ${scaled.scaledPaddingX}px`,
                     }}
                     className="flex items-start border"
                   >
@@ -1078,16 +781,16 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       rows={2}
                       value={textareaValue}
                       onChange={(e) => setTextareaValue(e.target.value)}
-                      style={{ fontSize: `${scaledFontSize}px`, color: tokens.textIconColor }}
+                      style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                       className="w-full bg-transparent outline-none resize-none"
                     />
                   </div>
                 </div>
 
-                {/* ── ATOM 5: RADIO & CHECKBOX ATOMS ── */}
+                {/* ── ATOM 5: RADIO & CHECKBOX PERMUTATIONS ── */}
                 <div id="atom-selection" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Radio &amp; checkbox primitives
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    Radio &amp; checkbox permutations
                   </h2>
 
                   <div className="flex items-center justify-between pt-1">
@@ -1106,7 +809,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           <div style={{ backgroundColor: tokens.primaryButtonColor }} className="w-2 h-2 rounded-full" />
                         )}
                       </div>
-                      <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
+                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
                         Radio atom
                       </span>
                     </label>
@@ -1116,7 +819,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       <div
                         onClick={() => setCheckboxValue((prev) => !prev)}
                         style={{
-                          borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                          borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
                           backgroundColor: checkboxValue ? tokens.primaryButtonColor : tokens.universalFillColor,
                           borderColor: checkboxValue ? tokens.primaryButtonColor : tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
@@ -1129,21 +832,21 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           </svg>
                         )}
                       </div>
-                      <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
+                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
                         Checkbox atom
                       </span>
                     </label>
                   </div>
                 </div>
 
-                {/* ── ATOM 6: SWITCH & SLIDER ── */}
+                {/* ── ATOM 6: SWITCH & SLIDER PERMUTATIONS ── */}
                 <div id="atom-switch-slider" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Switch &amp; slider primitives
                   </h2>
 
                   <div className="flex items-center justify-between pt-1">
-                    <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
+                    <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
                       Toggle switch
                     </span>
                     <button
@@ -1151,12 +854,12 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       onClick={() => setSwitchValue((prev) => !prev)}
                       style={{
                         backgroundColor: switchValue ? tokens.primaryButtonColor : tokens.universalBorderColor,
-                        transition: getTransitionStyle(),
+                        transition: scaled.transitionStyle,
                       }}
                       className="w-10 h-5 flex items-center rounded-full p-0.5 cursor-pointer"
                     >
                       <div
-                        style={{ backgroundColor: tokens.universalFillColor, transition: getTransitionStyle() }}
+                        style={{ backgroundColor: tokens.universalFillColor, transition: scaled.transitionStyle }}
                         className={`w-4 h-4 rounded-full shadow-sm transform ${switchValue ? "translate-x-5" : "translate-x-0"}`}
                       />
                     </button>
@@ -1164,8 +867,8 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                   <div className="pt-2 border-t border-neutral-100 space-y-1">
                     <div className="flex justify-between items-center">
-                      <span style={{ fontSize: `${labelFontSize}px` }} className="text-neutral-600 font-medium">Continuous slider</span>
-                      <span style={{ fontSize: `${sublabelFontSize}px` }} className="font-semibold text-neutral-900 bg-neutral-100 px-1.5 py-0.5 rounded">
+                      <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="text-neutral-600 font-medium">Continuous slider</span>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="font-semibold text-neutral-900 bg-neutral-100 px-1.5 py-0.5 rounded">
                         {sliderValue}
                       </span>
                     </div>
@@ -1180,13 +883,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── ATOM 7: STANDALONE TAG CHIP & SELECT TRIGGER ── */}
+                {/* ── ATOM 7: STANDALONE TAG CHIP & CHEVRON TRIGGER ── */}
                 <div id="atom-chips-triggers" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Tag chip &amp; trigger primitives
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Isolated atomic primitives
                     </span>
                   </div>
@@ -1195,8 +898,8 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     {/* Standalone Tag Chip Atom */}
                     <span
                       style={{
-                        borderRadius: `${scaledPillRadius}px`,
-                        fontSize: `${sublabelFontSize}px`,
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        fontSize: `${scaled.sublabelFontSize}px`,
                         backgroundColor: tokens.hoverBackplateTint,
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
@@ -1215,7 +918,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     {/* Standalone Dropdown Trigger Primitive (Unified SVG Chevron) */}
                     <div
                       style={{
-                        borderRadius: `${Math.max(6, scaledRadius - 8)}px`,
+                        borderRadius: `${Math.max(6, scaled.scaledRadius - 8)}px`,
                         backgroundColor: tokens.hoverBackplateTint,
                         color: tokens.textIconColor,
                         borderWidth: `${tokens.borderWidth}px`,
@@ -1233,19 +936,19 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                 {/* ── ATOM 8: STATUS BADGES & KEYBOARD KEYS ── */}
                 <div id="atom-status-kbd" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Status badge &amp; Kbd primitives
                   </h2>
 
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
                     <div className="flex items-center gap-2">
-                      <span style={{ fontSize: `${sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
                         Active
                       </span>
-                      <span style={{ fontSize: `${sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-medium border border-amber-200">
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-medium border border-amber-200">
                         Pending
                       </span>
-                      <span style={{ fontSize: `${sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-medium border border-rose-200">
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-medium border border-rose-200">
                         Failed
                       </span>
                     </div>
@@ -1253,13 +956,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     <div className="flex items-center gap-1.5">
                       <kbd
                         style={{
-                          borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                          borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           backgroundColor: tokens.hoverBackplateTint,
                           color: tokens.textIconColor,
-                          fontSize: `${sublabelFontSize}px`,
-                          padding: `${Math.round(2 * scale)}px ${Math.round(6 * scale)}px`,
+                          fontSize: `${scaled.sublabelFontSize}px`,
+                          padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                         }}
                         className="font-mono border shadow-xs"
                       >
@@ -1267,13 +970,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       </kbd>
                       <kbd
                         style={{
-                          borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                          borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           backgroundColor: tokens.hoverBackplateTint,
                           color: tokens.textIconColor,
-                          fontSize: `${sublabelFontSize}px`,
-                          padding: `${Math.round(2 * scale)}px ${Math.round(6 * scale)}px`,
+                          fontSize: `${scaled.sublabelFontSize}px`,
+                          padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                         }}
                         className="font-mono border shadow-xs"
                       >
@@ -1285,7 +988,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
                 {/* ── ATOM 9: AVATAR & SPINNER LOADER ── */}
                 <div id="atom-avatar-loader" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Avatar &amp; loader primitives
                   </h2>
 
@@ -1294,8 +997,8 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       <div className="relative">
                         <div
                           style={{
-                            width: `${scaledHeight}px`,
-                            height: `${scaledHeight}px`,
+                            width: `${scaled.scaledHeight}px`,
+                            height: `${scaled.scaledHeight}px`,
                             backgroundColor: tokens.primaryButtonColor,
                           }}
                           className="rounded-full flex items-center justify-center text-white font-medium text-xs shadow-xs"
@@ -1304,14 +1007,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         </div>
                         <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
                       </div>
-                      <span style={{ fontSize: `${labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
+                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
                         Sarah Connor
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full border-2 border-neutral-300 border-t-neutral-800 animate-spin" />
-                      <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500">
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Syncing...
                       </span>
                     </div>
@@ -1328,27 +1031,27 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 {/* ── MOLECULE 1: FORM FIELD (LABEL + INPUT + VALIDATION) ── */}
                 <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       FormField molecule
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
                       Label + Input + HelperText
                     </span>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
                       Account email <span className="text-rose-500">*</span>
                     </label>
                     <div
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isInputFocused ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
-                        height: `${scaledHeight}px`,
-                        paddingLeft: `${scaledPaddingX}px`,
-                        paddingRight: `${scaledPaddingX}px`,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
                         boxShadow: isInputFocused ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                       }}
@@ -1364,11 +1067,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         onBlur={() => setIsInputFocused(false)}
                         onChange={(e) => setTextInput(e.target.value)}
                         placeholder="name@company.com"
-                        style={{ fontSize: `${scaledFontSize}px`, color: tokens.textIconColor }}
+                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
                       />
                     </div>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500 block">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 block">
                       We send monthly receipts and settlement summaries to this inbox.
                     </span>
                   </div>
@@ -1377,30 +1080,30 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 {/* ── MOLECULE 2: INPUT GROUP (INPUT + BUTTON) ── */}
                 <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       InputGroup molecule
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
                       Input + Button joined
                     </span>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
                       Secret API key
                     </label>
                     <div className="flex items-center">
                       <div
                         style={{
-                          borderTopLeftRadius: `${scaledRadius}px`,
-                          borderBottomLeftRadius: `${scaledRadius}px`,
+                          borderTopLeftRadius: `${scaled.scaledRadius}px`,
+                          borderBottomLeftRadius: `${scaled.scaledRadius}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           borderRightWidth: 0,
                           backgroundColor: tokens.universalFillColor,
-                          height: `${scaledHeight}px`,
-                          paddingLeft: `${scaledPaddingX}px`,
-                          paddingRight: `${scaledPaddingX}px`,
+                          height: `${scaled.scaledHeight}px`,
+                          paddingLeft: `${scaled.scaledPaddingX}px`,
+                          paddingRight: `${scaled.scaledPaddingX}px`,
                         }}
                         className="flex-1 flex items-center border"
                       >
@@ -1408,7 +1111,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           type="text"
                           readOnly
                           value={apiKey}
-                          style={{ fontSize: `${scaledFontSize}px`, color: tokens.textIconColor }}
+                          style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                           className="w-full bg-transparent outline-none font-mono"
                         />
                       </div>
@@ -1416,17 +1119,17 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         type="button"
                         onClick={handleCopyApiKey}
                         style={{
-                          borderTopRightRadius: `${scaledRadius}px`,
-                          borderBottomRightRadius: `${scaledRadius}px`,
+                          borderTopRightRadius: `${scaled.scaledRadius}px`,
+                          borderBottomRightRadius: `${scaled.scaledRadius}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           backgroundColor: tokens.primaryButtonColor,
                           color: "#FFFFFF",
-                          height: `${scaledHeight}px`,
-                          paddingLeft: `${scaledPaddingX}px`,
-                          paddingRight: `${scaledPaddingX}px`,
-                          fontSize: `${labelFontSize}px`,
-                          transition: getTransitionStyle(),
+                          height: `${scaled.scaledHeight}px`,
+                          paddingLeft: `${scaled.scaledPaddingX}px`,
+                          paddingRight: `${scaled.scaledPaddingX}px`,
+                          fontSize: `${scaled.labelFontSize}px`,
+                          transition: scaled.transitionStyle,
                         }}
                         className="border font-medium flex items-center gap-1.5 cursor-pointer shadow-xs"
                       >
@@ -1449,23 +1152,23 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 {/* ── MOLECULE 3: SEARCH BAR (ICON + INPUT + KBD) ── */}
                 <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       SearchBar molecule
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
                       Icon + Input + Kbd shortcut
                     </span>
                   </div>
 
                   <div
                     style={{
-                      borderRadius: `${scaledRadius}px`,
+                      borderRadius: `${scaled.scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
                       backgroundColor: tokens.universalFillColor,
-                      height: `${scaledHeight}px`,
-                      paddingLeft: `${scaledPaddingX}px`,
-                      paddingRight: `${scaledPaddingX}px`,
+                      height: `${scaled.scaledHeight}px`,
+                      paddingLeft: `${scaled.scaledPaddingX}px`,
+                      paddingRight: `${scaled.scaledPaddingX}px`,
                     }}
                     className="flex items-center justify-between border"
                   >
@@ -1476,18 +1179,18 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       <input
                         type="text"
                         placeholder="Search resources, customers, invoices..."
-                        style={{ fontSize: `${scaledFontSize}px`, color: tokens.textIconColor }}
+                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
                       />
                     </div>
                     <kbd
                       style={{
-                        borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                        borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
                         backgroundColor: tokens.hoverBackplateTint,
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        fontSize: `${sublabelFontSize - 1}px`,
-                        padding: `${Math.round(2 * scale)}px ${Math.round(6 * scale)}px`,
+                        fontSize: `${scaled.sublabelFontSize - 1}px`,
+                        padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                       }}
                       className="font-mono text-neutral-500 border"
                     >
@@ -1499,28 +1202,28 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 {/* ── MOLECULE 4: SEARCHABLE SELECT ── */}
                 <div id="mol-search-select" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       SearchableSelect molecule
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
                       Trigger + Popover + Filter
                     </span>
                   </div>
 
                   <div ref={roleRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">Team role</label>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Team role</label>
 
                     <button
                       type="button"
                       onClick={() => setIsRoleOpen((prev) => !prev)}
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isRoleOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
-                        height: `${scaledHeight}px`,
-                        paddingLeft: `${scaledPaddingX}px`,
-                        paddingRight: `${scaledPaddingX}px`,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
                         boxShadow: isRoleOpen ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                       }}
@@ -1530,16 +1233,16 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         <svg className="w-4 h-4 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                         </svg>
-                        <span style={{ fontSize: `${scaledFontSize}px`, color: role ? tokens.textIconColor : "#A3A3A3" }} className="truncate font-normal">
+                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: role ? tokens.textIconColor : "#A3A3A3" }} className="truncate font-normal">
                           {role || "Select a role..."}
                         </span>
                       </div>
                       <div
                         style={{
-                          borderRadius: `${Math.max(4, scaledRadius - 8)}px`,
+                          borderRadius: `${Math.max(4, scaled.scaledRadius - 8)}px`,
                           backgroundColor: tokens.hoverBackplateTint,
                           color: tokens.textIconColor,
-                          transition: getTransitionStyle(),
+                          transition: scaled.transitionStyle,
                         }}
                         className="w-5 h-5 flex items-center justify-center shrink-0"
                       >
@@ -1554,13 +1257,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       <div
                         style={{
                           marginTop: `${tokens.menuOffsetGap}px`,
-                          borderRadius: `${scaledRadius}px`,
+                          borderRadius: `${scaled.scaledRadius}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           backgroundColor: tokens.universalFillColor,
                           boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                          padding: `${Math.round(6 * scale)}px`,
-                          transition: getTransitionStyle(),
+                          padding: `${Math.round(6 * scaled.scale)}px`,
+                          transition: scaled.transitionStyle,
                         }}
                         className="absolute top-full left-0 right-0 z-30 space-y-1 border"
                       >
@@ -1571,14 +1274,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           onChange={(e) => setRoleFilter(e.target.value)}
                           placeholder="Search roles..."
                           style={{
-                            borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
+                            borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                             color: tokens.textIconColor,
-                            fontSize: `${sublabelFontSize}px`,
-                            padding: `${Math.round(6 * scale)}px ${Math.round(10 * scale)}px`,
-                            transition: getTransitionStyle(),
+                            fontSize: `${scaled.sublabelFontSize}px`,
+                            padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                            transition: scaled.transitionStyle,
                           }}
                           className="w-full outline-none border"
                         />
@@ -1598,12 +1301,12 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                   setRoleFilter("");
                                 }}
                                 style={{
-                                  borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
+                                  borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
                                   backgroundColor: isSelected ? tokens.primaryButtonColor : isHovered ? tokens.hoverBackplateTint : "transparent",
                                   color: isSelected ? "#FFFFFF" : tokens.textIconColor,
-                                  fontSize: `${labelFontSize}px`,
-                                  padding: `${Math.round(7 * scale)}px ${Math.round(10 * scale)}px`,
-                                  transition: getTransitionStyle(),
+                                  fontSize: `${scaled.labelFontSize}px`,
+                                  padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                                  transition: scaled.transitionStyle,
                                 }}
                                 className="w-full text-left flex items-center justify-between font-normal cursor-pointer"
                               >
@@ -1622,30 +1325,30 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── MOLECULE 5: MULTI-TAG DECK (FIXED HEURISTIC UI WITH "+ Add tag") ── */}
+                {/* ── MOLECULE 5: MULTI-TAG DECK ── */}
                 <div id="mol-tag-deck" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                         TagDeck molecule
                       </h2>
-                      <p style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Removable tag chips with unified &quot;+ Add tag&quot; trigger and live popover selector.
                       </p>
                     </div>
                   </div>
 
                   <div ref={tagRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">Project tags</label>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Project tags</label>
 
                     <div
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isTagOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.universalFillColor,
-                        minHeight: `${scaledHeight}px`,
-                        padding: `${scaledPaddingY}px ${scaledPaddingX}px`,
+                        minHeight: `${scaled.scaledHeight}px`,
+                        padding: `${scaled.scaledPaddingY}px ${scaled.scaledPaddingX}px`,
                         boxShadow: isTagOpen ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                       }}
@@ -1656,8 +1359,8 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         <span
                           key={item}
                           style={{
-                            borderRadius: `${scaledPillRadius}px`,
-                            fontSize: `${sublabelFontSize}px`,
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            fontSize: `${scaled.sublabelFontSize}px`,
                             backgroundColor: tokens.hoverBackplateTint,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
@@ -1679,13 +1382,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         </span>
                       ))}
 
-                      {/* Clean SaaS "+ Add tag" Trigger Button (Heuristic Fix) */}
+                      {/* Clean SaaS "+ Add tag" Trigger Button */}
                       <button
                         type="button"
                         onClick={() => setIsTagOpen((prev) => !prev)}
                         style={{
-                          borderRadius: `${scaledPillRadius}px`,
-                          fontSize: `${sublabelFontSize}px`,
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          fontSize: `${scaled.sublabelFontSize}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           color: tokens.textIconColor,
@@ -1704,13 +1407,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       <div
                         style={{
                           marginTop: `${tokens.menuOffsetGap}px`,
-                          borderRadius: `${scaledRadius}px`,
+                          borderRadius: `${scaled.scaledRadius}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           backgroundColor: tokens.universalFillColor,
                           boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                          padding: `${Math.round(6 * scale)}px`,
-                          transition: getTransitionStyle(),
+                          padding: `${Math.round(6 * scaled.scale)}px`,
+                          transition: scaled.transitionStyle,
                         }}
                         className="absolute top-full left-0 right-0 z-30 space-y-1 border"
                       >
@@ -1721,14 +1424,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           onChange={(e) => setTagFilter(e.target.value)}
                           placeholder="Search tags..."
                           style={{
-                            borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
+                            borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                             color: tokens.textIconColor,
-                            fontSize: `${sublabelFontSize}px`,
-                            padding: `${Math.round(6 * scale)}px ${Math.round(10 * scale)}px`,
-                            transition: getTransitionStyle(),
+                            fontSize: `${scaled.sublabelFontSize}px`,
+                            padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                            transition: scaled.transitionStyle,
                           }}
                           className="w-full outline-none border"
                         />
@@ -1743,12 +1446,12 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                 onMouseLeave={() => setHoveredTag(null)}
                                 onClick={() => handleToggleTag(opt)}
                                 style={{
-                                  borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
+                                  borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
                                   backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
                                   color: tokens.textIconColor,
-                                  fontSize: `${labelFontSize}px`,
-                                  padding: `${Math.round(7 * scale)}px ${Math.round(10 * scale)}px`,
-                                  transition: getTransitionStyle(),
+                                  fontSize: `${scaled.labelFontSize}px`,
+                                  padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                                  transition: scaled.transitionStyle,
                                 }}
                                 className="flex items-center justify-between cursor-pointer"
                               >
@@ -1757,11 +1460,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                                 </span>
                                 <div
                                   style={{
-                                    borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                                    borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
                                     backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
                                     borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
                                     borderWidth: `${tokens.borderWidth}px`,
-                                    transition: getTransitionStyle(),
+                                    transition: scaled.transitionStyle,
                                   }}
                                   className="w-4 h-4 flex items-center justify-center shrink-0 border"
                                 >
@@ -1783,21 +1486,21 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 {/* ── MOLECULE 6: SEGMENTED CONTROL MOLECULE ── */}
                 <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       SegmentedControl molecule
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
                       Conjoined Button primitives
                     </span>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${labelFontSize}px` }} className="block font-medium text-neutral-700">Billing frequency</label>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Billing frequency</label>
                     <div
                       style={{
-                        borderRadius: `${scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.hoverBackplateTint,
-                        padding: `${Math.round(3 * scale)}px`,
+                        padding: `${Math.round(3 * scaled.scale)}px`,
                       }}
                       className="inline-flex items-center gap-1 border border-neutral-200/60"
                     >
@@ -1815,13 +1518,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                             type="button"
                             onClick={() => setSegmentValue(key)}
                             style={{
-                              borderRadius: `${Math.max(4, scaledRadius - 4)}px`,
+                              borderRadius: `${Math.max(4, scaled.scaledRadius - 4)}px`,
                               backgroundColor: isSelected ? tokens.universalFillColor : "transparent",
                               color: isSelected ? tokens.textIconColor : "#71717A",
-                              fontSize: `${sublabelFontSize}px`,
-                              padding: `${Math.round(5 * scale)}px ${Math.round(12 * scale)}px`,
+                              fontSize: `${scaled.sublabelFontSize}px`,
+                              padding: `${Math.round(5 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               boxShadow: isSelected ? "0 1px 3px 0 rgba(0, 0, 0, 0.08)" : "none",
-                              transition: getTransitionStyle(),
+                              transition: scaled.transitionStyle,
                             }}
                             className={`font-medium cursor-pointer ${isSelected ? "font-semibold" : "hover:text-neutral-900"}`}
                           >
@@ -1836,24 +1539,24 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 {/* ── MOLECULE 7: METRIC STAT MOLECULE ── */}
                 <div id="mol-metric-stat" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       MetricStat molecule
                     </h2>
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
                       Label + Value + TrendBadge
                     </span>
                   </div>
 
                   <div className="flex items-baseline justify-between pt-1">
                     <div>
-                      <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-500 font-medium block">
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 font-medium block">
                         Net Revenue Run Rate
                       </span>
                       <div className="flex items-baseline gap-2 pt-0.5">
-                        <span style={{ fontSize: `${headingFontSize + 8}px` }} className="font-semibold text-neutral-900 tracking-tight">
+                        <span style={{ fontSize: `${scaled.headingFontSize + 8}px` }} className="font-semibold text-neutral-900 tracking-tight">
                           $148,200
                         </span>
-                        <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full font-medium inline-flex items-center gap-0.5">
+                        <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full font-medium inline-flex items-center gap-0.5">
                           <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
                           </svg>
@@ -1862,7 +1565,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       </div>
                     </div>
 
-                    <span style={{ fontSize: `${sublabelFontSize}px` }} className="text-neutral-400">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       vs. previous 30 days
                     </span>
                   </div>
