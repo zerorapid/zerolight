@@ -10,6 +10,7 @@ export interface ZeroLightTokens {
   textIconColor: string;
   primaryButtonColor: string;
   hoverBackplateTint: string;
+  erpAccentColor: string;
   borderWidth: number;
   cornerRadius: CornerRadiusPreset;
   heightDensity: HeightDensityPreset;
@@ -25,6 +26,7 @@ export const DEFAULT_TOKENS: ZeroLightTokens = {
   textIconColor: "#111111",
   primaryButtonColor: "#111111", // Default black for primary actions
   hoverBackplateTint: "#F4F4F5",
+  erpAccentColor: "#2563EB", // Enterprise Left-Stripe ERP Accent
   borderWidth: 1,
   cornerRadius: 16,
   heightDensity: 44,
