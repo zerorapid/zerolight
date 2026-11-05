@@ -2,1005 +2,609 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import {
-  Button,
-  ButtonVariant,
-  ButtonSize,
-  Input,
-  InputStatus,
-  Checkbox,
-  Spinner,
-  Heading,
-  Text,
-  Icon,
-  IconName,
-  IconSize,
-  StatusPill,
-  StatusPillVariant,
-  SkeletonBar,
-  TraceDot,
-  TraceDotStatus,
-  MonoValue,
-  SegmentPill,
-  ApertureSlider,
-  KeyBadge,
-  KeyBadgeVariant,
-  ApertureAction,
-  TrendDelta,
-  KbdShortcut,
-  MicroInput,
-  ApertureSwitch,
-  AuditTimestamp,
-  CopyTrigger,
-  CapacityMeter,
-  EntityAvatar,
-} from "@/components/zerolight/atoms";
 
-type GlobalScale = "sm" | "md" | "lg";
-type SimulatedState = "rest" | "error" | "success" | "loading" | "disabled";
+interface ZeroLightSettings {
+  universalBorderColor: string;
+  universalFillColor: string;
+  textIconColor: string;
+  primaryButtonColor: string;
+  borderWidth: number;
+  cornerRadius: number;
+}
 
-export default function AtomsStudioPage() {
-  // Global Studio Calibration State
-  const [globalScale, setGlobalScale] = useState<GlobalScale>("md");
-  const [simulatedState, setSimulatedState] = useState<SimulatedState>("rest");
-  const [searchFilter, setSearchFilter] = useState<string>("");
-  const [activeCategory, setActiveCategory] = useState<string>("all");
+const DEFAULT_SETTINGS: ZeroLightSettings = {
+  universalBorderColor: "#D4D4D4",
+  universalFillColor: "#FFFFFF",
+  textIconColor: "#111111",
+  primaryButtonColor: "#171717",
+  borderWidth: 1,
+  cornerRadius: 16,
+};
 
-  // Editable Atom State: Button
-  const [buttonText, setButtonText] = useState<string>("Authorize Action");
-  const [buttonVariant, setButtonVariant] = useState<ButtonVariant>("primary");
+const REGION_OPTIONS = [
+  "North America (us-east-1)",
+  "Europe (eu-central-1)",
+  "Asia Pacific (ap-south-1)",
+  "South East (ap-southeast-1)",
+];
 
-  // Editable Atom State: Input
-  const [inputText, setInputText] = useState<string>("acme-workspace-prod");
-  const [inputPlaceholder, setInputPlaceholder] = useState<string>("Enter identifier...");
+const PERMISSION_OPTIONS = [
+  "View Invoices",
+  "Manage Approvals",
+  "Execute Settlement",
+  "Administrator Access",
+];
 
-  // Editable Atom State: Checkbox
-  const [checkboxChecked, setCheckboxChecked] = useState<boolean>(true);
-  const [checkboxLabel, setCheckboxLabel] = useState<string>("Enable SLA Underwriting");
+export default function AtomsLightStudioPage() {
+  const [settings, setSettings] = useState<ZeroLightSettings>(DEFAULT_SETTINGS);
 
-  // Editable Atom State: Typography
-  const [headingText, setHeadingText] = useState<string>("Enterprise Access Provisioning");
-  const [bodyText, setBodyText] = useState<string>(
-    "Indivisible SaaS atom built from first principles with zero external UI packages."
-  );
+  // Input states (simple React state)
+  const [textInput, setTextInput] = useState<string>("");
+  const [region, setRegion] = useState<string>("");
+  const [isRegionOpen, setIsRegionOpen] = useState<boolean>(false);
+  const [permissions, setPermissions] = useState<string[]>(["View Invoices"]);
+  const [isPermOpen, setIsPermOpen] = useState<boolean>(false);
 
-  // Editable Atom State: Icon
-  const [selectedIcon, setSelectedIcon] = useState<IconName>("shield");
-  const [iconSize, setIconSize] = useState<IconSize>("md");
+  // Action states
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
+  const [confirmed, setConfirmed] = useState<boolean>(false);
 
-  // Editable Atom State: StatusPill
-  const [statusPillText, setStatusPillText] = useState<string>("Audit Certified");
-  const [statusPillVariant, setStatusPillVariant] = useState<StatusPillVariant>("success");
-
-  // Editable Atom State: MonoValue
-  const [monoVal, setMonoVal] = useState<number>(14250);
-  const [prevMonoVal, setPrevMonoVal] = useState<number>(18000);
-
-  // Editable Atom State: TrendDelta
-  const [trendVal, setTrendVal] = useState<number>(24.5);
-  const [isInverseTrend, setIsInverseTrend] = useState<boolean>(false);
-
-  // Editable Atom State: ApertureSlider
-  const [sliderVal, setSliderVal] = useState<number>(20);
-
-  // Editable Atom State: ApertureSwitch
-  const [switchState, setSwitchState] = useState<boolean>(true);
-
-  // Editable Atom State: CapacityMeter
-  const [quotaVal, setQuotaVal] = useState<number>(85);
-
-  // Editable Atom State: SegmentPill
-  const [selectedPill, setSelectedPill] = useState<string>("Enterprise");
-
-  // Editable Atom State: EntityAvatar
-  const [avatarName, setAvatarName] = useState<string>("Acme Industrial Cloud");
-
-  // Editable Atom State: KeyBadge
-  const [badgeText, setBadgeText] = useState<string>("SOC2-CERTIFIED");
-  const [badgeVariant, setBadgeVariant] = useState<KeyBadgeVariant>("emerald");
-
-  // Copy Feedback
-  const [copiedSnippet, setCopiedSnippet] = useState<string | null>(null);
-
-  const copyCode = (code: string, id: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedSnippet(id);
-    setTimeout(() => setCopiedSnippet(null), 2000);
+  const handleResetDefaults = () => {
+    setSettings(DEFAULT_SETTINGS);
   };
 
-  const ATOM_NAV = [
-    {
-      group: "Brad Frost Core 4",
-      items: [
-        { id: "atom-button", label: "<Button />", tag: "Action" },
-        { id: "atom-input", label: "<Input />", tag: "Capture" },
-        { id: "atom-icon", label: "<Icon />", tag: "Visual" },
-        { id: "atom-typography", label: "<Typography />", tag: "Text" },
-      ],
-    },
-    {
-      group: "Precision Data Capture",
-      items: [
-        { id: "atom-checkbox", label: "<Checkbox />", tag: "Binary" },
-        { id: "atom-switch", label: "<ApertureSwitch />", tag: "Toggle" },
-        { id: "atom-segment", label: "<SegmentPill />", tag: "Choice" },
-        { id: "atom-slider", label: "<ApertureSlider />", tag: "Range" },
-        { id: "atom-micro-input", label: "<MicroInput />", tag: "Inline" },
-      ],
-    },
-    {
-      group: "Quantitative & Telemetry",
-      items: [
-        { id: "atom-mono-value", label: "<MonoValue />", tag: "Math" },
-        { id: "atom-trend-delta", label: "<TrendDelta />", tag: "Sentiment" },
-        { id: "atom-capacity-meter", label: "<CapacityMeter />", tag: "Quota" },
-        { id: "atom-timestamp", label: "<AuditTimestamp />", tag: "Chrono" },
-      ],
-    },
-    {
-      group: "Identity, Status & Utility",
-      items: [
-        { id: "atom-trace-dot", label: "<TraceDot />", tag: "Pulse" },
-        { id: "atom-key-badge", label: "<KeyBadge />", tag: "Meta" },
-        { id: "atom-status-pill", label: "<StatusPill />", tag: "State" },
-        { id: "atom-entity-avatar", label: "<EntityAvatar />", tag: "Initials" },
-        { id: "atom-spinner", label: "<Spinner />", tag: "Loader" },
-        { id: "atom-copy-trigger", label: "<CopyTrigger />", tag: "Action" },
-        { id: "atom-skeleton", label: "<SkeletonBar />", tag: "Speed" },
-      ],
-    },
-  ];
+  const handleTogglePermission = (perm: string) => {
+    setPermissions((prev) =>
+      prev.includes(perm) ? prev.filter((p) => p !== perm) : [...prev, perm]
+    );
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("https://zerolight.dev/atoms");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  const handleConfirm = () => {
+    setConfirmed(true);
+    setIsSyncing(true);
+    setTimeout(() => {
+      setConfirmed(false);
+      setIsSyncing(false);
+    }, 2000);
+  };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
-      {/* Top Header */}
-      <header className="border-b border-neutral-800/80 bg-neutral-950/90 backdrop-blur sticky top-0 z-50 px-6 py-3">
-        <div className="max-w-[1500px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="w-7 h-7 rounded-md bg-emerald-500 flex items-center justify-center font-mono font-bold text-xs text-neutral-950 shadow-sm shadow-emerald-900/50 hover:bg-emerald-400 transition"
-            >
+    <div className="min-h-screen bg-[#F8F9FA] text-[#111111] flex font-sans selection:bg-neutral-200">
+      {/* Clean Apple/Airbnb Sidebar */}
+      <aside className="w-56 border-r border-[#EBEBEB] bg-[#FFFFFF] p-6 hidden md:flex flex-col justify-between select-none">
+        <div className="space-y-6">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-[#111111] flex items-center justify-center font-bold text-xs text-white">
               ZL
-            </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm font-semibold tracking-wide text-neutral-100">
-                  ZeroLight SaaS Atom Studio
-                </h1>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 font-medium">
-                  20 Canonical Atoms
-                </span>
-              </div>
-              <p className="text-[11px] text-neutral-400">
-                Brad Frost Atomic Model • Editable • Scalable • Customizable • Tactile Motion
-              </p>
             </div>
-          </div>
+            <span className="font-semibold text-sm tracking-tight text-[#111111]">
+              ZeroLight
+            </span>
+          </Link>
 
-          {/* Quick Calibration Bar */}
-          <div className="flex items-center gap-4">
-            {/* Scale Controller */}
-            <div className="hidden sm:flex items-center gap-1.5 p-1 rounded-lg bg-neutral-900 border border-neutral-800 text-xs font-mono">
-              <span className="text-neutral-500 text-[10px] px-1 uppercase">Scale:</span>
-              {(["sm", "md", "lg"] as GlobalScale[]).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setGlobalScale(s)}
-                  className={`px-2 py-0.5 rounded text-[11px] font-semibold transition ${
-                    globalScale === s
-                      ? "bg-emerald-500 text-neutral-950 shadow-sm"
-                      : "text-neutral-400 hover:text-white"
-                  }`}
-                >
-                  {s.toUpperCase()}
-                </button>
-              ))}
+          <nav className="space-y-1">
+            <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-100 text-neutral-900 font-semibold text-xs cursor-pointer">
+              <span>Atoms</span>
+              <span className="text-[10px] font-normal text-neutral-400 bg-white px-1.5 py-0.5 rounded-md border border-neutral-200">
+                Studio
+              </span>
             </div>
-
-            {/* State Simulator */}
-            <div className="hidden md:flex items-center gap-1.5 p-1 rounded-lg bg-neutral-900 border border-neutral-800 text-xs font-mono">
-              <span className="text-neutral-500 text-[10px] px-1 uppercase">State:</span>
-              {(["rest", "error", "success", "loading", "disabled"] as SimulatedState[]).map((st) => (
-                <button
-                  key={st}
-                  type="button"
-                  onClick={() => setSimulatedState(st)}
-                  className={`px-2 py-0.5 rounded text-[10px] uppercase font-semibold transition ${
-                    simulatedState === st
-                      ? "bg-neutral-100 text-neutral-950 shadow-sm"
-                      : "text-neutral-400 hover:text-white"
-                  }`}
-                >
-                  {st}
-                </button>
-              ))}
-            </div>
-
-            <Link
-              href="/"
-              className="text-xs font-mono px-3 py-1.5 rounded-md border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 text-neutral-200 transition"
+            <a
+              href="#input-atoms"
+              className="flex items-center px-3 py-2 rounded-xl text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 text-xs transition-colors"
             >
-              ← Workbench
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Studio Workspace Layout */}
-      <div className="flex-1 max-w-[1500px] mx-auto w-full flex">
-        {/* LEFT SIDEBAR: Atoms Directory */}
-        <aside className="w-64 border-r border-neutral-800/80 p-4 space-y-6 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto hidden lg:block select-none bg-neutral-950/60">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs font-mono text-neutral-400 px-1">
-              <span className="font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Atoms Directory
-              </span>
-              <span className="text-[10px] text-neutral-500">Brad Frost</span>
-            </div>
-            <input
-              type="text"
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              placeholder="Filter atoms..."
-              className="w-full bg-neutral-900 border border-neutral-800 rounded-md px-2.5 py-1 text-xs text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-emerald-500 font-mono"
-            />
-          </div>
-
-          <nav className="space-y-5 text-xs">
-            {ATOM_NAV.map((group) => {
-              const filteredItems = group.items.filter(
-                (item) =>
-                  item.label.toLowerCase().includes(searchFilter.toLowerCase()) ||
-                  item.tag.toLowerCase().includes(searchFilter.toLowerCase())
-              );
-              if (filteredItems.length === 0) return null;
-
-              return (
-                <div key={group.group} className="space-y-1.5">
-                  <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-500 px-2">
-                    {group.group}
-                  </div>
-                  <div className="space-y-0.5 font-mono">
-                    {filteredItems.map((item) => (
-                      <a
-                        key={item.id}
-                        href={`#${item.id}`}
-                        className="flex items-center justify-between px-2 py-1.5 rounded-md text-neutral-400 hover:text-neutral-100 hover:bg-neutral-900 transition-colors"
-                      >
-                        <span className="truncate">{item.label}</span>
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-neutral-900 border border-neutral-800 text-neutral-500">
-                          {item.tag}
-                        </span>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+              Inputs
+            </a>
+            <a
+              href="#action-atoms"
+              className="flex items-center px-3 py-2 rounded-xl text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 text-xs transition-colors"
+            >
+              Actions
+            </a>
+            <a
+              href="#visual-studio"
+              className="flex items-center px-3 py-2 rounded-xl text-neutral-500 hover:text-neutral-900 hover:bg-neutral-50 text-xs transition-colors"
+            >
+              Visual Studio
+            </a>
           </nav>
-        </aside>
+        </div>
 
-        {/* RIGHT WORKBENCH: Editable, Scalable, Customizable Atoms Showcase */}
-        <main className="flex-1 p-6 sm:p-8 space-y-12 overflow-y-auto">
-          {/* Studio Banner */}
-          <section className="rounded-xl border border-neutral-800 bg-neutral-900/30 p-5 space-y-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <TraceDot status="settled" />
-                <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-neutral-200">
-                  Living Atomic Atelier &amp; Component Lab
-                </h2>
-              </div>
-              <span className="text-[11px] font-mono text-emerald-400">
-                Interactive Canvas • Zero External Bloat
-              </span>
-            </div>
-            <p className="text-xs text-neutral-400 leading-relaxed font-sans max-w-3xl">
-              Every atom on this canvas is 100% interactive. Tweak labels, adjust sizes, and toggle states
-              in the inline control drawers. All physics (spring deflections, shimmers, morphs) run via native GPU CSS.
-            </p>
-          </section>
+        <div className="text-[11px] text-neutral-400">
+          ZeroLight UI • Apple &amp; Airbnb Spec
+        </div>
+      </aside>
 
+      {/* Main Content Area */}
+      <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start overflow-y-auto">
+        <div className="w-full max-w-[460px] space-y-6">
           {/* ══════════════════════════════════════════════════════════
-              SECTION 1: BRAD FROST CORE 4 ATOMS
+              CARD 1: THE LIVE ATOMS SHOWCASE
              ══════════════════════════════════════════════════════════ */}
-          <div className="space-y-8">
-            <div className="border-b border-neutral-800 pb-2">
-              <Heading level="h3" className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono text-sm">01</span>
-                <span>The Core 4 Atoms (Brad Frost Foundation)</span>
-              </Heading>
-              <Text variant="caption" color="muted">
-                The indivisible foundation: Action, Data Capture, Visual Container, and Typography.
-              </Text>
-            </div>
+          <div
+            style={{
+              backgroundColor: settings.universalFillColor,
+              borderColor: settings.universalBorderColor,
+              borderWidth: `${settings.borderWidth}px`,
+              borderRadius: "28px",
+            }}
+            className="border shadow-[0_2px_16px_rgba(0,0,0,0.04)] p-7 space-y-7 transition-all duration-150"
+          >
+            {/* --- INPUT ATOMS --- */}
+            <div id="input-atoms" className="space-y-4">
+              <span className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase select-none block">
+                INPUT ATOMS
+              </span>
 
-            {/* ATOM: BUTTON */}
-            <section id="atom-button" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;Button /&gt;</span>
-                  <KeyBadge label="Action Atom" variant="emerald" size="xs" />
+              {/* 1. Text Input */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-medium text-neutral-800">1. Text Input</span>
+                  <span className="text-[11px] text-neutral-400 font-normal">Leading Icon</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyCode(
-                      `<Button variant="${buttonVariant}" size="${globalScale}">${buttonText}</Button>`,
-                      "btn"
-                    )
-                  }
-                  className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white"
+                <div
+                  style={{
+                    borderRadius: `${settings.cornerRadius}px`,
+                    borderColor: settings.universalBorderColor,
+                    borderWidth: `${settings.borderWidth}px`,
+                  }}
+                  className="h-11 px-3.5 flex items-center bg-white border transition-colors focus-within:border-neutral-900 focus-within:ring-2 focus-within:ring-neutral-900/10"
                 >
-                  {copiedSnippet === "btn" ? "Copied!" : "Copy JSX"}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                {/* Live Preview Stage */}
-                <div className="md:col-span-7 flex flex-col items-center justify-center p-8 rounded-lg bg-neutral-950 border border-neutral-850 min-h-[140px] space-y-4">
-                  <Button
-                    variant={simulatedState === "error" ? "danger" : buttonVariant}
-                    size={globalScale}
-                    loading={simulatedState === "loading"}
-                    disabled={simulatedState === "disabled"}
-                    onClick={() => alert(`Executed: ${buttonText}`)}
+                  <svg
+                    className="w-4 h-4 text-neutral-400 mr-2.5 flex-shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
                   >
-                    {buttonText}
-                  </Button>
-                  <span className="text-[10px] font-mono text-neutral-500">
-                    Click to test spring deflection (`active:scale-[0.985]`)
-                  </span>
-                </div>
-
-                {/* Inline Customizer */}
-                <div className="md:col-span-5 space-y-3 text-xs font-mono bg-neutral-950/60 p-4 rounded-lg border border-neutral-850">
-                  <div className="text-[10px] font-bold uppercase text-neutral-500 tracking-wider">
-                    Customizer Controls
-                  </div>
-                  <div>
-                    <label className="text-[11px] text-neutral-400 block mb-1">Button Label:</label>
-                    <input
-                      type="text"
-                      value={buttonText}
-                      onChange={(e) => setButtonText(e.target.value)}
-                      className="w-full bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-neutral-100 font-sans text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] text-neutral-400 block mb-1">Variant:</label>
-                    <div className="flex flex-wrap gap-1">
-                      {(["primary", "secondary", "outline", "ghost", "danger"] as ButtonVariant[]).map((v) => (
-                        <button
-                          key={v}
-                          type="button"
-                          onClick={() => setButtonVariant(v)}
-                          className={`px-2 py-0.5 rounded text-[10px] font-semibold transition ${
-                            buttonVariant === v
-                              ? "bg-emerald-500 text-neutral-950"
-                              : "bg-neutral-900 text-neutral-400 hover:text-white"
-                          }`}
-                        >
-                          {v}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* ATOM: INPUT */}
-            <section id="atom-input" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;Input /&gt;</span>
-                  <KeyBadge label="Data Capture Atom" variant="emerald" size="xs" />
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyCode(
-                      `<Input value={val} onChange={setVal} placeholder="${inputPlaceholder}" size="${globalScale}" />`,
-                      "inp"
-                    )
-                  }
-                  className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white"
-                >
-                  {copiedSnippet === "inp" ? "Copied!" : "Copy JSX"}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div className="md:col-span-7 flex flex-col justify-center p-8 rounded-lg bg-neutral-950 border border-neutral-850 min-h-[140px] space-y-3">
-                  <Input
-                    value={inputText}
-                    onChange={setInputText}
-                    size={globalScale}
-                    status={
-                      simulatedState === "error"
-                        ? "error"
-                        : simulatedState === "success"
-                        ? "success"
-                        : "default"
-                    }
-                    disabled={simulatedState === "disabled"}
-                    placeholder={inputPlaceholder}
-                    prefixIcon={<Icon name="search" size="sm" />}
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" strokeLinecap="round" />
+                  </svg>
+                  <input
+                    type="text"
+                    value={textInput}
+                    onChange={(e) => setTextInput(e.target.value)}
+                    placeholder="Search invoices or customer ID..."
+                    className="w-full bg-transparent text-xs text-[#111111] placeholder:text-neutral-400 focus:outline-none"
                   />
-                  <div className="flex justify-between text-[11px] font-mono text-neutral-500">
-                    <span>Value: {inputText || "(empty)"}</span>
-                    <span>Includes tactile clear button &amp; focus ring</span>
-                  </div>
-                </div>
-
-                <div className="md:col-span-5 space-y-3 text-xs font-mono bg-neutral-950/60 p-4 rounded-lg border border-neutral-850">
-                  <div className="text-[10px] font-bold uppercase text-neutral-500 tracking-wider">
-                    Customizer Controls
-                  </div>
-                  <div>
-                    <label className="text-[11px] text-neutral-400 block mb-1">Placeholder:</label>
-                    <input
-                      type="text"
-                      value={inputPlaceholder}
-                      onChange={(e) => setInputPlaceholder(e.target.value)}
-                      className="w-full bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-neutral-100 font-sans text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] text-neutral-400 block mb-1">Quick Presets:</label>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setInputText("dev@zerorapid.com")}
-                        className="px-2 py-0.5 rounded bg-neutral-900 text-neutral-300 text-[10px]"
-                      >
-                        Email
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setInputText("api_live_849204")}
-                        className="px-2 py-0.5 rounded bg-neutral-900 text-neutral-300 text-[10px]"
-                      >
-                        API Key
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setInputText("")}
-                        className="px-2 py-0.5 rounded bg-neutral-900 text-rose-400 text-[10px]"
-                      >
-                        Clear
-                      </button>
-                    </div>
-                  </div>
+                  {textInput && (
+                    <button
+                      type="button"
+                      onClick={() => setTextInput("")}
+                      className="text-neutral-400 hover:text-neutral-600 p-1"
+                    >
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
-            </section>
 
-            {/* ATOM: ICON */}
-            <section id="atom-icon" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;Icon /&gt;</span>
-                  <KeyBadge label="Visual Asset Container Atom" variant="emerald" size="xs" />
+              {/* 2. Searchable Select */}
+              <div className="space-y-1.5 relative">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-medium text-neutral-800">2. Searchable Select</span>
+                  <span className="text-[11px] text-neutral-400 font-normal">Regional Gateway</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyCode(`<Icon name="${selectedIcon}" size="${iconSize}" />`, "ico")
-                  }
-                  className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white"
+                <div
+                  onClick={() => setIsRegionOpen(!isRegionOpen)}
+                  style={{
+                    borderRadius: `${settings.cornerRadius}px`,
+                    borderColor: settings.universalBorderColor,
+                    borderWidth: `${settings.borderWidth}px`,
+                  }}
+                  className="h-11 px-3.5 flex items-center justify-between bg-white border cursor-pointer select-none transition-colors hover:border-neutral-400"
                 >
-                  {copiedSnippet === "ico" ? "Copied!" : "Copy JSX"}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div className="md:col-span-7 flex items-center justify-center p-8 rounded-lg bg-neutral-950 border border-neutral-850 min-h-[140px] gap-6">
-                  <div className="p-4 rounded-xl bg-neutral-900 border border-neutral-800 text-emerald-400 shadow-sm flex items-center justify-center">
-                    <Icon name={selectedIcon} size={iconSize} stroke="regular" />
+                  <div className="flex items-center min-w-0 mr-2">
+                    <svg
+                      className="w-4 h-4 text-neutral-400 mr-2.5 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.8}
+                      stroke="currentColor"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 2a14.5 14.5 0 0 0 0 20M12 2a14.5 14.5 0 0 1 0 20M2 12h20" strokeLinecap="round" />
+                    </svg>
+                    <span className={`text-xs truncate ${region ? "text-neutral-900 font-medium" : "text-neutral-400"}`}>
+                      {region || "Select cluster region..."}
+                    </span>
                   </div>
-                  <div className="text-xs font-mono text-neutral-400">
-                    <div>Name: <span className="text-neutral-100 font-bold">{selectedIcon}</span></div>
-                    <div>Scale: <span className="text-neutral-100 font-bold">{iconSize}</span></div>
-                    <div className="text-[10px] text-neutral-500">Auto `currentColor` inheritance</div>
+                  <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-3.5 h-3.5 text-neutral-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
                   </div>
                 </div>
 
-                <div className="md:col-span-5 space-y-3 text-xs font-mono bg-neutral-950/60 p-4 rounded-lg border border-neutral-850">
-                  <div className="text-[10px] font-bold uppercase text-neutral-500 tracking-wider">
-                    Select Icon
-                  </div>
-                  <div className="grid grid-cols-4 gap-1.5 text-center">
-                    {(
-                      [
-                        "shield",
-                        "zap",
-                        "terminal",
-                        "cloud",
-                        "cube",
-                        "key",
-                        "check",
-                        "alert",
-                        "search",
-                        "settings",
-                        "sparkle",
-                        "clock",
-                      ] as IconName[]
-                    ).map((ic) => (
-                      <button
-                        key={ic}
-                        type="button"
-                        onClick={() => setSelectedIcon(ic)}
-                        className={`p-1.5 rounded flex flex-col items-center gap-1 transition ${
-                          selectedIcon === ic
-                            ? "bg-emerald-500 text-neutral-950 font-bold"
-                            : "bg-neutral-900 text-neutral-400 hover:text-white"
+                {/* Dropdown Popover */}
+                {isRegionOpen && (
+                  <div className="absolute top-[68px] left-0 right-0 z-30 bg-white border border-[#E5E5E5] rounded-2xl shadow-xl p-1.5 space-y-0.5">
+                    {REGION_OPTIONS.map((opt) => (
+                      <div
+                        key={opt}
+                        onClick={() => {
+                          setRegion(opt);
+                          setIsRegionOpen(false);
+                        }}
+                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs cursor-pointer transition-colors ${
+                          region === opt
+                            ? "bg-neutral-100 text-neutral-900 font-semibold"
+                            : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
                         }`}
                       >
-                        <Icon name={ic} size="sm" />
-                        <span className="text-[8px] truncate max-w-full">{ic}</span>
-                      </button>
+                        <span>{opt}</span>
+                        {region === opt && (
+                          <svg className="w-3.5 h-3.5 text-neutral-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                          </svg>
+                        )}
+                      </div>
                     ))}
                   </div>
-                </div>
-              </div>
-            </section>
-
-            {/* ATOM: TYPOGRAPHY */}
-            <section id="atom-typography" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">
-                    &lt;Heading /&gt; &amp; &lt;Text /&gt;
-                  </span>
-                  <KeyBadge label="Typography Atoms" variant="emerald" size="xs" />
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyCode(
-                      `<Heading level="h2">${headingText}</Heading>\n<Text variant="body">${bodyText}</Text>`,
-                      "typ"
-                    )
-                  }
-                  className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white"
-                >
-                  {copiedSnippet === "typ" ? "Copied!" : "Copy JSX"}
-                </button>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div className="md:col-span-7 flex flex-col justify-center p-8 rounded-lg bg-neutral-950 border border-neutral-850 min-h-[140px] space-y-2">
-                  <Heading level="h2">{headingText}</Heading>
-                  <Text variant="body" color="secondary">
-                    {bodyText}
-                  </Text>
-                  <div className="pt-2 flex gap-2">
-                    <Text variant="label" color="brand">LABEL ATOM</Text>
-                    <Text variant="code">@zerorapid/zerolight</Text>
-                  </div>
+              {/* 3. Multi-Select Tags */}
+              <div className="space-y-1.5 relative">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="font-medium text-neutral-800">3. Multi-Select Tags</span>
+                  <span className="text-[11px] text-neutral-400 font-normal">Security Scopes</span>
                 </div>
-
-                <div className="md:col-span-5 space-y-3 text-xs font-mono bg-neutral-950/60 p-4 rounded-lg border border-neutral-850">
-                  <div className="text-[10px] font-bold uppercase text-neutral-500 tracking-wider">
-                    Edit Text Tokens
-                  </div>
-                  <div>
-                    <label className="text-[11px] text-neutral-400 block mb-1">Heading String:</label>
-                    <input
-                      type="text"
-                      value={headingText}
-                      onChange={(e) => setHeadingText(e.target.value)}
-                      className="w-full bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-neutral-100 font-sans text-xs"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[11px] text-neutral-400 block mb-1">Body Text:</label>
-                    <textarea
-                      value={bodyText}
-                      onChange={(e) => setBodyText(e.target.value)}
-                      rows={2}
-                      className="w-full bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-neutral-100 font-sans text-xs"
-                    />
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-
-          {/* ══════════════════════════════════════════════════════════
-              SECTION 2: PRECISION DATA CAPTURE ATOMS
-             ══════════════════════════════════════════════════════════ */}
-          <div className="space-y-8 pt-6 border-t border-neutral-800">
-            <div className="border-b border-neutral-800 pb-2">
-              <Heading level="h3" className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono text-sm">02</span>
-                <span>Precision Data Capture Atoms</span>
-              </Heading>
-              <Text variant="caption" color="muted">
-                Indivisible selection toggles, binary switches, range constraints, and inline fields.
-              </Text>
-            </div>
-
-            {/* Checkbox */}
-            <section id="atom-checkbox" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;Checkbox /&gt;</span>
-                  <KeyBadge label="Binary Capture" variant="emerald" size="xs" />
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyCode(
-                      `<Checkbox checked={checked} onChange={setChecked} label="${checkboxLabel}" />`,
-                      "chk"
-                    )
-                  }
-                  className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white"
-                >
-                  {copiedSnippet === "chk" ? "Copied!" : "Copy JSX"}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div className="md:col-span-7 flex items-center justify-center p-8 rounded-lg bg-neutral-950 border border-neutral-850 min-h-[120px]">
-                  <Checkbox
-                    checked={checkboxChecked}
-                    onChange={setCheckboxChecked}
-                    label={checkboxLabel}
-                    description="Kinetic SVG stroke draw with spring deflection"
-                    disabled={simulatedState === "disabled"}
-                  />
-                </div>
-                <div className="md:col-span-5 space-y-3 text-xs font-mono bg-neutral-950/60 p-4 rounded-lg border border-neutral-850">
-                  <label className="text-[11px] text-neutral-400 block mb-1">Checkbox Label:</label>
-                  <input
-                    type="text"
-                    value={checkboxLabel}
-                    onChange={(e) => setCheckboxLabel(e.target.value)}
-                    className="w-full bg-neutral-900 border border-neutral-800 rounded px-2 py-1 text-neutral-100 font-sans text-xs"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setCheckboxChecked(!checkboxChecked)}
-                    className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 text-xs"
-                  >
-                    Toggle State ({checkboxChecked ? "Checked" : "Unchecked"})
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            {/* ApertureSwitch */}
-            <section id="atom-switch" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;ApertureSwitch /&gt;</span>
-                  <KeyBadge label="Spring Thumb Physics" variant="emerald" size="xs" />
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyCode(
-                      `<ApertureSwitch checked={state} onChange={setState} label="Auto Settle" />`,
-                      "sw"
-                    )
-                  }
-                  className="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white"
-                >
-                  {copiedSnippet === "sw" ? "Copied!" : "Copy JSX"}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div className="md:col-span-7 flex items-center justify-center p-8 rounded-lg bg-neutral-950 border border-neutral-850 min-h-[120px]">
-                  <ApertureSwitch
-                    checked={switchState}
-                    onChange={setSwitchState}
-                    label="Underwriting Coverage"
-                    description="Features cubic-bezier spring thumb with emerald peripheral glow"
-                    disabled={simulatedState === "disabled"}
-                  />
-                </div>
-                <div className="md:col-span-5 space-y-3 text-xs font-mono bg-neutral-950/60 p-4 rounded-lg border border-neutral-850">
-                  <div className="text-[11px] text-neutral-400">Current Physics State:</div>
-                  <div className="font-bold text-emerald-400">
-                    {switchState ? "ACTIVE • GLOW RING ON" : "IDLE • OBSIDIAN REST"}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setSwitchState(!switchState)}
-                    className="px-2.5 py-1 rounded bg-neutral-900 border border-neutral-800 text-neutral-300 text-xs"
-                  >
-                    Toggle Switch
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            {/* SegmentPill */}
-            <section id="atom-segment" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;SegmentPill /&gt;</span>
-                  <KeyBadge label="Mode Choice" variant="emerald" size="xs" />
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center justify-between p-6 rounded-lg bg-neutral-950 border border-neutral-850 gap-4">
-                <div className="flex flex-wrap gap-2">
-                  {["Standard", "Enterprise", "VIP", "Global Partner"].map((tier) => (
-                    <SegmentPill
-                      key={tier}
-                      label={tier}
-                      selected={selectedPill === tier}
-                      onSelect={() => setSelectedPill(tier)}
-                      disabled={simulatedState === "disabled"}
-                    />
-                  ))}
-                </div>
-                <div className="text-xs font-mono text-neutral-400">
-                  Selected: <span className="text-emerald-400 font-bold">{selectedPill}</span>
-                </div>
-              </div>
-            </section>
-
-            {/* ApertureSlider */}
-            <section id="atom-slider" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;ApertureSlider /&gt;</span>
-                  <KeyBadge label="Constraint Range" variant="emerald" size="xs" />
-                </div>
-              </div>
-
-              <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-850 space-y-4">
-                <ApertureSlider
-                  label="Concession Limit Threshold"
-                  unit="%"
-                  min={0}
-                  max={40}
-                  value={sliderVal}
-                  onChange={setSliderVal}
-                  disabled={simulatedState === "disabled"}
-                />
-              </div>
-            </section>
-          </div>
-
-          {/* ══════════════════════════════════════════════════════════
-              SECTION 3: QUANTITATIVE & TELEMETRY ATOMS
-             ══════════════════════════════════════════════════════════ */}
-          <div className="space-y-8 pt-6 border-t border-neutral-800">
-            <div className="border-b border-neutral-800 pb-2">
-              <Heading level="h3" className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono text-sm">03</span>
-                <span>Quantitative &amp; Telemetry Atoms</span>
-              </Heading>
-              <Text variant="caption" color="muted">
-                Mathematical delta grading, monospace numbers with value update shimmers, and quota progress bars.
-              </Text>
-            </div>
-
-            {/* MonoValue */}
-            <section id="atom-mono-value" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;MonoValue /&gt;</span>
-                  <KeyBadge label="Value-Shimmer Physics" variant="emerald" size="xs" />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPrevMonoVal(monoVal);
-                    setMonoVal(Math.floor(5000 + Math.random() * 25000));
+                <div
+                  onClick={() => setIsPermOpen(!isPermOpen)}
+                  style={{
+                    borderRadius: `${settings.cornerRadius}px`,
+                    borderColor: settings.universalBorderColor,
+                    borderWidth: `${settings.borderWidth}px`,
                   }}
-                  className="px-3 py-1 text-xs font-mono font-semibold rounded bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 transition active:scale-95 shadow-sm"
+                  className="h-11 px-3.5 flex items-center justify-between bg-white border cursor-pointer select-none transition-colors hover:border-neutral-400"
                 >
-                  ⚡ Trigger Shimmer Bump
+                  <div className="flex items-center min-w-0 mr-2">
+                    <svg
+                      className="w-4 h-4 text-neutral-400 mr-2.5 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.8}
+                      stroke="currentColor"
+                    >
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {permissions.length > 0 ? (
+                      <span className="text-xs text-neutral-900 font-medium truncate">
+                        {permissions.join(", ")}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-neutral-400">Assign permissions...</span>
+                    )}
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-3.5 h-3.5 text-neutral-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Multi-Select Dropdown */}
+                {isPermOpen && (
+                  <div className="absolute top-[68px] left-0 right-0 z-30 bg-white border border-[#E5E5E5] rounded-2xl shadow-xl p-2 space-y-1">
+                    {PERMISSION_OPTIONS.map((perm) => {
+                      const isSelected = permissions.includes(perm);
+                      return (
+                        <div
+                          key={perm}
+                          onClick={() => handleTogglePermission(perm)}
+                          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs cursor-pointer hover:bg-neutral-50 transition-colors"
+                        >
+                          <span className={isSelected ? "font-semibold text-neutral-900" : "text-neutral-600"}>
+                            {perm}
+                          </span>
+                          <div
+                            className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors ${
+                              isSelected
+                                ? "bg-neutral-900 border-neutral-900 text-white"
+                                : "border-neutral-300 bg-white"
+                            }`}
+                          >
+                            {isSelected && (
+                              <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                              </svg>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* --- ACTION ATOMS --- */}
+            <div id="action-atoms" className="space-y-3.5 pt-1">
+              <span className="text-[11px] font-semibold tracking-wider text-neutral-400 uppercase select-none block">
+                ACTION ATOMS
+              </span>
+
+              {/* Row 1: Confirm & Export */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={handleConfirm}
+                  style={{
+                    backgroundColor: settings.primaryButtonColor,
+                    borderRadius: `${settings.cornerRadius}px`,
+                  }}
+                  className="h-11 px-4 text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition-all tactile-press active:opacity-90"
+                >
+                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                  </svg>
+                  <span>{confirmed ? "Confirmed" : "Confirm"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  style={{
+                    borderRadius: `${settings.cornerRadius}px`,
+                    borderColor: settings.universalBorderColor,
+                    borderWidth: `${settings.borderWidth}px`,
+                  }}
+                  className="h-11 px-4 bg-white text-[#111111] text-xs font-semibold flex items-center justify-center gap-2 border hover:bg-neutral-50 transition-all tactile-press"
+                >
+                  <svg className="w-4 h-4 text-neutral-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                  </svg>
+                  <span>Export</span>
                 </button>
               </div>
 
-              <div className="p-8 rounded-lg bg-neutral-950 border border-neutral-850 flex flex-col items-center justify-center space-y-2">
-                <div className="text-[10px] font-mono uppercase text-neutral-500">Live Mathematical Readout</div>
-                <MonoValue
-                  value={monoVal}
-                  previousValue={prevMonoVal}
-                  prefix="$"
-                  variant="success"
-                  size={globalScale}
-                  className="scale-125"
-                />
-              </div>
-            </section>
+              {/* Row 2: Next Step & Revoke */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  style={{
+                    borderRadius: `${settings.cornerRadius}px`,
+                    borderColor: settings.universalBorderColor,
+                    borderWidth: `${settings.borderWidth}px`,
+                  }}
+                  className="h-11 px-4 bg-white text-[#111111] text-xs font-semibold flex items-center justify-center gap-2 border hover:bg-neutral-50 transition-all tactile-press"
+                >
+                  <span>Next Step</span>
+                  <svg className="w-3.5 h-3.5 text-neutral-500" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
 
-            {/* TrendDelta */}
-            <section id="atom-trend-delta" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;TrendDelta /&gt;</span>
-                  <KeyBadge label="Math Sentiment" variant="emerald" size="xs" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-850 space-y-3">
-                  <div className="text-xs font-mono text-neutral-400">Standard Metric (Higher = Green):</div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min="-50"
-                      max="50"
-                      value={trendVal}
-                      onChange={(e) => setTrendVal(Number(e.target.value))}
-                      className="w-48 accent-emerald-400"
-                    />
-                    <TrendDelta value={trendVal} unit="%" size="md" />
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-850 space-y-3">
-                  <div className="text-xs font-mono text-neutral-400">Inverse Metric (Lower = Green, e.g. Latency):</div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min="-50"
-                      max="50"
-                      value={trendVal}
-                      onChange={(e) => setTrendVal(Number(e.target.value))}
-                      className="w-48 accent-emerald-400"
-                    />
-                    <TrendDelta value={trendVal} unit="ms" isInverse={true} size="md" />
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* CapacityMeter */}
-            <section id="atom-capacity-meter" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;CapacityMeter /&gt;</span>
-                  <KeyBadge label="90% Critical Threshold Pulse" variant="emerald" size="xs" />
-                </div>
+                <button
+                  type="button"
+                  style={{
+                    borderRadius: `${settings.cornerRadius}px`,
+                  }}
+                  className="h-11 px-4 bg-white text-[#E11D48] text-xs font-semibold flex items-center justify-center gap-2 border border-[#FECDD3] hover:bg-rose-50/50 transition-all tactile-press"
+                >
+                  <svg className="w-4 h-4 text-[#E11D48]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                  </svg>
+                  <span>Revoke</span>
+                </button>
               </div>
 
-              <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-850 space-y-5">
-                <CapacityMeter value={quotaVal} max={100} label="SaaS Quota Consumption" />
-                <div className="flex items-center gap-2 text-xs font-mono pt-2 border-t border-neutral-850">
-                  <span className="text-neutral-500">Quick Thresholds:</span>
-                  <button
-                    type="button"
-                    onClick={() => setQuotaVal(40)}
-                    className="px-2 py-0.5 rounded bg-neutral-900 text-neutral-300 border border-neutral-800 text-[10px]"
-                  >
-                    40% (Nominal)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setQuotaVal(80)}
-                    className="px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800 text-[10px]"
-                  >
-                    80% (Warning)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setQuotaVal(95)}
-                    className="px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800 text-[10px] animate-pulse font-semibold"
-                  >
-                    🚨 95% (Critical Pulse)
-                  </button>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={quotaVal}
-                    onChange={(e) => setQuotaVal(Number(e.target.value))}
-                    className="w-32 accent-emerald-400 ml-auto"
-                  />
+              {/* Row 3: Icon Buttons & Syncing Pill */}
+              <div className="flex items-center gap-2.5 pt-1">
+                <button
+                  type="button"
+                  title="Settings"
+                  style={{
+                    borderRadius: "14px",
+                    borderColor: settings.universalBorderColor,
+                    borderWidth: `${settings.borderWidth}px`,
+                  }}
+                  className="w-10 h-10 bg-white border flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-colors tactile-press"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  title="Copy link"
+                  style={{
+                    borderRadius: "14px",
+                    borderColor: settings.universalBorderColor,
+                    borderWidth: `${settings.borderWidth}px`,
+                  }}
+                  className="w-10 h-10 bg-white border flex items-center justify-center text-neutral-600 hover:text-neutral-900 transition-colors tactile-press"
+                >
+                  {copied ? (
+                    <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  )}
+                </button>
+
+                <div className="ml-auto inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-[#E5E5E5] text-xs font-medium text-neutral-600 shadow-sm select-none">
+                  <span className="w-2 h-2 rounded-full border-2 border-neutral-400 border-t-neutral-800 animate-spin" />
+                  <span>Syncing...</span>
                 </div>
               </div>
-            </section>
+            </div>
           </div>
 
           {/* ══════════════════════════════════════════════════════════
-              SECTION 4: IDENTITY, STATUS & UTILITY ATOMS
+              CARD 2: THE "VISUAL STUDIO" EDITABLE SETTINGS DOCK
              ══════════════════════════════════════════════════════════ */}
-          <div className="space-y-8 pt-6 border-t border-neutral-800">
-            <div className="border-b border-neutral-800 pb-2">
-              <Heading level="h3" className="flex items-center gap-2">
-                <span className="text-emerald-400 font-mono text-sm">04</span>
-                <span>Identity, Status &amp; Utility Atoms</span>
-              </Heading>
-              <Text variant="caption" color="muted">
-                Heartbeats, compliance tags, deterministic hash avatars, and copy actuators.
-              </Text>
+          <div
+            id="visual-studio"
+            className="bg-white rounded-[28px] border border-[#E5E5E5] p-7 shadow-[0_2px_16px_rgba(0,0,0,0.04)] space-y-5"
+          >
+            <div className="flex justify-between items-center select-none pb-1 border-b border-neutral-100">
+              <span className="text-xs font-bold uppercase tracking-wider text-neutral-800">
+                VISUAL STUDIO
+              </span>
+              <button
+                type="button"
+                onClick={handleResetDefaults}
+                className="text-xs text-neutral-400 hover:text-neutral-900 underline underline-offset-4 transition-colors"
+              >
+                Reset Default
+              </button>
             </div>
 
-            {/* StatusPill & KeyBadge */}
-            <section id="atom-status-pill" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">
-                    &lt;StatusPill /&gt; &amp; &lt;KeyBadge /&gt;
+            <div className="space-y-4 text-xs">
+              {/* Universal Border Color */}
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-neutral-700">Universal Border Color</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-[11px] text-neutral-400 font-normal">
+                    {settings.universalBorderColor.toUpperCase()}
                   </span>
-                  <KeyBadge label="Status &amp; Entity" variant="emerald" size="xs" />
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: settings.universalBorderColor }}
+                      className="w-5 h-5 rounded-md border border-black/10 shadow-sm block transition-transform hover:scale-110"
+                    />
+                    <input
+                      type="color"
+                      value={settings.universalBorderColor}
+                      onChange={(e) =>
+                        setSettings((prev) => ({ ...prev, universalBorderColor: e.target.value }))
+                      }
+                      className="sr-only"
+                    />
+                  </label>
                 </div>
               </div>
 
-              <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-850 flex flex-wrap items-center gap-4">
-                <StatusPill label="Active Contract" variant="success" />
-                <StatusPill label="Pending Review" variant="warning" />
-                <StatusPill label="SLA Breached" variant="error" />
-                <StatusPill label="Audit Frozen" variant="info" />
-
-                <span className="text-neutral-700">|</span>
-
-                <KeyBadge label="SOC2-TYPE-II" variant="emerald" />
-                <KeyBadge label="VIP" variant="amber" />
-                <KeyBadge label="ENV:PROD" variant="neutral" />
-                <KeyBadge label="US-EAST-1" variant="outline" />
-              </div>
-            </section>
-
-            {/* EntityAvatar */}
-            <section id="atom-entity-avatar" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;EntityAvatar /&gt;</span>
-                  <KeyBadge label="Deterministic Hash Tinting" variant="emerald" size="xs" />
+              {/* Universal Fill Color */}
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-neutral-700">Universal Fill Color</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-[11px] text-neutral-400 font-normal">
+                    {settings.universalFillColor.toUpperCase()}
+                  </span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: settings.universalFillColor }}
+                      className="w-5 h-5 rounded-md border border-black/15 shadow-sm block transition-transform hover:scale-110"
+                    />
+                    <input
+                      type="color"
+                      value={settings.universalFillColor}
+                      onChange={(e) =>
+                        setSettings((prev) => ({ ...prev, universalFillColor: e.target.value }))
+                      }
+                      className="sr-only"
+                    />
+                  </label>
                 </div>
               </div>
 
-              <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-850 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <EntityAvatar name={avatarName} size="lg" />
-                  <div>
-                    <div className="font-semibold text-sm text-neutral-200">{avatarName}</div>
-                    <div className="text-[10px] font-mono text-neutral-500">Deterministic 2-letter fallback</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={avatarName}
-                    onChange={(e) => setAvatarName(e.target.value)}
-                    className="bg-neutral-900 border border-neutral-800 rounded px-2.5 py-1 text-xs text-neutral-100 font-mono"
-                    placeholder="Type client name..."
-                  />
-                </div>
-              </div>
-            </section>
-
-            {/* CopyTrigger */}
-            <section id="atom-copy-trigger" className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-neutral-800/70 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-bold text-neutral-200">&lt;CopyTrigger /&gt;</span>
-                  <KeyBadge label="Ripple Burst &amp; Morph" variant="emerald" size="xs" />
+              {/* Text & Icon Color */}
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-neutral-700">Text &amp; Icon Color</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-[11px] text-neutral-400 font-normal">
+                    {settings.textIconColor.toUpperCase()}
+                  </span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: settings.textIconColor }}
+                      className="w-5 h-5 rounded-md border border-black/10 shadow-sm block transition-transform hover:scale-110"
+                    />
+                    <input
+                      type="color"
+                      value={settings.textIconColor}
+                      onChange={(e) =>
+                        setSettings((prev) => ({ ...prev, textIconColor: e.target.value }))
+                      }
+                      className="sr-only"
+                    />
+                  </label>
                 </div>
               </div>
 
-              <div className="p-6 rounded-lg bg-neutral-950 border border-neutral-850 flex flex-wrap items-center gap-4">
-                <CopyTrigger text="0x9482f7192a83c0" displayText="0x9482...3c0" />
-                <CopyTrigger text="INV-2026-9041" displayText="INV-2026-9041" />
-                <CopyTrigger text="npm i @zerorapid/zerolight" displayText="npm i @zerorapid/zerolight" />
+              {/* Primary Button Color */}
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-neutral-700">Primary Button Color</span>
+                <div className="flex items-center gap-2.5">
+                  <span className="text-[11px] text-neutral-400 font-normal">
+                    {settings.primaryButtonColor.toUpperCase()}
+                  </span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: settings.primaryButtonColor }}
+                      className="w-5 h-5 rounded-md border border-black/10 shadow-sm block transition-transform hover:scale-110"
+                    />
+                    <input
+                      type="color"
+                      value={settings.primaryButtonColor}
+                      onChange={(e) =>
+                        setSettings((prev) => ({ ...prev, primaryButtonColor: e.target.value }))
+                      }
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
               </div>
-            </section>
+
+              {/* Border Width Scale */}
+              <div className="space-y-2 pt-1 border-t border-neutral-100">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-neutral-700">Border Width Scale</span>
+                  <span className="text-[11px] text-neutral-500 font-normal">{settings.borderWidth}px</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="3"
+                  step="1"
+                  value={settings.borderWidth}
+                  onChange={(e) =>
+                    setSettings((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))
+                  }
+                  className="w-full"
+                />
+              </div>
+
+              {/* Corner Radius Scale */}
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-neutral-700">Corner Radius Scale</span>
+                  <span className="text-[11px] text-neutral-500 font-normal">{settings.cornerRadius}px</span>
+                </div>
+                <input
+                  type="range"
+                  min="4"
+                  max="28"
+                  step="2"
+                  value={settings.cornerRadius}
+                  onChange={(e) =>
+                    setSettings((prev) => ({ ...prev, cornerRadius: Number(e.target.value) }))
+                  }
+                  className="w-full"
+                />
+              </div>
+            </div>
           </div>
-        </main>
-      </div>
-
-      {/* Footer */}
-      <footer className="border-t border-neutral-900 bg-neutral-950 px-6 py-4 text-center text-xs text-neutral-500 font-mono">
-        ZeroLight Design Engine • Indivisible Atomic Model Laboratory • Principal Frontend Systems Architecture
-      </footer>
+        </div>
+      </main>
     </div>
   );
 }
