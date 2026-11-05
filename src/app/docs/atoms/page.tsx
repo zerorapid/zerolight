@@ -75,6 +75,7 @@ export default function ZeroLightStudio() {
     "Frontend",
     "Security",
   ]);
+  const [tagFilter, setTagFilter] = useState<string>("");
   const [isTagOpen, setIsTagOpen] = useState<boolean>(false);
   const [hoveredTag, setHoveredTag] = useState<string | null>(null);
   const tagRef = useRef<HTMLDivElement>(null);
@@ -157,6 +158,10 @@ export default function ZeroLightStudio() {
 
   const filteredRoles = ROLE_OPTIONS.filter((opt) =>
     opt.toLowerCase().includes(roleFilter.toLowerCase())
+  );
+
+  const filteredTags = TAG_OPTIONS.filter((opt) =>
+    opt.toLowerCase().includes(tagFilter.toLowerCase())
   );
 
   // Dynamic Scale
@@ -542,50 +547,66 @@ export default function ZeroLightStudio() {
                     boxShadow: isTagOpen ? `0 0 0 3px ${tokens.textIconColor}12` : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                     transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                   }}
-                  className="flex flex-wrap items-center gap-1.5 cursor-pointer"
+                  className="w-full flex items-center justify-between gap-2 cursor-pointer"
                 >
-                  {tags.map((item) => (
-                    <span
-                      key={item}
-                      style={{
-                        borderRadius: `${Math.max(4, scaledRadius - 8)}px`,
-                        fontSize: `${Math.max(11, scaledFontSize - 3)}px`,
-                        backgroundColor: tokens.hoverBackplateTint,
-                        borderColor: tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        color: tokens.textIconColor,
-                      }}
-                      className="inline-flex items-center gap-1.5 px-2 py-0.5 font-medium border"
-                    >
-                      <span>{item}</span>
-                      <button
-                        type="button"
-                        onClick={(e) => handleRemoveTag(item, e)}
-                        className="hover:text-red-600 transition-colors"
-                        title="Remove"
-                      >
-                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </span>
-                  ))}
+                  <div className="flex flex-wrap items-center gap-1.5 flex-1 min-w-0">
+                    {tags.length === 0 ? (
+                      <span className="text-neutral-400 text-xs font-normal">
+                        Select tags...
+                      </span>
+                    ) : (
+                      tags.map((item) => (
+                        <span
+                          key={item}
+                          style={{
+                            borderRadius: `${Math.max(4, scaledRadius - 8)}px`,
+                            fontSize: `${Math.max(11, scaledFontSize - 3)}px`,
+                            backgroundColor: tokens.hoverBackplateTint,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            color: tokens.textIconColor,
+                          }}
+                          className="inline-flex items-center gap-1.5 px-2 py-0.5 font-medium border"
+                        >
+                          <span>{item}</span>
+                          <button
+                            type="button"
+                            onClick={(e) => handleRemoveTag(item, e)}
+                            className="hover:text-red-600 transition-colors p-0.5 -mr-0.5"
+                            title="Remove"
+                          >
+                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </span>
+                      ))
+                    )}
+                  </div>
 
-                  <span className="text-neutral-400 text-xs ml-auto flex items-center gap-1">
-                    <span>Add</span>
+                  {/* Standardized Dropdown Chevron matching Select Menu */}
+                  <div
+                    style={{
+                      borderRadius: `${Math.max(4, scaledRadius - 8)}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                      color: tokens.textIconColor,
+                      transition: getTransitionStyle(),
+                    }}
+                    className="w-5 h-5 flex items-center justify-center shrink-0"
+                  >
                     <svg
                       className={`w-3 h-3 transition-transform duration-150 ${isTagOpen ? "rotate-180" : ""}`}
                       fill="none"
                       viewBox="0 0 24 24"
-                      strokeWidth={2}
+                      strokeWidth={2.5}
                       stroke="currentColor"
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
-                  </span>
+                  </div>
                 </div>
 
-                {/* Dropdown Options */}
+                {/* Popover Dropdown */}
                 {isTagOpen && (
                   <div
                     style={{
@@ -600,47 +621,71 @@ export default function ZeroLightStudio() {
                     }}
                     className="absolute top-full left-0 right-0 z-30 space-y-1"
                   >
-                    {TAG_OPTIONS.map((opt) => {
-                      const isSelected = tags.includes(opt);
-                      const isHovered = hoveredTag === opt;
-                      return (
-                        <div
-                          key={opt}
-                          onMouseEnter={() => setHoveredTag(opt)}
-                          onMouseLeave={() => setHoveredTag(null)}
-                          onClick={() => handleToggleTag(opt)}
-                          style={{
-                            borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
-                            backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
-                            color: tokens.textIconColor,
-                            fontSize: `${scaledFontSize - 1}px`,
-                            padding: `${Math.round(7 * scale)}px ${Math.round(10 * scale)}px`,
-                            transition: getTransitionStyle(),
-                          }}
-                          className="flex items-center justify-between cursor-pointer"
-                        >
-                          <span className={isSelected ? "font-semibold" : "font-normal"}>
-                            {opt}
-                          </span>
-                          <div
-                            style={{
-                              borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
-                              backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
-                              borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
-                              borderWidth: `${tokens.borderWidth}px`,
-                              transition: getTransitionStyle(),
-                            }}
-                            className="w-4 h-4 flex items-center justify-center shrink-0 border"
-                          >
-                            {isSelected && (
-                              <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                              </svg>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    <input
+                      type="text"
+                      autoFocus
+                      value={tagFilter}
+                      onChange={(e) => setTagFilter(e.target.value)}
+                      placeholder="Search tags..."
+                      style={{
+                        borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
+                        color: tokens.textIconColor,
+                        fontSize: `${scaledFontSize - 2}px`,
+                        padding: `${Math.round(6 * scale)}px ${Math.round(10 * scale)}px`,
+                        transition: getTransitionStyle(),
+                      }}
+                      className="w-full outline-none"
+                    />
+                    <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
+                      {filteredTags.length === 0 ? (
+                        <div className="py-2 text-center text-xs text-neutral-400">No tag found</div>
+                      ) : (
+                        filteredTags.map((opt) => {
+                          const isSelected = tags.includes(opt);
+                          const isHovered = hoveredTag === opt;
+                          return (
+                            <div
+                              key={opt}
+                              onMouseEnter={() => setHoveredTag(opt)}
+                              onMouseLeave={() => setHoveredTag(null)}
+                              onClick={() => handleToggleTag(opt)}
+                              style={{
+                                borderRadius: `${Math.max(6, scaledRadius - 4)}px`,
+                                backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
+                                color: tokens.textIconColor,
+                                fontSize: `${scaledFontSize - 1}px`,
+                                padding: `${Math.round(7 * scale)}px ${Math.round(10 * scale)}px`,
+                                transition: getTransitionStyle(),
+                              }}
+                              className="flex items-center justify-between cursor-pointer"
+                            >
+                              <span className={isSelected ? "font-semibold" : "font-normal"}>
+                                {opt}
+                              </span>
+                              <div
+                                style={{
+                                  borderRadius: `${Math.max(4, scaledRadius - 10)}px`,
+                                  backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
+                                  borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                                  borderWidth: `${tokens.borderWidth}px`,
+                                  transition: getTransitionStyle(),
+                                }}
+                                className="w-4 h-4 flex items-center justify-center shrink-0 border"
+                              >
+                                {isSelected && (
+                                  <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                  </svg>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
