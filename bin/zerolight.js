@@ -17,29 +17,43 @@ const command = args[0] || 'help';
 
 const REGISTRY = {
   input: {
-    name: 'FluidStandardInput',
-    description: 'Single-line tactile text input with responsive clear button',
-    dependencies: ['lucide-react', 'clsx', 'tailwind-merge'],
+    name: 'Input',
+    alias: 'ZlInput',
+    source: 'src/components/zerolight/atoms/input/Input.tsx',
+    description: 'Single-line tactile text input with responsive clear button & token projection',
   },
   select: {
-    name: 'FluidSearchableSelect',
-    description: 'Fluid popover dropdown with internal filter, sliding hover backplate, and stagger reveals',
-    dependencies: ['lucide-react', 'clsx', 'tailwind-merge'],
+    name: 'SearchSelect',
+    alias: 'ZlSearchSelect',
+    source: 'src/components/zerolight/atoms/select/SearchSelect.tsx',
+    description: 'Fluid popover dropdown with live filter, sliding hover backplate, and SVG checkmark draw',
   },
-  'multi-select': {
-    name: 'FluidMultiSelect',
-    description: 'Dynamic corner-tag deck with inline chip remove, overflow badge, and animated checkmarks',
-    dependencies: ['lucide-react', 'clsx', 'tailwind-merge'],
+  'tag-select': {
+    name: 'TagSelect',
+    alias: 'ZlTagSelect',
+    source: 'src/components/zerolight/atoms/tag-select/TagSelect.tsx',
+    description: 'Dynamic multi-tag selection deck with kinetic chips, overflow counter, and animated checkboxes',
+  },
+  button: {
+    name: 'Button',
+    alias: 'ZlButton',
+    source: 'src/components/zerolight/atoms/button/Button.tsx',
+    description: 'Tactile action button with tactile press deflection and token-scaled geometry',
+  },
+  'form-field': {
+    name: 'FormField',
+    source: 'src/components/zerolight/molecules/FormField.tsx',
+    description: 'Standardized label, badge, helper text, and error wrapper molecule',
   },
   studio: {
-    name: 'FluidVisualStudioDock',
+    name: 'VisualStudioDock',
+    source: 'src/components/zerolight/organisms/VisualStudioDock.tsx',
     description: 'Interactive visual studio dock to calibrate density, radii, and spring physics in real time',
-    dependencies: ['lucide-react', 'clsx', 'tailwind-merge'],
   },
-  'poc-form': {
-    name: 'CustomerOnboardingForm',
-    description: 'Complete pre-assembled SaaS PoC form template utilizing all ZeroLight atoms',
-    dependencies: ['lucide-react', 'clsx', 'tailwind-merge'],
+  'poc-card': {
+    name: 'SaaSPocCard',
+    source: 'src/components/zerolight/organisms/SaaSPocCard.tsx',
+    description: 'Complete pre-assembled SaaS PoC form template utilizing all ZeroLight atoms with simple React state',
   },
 };
 

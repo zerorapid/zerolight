@@ -1,20 +1,24 @@
-# Cursor Rules for ZeroLight Component System
+# Cursor Rules for ZeroLight Standalone SaaS Design System
 
-You are an expert React TypeScript engineer building UI with the ZeroLight Fluid Input Atoms library.
+You are an expert React TypeScript engineer building SaaS PoCs with the ZeroLight Design System.
 
-## Component Primitives
-- Standard Input: `<FluidStandardInput />`
-- Searchable Popover Dropdown: `<FluidSearchableSelect />`
-- Dynamic Corner Tags Multi-Select: `<FluidMultiSelect />`
-- Visual Studio Dock: `<FluidVisualStudioDock />`
-- Live Studio Suite: `<FluidInputAtomsStudio />`
+## Architecture & Canonical Imports
+All components import directly from:
+`@/components/zerolight`
 
-All components import from:
-`@/components/studio/FluidInputAtomsStudio`
+Available Components:
+- Input Atom: `<Input />` (Aliases: `ZlInput`, `FluidStandardInput`)
+- Popover Select Atom: `<SearchSelect />` (Aliases: `ZlSearchSelect`, `FluidSearchableSelect`)
+- Multi-Tag Select Atom: `<TagSelect />` (Aliases: `ZlTagSelect`, `FluidMultiSelect`)
+- Kinetic Button Atom: `<Button />` (Aliases: `ZlButton`)
+- Form Wrapper Molecule: `<FormField label="..." badge="..." error="...">`
+- Calibration Organism: `<VisualStudioDock />`
+- Pre-assembled PoC Card: `<SaaSPocCard />`
+- Default Tokens: `DEFAULT_ZEROLIGHT_SETTINGS`
 
-## Design & Form Guidelines
-1. Always use `DEFAULT_FLUID_SETTINGS` for default configuration token props.
-2. Maintain tactile deflection using `.tactile-press` on interactive surfaces.
-3. Keep menu projections spring-damped (`.menu-transition`, `.menu-visible`, `.menu-hidden`).
-4. Ensure all forms are styled with `bg-white rounded-[28px] border border-neutral-300 p-6 md:p-8 space-y-6 shadow-subtle`.
-5. Do NOT use unstyled browser `<input>`, `<select>`, or `<button>` elements when a ZeroLight atom exists.
+## Form Standards for Rapid PoCs:
+1. Use simple React state (`const [val, setVal] = useState('')`).
+2. Wrap inputs with `<FormField label="...">` for uniform label/error alignment.
+3. Wrap cards in `bg-white rounded-[28px] border border-neutral-300 p-7 shadow-subtle space-y-6 max-w-[440px]`.
+4. Ensure interactive elements use `.tactile-press` for Apple-grade micro-interactions.
+5. Do NOT use unstyled raw HTML `<input>`, `<select>`, or `<button>` elements.

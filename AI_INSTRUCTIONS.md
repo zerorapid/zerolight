@@ -1,180 +1,175 @@
-# ZeroLight • AI Form Builder System Instructions
+# ZeroLight • Standalone SaaS Design System Instructions
 
-Use these instructions to guide any AI (Cursor, Claude, ChatGPT, GitHub Copilot, Antigravity) to build production-ready forms using the **ZeroLight Fluid Input Atoms** design system.
+Use these instructions to guide any AI (Cursor, Claude, ChatGPT, GitHub Copilot, Antigravity) to build production-ready forms and SaaS PoC screens using the **ZeroLight** modular architecture.
 
 ---
 
-## 🎯 System Prompt to give to any AI
+## 🎯 System Prompt for any AI
 
 ```text
-You are an expert React UI engineer specializing in the ZeroLight Component System.
-When designing or generating forms, ALWAYS use the ZeroLight atomic primitives instead of raw HTML <input>, <select>, or browser checkboxes.
+You are an expert React TypeScript engineer specializing in the ZeroLight SaaS Design System.
+When building forms or PoC views, ALWAYS use the ZeroLight atomic primitives with simple React state (value & onChange).
 
-Follow these strict design rules:
-1. Wrap forms inside a card container with: `bg-white rounded-[28px] border border-neutral-300 p-6 md:p-8 shadow-subtle space-y-6 max-w-lg mx-auto`.
-2. All input triggers must include tactile press deflection (`.tactile-press` with `active:scale-[0.985]`).
-3. All popover menus must use the spring-damped projection (`.menu-transition`, `.menu-visible`, `.menu-hidden`) with a sliding hover backplate indicator.
-4. Dropdown options must include staggered entrance animations and animated SVG checkmark draws.
-5. All controls must accept and respect the `FluidStudioSettings` token object (or default to `DEFAULT_FLUID_SETTINGS`).
+Strict Rules:
+1. Wrap forms inside: `bg-white rounded-[28px] border border-neutral-300 p-7 shadow-subtle space-y-6 w-full max-w-[440px] mx-auto`.
+2. Wrap each input in `<FormField label="..." badge="...">` for standardized label hierarchy and error messaging.
+3. Use simple React state (`const [val, setVal] = useState('')`).
+4. All interactive elements must support tactile press deflection (`.tactile-press`) and spring popovers.
+5. Import components from `@/components/zerolight`.
 ```
 
 ---
 
-## 📦 Component Imports & Prop Contracts
+## 📦 Canonical Imports & Prop Contracts
 
-All components are exported from `src/components/studio/FluidInputAtomsStudio.tsx`.
+All components export from `@/components/zerolight`:
 
-### 1. Default Settings Token
 ```tsx
-import { DEFAULT_FLUID_SETTINGS, FluidStudioSettings } from '@/components/studio/FluidInputAtomsStudio';
-
-// Default values:
-// borderColor: '#d4d4d4'
-// fillColor: '#ffffff'
-// textColor: '#111111'
-// backplateColor: '#f0f0f0'
-// borderWidth: 1
-// radius: 16 (Pill geometry adapts at >= 20px)
-// height: 48 (Density range: 40px to 52px)
-// fontSize: 14 (Range: 13px to 16px)
-// gap: 8 (Menu offset gap: 4px to 14px)
-// spring: '2' ('1' = Subtle Linear, '2' = Apple Damped, '3' = Elastic Spring)
+import {
+  Input,         // or ZlInput, FluidStandardInput
+  SearchSelect,  // or ZlSearchSelect, FluidSearchableSelect
+  TagSelect,     // or ZlTagSelect, FluidMultiSelect
+  Button,        // or ZlButton
+  FormField,
+  SaaSPocCard,
+  DEFAULT_ZEROLIGHT_SETTINGS,
+} from '@/components/zerolight';
 ```
 
 ---
 
-### 2. Standard Input (`<FluidStandardInput />`)
-Single-line text input with responsive clear button (`✕`) and tactile press.
+### 1. FormField Molecule
+Wraps inputs with consistent label, badge, helper text, and animated error states:
 
 ```tsx
-import { FluidStandardInput, DEFAULT_FLUID_SETTINGS } from '@/components/studio/FluidInputAtomsStudio';
+<FormField label="Workspace Name" badge="Single-line" error={errors.workspaceName}>
+  <Input
+    value={workspaceName}
+    onChange={setWorkspaceName}
+    placeholder="e.g. Acme Core"
+  />
+</FormField>
+```
 
-<FluidStandardInput
-  value={formData.fullName}
-  onChange={(val) => setFormData({ ...formData, fullName: val })}
-  placeholder="e.g. John Miller"
-  settings={DEFAULT_FLUID_SETTINGS}
+---
+
+### 2. Input Atom (`<Input />`)
+Single-line kinetic input with tactile press, responsive clear `✕` button, and forwardRef:
+
+```tsx
+<Input
+  value={email}
+  onChange={setEmail}
+  placeholder="name@company.com"
+  clearable={true}
 />
 ```
 
 ---
 
-### 3. Searchable Select Popover (`<FluidSearchableSelect />`)
-Fluid dropdown with internal live filter search, spring projection, kinetic sliding hover backplate, and animated SVG checkmark draw.
+### 3. SearchSelect Atom (`<SearchSelect />`)
+Fluid popover dropdown with live search filter, kinetic sliding hover backplate, and animated SVG checkmark:
 
 ```tsx
-import { FluidSearchableSelect, DEFAULT_FLUID_SETTINGS } from '@/components/studio/FluidInputAtomsStudio';
-
-const REGIONS = [
-  'North America (us-east-1)',
-  'Europe (eu-central-1)',
-  'Asia Pacific (ap-south-1)',
-  'South East (ap-southeast-1)',
-];
-
-<FluidSearchableSelect
-  options={REGIONS}
-  value={formData.region}
-  onChange={(val) => setFormData({ ...formData, region: val })}
-  placeholder="Select region..."
-  settings={DEFAULT_FLUID_SETTINGS}
+<SearchSelect
+  options={['North America (us-east-1)', 'Europe (eu-central-1)', 'Asia Pacific (ap-south-1)']}
+  value={region}
+  onChange={setRegion}
+  placeholder="Select cloud region..."
 />
 ```
 
 ---
 
-### 4. Dynamic Multi-Select Tags (`<FluidMultiSelect />`)
-Dynamic corner-tag deck with inline chip removal (`×`), overflow badge (`+N more`), and custom animated SVG checkboxes.
+### 4. TagSelect Atom (`<TagSelect />`)
+Dynamic multi-tag selection deck with kinetic inline chips, overflow counter badge (`+N more`), and custom animated SVG checkboxes:
 
 ```tsx
-import { FluidMultiSelect, DEFAULT_FLUID_SETTINGS } from '@/components/studio/FluidInputAtomsStudio';
-
-const PERMISSIONS = [
-  'View Invoices',
-  'Manage Approvals',
-  'Execute Settlement',
-  'Administrator Access',
-];
-
-<FluidMultiSelect
-  options={PERMISSIONS}
-  selected={formData.permissions}
-  onChange={(tags) => setFormData({ ...formData, permissions: tags })}
+<TagSelect
+  options={['View Invoices', 'Manage Approvals', 'Execute Settlement']}
+  selected={permissions}
+  onChange={setPermissions}
   placeholder="Assign permissions..."
-  settings={DEFAULT_FLUID_SETTINGS}
 />
 ```
 
 ---
 
-## 🚀 Complete Example Form Template for AI Generation
+### 5. Kinetic Button Atom (`<Button />`)
+Tactile action button with press deflection:
 
-Here is a ready-to-use template that any AI can generate when building a form:
+```tsx
+<Button type="submit" variant="primary">
+  Save & Continue
+</Button>
+```
+
+---
+
+## 🚀 Complete Copy-Paste SaaS PoC Template
 
 ```tsx
 import React, { useState } from 'react';
 import {
-  FluidStandardInput,
-  FluidSearchableSelect,
-  FluidMultiSelect,
-  DEFAULT_FLUID_SETTINGS,
-} from '@/components/studio/FluidInputAtomsStudio';
+  FormField,
+  Input,
+  SearchSelect,
+  TagSelect,
+  Button,
+} from '@/components/zerolight';
 
-export const CustomerOnboardingForm: React.FC = () => {
-  const [formData, setFormData] = useState({
-    companyName: '',
-    country: '',
-    services: ['Cloud Storage'],
-  });
+export const QuickSaaSPocForm: React.FC = () => {
+  const [name, setName] = useState('');
+  const [plan, setPlan] = useState('Pro Tier ($49/mo)');
+  const [features, setFeatures] = useState<string[]>(['Audit Logs']);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Submitted payload:', formData);
+    setSubmitted(true);
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-[440px] mx-auto p-7 bg-white rounded-[28px] border border-neutral-300 shadow-subtle space-y-6"
+      className="p-7 bg-white rounded-[28px] border border-neutral-300 shadow-subtle space-y-6 w-full max-w-[440px] mx-auto"
     >
-      <div>
-        <h2 className="text-xl font-bold text-neutral-900 tracking-tight">
-          Customer Onboarding
+      <div className="border-b border-neutral-100 pb-3">
+        <h2 className="text-base font-bold text-neutral-900 tracking-tight">
+          Create SaaS Workspace
         </h2>
-        <p className="text-xs text-neutral-500 mt-1">
-          ZeroLight-powered fluid input workflow.
+        <p className="text-xs text-neutral-500">
+          ZeroLight-powered rapid PoC screen
         </p>
       </div>
 
-      <FluidStandardInput
-        value={formData.companyName}
-        onChange={(val) => setFormData({ ...formData, companyName: val })}
-        placeholder="e.g. Acme Corporation"
-        settings={DEFAULT_FLUID_SETTINGS}
-      />
+      <FormField label="Workspace Name" badge="Required">
+        <Input
+          value={name}
+          onChange={setName}
+          placeholder="e.g. Acme Studios"
+        />
+      </FormField>
 
-      <FluidSearchableSelect
-        options={['United States', 'Germany', 'Japan', 'India', 'Singapore']}
-        value={formData.country}
-        onChange={(val) => setFormData({ ...formData, country: val })}
-        placeholder="Select country..."
-        settings={DEFAULT_FLUID_SETTINGS}
-      />
+      <FormField label="Subscription Plan" badge="Fluid Popover">
+        <SearchSelect
+          options={['Starter ($19/mo)', 'Pro Tier ($49/mo)', 'Enterprise (Custom)']}
+          value={plan}
+          onChange={setPlan}
+        />
+      </FormField>
 
-      <FluidMultiSelect
-        options={['Cloud Storage', 'Dedicated IP', 'Audit Logging', 'Priority SLA']}
-        selected={formData.services}
-        onChange={(tags) => setFormData({ ...formData, services: tags })}
-        placeholder="Select services..."
-        settings={DEFAULT_FLUID_SETTINGS}
-      />
+      <FormField label="Included Modules" badge="Dynamic Tags">
+        <TagSelect
+          options={['Audit Logs', 'Priority Support', 'Dedicated IP', 'Custom Webhooks']}
+          selected={features}
+          onChange={setFeatures}
+        />
+      </FormField>
 
-      <button
-        type="submit"
-        className="w-full h-12 bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-semibold rounded-full tactile-press transition-all shadow-sm cursor-pointer"
-      >
-        Submit Registration
-      </button>
+      <Button type="submit" variant="primary">
+        {submitted ? '✓ Workspace Ready!' : 'Launch Workspace'}
+      </Button>
     </form>
   );
 };
