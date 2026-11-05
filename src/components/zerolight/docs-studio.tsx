@@ -1429,7 +1429,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         fontSize: `${scaled.sublabelFontSize}px`,
                         padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                       }}
-                      className="font-mono border shadow-xs"
+                      className="font-medium border shadow-xs"
                     >
                       ⌘K
                     </kbd>
@@ -1443,7 +1443,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         fontSize: `${scaled.sublabelFontSize}px`,
                         padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                       }}
-                      className="font-mono border shadow-xs"
+                      className="font-medium border shadow-xs"
                     >
                       Esc
                     </kbd>
@@ -1457,7 +1457,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         fontSize: `${scaled.sublabelFontSize}px`,
                         padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                       }}
-                      className="font-mono border shadow-xs"
+                      className="font-medium border shadow-xs"
                     >
                       ↵ Enter
                     </kbd>
@@ -1592,7 +1592,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           readOnly
                           value={apiKey}
                           style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
-                          className="w-full bg-transparent outline-none font-mono"
+                          className="w-full bg-transparent outline-none font-medium tabular-nums"
                         />
                       </div>
                       {/* Hairline divider when border is 0 to prevent visual collision */}
@@ -1677,7 +1677,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         fontSize: `${scaled.sublabelFontSize - 1}px`,
                         padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                       }}
-                      className="font-mono text-neutral-500 border"
+                      className="font-medium text-neutral-500 border shadow-2xs"
                     >
                       ⌘K
                     </kbd>

@@ -516,7 +516,7 @@ export default function ExampleFormPage() {
                   type="text"
                   readOnly
                   value={apiKey}
-                  className="w-full bg-transparent text-xs font-mono text-neutral-700 outline-none"
+                  className="w-full bg-transparent text-xs font-medium tabular-nums text-neutral-700 outline-none"
                 />
               </div>
               <motion.button

@@ -672,7 +672,7 @@ export default function FresherProfilePage() {
                 GitHub profile
               </label>
               <div className="h-11 rounded-xl border border-[#D4D4D4] bg-white flex items-center overflow-hidden focus-within:border-neutral-900 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all shadow-xs">
-                <div className="h-full px-3 bg-neutral-100 border-r border-[#D4D4D4] flex items-center gap-1.5 text-xs text-neutral-600 font-mono">
+                <div className="h-full px-3 bg-neutral-100 border-r border-[#D4D4D4] flex items-center gap-1.5 text-xs text-neutral-600 font-medium">
                   <Code2 className="w-3.5 h-3.5 text-neutral-700" />
                   <span>https://</span>
                 </div>
@@ -692,7 +692,7 @@ export default function FresherProfilePage() {
                 Live portfolio / Project website
               </label>
               <div className="h-11 rounded-xl border border-[#D4D4D4] bg-white flex items-center overflow-hidden focus-within:border-neutral-900 focus-within:ring-2 focus-within:ring-neutral-900/10 transition-all shadow-xs">
-                <div className="h-full px-3 bg-neutral-100 border-r border-[#D4D4D4] flex items-center gap-1.5 text-xs text-neutral-600 font-mono">
+                <div className="h-full px-3 bg-neutral-100 border-r border-[#D4D4D4] flex items-center gap-1.5 text-xs text-neutral-600 font-medium">
                   <Globe className="w-3.5 h-3.5 text-neutral-700" />
                   <span>https://</span>
                 </div>
