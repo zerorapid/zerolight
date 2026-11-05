@@ -2,6 +2,28 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Check,
+  Plus,
+  Trash2,
+  Search,
+  ArrowRight,
+  ChevronDown,
+  Copy,
+  Shield,
+  Sparkles,
+  RefreshCw,
+  X,
+  SlidersHorizontal,
+  Settings,
+  AlertCircle,
+  Eye,
+  Key,
+  Clock,
+  Terminal,
+  Zap,
+} from "lucide-react";
 import {
   ZeroLightTokens,
   DEFAULT_TOKENS,
@@ -70,6 +92,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   const [checkboxValue, setCheckboxValue] = useState<boolean>(true);
   const [switchValue, setSwitchValue] = useState<boolean>(true);
   const [sliderValue, setSliderValue] = useState<number>(64);
+  const [activeIconStroke, setActiveIconStroke] = useState<1.5 | 2.0 | 2.5>(2.0);
 
   // Notifications
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -173,15 +196,21 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200">
-      {/* Toast Notification with memory-safe timer */}
-      {toastMessage && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#111111] text-white text-xs font-medium px-3.5 py-1.5 rounded-lg shadow-lg flex items-center gap-2">
-          <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-          </svg>
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      {/* Toast Notification with Framer Motion spring enter/exit */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#111111] text-white text-xs font-medium px-4 py-2 rounded-xl shadow-xl flex items-center gap-2 border border-neutral-800"
+          >
+            <Check className="w-3.5 h-3.5 text-emerald-400" strokeWidth={2.5} />
+            <span>{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 3-Column Studio Body */}
       <div className="flex-1 flex w-full">
@@ -275,6 +304,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
                       Indicators &amp; Identity
                     </div>
+                    <a href="#atom-lucide-icons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Lucide icon atom</span>
+                    </a>
                     <a href="#atom-badge" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Status badge</span>
                     </a>
@@ -353,7 +385,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 </h1>
                 <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                   {activeTier === "atoms"
-                    ? "Indivisible primitives across variants, interaction truth states, and dynamic design tokens."
+                    ? "Indivisible primitives with Lucide vector icons and fluid Framer Motion spring physics."
                     : "Atomic compositions combining two or more primitives for cohesive tasks."}
                 </p>
               </div>
@@ -363,18 +395,18 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
             </div>
 
             {/* ══════════════════════════════════════════════════════════
-                VIEW A: PURE ATOMS (CLEAR TAXONOMY & CLEAN PERMUTATIONS)
+                VIEW A: PURE ATOMS (TACTILE SPRING MICRO-INTERACTIONS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "atoms" && (
               <>
-                {/* ── 1. BUTTON ATOM (CONCISE 3-ROW TRUTH MATRIX) ── */}
+                {/* ── 1. BUTTON ATOM (TACTILE SPRING MOTION) ── */}
                 <div id="atom-buttons" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Button state matrix
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Primary, outline, and ghost variants verified across the 4 canonical interactive truth states.
+                      Primary, outline, and ghost variants featuring tactile Framer Motion tap deflections.
                     </p>
                   </div>
 
@@ -396,18 +428,19 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                             Primary
                           </td>
                           <td className="py-2.5 text-center">
-                            <button
+                            <motion.button
                               type="button"
+                              whileTap={{ scale: 0.95 }}
                               style={{
                                 backgroundColor: tokens.primaryButtonColor,
                                 borderRadius: `${scaled.scaledPillRadius}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
-                              className="text-white font-medium shadow-xs"
+                              className="text-white font-medium shadow-xs cursor-pointer select-none"
                             >
                               Action
-                            </button>
+                            </motion.button>
                           </td>
                           <td className="py-2.5 text-center">
                             <button
@@ -461,13 +494,31 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                             Secondary
                           </td>
                           <td className="py-2.5 text-center">
+                            <motion.button
+                              type="button"
+                              whileTap={{ scale: 0.95 }}
+                              style={{
+                                borderColor: tokens.primaryButtonColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: "transparent",
+                                color: tokens.primaryButtonColor,
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
+                              }}
+                              className="border font-medium shadow-xs cursor-pointer select-none"
+                            >
+                              Action
+                            </motion.button>
+                          </td>
+                          <td className="py-2.5 text-center">
                             <button
                               type="button"
                               style={{
-                                borderColor: tokens.universalBorderColor,
+                                borderColor: tokens.primaryButtonColor,
                                 borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.universalFillColor,
-                                color: tokens.textIconColor,
+                                backgroundColor: `${tokens.primaryButtonColor}0A`,
+                                color: tokens.primaryButtonColor,
                                 borderRadius: `${scaled.scaledPillRadius}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
@@ -481,27 +532,10 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                             <button
                               type="button"
                               style={{
-                                borderColor: tokens.universalBorderColor,
+                                borderColor: tokens.primaryButtonColor,
                                 borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.hoverBackplateTint,
-                                color: tokens.textIconColor,
-                                borderRadius: `${scaled.scaledPillRadius}px`,
-                                fontSize: `${scaled.ctaFontSize}px`,
-                                padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
-                              }}
-                              className="border font-medium shadow-xs"
-                            >
-                              Action
-                            </button>
-                          </td>
-                          <td className="py-2.5 text-center">
-                            <button
-                              type="button"
-                              style={{
-                                borderColor: tokens.universalBorderColor,
-                                borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.universalFillColor,
-                                color: tokens.textIconColor,
+                                backgroundColor: "transparent",
+                                color: tokens.primaryButtonColor,
                                 borderRadius: `${scaled.scaledPillRadius}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
@@ -538,18 +572,19 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                             Ghost
                           </td>
                           <td className="py-2.5 text-center">
-                            <button
+                            <motion.button
                               type="button"
+                              whileTap={{ scale: 0.95 }}
                               style={{
                                 color: tokens.textIconColor,
                                 borderRadius: `${scaled.scaledPillRadius}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
-                              className="font-medium bg-transparent"
+                              className="font-medium bg-transparent cursor-pointer select-none"
                             >
                               Action
-                            </button>
+                            </motion.button>
                           </td>
                           <td className="py-2.5 text-center">
                             <button
@@ -603,38 +638,40 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── 2. ICON BUTTON ATOM ── */}
+                {/* ── 2. ICON BUTTON ATOM (WITH LUCIDE ICONS) ── */}
                 <div id="atom-icon-button" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Icon button primitive
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      Primary, outline &amp; ghost targets
+                      Lucide icons with tactile spring
                     </span>
                   </div>
 
                   <div className="flex items-center gap-3 pt-1">
                     {/* Primary Icon Button */}
-                    <button
+                    <motion.button
                       type="button"
+                      whileTap={{ scale: 0.92 }}
+                      whileHover={{ scale: 1.04 }}
                       style={{
                         backgroundColor: tokens.primaryButtonColor,
                         borderRadius: `${scaled.scaledRadius}px`,
                         width: `${scaled.scaledHeight}px`,
                         height: `${scaled.scaledHeight}px`,
                       }}
-                      className="text-white flex items-center justify-center shadow-xs cursor-pointer hover:brightness-110 active:scale-95 transition-transform"
+                      className="text-white flex items-center justify-center shadow-xs cursor-pointer select-none"
                       title="Add item"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                      </svg>
-                    </button>
+                      <Plus className="w-4 h-4" strokeWidth={2.5} />
+                    </motion.button>
 
                     {/* Secondary Outline Icon Button */}
-                    <button
+                    <motion.button
                       type="button"
+                      whileTap={{ scale: 0.92 }}
+                      whileHover={{ scale: 1.04 }}
                       style={{
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
@@ -644,17 +681,17 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         width: `${scaled.scaledHeight}px`,
                         height: `${scaled.scaledHeight}px`,
                       }}
-                      className="border flex items-center justify-center shadow-xs cursor-pointer hover:bg-neutral-50 active:scale-95 transition-all"
+                      className="border flex items-center justify-center shadow-xs cursor-pointer select-none hover:bg-neutral-50"
                       title="Filter"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
-                      </svg>
-                    </button>
+                      <SlidersHorizontal className="w-4 h-4" strokeWidth={2} />
+                    </motion.button>
 
                     {/* Ghost Icon Button */}
-                    <button
+                    <motion.button
                       type="button"
+                      whileTap={{ scale: 0.92 }}
+                      whileHover={{ scale: 1.04 }}
                       style={{
                         backgroundColor: tokens.hoverBackplateTint,
                         color: tokens.textIconColor,
@@ -662,14 +699,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         width: `${scaled.scaledHeight}px`,
                         height: `${scaled.scaledHeight}px`,
                       }}
-                      className="flex items-center justify-center cursor-pointer hover:brightness-95 active:scale-95 transition-all"
+                      className="flex items-center justify-center cursor-pointer select-none hover:brightness-95"
                       title="Settings"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 0 1 0-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                      </svg>
-                    </button>
+                      <Settings className="w-4 h-4" strokeWidth={2} />
+                    </motion.button>
                   </div>
                 </div>
 
@@ -802,21 +836,22 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── 5. CHECKBOX ATOM (DEDICATED) ── */}
+                {/* ── 5. CHECKBOX ATOM (WITH ANIMATED SVG PATH DRAW) ── */}
                 <div id="atom-checkbox" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Checkbox primitive
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      Unchecked, checked &amp; disabled
+                      Kinetic path draw interaction
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between pt-1">
-                    {/* Interactive Checkbox */}
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <div
+                    {/* Interactive Animated Checkbox */}
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <motion.div
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => setCheckboxValue((prev) => !prev)}
                         style={{
                           borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
@@ -824,14 +859,29 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           borderColor: checkboxValue ? tokens.primaryButtonColor : tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                         }}
-                        className="w-4 h-4 flex items-center justify-center border cursor-pointer"
+                        className="w-4 h-4 flex items-center justify-center border cursor-pointer transition-colors"
                       >
                         {checkboxValue && (
-                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                          </svg>
+                          <motion.svg
+                            initial={{ scale: 0.5, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="w-3 h-3 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={3}
+                            stroke="currentColor"
+                          >
+                            <motion.path
+                              initial={{ pathLength: 0 }}
+                              animate={{ pathLength: 1 }}
+                              transition={{ duration: 0.2, ease: "easeOut" }}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m4.5 12.75 6 6 9-13.5"
+                            />
+                          </motion.svg>
                         )}
-                      </div>
+                      </motion.div>
                       <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
                         Active check
                       </span>
@@ -848,9 +898,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         }}
                         className="w-4 h-4 flex items-center justify-center border cursor-not-allowed"
                       >
-                        <svg className="w-3 h-3 text-neutral-400" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
+                        <Check className="w-3 h-3 text-neutral-400" strokeWidth={2.5} />
                       </div>
                       <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
                         Disabled check
@@ -871,8 +919,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
 
                   <div className="flex items-center justify-between pt-1">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <div
+                    <label className="flex items-center gap-2 cursor-pointer select-none">
+                      <motion.div
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => setRadioValue(radioValue === "standard" ? "pro" : "standard")}
                         style={{
                           borderColor: radioValue === "pro" ? tokens.primaryButtonColor : tokens.universalBorderColor,
@@ -882,9 +931,15 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         className="w-4 h-4 rounded-full flex items-center justify-center border"
                       >
                         {radioValue === "pro" && (
-                          <div style={{ backgroundColor: tokens.primaryButtonColor }} className="w-2 h-2 rounded-full" />
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 700, damping: 30 }}
+                            style={{ backgroundColor: tokens.primaryButtonColor }}
+                            className="w-2 h-2 rounded-full"
+                          />
                         )}
-                      </div>
+                      </motion.div>
                       <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
                         Selected
                       </span>
@@ -906,14 +961,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── 7. SWITCH ATOM (DEDICATED) ── */}
+                {/* ── 7. SWITCH ATOM (SPRING PHYSICS MOTION) ── */}
                 <div id="atom-switch" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Toggle switch
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      Binary state action
+                      Framer Motion spring physics
                     </span>
                   </div>
 
@@ -926,13 +981,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       onClick={() => setSwitchValue((prev) => !prev)}
                       style={{
                         backgroundColor: switchValue ? tokens.primaryButtonColor : tokens.universalBorderColor,
-                        transition: scaled.transitionStyle,
                       }}
-                      className="w-10 h-5 flex items-center rounded-full p-0.5 cursor-pointer"
+                      className="w-10 h-5 flex items-center rounded-full p-0.5 cursor-pointer transition-colors"
                     >
-                      <div
-                        style={{ backgroundColor: tokens.universalFillColor, transition: scaled.transitionStyle }}
-                        className={`w-4 h-4 rounded-full shadow-sm transform ${switchValue ? "translate-x-5" : "translate-x-0"}`}
+                      <motion.div
+                        layout
+                        transition={{ type: "spring", stiffness: 600, damping: 30 }}
+                        style={{ backgroundColor: tokens.universalFillColor }}
+                        className={`w-4 h-4 rounded-full shadow-sm ${switchValue ? "ml-auto" : "mr-auto"}`}
                       />
                     </button>
                   </div>
@@ -958,7 +1014,81 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   />
                 </div>
 
-                {/* ── 9. STATUS BADGES ATOM ── */}
+                {/* ── 9. LUCIDE ICON ATOM (CANONICAL SAAS SET) ── */}
+                <div id="atom-lucide-icons" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                        Lucide icon atom
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Indivisible vector primitives across size and stroke weight tokens.
+                      </p>
+                    </div>
+
+                    {/* Stroke selector */}
+                    <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg text-xs">
+                      {([1.5, 2.0, 2.5] as const).map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setActiveIconStroke(s)}
+                          className={`px-2 py-0.5 rounded font-medium cursor-pointer transition-all ${
+                            activeIconStroke === s
+                              ? "bg-white text-neutral-900 shadow-xs font-semibold"
+                              : "text-neutral-500 hover:text-neutral-900"
+                          }`}
+                        >
+                          {s}px
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Curated SaaS Lucide glyph grid */}
+                  <div className="grid grid-cols-6 sm:grid-cols-8 gap-3 pt-2">
+                    {[
+                      { icon: Check, label: "check" },
+                      { icon: Plus, label: "plus" },
+                      { icon: Search, label: "search" },
+                      { icon: ChevronDown, label: "chevron" },
+                      { icon: ArrowRight, label: "arrow" },
+                      { icon: Copy, label: "copy" },
+                      { icon: Trash2, label: "trash" },
+                      { icon: Shield, label: "shield" },
+                      { icon: Sparkles, label: "sparkles" },
+                      { icon: RefreshCw, label: "refresh" },
+                      { icon: X, label: "close" },
+                      { icon: SlidersHorizontal, label: "sliders" },
+                      { icon: Settings, label: "settings" },
+                      { icon: AlertCircle, label: "alert" },
+                      { icon: Key, label: "key" },
+                      { icon: Zap, label: "zap" },
+                    ].map(({ icon: IconComponent, label }) => (
+                      <div
+                        key={label}
+                        style={{
+                          backgroundColor: tokens.hoverBackplateTint,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                        }}
+                        className="flex flex-col items-center justify-center p-2 rounded-xl border hover:border-neutral-400 transition-colors cursor-pointer group"
+                        title={label}
+                      >
+                        <IconComponent
+                          className="w-4 h-4 transition-transform group-hover:scale-110"
+                          style={{ color: tokens.textIconColor }}
+                          strokeWidth={activeIconStroke}
+                        />
+                        <span className="text-[10px] text-neutral-400 mt-1 truncate max-w-full">
+                          {label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── 10. STATUS BADGES ATOM ── */}
                 <div id="atom-badge" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Status badge indicators
@@ -980,7 +1110,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── 10. TAG CHIP ATOM ── */}
+                {/* ── 11. TAG CHIP ATOM (WITH FRAMER MOTION DISMISS) ── */}
                 <div id="atom-tag-chip" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
@@ -1006,9 +1136,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     >
                       <span>Design System</span>
                       <button type="button" className="hover:text-red-600 transition-colors cursor-pointer" title="Dismiss">
-                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X className="w-3 h-3" strokeWidth={2.5} />
                       </button>
                     </span>
 
@@ -1029,7 +1157,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── 11. KEYBOARD KEYCAP (KBD) ATOM ── */}
+                {/* ── 12. KEYBOARD KEYCAP (KBD) ATOM ── */}
                 <div id="atom-kbd" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Keycap primitives
@@ -1081,7 +1209,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── 12. AVATAR & LOADER ATOM ── */}
+                {/* ── 13. AVATAR & LOADER ATOM ── */}
                 <div id="atom-avatar" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Avatar &amp; loader
@@ -1119,7 +1247,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
             )}
 
             {/* ══════════════════════════════════════════════════════════
-                VIEW B: MOLECULES (CLEAR ATOMIC INGREDIENT FORMULAS)
+                VIEW B: MOLECULES (SLIDING PILL & POPUP SPRINGS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "molecules" && (
               <>
@@ -1152,9 +1280,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       }}
                       className="flex items-center gap-2.5 border"
                     >
-                      <svg className="w-4 h-4 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                      </svg>
+                      <Search className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
                       <input
                         type="email"
                         value={textInput}
@@ -1210,8 +1336,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           className="w-full bg-transparent outline-none font-mono"
                         />
                       </div>
-                      <button
+                      <motion.button
                         type="button"
+                        whileTap={{ scale: 0.96 }}
                         onClick={handleCopyApiKey}
                         style={{
                           borderTopRightRadius: `${scaled.scaledRadius}px`,
@@ -1224,22 +1351,16 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           paddingLeft: `${scaled.scaledPaddingX}px`,
                           paddingRight: `${scaled.scaledPaddingX}px`,
                           fontSize: `${scaled.labelFontSize}px`,
-                          transition: scaled.transitionStyle,
                         }}
-                        className="border font-medium flex items-center gap-1.5 cursor-pointer shadow-xs"
+                        className="border font-medium flex items-center gap-1.5 cursor-pointer shadow-xs select-none"
                       >
                         {isApiKeyCopied ? (
-                          <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                          </svg>
+                          <Check className="w-3.5 h-3.5 text-emerald-400" strokeWidth={2.5} />
                         ) : (
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                          </svg>
+                          <Copy className="w-3.5 h-3.5" strokeWidth={2} />
                         )}
                         <span>{isApiKeyCopied ? "Copied" : "Copy"}</span>
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
                 </div>
@@ -1268,9 +1389,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     className="flex items-center justify-between border"
                   >
                     <div className="flex items-center gap-2.5 flex-1 mr-2">
-                      <svg className="w-4 h-4 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                      </svg>
+                      <Search className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={2} />
                       <input
                         type="text"
                         placeholder="Search resources, customers, invoices..."
@@ -1294,14 +1413,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── MOLECULE 4: SEARCHABLE SELECT ── */}
+                {/* ── MOLECULE 4: SEARCHABLE SELECT (WITH SPRING POPOVER) ── */}
                 <div id="mol-search-select" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       SearchableSelect molecule
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Trigger + Popover + Filter
+                      Trigger + Spring Popover + Filter
                     </span>
                   </div>
 
@@ -1325,102 +1444,100 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       className="w-full flex items-center justify-between text-left cursor-pointer border"
                     >
                       <div className="flex items-center gap-2.5 truncate">
-                        <svg className="w-4 h-4 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                        </svg>
+                        <Key className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
                         <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: role ? tokens.textIconColor : "#A3A3A3" }} className="truncate font-normal">
                           {role || "Select a role..."}
                         </span>
                       </div>
-                      <div
+                      <motion.div
+                        animate={{ rotate: isRoleOpen ? 180 : 0 }}
+                        transition={{ duration: 0.15 }}
                         style={{
                           borderRadius: `${Math.max(4, scaled.scaledRadius - 8)}px`,
                           backgroundColor: tokens.hoverBackplateTint,
                           color: tokens.textIconColor,
-                          transition: scaled.transitionStyle,
                         }}
                         className="w-5 h-5 flex items-center justify-center shrink-0"
                       >
-                        <svg className={`w-3.5 h-3.5 transition-transform duration-150 ${isRoleOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                      </div>
+                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
+                      </motion.div>
                     </button>
 
-                    {/* Popover Dropdown */}
-                    {isRoleOpen && (
-                      <div
-                        style={{
-                          marginTop: `${tokens.menuOffsetGap}px`,
-                          borderRadius: `${scaled.scaledRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                          boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                          padding: `${Math.round(6 * scaled.scale)}px`,
-                          transition: scaled.transitionStyle,
-                        }}
-                        className="absolute top-full left-0 right-0 z-30 space-y-1 border"
-                      >
-                        <input
-                          type="text"
-                          autoFocus
-                          value={roleFilter}
-                          onChange={(e) => setRoleFilter(e.target.value)}
-                          placeholder="Search roles..."
+                    {/* Framer Motion Popover Dropdown */}
+                    <AnimatePresence>
+                      {isRoleOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
                           style={{
-                            borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
+                            marginTop: `${tokens.menuOffsetGap}px`,
+                            borderRadius: `${scaled.scaledRadius}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
-                            color: tokens.textIconColor,
-                            fontSize: `${scaled.sublabelFontSize}px`,
-                            padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
-                            transition: scaled.transitionStyle,
+                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
+                            padding: `${Math.round(6 * scaled.scale)}px`,
                           }}
-                          className="w-full outline-none border"
-                        />
-                        <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
-                          {filteredRoles.map((opt) => {
-                            const isSelected = role === opt;
-                            const isHovered = hoveredRole === opt;
-                            return (
-                              <button
-                                key={opt}
-                                type="button"
-                                onMouseEnter={() => setHoveredRole(opt)}
-                                onMouseLeave={() => setHoveredRole(null)}
-                                onClick={() => {
-                                  setRole(opt);
-                                  setIsRoleOpen(false);
-                                  setRoleFilter("");
-                                }}
-                                style={{
-                                  borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
-                                  backgroundColor: isSelected ? tokens.primaryButtonColor : isHovered ? tokens.hoverBackplateTint : "transparent",
-                                  color: isSelected ? "#FFFFFF" : tokens.textIconColor,
-                                  fontSize: `${scaled.labelFontSize}px`,
-                                  padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
-                                  transition: scaled.transitionStyle,
-                                }}
-                                className="w-full text-left flex items-center justify-between font-normal cursor-pointer"
-                              >
-                                <span>{opt}</span>
-                                {isSelected && (
-                                  <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                  </svg>
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
+                          className="absolute top-full left-0 right-0 z-30 space-y-1 border"
+                        >
+                          <input
+                            type="text"
+                            autoFocus
+                            value={roleFilter}
+                            onChange={(e) => setRoleFilter(e.target.value)}
+                            placeholder="Search roles..."
+                            style={{
+                              borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
+                              borderColor: tokens.universalBorderColor,
+                              borderWidth: `${tokens.borderWidth}px`,
+                              backgroundColor: tokens.universalFillColor,
+                              color: tokens.textIconColor,
+                              fontSize: `${scaled.sublabelFontSize}px`,
+                              padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                            }}
+                            className="w-full outline-none border"
+                          />
+                          <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
+                            {filteredRoles.map((opt) => {
+                              const isSelected = role === opt;
+                              const isHovered = hoveredRole === opt;
+                              return (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onMouseEnter={() => setHoveredRole(opt)}
+                                  onMouseLeave={() => setHoveredRole(null)}
+                                  onClick={() => {
+                                    setRole(opt);
+                                    setIsRoleOpen(false);
+                                    setRoleFilter("");
+                                  }}
+                                  style={{
+                                    borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
+                                    backgroundColor: isSelected ? tokens.primaryButtonColor : isHovered ? tokens.hoverBackplateTint : "transparent",
+                                    color: isSelected ? "#FFFFFF" : tokens.textIconColor,
+                                    fontSize: `${scaled.labelFontSize}px`,
+                                    padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                                  }}
+                                  className="w-full text-left flex items-center justify-between font-normal cursor-pointer transition-colors"
+                                >
+                                  <span>{opt}</span>
+                                  {isSelected && (
+                                    <Check className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
 
-                {/* ── MOLECULE 5: MULTI-TAG DECK ── */}
+                {/* ── MOLECULE 5: MULTI-TAG DECK (WITH ANIMATE PRESENCE CHIP REMOVAL) ── */}
                 <div id="mol-tag-deck" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -1428,7 +1545,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         TagDeck molecule
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Removable tag chips with unified &quot;+ Add tag&quot; trigger and live popover selector.
+                        Framer Motion layout animations on chip entry and dismissal.
                       </p>
                     </div>
                   </div>
@@ -1449,37 +1566,43 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       }}
                       className="w-full flex flex-wrap items-center gap-1.5 border"
                     >
-                      {/* Active Tag Chips */}
-                      {tags.map((item) => (
-                        <span
-                          key={item}
-                          style={{
-                            borderRadius: `${scaled.scaledPillRadius}px`,
-                            fontSize: `${scaled.sublabelFontSize}px`,
-                            backgroundColor: tokens.hoverBackplateTint,
-                            borderColor: tokens.universalBorderColor,
-                            borderWidth: `${tokens.borderWidth}px`,
-                            color: tokens.textIconColor,
-                          }}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 font-medium border"
-                        >
-                          <span>{item}</span>
-                          <button
-                            type="button"
-                            onClick={(e) => handleRemoveTag(item, e)}
-                            className="hover:text-red-600 transition-colors p-0.5 -mr-0.5 cursor-pointer"
-                            title="Remove tag"
+                      {/* Animated Tag Chips */}
+                      <AnimatePresence>
+                        {tags.map((item) => (
+                          <motion.span
+                            key={item}
+                            layout
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.15 }}
+                            style={{
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              fontSize: `${scaled.sublabelFontSize}px`,
+                              backgroundColor: tokens.hoverBackplateTint,
+                              borderColor: tokens.universalBorderColor,
+                              borderWidth: `${tokens.borderWidth}px`,
+                              color: tokens.textIconColor,
+                            }}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 font-medium border"
                           >
-                            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        </span>
-                      ))}
+                            <span>{item}</span>
+                            <button
+                              type="button"
+                              onClick={(e) => handleRemoveTag(item, e)}
+                              className="hover:text-red-600 transition-colors p-0.5 -mr-0.5 cursor-pointer"
+                              title="Remove tag"
+                            >
+                              <X className="w-3 h-3" strokeWidth={2.5} />
+                            </button>
+                          </motion.span>
+                        ))}
+                      </AnimatePresence>
 
                       {/* Clean SaaS "+ Add tag" Trigger Button */}
-                      <button
+                      <motion.button
                         type="button"
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => setIsTagOpen((prev) => !prev)}
                         style={{
                           borderRadius: `${scaled.scaledPillRadius}px`,
@@ -1490,102 +1613,100 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         }}
                         className="inline-flex items-center gap-1.5 px-2.5 py-0.5 font-medium border border-dashed hover:border-neutral-400 hover:bg-neutral-50 transition-colors cursor-pointer bg-white"
                       >
-                        <svg className="w-3 h-3 text-neutral-500" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
+                        <Plus className="w-3 h-3 text-neutral-500" strokeWidth={2.5} />
                         <span>Add tag</span>
-                      </button>
+                      </motion.button>
                     </div>
 
                     {/* Tag Popover Dropdown */}
-                    {isTagOpen && (
-                      <div
-                        style={{
-                          marginTop: `${tokens.menuOffsetGap}px`,
-                          borderRadius: `${scaled.scaledRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                          boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                          padding: `${Math.round(6 * scaled.scale)}px`,
-                          transition: scaled.transitionStyle,
-                        }}
-                        className="absolute top-full left-0 right-0 z-30 space-y-1 border"
-                      >
-                        <input
-                          type="text"
-                          autoFocus
-                          value={tagFilter}
-                          onChange={(e) => setTagFilter(e.target.value)}
-                          placeholder="Search tags..."
+                    <AnimatePresence>
+                      {isTagOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
                           style={{
-                            borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
+                            marginTop: `${tokens.menuOffsetGap}px`,
+                            borderRadius: `${scaled.scaledRadius}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
-                            color: tokens.textIconColor,
-                            fontSize: `${scaled.sublabelFontSize}px`,
-                            padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
-                            transition: scaled.transitionStyle,
+                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
+                            padding: `${Math.round(6 * scaled.scale)}px`,
                           }}
-                          className="w-full outline-none border"
-                        />
-                        <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
-                          {filteredTags.map((opt) => {
-                            const isSelected = tags.includes(opt);
-                            const isHovered = hoveredTag === opt;
-                            return (
-                              <div
-                                key={opt}
-                                onMouseEnter={() => setHoveredTag(opt)}
-                                onMouseLeave={() => setHoveredTag(null)}
-                                onClick={() => handleToggleTag(opt)}
-                                style={{
-                                  borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
-                                  backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
-                                  color: tokens.textIconColor,
-                                  fontSize: `${scaled.labelFontSize}px`,
-                                  padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
-                                  transition: scaled.transitionStyle,
-                                }}
-                                className="flex items-center justify-between cursor-pointer"
-                              >
-                                <span className={isSelected ? "font-semibold" : "font-normal"}>
-                                  {opt}
-                                </span>
+                          className="absolute top-full left-0 right-0 z-30 space-y-1 border"
+                        >
+                          <input
+                            type="text"
+                            autoFocus
+                            value={tagFilter}
+                            onChange={(e) => setTagFilter(e.target.value)}
+                            placeholder="Search tags..."
+                            style={{
+                              borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
+                              borderColor: tokens.universalBorderColor,
+                              borderWidth: `${tokens.borderWidth}px`,
+                              backgroundColor: tokens.universalFillColor,
+                              color: tokens.textIconColor,
+                              fontSize: `${scaled.sublabelFontSize}px`,
+                              padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                            }}
+                            className="w-full outline-none border"
+                          />
+                          <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
+                            {filteredTags.map((opt) => {
+                              const isSelected = tags.includes(opt);
+                              const isHovered = hoveredTag === opt;
+                              return (
                                 <div
+                                  key={opt}
+                                  onMouseEnter={() => setHoveredTag(opt)}
+                                  onMouseLeave={() => setHoveredTag(null)}
+                                  onClick={() => handleToggleTag(opt)}
                                   style={{
-                                    borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
-                                    backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
-                                    borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
-                                    borderWidth: `${tokens.borderWidth}px`,
-                                    transition: scaled.transitionStyle,
+                                    borderRadius: `${Math.max(6, scaled.scaledRadius - 4)}px`,
+                                    backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
+                                    color: tokens.textIconColor,
+                                    fontSize: `${scaled.labelFontSize}px`,
+                                    padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
                                   }}
-                                  className="w-4 h-4 flex items-center justify-center shrink-0 border"
+                                  className="flex items-center justify-between cursor-pointer"
                                 >
-                                  {isSelected && (
-                                    <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}>
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                    </svg>
-                                  )}
+                                  <span className={isSelected ? "font-semibold" : "font-normal"}>
+                                    {opt}
+                                  </span>
+                                  <div
+                                    style={{
+                                      borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
+                                      backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
+                                      borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                    }}
+                                    className="w-4 h-4 flex items-center justify-center shrink-0 border transition-colors"
+                                  >
+                                    {isSelected && (
+                                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
 
-                {/* ── MOLECULE 6: SEGMENTED CONTROL MOLECULE ── */}
+                {/* ── MOLECULE 6: SEGMENTED CONTROL (WITH SHARED LAYOUT SLIDING PILL) ── */}
                 <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       SegmentedControl molecule
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Conjoined Button Primitives
+                      Framer Motion layoutId sliding pill
                     </span>
                   </div>
 
@@ -1597,7 +1718,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         backgroundColor: tokens.hoverBackplateTint,
                         padding: `${Math.round(3 * scaled.scale)}px`,
                       }}
-                      className="inline-flex items-center gap-1 border border-neutral-200/60"
+                      className="inline-flex items-center gap-1 border border-neutral-200/60 relative"
                     >
                       {(
                         [
@@ -1614,15 +1735,24 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                             onClick={() => setSegmentValue(key)}
                             style={{
                               borderRadius: `${Math.max(4, scaled.scaledRadius - 4)}px`,
-                              backgroundColor: isSelected ? tokens.universalFillColor : "transparent",
-                              color: isSelected ? tokens.textIconColor : "#71717A",
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: `${Math.round(5 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
-                              boxShadow: isSelected ? "0 1px 3px 0 rgba(0, 0, 0, 0.08)" : "none",
-                              transition: scaled.transitionStyle,
                             }}
-                            className={`font-medium cursor-pointer ${isSelected ? "font-semibold" : "hover:text-neutral-900"}`}
+                            className={`font-medium cursor-pointer relative z-10 transition-colors select-none ${
+                              isSelected ? "text-neutral-900 font-semibold" : "text-neutral-500 hover:text-neutral-900"
+                            }`}
                           >
+                            {isSelected && (
+                              <motion.div
+                                layoutId="activeSegmentPill"
+                                transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                style={{
+                                  borderRadius: `${Math.max(4, scaled.scaledRadius - 4)}px`,
+                                  backgroundColor: tokens.universalFillColor,
+                                }}
+                                className="absolute inset-0 shadow-xs -z-10"
+                              />
+                            )}
                             {label}
                           </button>
                         );
@@ -1652,9 +1782,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           $148,200
                         </span>
                         <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full font-medium inline-flex items-center gap-0.5">
-                          <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-                          </svg>
+                          <ArrowRight className="w-3 h-3 text-emerald-600 -rotate-45" strokeWidth={2.5} />
                           <span>+18.4%</span>
                         </span>
                       </div>
