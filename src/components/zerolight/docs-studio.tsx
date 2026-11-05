@@ -186,9 +186,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
       {/* 3-Column Studio Body */}
       <div className="flex-1 flex w-full">
         {/* ══════════════════════════════════════════════════════════
-            COLUMN 1: LEFT SIDEBAR (HIERARCHICAL DIRECTORY)
+            COLUMN 1: LEFT SIDEBAR (CLEAN CATEGORICAL HIERARCHY)
            ══════════════════════════════════════════════════════════ */}
-        <aside className="w-60 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
+        <aside className="w-64 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
           <div className="space-y-6">
             <Link href="/" className="flex items-center gap-2.5">
               <div className="w-6 h-6 rounded-lg bg-[#111111] flex items-center justify-center font-bold text-xs text-white">
@@ -225,25 +225,25 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
               </button>
             </div>
 
-            {/* Navigation links dynamically matching active tier */}
+            {/* Categorized Navigation matching Brad Frost Hierarchy */}
             <nav className="space-y-4">
               {activeTier === "atoms" ? (
                 <>
                   <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Action Primitives
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Actions
                     </div>
                     <a href="#atom-buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Button matrix</span>
                     </a>
-                    <a href="#atom-icon-buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                    <a href="#atom-icon-button" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Icon button</span>
                     </a>
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Input Primitives
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Text &amp; Entry
                     </div>
                     <a href="#atom-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Input states</span>
@@ -251,25 +251,40 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     <a href="#atom-textarea" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Textarea</span>
                     </a>
-                    <a href="#atom-selection" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Radio &amp; checkbox</span>
+                  </div>
+
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Selection &amp; Controls
+                    </div>
+                    <a href="#atom-checkbox" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Checkbox</span>
                     </a>
-                    <a href="#atom-switch-slider" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Switch &amp; slider</span>
+                    <a href="#atom-radio" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Radio button</span>
+                    </a>
+                    <a href="#atom-switch" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Toggle switch</span>
+                    </a>
+                    <a href="#atom-slider" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Range slider</span>
                     </a>
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Tokens &amp; Indicators
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Indicators &amp; Identity
                     </div>
-                    <a href="#atom-chips-triggers" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Tag chip &amp; trigger</span>
+                    <a href="#atom-badge" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Status badge</span>
                     </a>
-                    <a href="#atom-status-kbd" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Status badge &amp; Kbd</span>
+                    <a href="#atom-tag-chip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Tag chip</span>
                     </a>
-                    <a href="#atom-avatar-loader" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                    <a href="#atom-kbd" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Keycap</span>
+                    </a>
+                    <a href="#atom-avatar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Avatar &amp; loader</span>
                     </a>
                   </div>
@@ -277,41 +292,41 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
               ) : (
                 <>
                   <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Form Molecules
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Form Compositions
                     </div>
                     <a href="#mol-form-field" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Form field</span>
+                      <span>FormField</span>
                     </a>
                     <a href="#mol-input-group" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Input group</span>
+                      <span>InputGroup</span>
                     </a>
                     <a href="#mol-search-bar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Search bar</span>
+                      <span>SearchBar</span>
                     </a>
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-medium text-neutral-400">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
                       Selection &amp; Control
                     </div>
                     <a href="#mol-search-select" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Searchable select</span>
+                      <span>SearchableSelect</span>
                     </a>
                     <a href="#mol-tag-deck" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Multi-tag deck</span>
+                      <span>TagDeck</span>
                     </a>
                     <a href="#mol-segmented" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Segmented control</span>
+                      <span>SegmentedControl</span>
                     </a>
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-medium text-neutral-400">
-                      Feedback
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Telemetry &amp; Feedback
                     </div>
                     <a href="#mol-metric-stat" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Metric stat card</span>
+                      <span>MetricStat</span>
                     </a>
                   </div>
                 </>
@@ -338,7 +353,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 </h1>
                 <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                   {activeTier === "atoms"
-                    ? "Indivisible primitives across variants, interaction states, and tokens."
+                    ? "Indivisible primitives across variants, interaction truth states, and dynamic design tokens."
                     : "Atomic compositions combining two or more primitives for cohesive tasks."}
                 </p>
               </div>
@@ -348,18 +363,18 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
             </div>
 
             {/* ══════════════════════════════════════════════════════════
-                VIEW A: PURE ATOMS (STANDARDIZED PERMUTATION TESTING)
+                VIEW A: PURE ATOMS (CLEAR TAXONOMY & CLEAN PERMUTATIONS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "atoms" && (
               <>
-                {/* ── ATOM 1: BUTTON PERMUTATION MATRIX ── */}
+                {/* ── 1. BUTTON ATOM (CONCISE 3-ROW TRUTH MATRIX) ── */}
                 <div id="atom-buttons" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Button state &amp; variant matrix
+                      Button state matrix
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Indivisible CTA primitives across canonical variants and standard interaction truth states.
+                      Primary, outline, and ghost variants verified across the 4 canonical interactive truth states.
                     </p>
                   </div>
 
@@ -378,7 +393,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         {/* 1. Primary Solid */}
                         <tr>
                           <td style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Primary solid
+                            Primary
                           </td>
                           <td className="py-2.5 text-center">
                             <button
@@ -391,7 +406,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="text-white font-medium shadow-xs"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
@@ -405,7 +420,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="text-white font-medium brightness-125 shadow-sm"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
@@ -420,7 +435,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="text-white font-medium"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
@@ -435,7 +450,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="text-white font-medium opacity-60 cursor-not-allowed"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                         </tr>
@@ -443,50 +458,50 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         {/* 2. Secondary Outline */}
                         <tr>
                           <td style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Secondary outline
+                            Secondary
                           </td>
                           <td className="py-2.5 text-center">
                             <button
                               type="button"
                               style={{
-                                borderColor: tokens.primaryButtonColor,
+                                borderColor: tokens.universalBorderColor,
                                 borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: "transparent",
-                                color: tokens.primaryButtonColor,
+                                backgroundColor: tokens.universalFillColor,
+                                color: tokens.textIconColor,
                                 borderRadius: `${scaled.scaledPillRadius}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="border font-medium shadow-xs"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
                             <button
                               type="button"
                               style={{
-                                borderColor: tokens.primaryButtonColor,
+                                borderColor: tokens.universalBorderColor,
                                 borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: `${tokens.primaryButtonColor}0A`,
-                                color: tokens.primaryButtonColor,
+                                backgroundColor: tokens.hoverBackplateTint,
+                                color: tokens.textIconColor,
                                 borderRadius: `${scaled.scaledPillRadius}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               }}
                               className="border font-medium shadow-xs"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
                             <button
                               type="button"
                               style={{
-                                borderColor: tokens.primaryButtonColor,
+                                borderColor: tokens.universalBorderColor,
                                 borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: "transparent",
-                                color: tokens.primaryButtonColor,
+                                backgroundColor: tokens.universalFillColor,
+                                color: tokens.textIconColor,
                                 borderRadius: `${scaled.scaledPillRadius}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 padding: `${Math.round(4 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
@@ -494,7 +509,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="border font-medium"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
@@ -512,15 +527,15 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="border font-medium cursor-not-allowed opacity-50"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                         </tr>
 
-                        {/* 3. Ghost / Tertiary */}
+                        {/* 3. Ghost / Subtle */}
                         <tr>
                           <td style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="py-2.5 text-neutral-600 font-medium whitespace-nowrap pr-3">
-                            Ghost / Tertiary
+                            Ghost
                           </td>
                           <td className="py-2.5 text-center">
                             <button
@@ -533,7 +548,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="font-medium bg-transparent"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
@@ -548,7 +563,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="font-medium"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
@@ -564,7 +579,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="font-medium"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                           <td className="py-2.5 text-center">
@@ -579,7 +594,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               }}
                               className="font-medium cursor-not-allowed opacity-40 bg-transparent"
                             >
-                              Button CTA
+                              Action
                             </button>
                           </td>
                         </tr>
@@ -588,14 +603,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── ATOM 2: ICON BUTTON PERMUTATIONS ── */}
-                <div id="atom-icon-buttons" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── 2. ICON BUTTON ATOM ── */}
+                <div id="atom-icon-button" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Icon button permutations
+                      Icon button primitive
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      Primary, outline &amp; ghost variants
+                      Primary, outline &amp; ghost targets
                     </span>
                   </div>
 
@@ -658,11 +673,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── ATOM 3: INPUT ATOM PERMUTATIONS ── */}
+                {/* ── 3. INPUT ATOM (4 TRUTH STATES) ── */}
                 <div id="atom-input" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Input atom permutations
+                      Input states
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Zero-flicker rasterization
@@ -670,7 +685,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
 
                   <div className="space-y-2">
-                    {/* Default state */}
+                    {/* Rest */}
                     <div
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
@@ -692,7 +707,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       />
                     </div>
 
-                    {/* Focused state */}
+                    {/* Focused */}
                     <div
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
@@ -715,7 +730,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       />
                     </div>
 
-                    {/* Error / Invalid state */}
+                    {/* Error / Invalid */}
                     <div
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
@@ -738,7 +753,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       />
                     </div>
 
-                    {/* Disabled state */}
+                    {/* Disabled */}
                     <div
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
@@ -762,10 +777,10 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── ATOM 4: TEXTAREA ATOM ── */}
+                {/* ── 4. TEXTAREA ATOM ── */}
                 <div id="atom-textarea" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Textarea atom
+                    Textarea primitive
                   </h2>
                   <div
                     style={{
@@ -787,34 +802,19 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── ATOM 5: RADIO & CHECKBOX PERMUTATIONS ── */}
-                <div id="atom-selection" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Radio &amp; checkbox permutations
-                  </h2>
+                {/* ── 5. CHECKBOX ATOM (DEDICATED) ── */}
+                <div id="atom-checkbox" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Checkbox primitive
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
+                      Unchecked, checked &amp; disabled
+                    </span>
+                  </div>
 
                   <div className="flex items-center justify-between pt-1">
-                    {/* Concentric Radio Atom */}
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <div
-                        onClick={() => setRadioValue(radioValue === "standard" ? "pro" : "standard")}
-                        style={{
-                          borderColor: radioValue === "pro" ? tokens.primaryButtonColor : tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                        }}
-                        className="w-4 h-4 rounded-full flex items-center justify-center border"
-                      >
-                        {radioValue === "pro" && (
-                          <div style={{ backgroundColor: tokens.primaryButtonColor }} className="w-2 h-2 rounded-full" />
-                        )}
-                      </div>
-                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
-                        Radio atom
-                      </span>
-                    </label>
-
-                    {/* Kinetic Checkbox Atom */}
+                    {/* Interactive Checkbox */}
                     <label className="flex items-center gap-2 cursor-pointer">
                       <div
                         onClick={() => setCheckboxValue((prev) => !prev)}
@@ -833,21 +833,93 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         )}
                       </div>
                       <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
-                        Checkbox atom
+                        Active check
                       </span>
                     </label>
+
+                    {/* Disabled Checkbox */}
+                    <div className="flex items-center gap-2 opacity-50 cursor-not-allowed">
+                      <div
+                        style={{
+                          borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                        }}
+                        className="w-4 h-4 flex items-center justify-center border cursor-not-allowed"
+                      >
+                        <svg className="w-3 h-3 text-neutral-400" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                      </div>
+                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
+                        Disabled check
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* ── ATOM 6: SWITCH & SLIDER PERMUTATIONS ── */}
-                <div id="atom-switch-slider" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Switch &amp; slider primitives
-                  </h2>
+                {/* ── 6. RADIO ATOM (DEDICATED) ── */}
+                <div id="atom-radio" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Radio primitive
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
+                      Concentric circle indicator
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <div
+                        onClick={() => setRadioValue(radioValue === "standard" ? "pro" : "standard")}
+                        style={{
+                          borderColor: radioValue === "pro" ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.universalFillColor,
+                        }}
+                        className="w-4 h-4 rounded-full flex items-center justify-center border"
+                      >
+                        {radioValue === "pro" && (
+                          <div style={{ backgroundColor: tokens.primaryButtonColor }} className="w-2 h-2 rounded-full" />
+                        )}
+                      </div>
+                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
+                        Selected
+                      </span>
+                    </label>
+
+                    <div className="flex items-center gap-2 opacity-50 cursor-not-allowed">
+                      <div
+                        style={{
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="w-4 h-4 rounded-full flex items-center justify-center border cursor-not-allowed"
+                      />
+                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium select-none">
+                        Disabled
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── 7. SWITCH ATOM (DEDICATED) ── */}
+                <div id="atom-switch" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Toggle switch
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
+                      Binary state action
+                    </span>
+                  </div>
 
                   <div className="flex items-center justify-between pt-1">
                     <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
-                      Toggle switch
+                      Enabled state
                     </span>
                     <button
                       type="button"
@@ -864,38 +936,63 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       />
                     </button>
                   </div>
+                </div>
 
-                  <div className="pt-2 border-t border-neutral-100 space-y-1">
-                    <div className="flex justify-between items-center">
-                      <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="text-neutral-600 font-medium">Continuous slider</span>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="font-semibold text-neutral-900 bg-neutral-100 px-1.5 py-0.5 rounded">
-                        {sliderValue}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={sliderValue}
-                      onChange={(e) => setSliderValue(Number(e.target.value))}
-                      className="w-full cursor-pointer accent-neutral-900"
-                    />
+                {/* ── 8. SLIDER ATOM (DEDICATED) ── */}
+                <div id="atom-slider" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex justify-between items-center">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Continuous slider
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="font-semibold text-neutral-900 bg-neutral-100 px-1.5 py-0.5 rounded">
+                      {sliderValue}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={sliderValue}
+                    onChange={(e) => setSliderValue(Number(e.target.value))}
+                    className="w-full cursor-pointer accent-neutral-900"
+                  />
+                </div>
+
+                {/* ── 9. STATUS BADGES ATOM ── */}
+                <div id="atom-badge" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    Status badge indicators
+                  </h2>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
+                      Active
+                    </span>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-medium border border-amber-200">
+                      Pending
+                    </span>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-medium border border-rose-200">
+                      Failed
+                    </span>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-neutral-100 text-neutral-700 font-medium border border-neutral-200">
+                      Draft
+                    </span>
                   </div>
                 </div>
 
-                {/* ── ATOM 7: STANDALONE TAG CHIP & CHEVRON TRIGGER ── */}
-                <div id="atom-chips-triggers" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── 10. TAG CHIP ATOM ── */}
+                <div id="atom-tag-chip" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Tag chip &amp; trigger primitives
+                      Tag chip primitive
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      Isolated atomic primitives
+                      Static &amp; dismissible states
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-1">
-                    {/* Standalone Tag Chip Atom */}
+                  <div className="flex items-center gap-2 pt-1">
+                    {/* Dismissible Chip */}
                     <span
                       style={{
                         borderRadius: `${scaled.scaledPillRadius}px`,
@@ -915,81 +1012,79 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       </button>
                     </span>
 
-                    {/* Standalone Dropdown Trigger Primitive (Unified SVG Chevron) */}
-                    <div
+                    {/* Static Chip */}
+                    <span
                       style={{
-                        borderRadius: `${Math.max(6, scaled.scaledRadius - 8)}px`,
-                        backgroundColor: tokens.hoverBackplateTint,
-                        color: tokens.textIconColor,
-                        borderWidth: `${tokens.borderWidth}px`,
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                        backgroundColor: tokens.universalFillColor,
                         borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        color: tokens.textIconColor,
                       }}
-                      className="w-8 h-8 flex items-center justify-center border shadow-xs"
-                      title="Dropdown chevron primitive"
+                      className="inline-flex items-center px-3 py-1 font-medium border shadow-xs"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                      </svg>
-                    </div>
+                      <span>Frontend</span>
+                    </span>
                   </div>
                 </div>
 
-                {/* ── ATOM 8: STATUS BADGES & KEYBOARD KEYS ── */}
-                <div id="atom-status-kbd" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── 11. KEYBOARD KEYCAP (KBD) ATOM ── */}
+                <div id="atom-kbd" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Status badge &amp; Kbd primitives
+                    Keycap primitives
                   </h2>
 
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                    <div className="flex items-center gap-2">
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
-                        Active
-                      </span>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 font-medium border border-amber-200">
-                        Pending
-                      </span>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-medium border border-rose-200">
-                        Failed
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5">
-                      <kbd
-                        style={{
-                          borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
-                          color: tokens.textIconColor,
-                          fontSize: `${scaled.sublabelFontSize}px`,
-                          padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
-                        }}
-                        className="font-mono border shadow-xs"
-                      >
-                        ⌘K
-                      </kbd>
-                      <kbd
-                        style={{
-                          borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
-                          color: tokens.textIconColor,
-                          fontSize: `${scaled.sublabelFontSize}px`,
-                          padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
-                        }}
-                        className="font-mono border shadow-xs"
-                      >
-                        Esc
-                      </kbd>
-                    </div>
+                  <div className="flex items-center gap-1.5 pt-1">
+                    <kbd
+                      style={{
+                        borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        color: tokens.textIconColor,
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                        padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
+                      }}
+                      className="font-mono border shadow-xs"
+                    >
+                      ⌘K
+                    </kbd>
+                    <kbd
+                      style={{
+                        borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        color: tokens.textIconColor,
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                        padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
+                      }}
+                      className="font-mono border shadow-xs"
+                    >
+                      Esc
+                    </kbd>
+                    <kbd
+                      style={{
+                        borderRadius: `${Math.max(4, scaled.scaledRadius - 10)}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        color: tokens.textIconColor,
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                        padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
+                      }}
+                      className="font-mono border shadow-xs"
+                    >
+                      ↵ Enter
+                    </kbd>
                   </div>
                 </div>
 
-                {/* ── ATOM 9: AVATAR & SPINNER LOADER ── */}
-                <div id="atom-avatar-loader" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── 12. AVATAR & LOADER ATOM ── */}
+                <div id="atom-avatar" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Avatar &amp; loader primitives
+                    Avatar &amp; loader
                   </h2>
 
                   <div className="flex items-center justify-between pt-1">
@@ -1024,11 +1119,11 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
             )}
 
             {/* ══════════════════════════════════════════════════════════
-                VIEW B: MOLECULES (ATOMIC COMPOSITIONS)
+                VIEW B: MOLECULES (CLEAR ATOMIC INGREDIENT FORMULAS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "molecules" && (
               <>
-                {/* ── MOLECULE 1: FORM FIELD (LABEL + INPUT + VALIDATION) ── */}
+                {/* ── MOLECULE 1: FORM FIELD ── */}
                 <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
@@ -1077,14 +1172,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── MOLECULE 2: INPUT GROUP (INPUT + BUTTON) ── */}
+                {/* ── MOLECULE 2: INPUT GROUP ── */}
                 <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       InputGroup molecule
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Input + Button joined
+                      Input + Conjoined Button
                     </span>
                   </div>
 
@@ -1149,14 +1244,14 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   </div>
                 </div>
 
-                {/* ── MOLECULE 3: SEARCH BAR (ICON + INPUT + KBD) ── */}
+                {/* ── MOLECULE 3: SEARCH BAR ── */}
                 <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       SearchBar molecule
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Icon + Input + Kbd shortcut
+                      Icon + Input + Kbd Shortcut
                     </span>
                   </div>
 
@@ -1490,7 +1585,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       SegmentedControl molecule
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Conjoined Button primitives
+                      Conjoined Button Primitives
                     </span>
                   </div>
 
