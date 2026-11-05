@@ -309,7 +309,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       Text &amp; Entry
                     </div>
                     <a href="#atom-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Input &amp; Left-stripe</span>
+                      <span>Input</span>
                     </a>
                     <a href="#atom-textarea" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Textarea</span>
@@ -970,40 +970,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none cursor-not-allowed"
                       />
-                    </div>
-
-                    {/* Enterprise 4px Left-Stripe Input (AquaOps ERP Anchor) */}
-                    <div
-                      style={{
-                        borderRadius: `${scaled.scaledRadius}px`,
-                        borderColor: tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        borderLeftWidth: "4px",
-                        borderLeftColor: tokens.erpAccentColor,
-                        backgroundColor: scaled.effectiveInputFill,
-                        height: `${scaled.scaledHeight}px`,
-                        paddingLeft: `${scaled.scaledPaddingX}px`,
-                        paddingRight: `${scaled.scaledPaddingX}px`,
-                        transition: scaled.transitionStyle,
-                      }}
-                      className="flex items-center gap-2 border shadow-xs"
-                    >
-                      <input
-                        type="text"
-                        readOnly
-                        value="Enterprise 4px Left-Stripe (AquaOps ERP style)"
-                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
-                        className="w-full bg-transparent outline-none font-medium"
-                      />
-                      <span
-                        style={{
-                          color: tokens.erpAccentColor,
-                          backgroundColor: `${tokens.erpAccentColor}18`,
-                        }}
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded uppercase"
-                      >
-                        Left-Stripe
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -1739,8 +1705,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isRoleOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        borderLeftWidth: "4px",
-                        borderLeftColor: tokens.erpAccentColor,
                         backgroundColor: scaled.effectiveInputFill,
                         height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
@@ -1801,8 +1765,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               borderRadius: `${scaled.scaledInnerRadius}px`,
                               borderColor: tokens.universalBorderColor,
                               borderWidth: `${tokens.borderWidth}px`,
-                              borderLeftWidth: "4px",
-                              borderLeftColor: tokens.erpAccentColor,
                               backgroundColor: scaled.effectiveInputFill,
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
@@ -1870,8 +1832,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isTagOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        borderLeftWidth: "4px",
-                        borderLeftColor: tokens.erpAccentColor,
                         backgroundColor: scaled.effectiveInputFill,
                         minHeight: `${scaled.scaledHeight}px`,
                         padding: `${scaled.scaledPaddingY}px ${scaled.scaledPaddingX}px`,
@@ -1963,8 +1923,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                               borderRadius: `${scaled.scaledInnerRadius}px`,
                               borderColor: tokens.universalBorderColor,
                               borderWidth: `${tokens.borderWidth}px`,
-                              borderLeftWidth: "4px",
-                              borderLeftColor: tokens.erpAccentColor,
                               backgroundColor: scaled.effectiveInputFill,
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
@@ -2419,26 +2377,6 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       type="color"
                       value={tokens.primaryButtonColor}
                       onChange={(e) => setTokens((prev) => ({ ...prev, primaryButtonColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* ERP Left Accent Stripe Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">ERP left accent</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.erpAccentColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.erpAccentColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.erpAccentColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, erpAccentColor: e.target.value }))}
                       className="sr-only"
                     />
                   </label>
