@@ -507,98 +507,55 @@ module.exports = {
                 </>
               ) : (
                 <>
-                  {/* Category 1: Forms & Data Entry */}
-                  <div className="space-y-1">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
-                      <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">01</span>
-                        <span>Forms &amp; Entry</span>
-                      </span>
-                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">6</span>
+                  <div className="space-y-0.5">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Form &amp; Entry
                     </div>
-                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-form-field" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>FormField</span>
-                      </a>
-                      <a href="#mol-input-group" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>InputGroup</span>
-                      </a>
-                      <a href="#mol-search-bar" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>SearchBar</span>
-                      </a>
-                      <a href="#mol-search-select" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>SearchableSelect</span>
-                      </a>
-                      <a href="#mol-tag-deck" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>TagDeck</span>
-                      </a>
-                      <a href="#mol-date-picker" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>DateRangePicker</span>
-                      </a>
-                    </div>
+                    <a href="#mol-form-field" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Form field</span>
+                    </a>
+                    <a href="#mol-input-group" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Input group</span>
+                    </a>
+                    <a href="#mol-search-bar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Search bar</span>
+                    </a>
+                    <a href="#mol-select" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Select dropdown</span>
+                    </a>
+                    <a href="#mol-tag-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Tag input</span>
+                    </a>
+                    <a href="#mol-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Date range picker</span>
+                    </a>
                   </div>
 
-                  {/* Category 2: Navigation & Commands */}
-                  <div className="space-y-1 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
-                      <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">02</span>
-                        <span>Navigation</span>
-                      </span>
-                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Navigation
                     </div>
-                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-segmented" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>SegmentedControl</span>
-                      </a>
-                      <a href="#mol-breadcrumbs" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>Breadcrumbs</span>
-                      </a>
-                      <a href="#mol-pagination" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>PaginationBar</span>
-                      </a>
-                    </div>
+                    <a href="#mol-segmented" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Segmented control</span>
+                    </a>
+                    <a href="#mol-breadcrumbs" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Breadcrumbs</span>
+                    </a>
                   </div>
 
-                  {/* Category 3: Data Display & Analytics */}
-                  <div className="space-y-1 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
-                      <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">03</span>
-                        <span>Data Display</span>
-                      </span>
-                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">2</span>
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Display &amp; Feedback
                     </div>
-                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-metric-stat" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>MetricStat</span>
-                      </a>
-                      <a href="#mol-table-row" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>DataTableRow</span>
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Category 4: Feedback & Overlays */}
-                  <div className="space-y-1 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
-                      <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">04</span>
-                        <span>Overlays</span>
-                      </span>
-                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
-                    </div>
-                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-alert-callout" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>AlertCallout</span>
-                      </a>
-                      <a href="#mol-empty-state" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>EmptyStateCard</span>
-                      </a>
-                      <a href="#mol-tooltip" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
-                        <span>TooltipPopover</span>
-                      </a>
-                    </div>
+                    <a href="#mol-stat-badge" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Metric stat</span>
+                    </a>
+                    <a href="#mol-alert" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Alert banner</span>
+                    </a>
+                    <a href="#mol-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Tooltip popover</span>
+                    </a>
                   </div>
                 </>
               )}
@@ -1727,173 +1684,20 @@ module.exports = {
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "molecules" && (
               <>
-                {/* ══════════════════════════════════════════════════════════
-                    TIER 2 ARCHITECTURE OVERVIEW BANNER & QUICK FILTER BAR
-                   ══════════════════════════════════════════════════════════ */}
-                <div
-                  style={{
-                    borderRadius: `${scaled.scaledCardRadius}px`,
-                    borderColor: tokens.universalBorderColor,
-                    borderWidth: `${tokens.borderWidth}px`,
-                    backgroundColor: tokens.universalFillColor,
-                    boxShadow: scaled.cardShadow,
-                    padding: `${Math.round(20 * scaled.scale)}px`,
-                  }}
-                  className="border space-y-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full bg-neutral-900 text-white font-sans text-[10px] font-bold uppercase tracking-wider">
-                        Tier 2 Architecture
-                      </span>
-                      <span className="text-xs text-neutral-400 font-medium">
-                        Brad Frost Hierarchy
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[11px] text-neutral-500 font-medium">
-                      <span>Physics: <strong className="text-neutral-900 capitalize">{tokens.motionPhysics}</strong></span>
-                      <span>•</span>
-                      <span>14 Molecules</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize + 4}px` }} className="font-bold text-neutral-900 tracking-tight">
-                      Molecules Specification &amp; Composition Matrix
+                {/* ── 1. FORM FIELD ── */}
+                <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Form field
                     </h2>
-                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-600 leading-relaxed max-w-xl">
-                      Molecules are functional UI patterns formed by composing two or more indivisible atomic primitives. Every molecule below strictly binds to universal studio tokens, contains zero unstyled OS controls, and exhibits fluid spring interaction physics.
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Label, text input with leading icon, and dynamic validation feedback.
                     </p>
-                  </div>
-
-                  {/* Interactive Category Filter Pills with Gliding Motion */}
-                  <div className="flex items-center gap-1.5 pt-2 border-t border-neutral-100 flex-wrap">
-                    {[
-                      { id: "all", label: "All Molecules", count: 14, icon: Layers },
-                      { id: "cat1", label: "01 Forms & Entry", count: 6, icon: Mail },
-                      { id: "cat2", label: "02 Navigation", count: 3, icon: Compass },
-                      { id: "cat3", label: "03 Analytics", count: 2, icon: BarChart2 },
-                      { id: "cat4", label: "04 Overlays", count: 3, icon: AlertCircle },
-                    ].map((tab) => {
-                      const isSelected = activeCategoryFilter === tab.id;
-                      const Icon = tab.icon;
-                      return (
-                        <button
-                          key={tab.id}
-                          type="button"
-                          onClick={() => {
-                            setActiveCategoryFilter(tab.id as any);
-                            if (tab.id !== "all") {
-                              const el = document.getElementById(`category-section-${tab.id}`);
-                              el?.scrollIntoView({ behavior: "smooth", block: "start" });
-                            }
-                          }}
-                          style={{
-                            borderRadius: `${scaled.scaledRadius === 9999 ? 9999 : scaled.scaledInnerRadius}px`,
-                            fontSize: `${scaled.sublabelFontSize}px`,
-                            padding: `${Math.round(4 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
-                          }}
-                          className={`font-semibold cursor-pointer relative flex items-center gap-1.5 transition-colors select-none ${
-                            isSelected ? "text-white" : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100"
-                          }`}
-                        >
-                          {isSelected && (
-                            <motion.div
-                              layoutId="activeCategoryFilterPill"
-                              transition={scaled.motionConfig.pillTransition}
-                              style={{
-                                borderRadius: `${scaled.scaledRadius === 9999 ? 9999 : scaled.scaledInnerRadius}px`,
-                                backgroundColor: tokens.primaryButtonColor,
-                              }}
-                              className="absolute inset-0 -z-10 shadow-xs"
-                            />
-                          )}
-                          <Icon className="w-3.5 h-3.5" />
-                          <span>{tab.label}</span>
-                          <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                            isSelected ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-500"
-                          }`}>
-                            {tab.count}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* ══════════════════════════════════════════════════════════
-                    CATEGORY 1: FORMS & DATA ENTRY
-                   ══════════════════════════════════════════════════════════ */}
-                {(activeCategoryFilter === "all" || activeCategoryFilter === "cat1") && (
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 12 }}
-                    transition={scaled.motionConfig.spring}
-                    className="space-y-4"
-                  >
-                    <div id="category-section-cat1" className="w-full pt-4 space-y-2">
-                      <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
-                        <div className="flex items-center gap-2.5">
-                          <div
-                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                            className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
-                          >
-                            01
-                          </div>
-                          <div>
-                            <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
-                              Forms &amp; Parameter Entry
-                            </h2>
-                            <p className="text-[11px] text-neutral-500">
-                              Validated inputs, conjoined action groups, searchable select panels, and dynamic tag decks.
-                            </p>
-                          </div>
-                        </div>
-                        <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
-                          6 Production Molecules
-                        </span>
-                      </div>
-                    </div>
-
-                {/* ── MOLECULE 1: FORM FIELD ── */}
-                <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                          FormField
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Validated Compound
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Label + Leading Icon + HelperText + Dynamic Validation Feedback
-                      </span>
-                    </div>
-                    {/* Enterprise Error Simulation Toggle */}
-                    <button
-                      type="button"
-                      onClick={() => setIsEmailError((prev) => !prev)}
-                      style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
-                        fontSize: `${scaled.sublabelFontSize}px`,
-                      }}
-                      className={`px-2.5 py-1 font-semibold border cursor-pointer transition-all select-none ${
-                        isEmailError
-                          ? "bg-rose-50 text-rose-700 border-rose-300"
-                          : "bg-neutral-100 text-neutral-600 border-neutral-200 hover:text-black"
-                      }`}
-                    >
-                      {isEmailError ? "Reset valid state" : "Simulate validation error"}
-                    </button>
                   </div>
 
                   <div className="space-y-1.5">
                     <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
-                      Account email <span className="text-rose-500">*</span>
+                      Email address
                     </label>
                     <div
                       style={{
@@ -1943,7 +1747,7 @@ module.exports = {
                         <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" strokeWidth={2} />
                       )}
                     </div>
-                    {/* Fluid Animated Validation Feedback with AnimatePresence */}
+
                     <AnimatePresence mode="wait">
                       {isEmailError ? (
                         <motion.span
@@ -1959,67 +1763,40 @@ module.exports = {
                           <span>Please enter a valid corporate email domain (e.g. name@enterprise.com)</span>
                         </motion.span>
                       ) : (
-                        <motion.span
-                          key="hint"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.12 }}
-                          style={{ fontSize: `${scaled.sublabelFontSize}px` }}
-                          className="text-neutral-500 flex items-center gap-1 pt-0.5"
-                        >
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                          <span>Monthly invoice telemetry and settlements will route to this inbox.</span>
-                        </motion.span>
+                        <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 block pt-0.5">
+                          Monthly invoice and telemetry notifications will route to this inbox.
+                        </span>
                       )}
                     </AnimatePresence>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Label + Input + LeadingIcon + ErrorAlert + HelperText</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Universal Halos Active</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 2: INPUT GROUP (UNIVERSAL RADIUS & CONJOINED ACTION) ── */}
-                <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                          InputGroup
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Conjoined Action
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Input + Mask Toggle + Conjoined Copy Button
-                      </span>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setIsApiKeyMasked((prev) => !prev)}
-                      style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
-                        fontSize: `${scaled.sublabelFontSize}px`,
-                      }}
-                      className="px-2.5 py-1 font-semibold border border-neutral-200 text-neutral-600 hover:text-black hover:bg-neutral-50 flex items-center gap-1.5 cursor-pointer transition-colors"
-                    >
-                      {isApiKeyMasked ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                      <span>{isApiKeyMasked ? "Reveal Secret" : "Mask Secret"}</span>
-                    </button>
+                {/* ── 2. INPUT GROUP ── */}
+                <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Input group
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Conjoined text input with visibility toggle and action button.
+                    </p>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
-                      Secret API key
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                        Secret API key
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setIsApiKeyMasked((prev) => !prev)}
+                        className="text-xs text-neutral-500 hover:text-neutral-900 flex items-center gap-1 cursor-pointer transition-colors"
+                      >
+                        {isApiKeyMasked ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                        <span>{isApiKeyMasked ? "Reveal" : "Hide"}</span>
+                      </button>
+                    </div>
+
                     <div className="flex items-center">
                       <div
                         style={{
@@ -2027,7 +1804,7 @@ module.exports = {
                           borderBottomLeftRadius: `${scaled.scaledRadius}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
-                          borderRightWidth: scaled.isZeroBorder ? 0 : 0,
+                          borderRightWidth: 0,
                           backgroundColor: scaled.effectiveInputFill,
                           height: `${scaled.scaledHeight}px`,
                           paddingLeft: `${scaled.scaledPaddingX}px`,
@@ -2044,16 +1821,6 @@ module.exports = {
                           className="w-full bg-transparent outline-none font-medium tabular-nums"
                         />
                       </div>
-                      {/* Hairline divider when border is 0 to prevent visual collision */}
-                      {scaled.isZeroBorder && (
-                        <div
-                          style={{
-                            width: "1px",
-                            height: `${Math.round(scaled.scaledHeight * 0.6)}px`,
-                            backgroundColor: scaled.conjoinedDivider,
-                          }}
-                        />
-                      )}
                       <motion.button
                         type="button"
                         whileTap={{ scale: scaled.motionConfig.tapScale }}
@@ -2068,7 +1835,7 @@ module.exports = {
                           height: `${scaled.scaledHeight}px`,
                           paddingLeft: `${scaled.scaledPaddingX}px`,
                           paddingRight: `${scaled.scaledPaddingX}px`,
-                          fontSize: `${scaled.labelFontSize}px`,
+                          fontSize: `${scaled.ctaFontSize}px`,
                           transition: scaled.transitionStyle,
                         }}
                         className="border font-medium flex items-center gap-1.5 cursor-pointer shadow-xs select-none"
@@ -2082,37 +1849,17 @@ module.exports = {
                       </motion.button>
                     </div>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Atom:Input + Atom:Button + Atom:EyeToggle + Atom:Divider</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Conjoined Geometry</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 3: SEARCH BAR ── */}
-                <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                          SearchBar
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Live Command
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Live Input + Fluid Clear Trigger + Command Palette Popover
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium">
-                      Press ⌘K to focus
-                    </span>
+                {/* ── 3. SEARCH BAR ── */}
+                <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Search bar
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Search input with leading search icon, clear trigger, and keyboard shortcut badge.
+                    </p>
                   </div>
 
                   <div ref={searchRef} className="relative">
@@ -2139,7 +1886,7 @@ module.exports = {
                           value={searchBarQuery}
                           onFocus={() => setIsSearchFocused(true)}
                           onChange={(e) => setSearchBarQuery(e.target.value)}
-                          placeholder="Search clusters, telemetry metrics, audit logs..."
+                          placeholder="Search records, users, tags..."
                           style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                           className="w-full bg-transparent outline-none"
                         />
@@ -2180,7 +1927,6 @@ module.exports = {
                       </div>
                     </div>
 
-                    {/* Fluid Command Palette / Suggestions Popover */}
                     <AnimatePresence>
                       {isSearchFocused && (
                         <motion.div
@@ -2195,80 +1941,44 @@ module.exports = {
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                             boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
-                            padding: `${Math.round(6 * scaled.scale)}px`,
+                            padding: "4px",
                           }}
-                          className="absolute top-full left-0 right-0 z-30 space-y-1 border"
+                          className="absolute top-full left-0 right-0 z-30 space-y-0.5 border"
                         >
-                          <div className="px-2.5 py-1 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                            Suggested Quick Actions
-                          </div>
-                          {[
-                            { icon: Zap, label: "Trigger automated cluster failover drill", category: "Operations" },
-                            { icon: BarChart2, label: "Export monthly egress telemetry ledger (.csv)", category: "Analytics" },
-                            { icon: Shield, label: "Review RBAC privilege escalation matrix", category: "Security" },
-                          ].map((item, idx) => {
-                            const Icon = item.icon;
-                            return (
-                              <button
-                                key={idx}
-                                type="button"
-                                onClick={() => {
-                                  setSearchBarQuery(item.label);
-                                  setIsSearchFocused(false);
-                                  triggerToast(`Executing: ${item.label}`);
-                                }}
-                                style={{
-                                  borderRadius: `${scaled.scaledOptionRadius}px`,
-                                  fontSize: `${scaled.sublabelFontSize}px`,
-                                  padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
-                                }}
-                                className="w-full text-left flex items-center justify-between text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer group"
-                              >
-                                <span className="flex items-center gap-2">
-                                  <Icon className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-900" />
-                                  <span>{item.label}</span>
-                                </span>
-                                <span className="text-[10px] text-neutral-400 font-medium">
-                                  {item.category}
-                                </span>
-                              </button>
-                            );
-                          })}
+                          {["Documentation guides", "Security policy configuration", "User permission roles"].map((item, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => {
+                                setSearchBarQuery(item);
+                                setIsSearchFocused(false);
+                              }}
+                              style={{
+                                borderRadius: `${scaled.scaledOptionRadius}px`,
+                                fontSize: `${scaled.sublabelFontSize}px`,
+                                padding: "6px 10px",
+                              }}
+                              className="w-full text-left flex items-center gap-2 text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                            >
+                              <Search className="w-3.5 h-3.5 text-neutral-400" />
+                              <span>{item}</span>
+                            </button>
+                          ))}
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Atom:Input + Atom:SearchIcon + Atom:ClearButton + Atom:KeycapKbd + FloatingPalette</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Fluid Motion Ready</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 4: SEARCHABLE SELECT ── */}
-                <div id="mol-search-select" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                          SearchableSelect
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Selection Popover
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Trigger + Filtered Popover + Universal Tokens
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium">
-                      Esc to close
-                    </span>
+                {/* ── 4. SELECT DROPDOWN ── */}
+                <div id="mol-select" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Select dropdown
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Trigger button with popover menu and searchable option list.
+                    </p>
                   </div>
 
                   <div ref={roleRef} className="relative space-y-1.5">
@@ -2292,27 +2002,18 @@ module.exports = {
                       }}
                       className="w-full flex items-center justify-between text-left cursor-pointer border"
                     >
-                      <div className="flex items-center gap-2.5 truncate">
-                        <Key className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
-                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: role ? tokens.textIconColor : "#A3A3A3" }} className="truncate font-normal">
-                          {role || "Select a role..."}
-                        </span>
-                      </div>
+                      <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: role ? tokens.textIconColor : "#A3A3A3" }} className="truncate font-normal">
+                        {role || "Select a role..."}
+                      </span>
                       <motion.div
                         animate={{ rotate: isRoleOpen ? 180 : 0 }}
                         transition={scaled.motionConfig.spring}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
-                          color: tokens.textIconColor,
-                        }}
-                        className="w-5 h-5 flex items-center justify-center shrink-0"
+                        className="w-4 h-4 flex items-center justify-center shrink-0 text-neutral-400"
                       >
                         <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
                       </motion.div>
                     </button>
 
-                    {/* Popover Dropdown adhering 100% to Universal Tokens & Fluid Motion */}
                     <AnimatePresence>
                       {isRoleOpen && (
                         <motion.div
@@ -2327,7 +2028,7 @@ module.exports = {
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                             boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                            padding: `${Math.round(6 * scaled.scale)}px`,
+                            padding: "4px",
                           }}
                           className="absolute top-full left-0 right-0 z-30 space-y-1 border"
                         >
@@ -2344,11 +2045,11 @@ module.exports = {
                               backgroundColor: scaled.effectiveInputFill,
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
-                              padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                              padding: "5px 8px",
                             }}
                             className="w-full outline-none border transition-colors focus:ring-1 focus:ring-neutral-900"
                           />
-                          <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
+                          <div className="max-h-48 overflow-y-auto space-y-0.5 pt-0.5">
                             {filteredRoles.map((opt) => {
                               const isSelected = role === opt;
                               const isHovered = hoveredRole === opt;
@@ -2369,15 +2070,12 @@ module.exports = {
                                     backgroundColor: isSelected ? tokens.primaryButtonColor : isHovered ? tokens.hoverBackplateTint : "transparent",
                                     color: isSelected ? "#FFFFFF" : tokens.textIconColor,
                                     fontSize: `${scaled.labelFontSize}px`,
-                                    padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
-                                    transition: scaled.transitionStyle,
+                                    padding: "6px 8px",
                                   }}
-                                  className="w-full text-left flex items-center justify-between font-normal cursor-pointer select-none"
+                                  className="w-full text-left flex items-center justify-between cursor-pointer select-none transition-colors"
                                 >
                                   <span>{opt}</span>
-                                  {isSelected && (
-                                    <Check className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
-                                  )}
+                                  {isSelected && <Check className="w-3.5 h-3.5" strokeWidth={2.5} />}
                                 </motion.button>
                               );
                             })}
@@ -2386,37 +2084,17 @@ module.exports = {
                       )}
                     </AnimatePresence>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Atom:Button + Atom:KeyIcon + Atom:Chevron + FloatingMenu + OptionList</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Structured Menu Radius</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 5: MULTI-TAG DECK ── */}
-                <div id="mol-tag-deck" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                          TagDeck
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Composable Deck
-                        </span>
-                      </div>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Removable tag chips with calibrated container geometry, checkmark toggles, and spring animations.
-                      </p>
-                    </div>
-
-                    <span className="text-[10px] font-sans tabular-nums font-semibold px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200">
-                      {tags.length} Active Tags
-                    </span>
+                {/* ── 5. TAG INPUT ── */}
+                <div id="mol-tag-input" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Tag input
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Input container with removable tag chips and inline add trigger.
+                    </p>
                   </div>
 
                   <div ref={tagRef} className="relative space-y-1.5">
@@ -2437,7 +2115,6 @@ module.exports = {
                       }}
                       className="w-full flex flex-wrap items-center gap-1.5 border"
                     >
-                      {/* Animated Tag Chips */}
                       <AnimatePresence>
                         {tags.map((item) => (
                           <motion.span
@@ -2470,7 +2147,6 @@ module.exports = {
                         ))}
                       </AnimatePresence>
 
-                      {/* Clean SaaS "+ Add tag" Trigger Button */}
                       <motion.button
                         type="button"
                         whileTap={{ scale: scaled.motionConfig.tapScale }}
@@ -2489,7 +2165,6 @@ module.exports = {
                       </motion.button>
                     </div>
 
-                    {/* Tag Popover Dropdown adhering 100% to Universal Tokens */}
                     <AnimatePresence>
                       {isTagOpen && (
                         <motion.div
@@ -2504,7 +2179,7 @@ module.exports = {
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                             boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                            padding: `${Math.round(6 * scaled.scale)}px`,
+                            padding: "4px",
                           }}
                           className="absolute top-full left-0 right-0 z-30 space-y-1 border"
                         >
@@ -2521,11 +2196,11 @@ module.exports = {
                               backgroundColor: scaled.effectiveInputFill,
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
-                              padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                              padding: "5px 8px",
                             }}
                             className="w-full outline-none border transition-colors focus:ring-1 focus:ring-neutral-900"
                           />
-                          <div className="max-h-48 overflow-y-auto space-y-0.5 pt-1">
+                          <div className="max-h-48 overflow-y-auto space-y-0.5 pt-0.5">
                             {filteredTags.map((opt) => {
                               const isSelected = tags.includes(opt);
                               const isHovered = hoveredTag === opt;
@@ -2540,13 +2215,11 @@ module.exports = {
                                     backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
                                     color: tokens.textIconColor,
                                     fontSize: `${scaled.labelFontSize}px`,
-                                    padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                                    padding: "6px 8px",
                                   }}
                                   className="flex items-center justify-between cursor-pointer select-none"
                                 >
-                                  <span className={isSelected ? "font-semibold" : "font-normal"}>
-                                    {opt}
-                                  </span>
+                                  <span className={isSelected ? "font-semibold" : "font-normal"}>{opt}</span>
                                   <div
                                     style={{
                                       borderRadius: `${scaled.scaledCheckboxRadius}px`,
@@ -2556,9 +2229,7 @@ module.exports = {
                                     }}
                                     className="w-4 h-4 flex items-center justify-center shrink-0 border transition-colors"
                                   >
-                                    {isSelected && (
-                                      <Check className="w-3 h-3 text-white" strokeWidth={3} />
-                                    )}
+                                    {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                                   </div>
                                 </div>
                               );
@@ -2568,43 +2239,22 @@ module.exports = {
                       )}
                     </AnimatePresence>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Container + TagChips + PlusTrigger + PopoverChecklist</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Pill Mode Protected</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 6: DATE RANGE PICKER ── */}
-                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-neutral-500" />
-                          <span>DateRangePicker</span>
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Temporal Filter
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Trigger + Presets Matrix + Floating Popover
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium tabular-nums">
-                      {dateRangeString}
-                    </span>
+                {/* ── 6. DATE RANGE PICKER ── */}
+                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Date range picker
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Calendar input trigger with quick preset ranges and popover selector.
+                    </p>
                   </div>
 
                   <div ref={datePickerRef} className="relative space-y-1.5">
                     <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
-                      Audit &amp; Query Period
+                      Query period
                     </label>
                     <button
                       type="button"
@@ -2633,18 +2283,12 @@ module.exports = {
                       <motion.div
                         animate={{ rotate: isDatePickerOpen ? 180 : 0 }}
                         transition={scaled.motionConfig.spring}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
-                          color: tokens.textIconColor,
-                        }}
-                        className="w-5 h-5 flex items-center justify-center shrink-0"
+                        className="w-4 h-4 flex items-center justify-center shrink-0 text-neutral-400"
                       >
                         <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
                       </motion.div>
                     </button>
 
-                    {/* Floating Popover adhering 100% to universal tokens & fluid motion */}
                     <AnimatePresence>
                       {isDatePickerOpen && (
                         <motion.div
@@ -2659,164 +2303,78 @@ module.exports = {
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                             boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                            padding: `${Math.round(12 * scaled.scale)}px`,
+                            padding: "10px",
                           }}
-                          className="absolute top-full left-0 right-0 z-30 space-y-3 border"
+                          className="absolute top-full left-0 right-0 z-30 space-y-2 border"
                         >
-                          <div className="space-y-1">
-                            <span style={{ fontSize: `${scaled.sublabelFontSize - 1}px` }} className="text-neutral-400 font-semibold uppercase tracking-wider block">
-                              Quick Presets
-                            </span>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 relative">
-                              {[
-                                { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
-                                { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
-                                { id: "quarter", label: "This Quarter", range: "Oct 01, 2026 – Dec 31, 2026" },
-                                { id: "custom", label: "Year to Date", range: "Jan 01, 2026 – Nov 06, 2026" },
-                              ].map((p) => {
-                                const isSelected = datePreset === p.id;
-                                return (
-                                  <button
-                                    key={p.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setDatePreset(p.id as any);
-                                      setDateRangeString(p.range);
-                                    }}
-                                    style={{
-                                      borderRadius: `${scaled.scaledOptionRadius}px`,
-                                      fontSize: `${scaled.sublabelFontSize}px`,
-                                      padding: `${Math.round(6 * scaled.scale)}px ${Math.round(8 * scaled.scale)}px`,
-                                    }}
-                                    className={`font-medium cursor-pointer text-center select-none relative transition-colors ${
-                                      isSelected ? "text-white font-semibold" : "text-neutral-600 hover:text-black hover:bg-neutral-100"
-                                    }`}
-                                  >
-                                    {isSelected && (
-                                      <motion.div
-                                        layoutId="activeDatePresetPill"
-                                        transition={scaled.motionConfig.pillTransition}
-                                        style={{
-                                          borderRadius: `${scaled.scaledOptionRadius}px`,
-                                          backgroundColor: tokens.primaryButtonColor,
-                                        }}
-                                        className="absolute inset-0 -z-10 shadow-xs"
-                                      />
-                                    )}
-                                    <span className="relative z-10">{p.label}</span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                            <div className="text-[11px] text-neutral-500 tabular-nums">
-                              Selected: <span className="font-semibold text-neutral-900">{dateRangeString}</span>
-                            </div>
-                            <motion.button
-                              type="button"
-                              whileTap={{ scale: scaled.motionConfig.tapScale }}
-                              onClick={() => {
-                                setIsDatePickerOpen(false);
-                                triggerToast(`Applied date filter: ${dateRangeString}`);
-                              }}
-                              style={{
-                                borderRadius: `${scaled.scaledInnerRadius}px`,
-                                backgroundColor: tokens.primaryButtonColor,
-                                color: "#FFFFFF",
-                                fontSize: `${scaled.sublabelFontSize}px`,
-                                padding: `${Math.round(5 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
-                              }}
-                              className="font-semibold cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors"
-                            >
-                              Apply Range
-                            </motion.button>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 relative">
+                            {[
+                              { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
+                              { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
+                              { id: "quarter", label: "This Quarter", range: "Oct 01, 2026 – Dec 31, 2026" },
+                              { id: "custom", label: "Year to Date", range: "Jan 01, 2026 – Nov 06, 2026" },
+                            ].map((p) => {
+                              const isSelected = datePreset === p.id;
+                              return (
+                                <button
+                                  key={p.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setDatePreset(p.id as any);
+                                    setDateRangeString(p.range);
+                                    setIsDatePickerOpen(false);
+                                  }}
+                                  style={{
+                                    borderRadius: `${scaled.scaledOptionRadius}px`,
+                                    fontSize: `${scaled.sublabelFontSize}px`,
+                                    padding: "6px 8px",
+                                  }}
+                                  className={`font-medium cursor-pointer text-center select-none relative transition-colors ${
+                                    isSelected ? "text-white font-semibold" : "text-neutral-600 hover:text-black hover:bg-neutral-100"
+                                  }`}
+                                >
+                                  {isSelected && (
+                                    <motion.div
+                                      layoutId="activeDatePresetPill"
+                                      transition={scaled.motionConfig.pillTransition}
+                                      style={{
+                                        borderRadius: `${scaled.scaledOptionRadius}px`,
+                                        backgroundColor: tokens.primaryButtonColor,
+                                      }}
+                                      className="absolute inset-0 -z-10 shadow-xs"
+                                    />
+                                  )}
+                                  <span className="relative z-10">{p.label}</span>
+                                </button>
+                              );
+                            })}
                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Atom:Button + Atom:CalendarIcon + SlidingPresets + ActionFooter</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Sliding LayoutId Active</span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* ══════════════════════════════════════════════════════════
-                CATEGORY 2: NAVIGATION & COMMANDS
-               ══════════════════════════════════════════════════════════ */}
-            {(activeCategoryFilter === "all" || activeCategoryFilter === "cat2") && (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 12 }}
-                transition={scaled.motionConfig.spring}
-                className="space-y-4"
-              >
-                <div id="category-section-cat2" className="w-full pt-6 space-y-2">
-                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
-                      >
-                        02
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
-                          Navigation &amp; Wayfinding Commands
-                        </h2>
-                        <p className="text-[11px] text-neutral-500">
-                          Framer Motion segmented pill transitions, hierarchical wayfinding routes, and fluid pagination controls.
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
-                      3 Production Molecules
-                    </span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 7: SEGMENTED CONTROL ── */}
-                <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                          SegmentedControl
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Sliding Switcher
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Framer Motion layoutId sliding pill + Motion Physics binding
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium">
-                      Active: <strong className="text-neutral-900 capitalize">{segmentValue}</strong>
-                    </span>
+                {/* ── 7. SEGMENTED CONTROL ── */}
+                <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Segmented control
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Sliding toggle control for selecting mutually exclusive options.
+                    </p>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Billing frequency</label>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Billing cadence</label>
                     <div
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.hoverBackplateTint,
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
-                        padding: `${Math.round(3 * scaled.scale)}px`,
+                        padding: "3px",
                       }}
                       className="inline-flex items-center gap-1 border relative"
                     >
@@ -2833,10 +2391,7 @@ module.exports = {
                             key={key}
                             type="button"
                             whileTap={{ scale: scaled.motionConfig.tapScale }}
-                            onClick={() => {
-                              setSegmentValue(key);
-                              triggerToast(`Selected plan billing: ${label}`);
-                            }}
+                            onClick={() => setSegmentValue(key)}
                             style={{
                               borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
                               fontSize: `${scaled.sublabelFontSize}px`,
@@ -2863,59 +2418,33 @@ module.exports = {
                       })}
                     </div>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">ContainerTrack + SlidingActivePill + SegmentButtons</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Fluid Physics Connected</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 8: BREADCRUMBS ── */}
-                <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                          <ChevronRight className="w-4 h-4 text-neutral-500" />
-                          <span>Breadcrumbs</span>
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Route Wayfinding
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Hierarchical route + Collapsed Overflow Popover + Chevrons
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium">
-                      4 Levels Deep
-                    </span>
+                {/* ── 8. BREADCRUMBS ── */}
+                <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Breadcrumbs
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Hierarchical wayfinding trail with chevron separators and collapsed overflow.
+                    </p>
                   </div>
 
                   <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1 select-none">
                     <button
                       type="button"
-                      onClick={() => triggerToast("Navigated to: Infrastructure Root")}
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 transition-colors font-medium cursor-pointer"
+                      className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer"
                     >
                       Infrastructure
                     </button>
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
 
-                    {/* Interactive Collapsed Overflow Menu */}
                     <div ref={breadcrumbMenuRef} className="relative">
                       <button
                         type="button"
                         onClick={() => setIsBreadcrumbMenuOpen((prev) => !prev)}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                        }}
+                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
                         className="px-1.5 py-0.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors font-bold cursor-pointer"
                         title="Show intermediate routes"
                       >
@@ -2941,10 +2470,7 @@ module.exports = {
                           >
                             <button
                               type="button"
-                              onClick={() => {
-                                setIsBreadcrumbMenuOpen(false);
-                                triggerToast("Navigated to: AWS US-East Region");
-                              }}
+                              onClick={() => setIsBreadcrumbMenuOpen(false)}
                               style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
                               className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center justify-between cursor-pointer"
                             >
@@ -2953,10 +2479,7 @@ module.exports = {
                             </button>
                             <button
                               type="button"
-                              onClick={() => {
-                                setIsBreadcrumbMenuOpen(false);
-                                triggerToast("Navigated to: Production Cluster A");
-                              }}
+                              onClick={() => setIsBreadcrumbMenuOpen(false)}
                               style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
                               className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center justify-between cursor-pointer"
                             >
@@ -2971,11 +2494,9 @@ module.exports = {
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
                     <button
                       type="button"
-                      onClick={() => triggerToast("Navigated to: Production Node-4")}
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 transition-colors font-medium cursor-pointer"
+                      className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer"
                     >
-                      Production Node-4
+                      Node-4
                     </button>
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
                     <span
@@ -2984,319 +2505,23 @@ module.exports = {
                         backgroundColor: tokens.hoverBackplateTint,
                         color: tokens.textIconColor,
                       }}
-                      className="px-2.5 py-1 font-semibold flex items-center gap-1.5 shadow-2xs"
+                      className="px-2.5 py-1 font-semibold flex items-center gap-1.5"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span>Telemetry Metrics</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      <span>Telemetry</span>
                     </span>
                   </nav>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Nav + WaypointItems + ChevronDelimiters + OverflowMenu + ActiveLeaf</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Live Overflow Menu</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 9: PAGINATION BAR ── */}
-                <div id="mol-pagination" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                          <ChevronRight className="w-4 h-4 text-neutral-500" />
-                          <span>PaginationBar</span>
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Data Navigation
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Summary + Custom Popover + Fluid Sliding Page Indicator
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium tabular-nums">
-                      Page {currentPage} of 15
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      borderRadius: `${scaled.scaledMenuRadius}px`,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      borderColor: tokens.universalBorderColor,
-                      backgroundColor: scaled.effectiveInputFill,
-                      boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "none",
-                      padding: `${Math.round(8 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
-                    }}
-                    className="border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
-                  >
-                    {/* Record Range Text in Tabular figures */}
-                    <div style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 tabular-nums">
-                      Showing <span className="font-semibold text-neutral-900">{(currentPage - 1) * pageSize + 1}</span>–
-                      <span className="font-semibold text-neutral-900">{Math.min(currentPage * pageSize, 148)}</span> of{" "}
-                      <span className="font-semibold text-neutral-900">148</span> candidate records
-                    </div>
-
-                    {/* Controls */}
-                    <div className="flex items-center gap-2">
-                      {/* Rows per page selector - ZeroLight Tokenized Custom Popover (NO native select!) */}
-                      <div ref={pageSizeRef} className="relative flex items-center gap-1.5">
-                        <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">Rows:</span>
-                        <button
-                          type="button"
-                          onClick={() => setIsPageSizeOpen((prev) => !prev)}
-                          style={{
-                            borderRadius: `${scaled.scaledInnerRadius}px`,
-                            borderColor: tokens.universalBorderColor,
-                            borderWidth: `${tokens.borderWidth}px`,
-                            backgroundColor: tokens.universalFillColor,
-                            color: tokens.textIconColor,
-                            fontSize: `${scaled.sublabelFontSize}px`,
-                            height: `${Math.round(28 * scaled.scale)}px`,
-                            padding: "0 8px",
-                          }}
-                          className="border flex items-center gap-1.5 font-medium cursor-pointer hover:bg-neutral-50 transition-colors select-none"
-                        >
-                          <span>{pageSize}</span>
-                          <ChevronDown className={`w-3 h-3 text-neutral-400 transition-transform ${isPageSizeOpen ? "rotate-180" : ""}`} />
-                        </button>
-
-                        <AnimatePresence>
-                          {isPageSizeOpen && (
-                            <motion.div
-                              initial={scaled.motionConfig.popover.initial}
-                              animate={scaled.motionConfig.popover.animate}
-                              exit={scaled.motionConfig.popover.exit}
-                              transition={scaled.motionConfig.popover.transition}
-                              style={{
-                                borderRadius: `${scaled.scaledMenuRadius}px`,
-                                borderColor: tokens.universalBorderColor,
-                                borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.universalFillColor,
-                                boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
-                                padding: "4px",
-                              }}
-                              className="absolute bottom-full mb-1.5 left-8 w-20 z-40 space-y-0.5 border"
-                            >
-                              {[10, 25, 50].map((size) => {
-                                const isSelected = pageSize === size;
-                                return (
-                                  <button
-                                    key={size}
-                                    type="button"
-                                    onClick={() => {
-                                      setPageSize(size);
-                                      setIsPageSizeOpen(false);
-                                      triggerToast(`Page size set to ${size} rows`);
-                                    }}
-                                    style={{
-                                      borderRadius: `${scaled.scaledOptionRadius}px`,
-                                      backgroundColor: isSelected ? tokens.primaryButtonColor : "transparent",
-                                      color: isSelected ? "#FFFFFF" : tokens.textIconColor,
-                                      fontSize: `${scaled.sublabelFontSize}px`,
-                                      padding: "4px 8px",
-                                    }}
-                                    className="w-full text-left flex items-center justify-between font-medium cursor-pointer transition-colors"
-                                  >
-                                    <span>{size}</span>
-                                    {isSelected && <Check className="w-3 h-3 text-white" />}
-                                  </button>
-                                );
-                              })}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-
-                      {/* Previous Button */}
-                      <motion.button
-                        type="button"
-                        whileTap={{ scale: scaled.motionConfig.tapScale }}
-                        disabled={currentPage === 1}
-                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                          color: currentPage === 1 ? "#A3A3A3" : tokens.textIconColor,
-                          height: `${Math.round(28 * scaled.scale)}px`,
-                          padding: "0 8px",
-                          fontSize: `${scaled.sublabelFontSize}px`,
-                        }}
-                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
-                      >
-                        <ChevronLeft className="w-3.5 h-3.5" />
-                        <span>Prev</span>
-                      </motion.button>
-
-                      {/* Page Numbers with Fluid Sliding Pill */}
-                      <div className="flex items-center gap-1 tabular-nums">
-                        {[1, 2, 3, 4, 15].map((pageNum, idx) => {
-                          const isActive = currentPage === pageNum;
-                          return (
-                            <React.Fragment key={pageNum}>
-                              {idx === 4 && <span className="text-neutral-400 px-1">...</span>}
-                              <motion.button
-                                type="button"
-                                whileTap={{ scale: scaled.motionConfig.tapScale }}
-                                onClick={() => setCurrentPage(pageNum)}
-                                style={{
-                                  borderRadius: `${scaled.scaledInnerRadius}px`,
-                                  color: isActive ? "#FFFFFF" : tokens.textIconColor,
-                                  width: `${Math.round(28 * scaled.scale)}px`,
-                                  height: `${Math.round(28 * scaled.scale)}px`,
-                                  fontSize: `${scaled.sublabelFontSize}px`,
-                                }}
-                                className="font-semibold flex items-center justify-center cursor-pointer transition-colors relative select-none"
-                              >
-                                {isActive && (
-                                  <motion.div
-                                    layoutId="activePagePill"
-                                    transition={scaled.motionConfig.pillTransition}
-                                    style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                                      backgroundColor: tokens.primaryButtonColor,
-                                    }}
-                                    className="absolute inset-0 -z-10 shadow-xs"
-                                  />
-                                )}
-                                <span className="relative z-10">{pageNum}</span>
-                              </motion.button>
-                            </React.Fragment>
-                          );
-                        })}
-                      </div>
-
-                      {/* Next Button */}
-                      <motion.button
-                        type="button"
-                        whileTap={{ scale: scaled.motionConfig.tapScale }}
-                        disabled={currentPage === 15}
-                        onClick={() => setCurrentPage((p) => Math.min(15, p + 1))}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                          color: currentPage === 15 ? "#A3A3A3" : tokens.textIconColor,
-                          height: `${Math.round(28 * scaled.scale)}px`,
-                          padding: "0 8px",
-                          fontSize: `${scaled.sublabelFontSize}px`,
-                        }}
-                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
-                      >
-                        <span>Next</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </motion.button>
-                    </div>
-                  </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">RecordSummary + PopoverSelector + SlidingPageNumbers + PrevNext</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Sliding Page Pill Active</span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* ══════════════════════════════════════════════════════════
-                CATEGORY 3: DATA DISPLAY & ANALYTICS
-               ══════════════════════════════════════════════════════════ */}
-            {(activeCategoryFilter === "all" || activeCategoryFilter === "cat3") && (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 12 }}
-                transition={scaled.motionConfig.spring}
-                className="space-y-4"
-              >
-                <div id="category-section-cat3" className="w-full pt-6 space-y-2">
-                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
-                      >
-                        03
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
-                          Data Display &amp; Analytics Telemetry
-                        </h2>
-                        <p className="text-[11px] text-neutral-500">
-                          Real-time KPI metrics with time horizon switcher, live sparklines, and expandable tabular financial records.
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
-                      2 Production Molecules
-                    </span>
-                  </div>
-                </div>
-
-                {/* ── MOLECULE 10: METRIC STAT MOLECULE ── */}
-                <div id="mol-metric-stat" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                          MetricStat
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Telemetry KPI
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        KPI Counter + Horizon Switcher + Live Sparkline
-                      </span>
-                    </div>
-
-                    {/* Interactive Horizon Switcher */}
-                    <div
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="flex items-center gap-1 bg-neutral-100 p-0.5 border border-neutral-200"
-                    >
-                      {(["24h", "7d", "30d", "1y"] as const).map((h) => {
-                        const isSelected = metricHorizon === h;
-                        return (
-                          <button
-                            key={h}
-                            type="button"
-                            onClick={() => {
-                              setMetricHorizon(h);
-                              triggerToast(`Telemetry range set to ${h}`);
-                            }}
-                            className={`px-2 py-0.5 text-[11px] font-semibold cursor-pointer relative transition-colors ${
-                              isSelected ? "text-white" : "text-neutral-500 hover:text-neutral-900"
-                            }`}
-                          >
-                            {isSelected && (
-                              <motion.div
-                                layoutId="metricHorizonPill"
-                                transition={scaled.motionConfig.pillTransition}
-                                style={{
-                                  borderRadius: `${scaled.scaledInnerRadius}px`,
-                                  backgroundColor: tokens.primaryButtonColor,
-                                }}
-                                className="absolute inset-0 -z-10 shadow-xs"
-                              />
-                            )}
-                            <span className="relative z-10">{h}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
+                {/* ── 9. METRIC STAT ── */}
+                <div id="mol-stat-badge" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Metric stat
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Telemetry display pairing a metric label, primary value, and trend badge.
+                    </p>
                   </div>
 
                   <div className="flex items-baseline justify-between pt-1">
@@ -3304,396 +2529,42 @@ module.exports = {
                       <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 font-medium block">
                         Net Revenue Run Rate
                       </span>
-                      <div className="flex items-baseline gap-2 pt-0.5">
-                        <motion.span
-                          key={metricHorizon}
-                          initial={{ opacity: 0, y: 4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={scaled.motionConfig.spring}
+                      <div className="flex items-baseline gap-2.5 pt-1">
+                        <span
                           style={{ fontSize: `${scaled.headingFontSize + 8}px` }}
                           className="font-semibold text-neutral-900 tracking-tight tabular-nums"
                         >
-                          {metricHorizon === "24h" && "$4,820"}
-                          {metricHorizon === "7d" && "$34,150"}
-                          {metricHorizon === "30d" && "$148,200"}
-                          {metricHorizon === "1y" && "$1,780,000"}
-                        </motion.span>
-                        <motion.span
-                          key={`delta-${metricHorizon}`}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={scaled.motionConfig.spring}
+                          $148,200
+                        </span>
+                        <span
                           style={{
                             fontSize: `${scaled.sublabelFontSize}px`,
                             borderRadius: `${scaled.scaledRadius}px`,
                           }}
-                          className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 font-medium inline-flex items-center gap-1 select-none tabular-nums"
+                          className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 font-medium inline-flex items-center gap-1 select-none tabular-nums"
                         >
                           <TrendingUp className="w-3 h-3 text-emerald-600" strokeWidth={2.5} />
-                          <span>
-                            {metricHorizon === "24h" && "+8.2%"}
-                            {metricHorizon === "7d" && "+12.6%"}
-                            {metricHorizon === "30d" && "+18.4%"}
-                            {metricHorizon === "1y" && "+34.2%"}
-                          </span>
-                        </motion.span>
+                          <span>+18.4%</span>
+                        </span>
                       </div>
                     </div>
 
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      vs. previous {metricHorizon} period
+                      vs. previous 30d
                     </span>
-                  </div>
-
-                  {/* Interactive Mini Sparkline */}
-                  <div className="pt-2">
-                    <div className="flex items-center justify-between text-[10px] text-neutral-400 font-medium pb-1">
-                      <span>Telemetry Trajectory</span>
-                      <span>Hover node for point revenue</span>
-                    </div>
-                    <div className="h-16 w-full relative flex items-center">
-                      <svg className="w-full h-full overflow-visible" viewBox="0 0 300 60" preserveAspectRatio="none">
-                        <defs>
-                          <linearGradient id="metricGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
-                            <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
-                          </linearGradient>
-                        </defs>
-                        <path
-                          d="M 0,50 Q 50,45 100,35 T 200,20 T 300,8 L 300,60 L 0,60 Z"
-                          fill="url(#metricGrad)"
-                        />
-                        <path
-                          d="M 0,50 Q 50,45 100,35 T 200,20 T 300,8"
-                          fill="none"
-                          stroke="#10B981"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                        />
-                        {[
-                          { cx: 0, cy: 50, val: "$120k", date: "Day 1" },
-                          { cx: 75, cy: 40, val: "$128k", date: "Day 8" },
-                          { cx: 150, cy: 30, val: "$136k", date: "Day 15" },
-                          { cx: 225, cy: 18, val: "$142k", date: "Day 22" },
-                          { cx: 300, cy: 8, val: "$148k", date: "Today" },
-                        ].map((pt, idx) => (
-                          <g key={idx} className="cursor-pointer">
-                            <circle
-                              cx={pt.cx}
-                              cy={pt.cy}
-                              r={hoveredSparkPoint === idx ? 5 : 3.5}
-                              fill="#10B981"
-                              stroke="#FFFFFF"
-                              strokeWidth="2"
-                              onMouseEnter={() => setHoveredSparkPoint(idx)}
-                              onMouseLeave={() => setHoveredSparkPoint(null)}
-                              className="transition-all"
-                            />
-                            {hoveredSparkPoint === idx && (
-                              <text
-                                x={Math.min(270, Math.max(30, pt.cx))}
-                                y={pt.cy - 10}
-                                textAnchor="middle"
-                                className="text-[10px] font-bold fill-neutral-900"
-                              >
-                                {pt.val} ({pt.date})
-                              </text>
-                            )}
-                          </g>
-                        ))}
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">MetricLabel + HorizonSwitch + ValueCounter + TrendBadge + Sparkline</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Interactive Telemetry</span>
                   </div>
                 </div>
 
-                {/* ── MOLECULE 11: DATA TABLE ROW ── */}
-                <div id="mol-table-row" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                {/* ── 10. ALERT BANNER ── */}
+                <div id="mol-alert" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-neutral-500" />
-                          <span>DataTableRow</span>
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Expandable Record
-                        </span>
-                      </div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                        Alert banner
+                      </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Multi-select checkbox, status pill, tabular figures, and click-to-expand telemetry details.
+                        Contextual feedback banner with status icon, descriptive copy, and dismiss action.
                       </p>
-                    </div>
-                    <span
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="text-[11px] bg-neutral-100 text-neutral-700 px-2.5 py-1 border border-neutral-200 font-medium"
-                    >
-                      Click row to expand
-                    </span>
-                  </div>
-
-                  {/* Financial Table Row Preview */}
-                  <div
-                    style={{
-                      borderRadius: `${scaled.scaledMenuRadius}px`,
-                      borderColor: tokens.universalBorderColor,
-                      borderWidth: `${tokens.borderWidth}px`,
-                    }}
-                    className="border overflow-hidden bg-white"
-                  >
-                    <table className="w-full text-xs">
-                      <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
-                        <tr>
-                          <th className="w-10 py-2.5 px-3 text-center">
-                            <span className="sr-only">Select</span>
-                          </th>
-                          <th className="py-2.5 px-3.5 text-left font-semibold uppercase tracking-wider text-[10px]">Invoice / Batch</th>
-                          <th className="py-2.5 px-3.5 text-left font-semibold uppercase tracking-wider text-[10px]">Plan Tier</th>
-                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Usage (GB)</th>
-                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Growth Delta</th>
-                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Settled Amount</th>
-                          <th className="py-2.5 px-3.5 text-center font-semibold uppercase tracking-wider text-[10px]">Status</th>
-                          <th className="w-12 py-2.5 px-3 text-center">
-                            <span className="sr-only">Actions</span>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-neutral-100 tabular-nums">
-                        {[
-                          { id: "INV-2627-101", plan: "Enterprise Dedicated", usage: "1,840 GB", delta: "+14.8%", amount: "$ 42,500.00", status: "Settled", region: "AWS us-east-1", node: "cluster-primary-a", latency: "14ms" },
-                          { id: "INV-2627-102", plan: "Pro Scale Cluster", usage: "920 GB", delta: "-3.2%", amount: "$ 19,850.00", status: "Auditing", region: "GCP us-central1", node: "worker-pool-8", latency: "22ms" },
-                        ].map((row) => {
-                          const isRowSelected = selectedTableRows.includes(row.id);
-                          const isExpanded = expandedRowId === row.id;
-                          return (
-                            <React.Fragment key={row.id}>
-                              <tr
-                                onClick={() => setExpandedRowId((prev) => (prev === row.id ? null : row.id))}
-                                className={`hover:bg-neutral-50/80 transition-colors cursor-pointer select-none ${
-                                  isExpanded ? "bg-neutral-50/50" : ""
-                                }`}
-                              >
-                                <td className="w-10 py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
-                                  <div
-                                    onClick={() => {
-                                      setSelectedTableRows((prev) =>
-                                        prev.includes(row.id) ? prev.filter((id) => id !== row.id) : [...prev, row.id]
-                                      );
-                                    }}
-                                    style={{
-                                      borderRadius: `${scaled.scaledCheckboxRadius}px`,
-                                      backgroundColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
-                                      borderColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
-                                      borderWidth: `${tokens.borderWidth}px`,
-                                    }}
-                                    className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto transition-colors"
-                                  >
-                                    {isRowSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
-                                  </div>
-                                </td>
-                                <td className="py-2.5 px-3.5 font-medium text-neutral-900 flex items-center gap-1.5">
-                                  <span>{row.id}</span>
-                                  <ChevronDown className={`w-3 h-3 text-neutral-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
-                                </td>
-                                <td className="py-2.5 px-3.5 text-neutral-600 font-normal">{row.plan}</td>
-                                <td className="py-2.5 px-3.5 text-right text-neutral-700 font-medium">{row.usage}</td>
-                                <td className={`py-2.5 px-3.5 text-right font-semibold ${row.delta.startsWith("+") ? "text-emerald-600" : "text-rose-600"}`}>
-                                  <span className="inline-flex items-center gap-1 justify-end">
-                                    {row.delta.startsWith("+") && <TrendingUp className="w-3 h-3" />}
-                                    {row.delta}
-                                  </span>
-                                </td>
-                                <td className="py-2.5 px-3.5 text-right font-bold text-neutral-900">{row.amount}</td>
-                                <td className="py-2.5 px-3.5 text-center">
-                                  <span
-                                    style={{ borderRadius: `${scaled.scaledRadius}px` }}
-                                    className={`px-2 py-0.5 text-[10px] font-semibold border ${
-                                      row.status === "Settled"
-                                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                        : "bg-amber-50 text-amber-700 border-amber-200"
-                                    }`}
-                                  >
-                                    {row.status}
-                                  </span>
-                                </td>
-                                <td className="w-12 py-2.5 px-3 text-center relative" onClick={(e) => e.stopPropagation()}>
-                                  <div ref={row.id === "INV-2627-101" ? rowActionsRef : undefined} className="relative inline-block text-right">
-                                    <button
-                                      type="button"
-                                      onClick={() => setIsRowActionsOpen((prev) => !prev)}
-                                      style={{
-                                        borderRadius: `${scaled.scaledInnerRadius}px`,
-                                        padding: "4px 6px",
-                                      }}
-                                      className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
-                                    >
-                                      <MoreHorizontal className="w-4 h-4" />
-                                    </button>
-
-                                    <AnimatePresence>
-                                      {isRowActionsOpen && row.id === "INV-2627-101" && (
-                                        <motion.div
-                                          initial={scaled.motionConfig.popover.initial}
-                                          animate={scaled.motionConfig.popover.animate}
-                                          exit={scaled.motionConfig.popover.exit}
-                                          transition={scaled.motionConfig.popover.transition}
-                                          style={{
-                                            borderRadius: `${scaled.scaledMenuRadius}px`,
-                                            borderColor: tokens.universalBorderColor,
-                                            borderWidth: `${tokens.borderWidth}px`,
-                                            backgroundColor: tokens.universalFillColor,
-                                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
-                                          }}
-                                          className="absolute right-0 top-full mt-1 w-44 p-1 z-30 border space-y-0.5 text-left"
-                                        >
-                                          <button
-                                            type="button"
-                                            onClick={() => { setIsRowActionsOpen(false); triggerToast("Opening batch invoice details"); }}
-                                            style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
-                                            className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
-                                          >
-                                            <FileText className="w-3.5 h-3.5 text-neutral-400" />
-                                            <span>View Invoice</span>
-                                          </button>
-                                          <button
-                                            type="button"
-                                            onClick={() => { setIsRowActionsOpen(false); triggerToast("Downloading PDF audit receipt"); }}
-                                            style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
-                                            className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
-                                          >
-                                            <Download className="w-3.5 h-3.5 text-neutral-400" />
-                                            <span>Download Audit PDF</span>
-                                          </button>
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
-                                  </div>
-                                </td>
-                              </tr>
-
-                              {/* Fluid Animated Expandable Detail Row */}
-                              <AnimatePresence>
-                                {isExpanded && (
-                                  <tr>
-                                    <td colSpan={8} className="p-0 border-b border-neutral-200">
-                                      <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: "auto" }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        transition={scaled.motionConfig.spring}
-                                        className="bg-neutral-50/60 p-3.5 space-y-2 border-t border-neutral-100 overflow-hidden text-xs"
-                                      >
-                                        <div className="flex items-center justify-between text-neutral-500 font-medium">
-                                          <span>Expanded Telemetry Payload</span>
-                                          <span className="font-sans tabular-nums text-[10px]">SHA-256: 8f9a2b10cd4e...</span>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2">
-                                          <div
-                                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                                            className="bg-white p-2.5 border border-neutral-200"
-                                          >
-                                            <div className="text-[10px] text-neutral-400 font-semibold uppercase">Cluster Region</div>
-                                            <div className="font-semibold text-neutral-800">{row.region}</div>
-                                          </div>
-                                          <div
-                                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                                            className="bg-white p-2.5 border border-neutral-200"
-                                          >
-                                            <div className="text-[10px] text-neutral-400 font-semibold uppercase">Routing Target</div>
-                                            <div className="font-semibold text-neutral-800">{row.node}</div>
-                                          </div>
-                                          <div
-                                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                                            className="bg-white p-2.5 border border-neutral-200"
-                                          >
-                                            <div className="text-[10px] text-neutral-400 font-semibold uppercase">Roundtrip Latency</div>
-                                            <div className="font-semibold text-emerald-600">{row.latency}</div>
-                                          </div>
-                                        </div>
-                                      </motion.div>
-                                    </td>
-                                  </tr>
-                                )}
-                              </AnimatePresence>
-                            </React.Fragment>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">TableHead + TableRow + Checkbox + StatusPill + ActionPopover + ExpandableDrawer</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Row Expansion Active</span>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* ══════════════════════════════════════════════════════════
-                CATEGORY 4: FEEDBACK & OVERLAYS
-               ══════════════════════════════════════════════════════════ */}
-            {(activeCategoryFilter === "all" || activeCategoryFilter === "cat4") && (
-              <motion.div
-                layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 12 }}
-                transition={scaled.motionConfig.spring}
-                className="space-y-4"
-              >
-                <div id="category-section-cat4" className="w-full pt-6 space-y-2">
-                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
-                      >
-                        04
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
-                          Feedback &amp; Contextual Overlays
-                        </h2>
-                        <p className="text-[11px] text-neutral-500">
-                          Multi-variant semantic alert callouts, zero-data empty state triggers, and contextual hover popover tooltips.
-                        </p>
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
-                      3 Production Molecules
-                    </span>
-                  </div>
-                </div>
-
-                {/* ── MOLECULE 12: ALERT CALLOUT (SEMANTIC FEEDBACK BANNER) ── */}
-                <div id="mol-alert-callout" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4 text-neutral-500" />
-                          <span>AlertCallout</span>
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Semantic Alert
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Icon + Severity Heading + Body Copy + Dismiss Action
-                      </span>
                     </div>
 
                     <div
@@ -3760,7 +2631,7 @@ module.exports = {
                               ? "#F0FDF4"
                               : tokens.universalFillColor,
                           boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "0 1px 2px 0 rgba(0,0,0,0.02)",
-                          padding: `${Math.round(14 * scaled.scale)}px ${Math.round(16 * scaled.scale)}px`,
+                          padding: `${Math.round(12 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
                         }}
                         className="border flex items-start gap-3 relative transition-all"
                       >
@@ -3771,7 +2642,7 @@ module.exports = {
                           {alertVariant === "info" && <Info className="w-4 h-4 text-neutral-700" />}
                         </div>
 
-                        <div className="flex-1 space-y-1">
+                        <div className="flex-1 space-y-0.5">
                           <div style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-semibold text-neutral-900">
                             {alertVariant === "critical" && "Payment Gateway Authorization Failed"}
                             {alertVariant === "warning" && "API Rate Quota Nearing Threshold (88%)"}
@@ -3779,40 +2650,20 @@ module.exports = {
                             {alertVariant === "info" && "Scheduled System Maintenance Window"}
                           </div>
                           <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-600 leading-relaxed font-normal">
-                            {alertVariant === "critical" && "Your monthly cluster subscription could not be charged. Automated retries will run in 24 hours."}
-                            {alertVariant === "warning" && "Your workspace has consumed 88,400 of 100,000 monthly API calls. Upgrade your plan to prevent throttling."}
-                            {alertVariant === "success" && "Schema batch #2026-v8 deployed to all 4 multi-region clusters with zero downtime."}
-                            {alertVariant === "info" && "ZeroLight cluster telemetry upgrades are scheduled for Sunday 02:00 UTC."}
+                            {alertVariant === "critical" && "Your monthly cluster subscription could not be charged."}
+                            {alertVariant === "warning" && "Your workspace has consumed 88,400 of 100,000 monthly API calls."}
+                            {alertVariant === "success" && "Schema batch #2026-v8 deployed to all 4 clusters with zero downtime."}
+                            {alertVariant === "info" && "Cluster telemetry upgrades are scheduled for Sunday 02:00 UTC."}
                           </p>
-                          <div className="pt-1">
-                            <button
-                              type="button"
-                              onClick={() => triggerToast("Opening audit logs...")}
-                              style={{
-                                fontSize: `${scaled.sublabelFontSize}px`,
-                                color: tokens.textIconColor,
-                              }}
-                              className="font-semibold underline cursor-pointer hover:opacity-80"
-                            >
-                              View audit logs →
-                            </button>
-                          </div>
                         </div>
 
                         <button
                           type="button"
-                          onClick={() => {
-                            setIsAlertDismissed(true);
-                            triggerToast("Alert dismissed");
-                          }}
-                          style={{
-                            borderRadius: `${scaled.scaledInnerRadius}px`,
-                            padding: `${Math.round(4 * scaled.scale)}px`,
-                          }}
-                          className="text-neutral-400 hover:text-neutral-900 hover:bg-black/5 transition-colors cursor-pointer"
-                          title="Dismiss notification"
+                          onClick={() => setIsAlertDismissed(true)}
+                          className="text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer p-0.5"
+                          title="Dismiss alert"
                         >
-                          <X className="w-4 h-4" />
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </motion.div>
                     ) : (
@@ -3830,148 +2681,17 @@ module.exports = {
                       </div>
                     )}
                   </AnimatePresence>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">Icon + SeverityHeading + BodyCopy + ActionLink + DismissTrigger</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Variant Switcher Active</span>
-                  </div>
                 </div>
 
-                {/* ── MOLECULE 13: EMPTY STATE CARD (ZERO-DATA FALLBACK) ── */}
-                <div id="mol-empty-state" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                          <Inbox className="w-4 h-4 text-neutral-500" />
-                          <span>EmptyStateCard</span>
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Zero-State
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Zero-data fallback illustration + Action CTAs
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium">
-                      Fallback Template
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      borderRadius: `${scaled.scaledCardRadius}px`,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      borderColor: tokens.universalBorderColor,
-                      backgroundColor: scaled.effectiveInputFill,
-                      boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "none",
-                      padding: `${Math.round(32 * scaled.scale)}px ${Math.round(20 * scaled.scale)}px`,
-                    }}
-                    className="border border-dashed text-center flex flex-col items-center justify-center space-y-3"
-                  >
-                    <motion.div
-                      whileHover={{ y: -4, scale: 1.05 }}
-                      transition={scaled.motionConfig.spring}
-                      style={{
-                        borderRadius: `${scaled.scaledRadius}px`,
-                        backgroundColor: tokens.hoverBackplateTint,
-                        borderColor: tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        width: `${Math.round(48 * scaled.scale)}px`,
-                        height: `${Math.round(48 * scaled.scale)}px`,
-                      }}
-                      className="flex items-center justify-center border shadow-2xs cursor-pointer"
-                    >
-                      <Inbox className="w-5 h-5 text-neutral-500" strokeWidth={1.8} />
-                    </motion.div>
-
-                    <div className="space-y-1 max-w-sm">
-                      <h3 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-bold text-neutral-900">
-                        No active telemetry records found
-                      </h3>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed font-normal">
-                        No clusters or database replications matched your current query criteria. Try resetting query parameters or create a new cluster.
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 pt-2">
-                      <motion.button
-                        type="button"
-                        whileTap={{ scale: scaled.motionConfig.tapScale }}
-                        onClick={() => triggerToast("Initializing new cluster registration...")}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          backgroundColor: tokens.primaryButtonColor,
-                          color: "#FFFFFF",
-                          height: `${scaled.scaledHeight}px`,
-                          paddingLeft: `${scaled.scaledPaddingX}px`,
-                          paddingRight: `${scaled.scaledPaddingX}px`,
-                          fontSize: `${scaled.ctaFontSize}px`,
-                        }}
-                        className="font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors select-none"
-                      >
-                        <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-                        <span>Register Cluster</span>
-                      </motion.button>
-                      <motion.button
-                        type="button"
-                        whileTap={{ scale: scaled.motionConfig.tapScale }}
-                        onClick={() => triggerToast("Cleared active filters")}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                          color: tokens.textIconColor,
-                          height: `${scaled.scaledHeight}px`,
-                          paddingLeft: `${scaled.scaledPaddingX}px`,
-                          paddingRight: `${scaled.scaledPaddingX}px`,
-                          fontSize: `${scaled.ctaFontSize}px`,
-                        }}
-                        className="font-semibold border hover:bg-neutral-50 transition-colors cursor-pointer select-none"
-                      >
-                        Clear All Filters
-                      </motion.button>
-                    </div>
-                  </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">CenteredIcon + HeadingTitle + BodyText + PrimaryAction + SecondaryAction</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Zero-State Ready</span>
-                  </div>
-                </div>
-
-                {/* ── MOLECULE 14: TOOLTIP POPOVER ── */}
-                <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                          <Info className="w-4 h-4 text-neutral-500" />
-                          <span>TooltipPopover</span>
-                        </h2>
-                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
-                          Hover Overlay
-                        </span>
-                      </div>
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Trigger + Contextual Floating Card + Arrow Caret
-                      </span>
-                    </div>
-
-                    <span className="text-[11px] text-neutral-400 font-medium">
-                      Hover ⓘ below
-                    </span>
+                {/* ── 11. TOOLTIP POPOVER ── */}
+                <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Tooltip popover
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Contextual hover overlay providing supplementary guidance on trigger elements.
+                    </p>
                   </div>
 
                   <div className="flex items-center gap-4 pt-1">
@@ -3996,7 +2716,6 @@ module.exports = {
                         ⓘ
                       </motion.button>
 
-                      {/* Floating Tooltip Card */}
                       <AnimatePresence>
                         {isTooltipOpen && (
                           <motion.div
@@ -4013,7 +2732,7 @@ module.exports = {
                             className="absolute bottom-full left-0 mb-2 w-64 p-2.5 bg-[#111111] text-white text-[11px] leading-relaxed z-30"
                           >
                             <p className="font-medium text-white/90">
-                              Calculated 99th percentile write-to-read sync latency across cross-regional database replica clusters.
+                              Calculated 99th percentile write-to-read sync latency across database replica clusters.
                             </p>
                             <div className="w-2 h-2 bg-[#111111] rotate-45 absolute -bottom-1 left-4" />
                           </motion.div>
@@ -4021,18 +2740,7 @@ module.exports = {
                       </AnimatePresence>
                     </div>
                   </div>
-
-                  {/* Architecture Anatomy Footer */}
-                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-sans text-[11px]">
-                      <span>Anatomy:</span>
-                      <strong className="text-neutral-600">TriggerTarget + Caret + FloatingCard + BodyText</strong>
-                    </span>
-                    <span className="font-semibold text-neutral-500">Fluid Popover Ready</span>
-                  </div>
                 </div>
-              </motion.div>
-            )}
               </>
             )}
 
