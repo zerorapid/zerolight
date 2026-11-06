@@ -511,7 +511,7 @@ module.exports = {
                   <div className="space-y-1">
                     <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">01</span>
+                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">01</span>
                         <span>Forms &amp; Entry</span>
                       </span>
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">6</span>
@@ -542,7 +542,7 @@ module.exports = {
                   <div className="space-y-1 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">02</span>
+                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">02</span>
                         <span>Navigation</span>
                       </span>
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
@@ -564,7 +564,7 @@ module.exports = {
                   <div className="space-y-1 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">03</span>
+                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">03</span>
                         <span>Data Display</span>
                       </span>
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">2</span>
@@ -583,7 +583,7 @@ module.exports = {
                   <div className="space-y-1 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">04</span>
+                        <span className="text-[10px] font-sans tabular-nums font-semibold px-1.5 py-0.5 bg-neutral-100 rounded text-neutral-600">04</span>
                         <span>Overlays</span>
                       </span>
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
@@ -1743,7 +1743,7 @@ module.exports = {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-0.5 rounded-full bg-neutral-900 text-white font-mono text-[10px] font-semibold uppercase tracking-wider">
+                      <span className="px-2.5 py-0.5 rounded-full bg-neutral-900 text-white font-sans text-[10px] font-bold uppercase tracking-wider">
                         Tier 2 Architecture
                       </span>
                       <span className="text-xs text-neutral-400 font-medium">
@@ -1827,7 +1827,10 @@ module.exports = {
                 <div id="category-section-cat1" className="w-full pt-4 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                      <div
+                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
+                      >
                         01
                       </div>
                       <div>
@@ -1853,7 +1856,7 @@ module.exports = {
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                           FormField
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Validated Compound
                         </span>
                       </div>
@@ -1954,7 +1957,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Label + Input + LeadingIcon + ErrorAlert + HelperText</strong>
                     </span>
@@ -1970,7 +1973,7 @@ module.exports = {
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                           InputGroup
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Conjoined Action
                         </span>
                       </div>
@@ -2062,7 +2065,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Atom:Input + Atom:Button + Atom:EyeToggle + Atom:Divider</strong>
                     </span>
@@ -2078,7 +2081,7 @@ module.exports = {
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                           SearchBar
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Live Command
                         </span>
                       </div>
@@ -2218,7 +2221,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Atom:Input + Atom:SearchIcon + Atom:ClearButton + Atom:KeycapKbd + FloatingPalette</strong>
                     </span>
@@ -2234,7 +2237,7 @@ module.exports = {
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                           SearchableSelect
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Selection Popover
                         </span>
                       </div>
@@ -2366,7 +2369,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Atom:Button + Atom:KeyIcon + Atom:Chevron + FloatingMenu + OptionList</strong>
                     </span>
@@ -2382,7 +2385,7 @@ module.exports = {
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                           TagDeck
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Composable Deck
                         </span>
                       </div>
@@ -2391,7 +2394,7 @@ module.exports = {
                       </p>
                     </div>
 
-                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200">
+                    <span className="text-[10px] font-sans tabular-nums font-semibold px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200">
                       {tags.length} Active Tags
                     </span>
                   </div>
@@ -2548,7 +2551,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Container + TagChips + PlusTrigger + PopoverChecklist</strong>
                     </span>
@@ -2565,7 +2568,7 @@ module.exports = {
                           <Calendar className="w-4 h-4 text-neutral-500" />
                           <span>DateRangePicker</span>
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Temporal Filter
                         </span>
                       </div>
@@ -2717,7 +2720,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Atom:Button + Atom:CalendarIcon + SlidingPresets + ActionFooter</strong>
                     </span>
@@ -2731,7 +2734,10 @@ module.exports = {
                 <div id="category-section-cat2" className="w-full pt-6 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                      <div
+                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
+                      >
                         02
                       </div>
                       <div>
@@ -2757,7 +2763,7 @@ module.exports = {
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                           SegmentedControl
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Sliding Switcher
                         </span>
                       </div>
@@ -2829,7 +2835,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">ContainerTrack + SlidingActivePill + SegmentButtons</strong>
                     </span>
@@ -2846,7 +2852,7 @@ module.exports = {
                           <ChevronRight className="w-4 h-4 text-neutral-500" />
                           <span>Breadcrumbs</span>
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Route Wayfinding
                         </span>
                       </div>
@@ -2954,7 +2960,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Nav + WaypointItems + ChevronDelimiters + OverflowMenu + ActiveLeaf</strong>
                     </span>
@@ -2971,7 +2977,7 @@ module.exports = {
                           <ChevronRight className="w-4 h-4 text-neutral-500" />
                           <span>PaginationBar</span>
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Data Navigation
                         </span>
                       </div>
@@ -3160,7 +3166,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">RecordSummary + PopoverSelector + SlidingPageNumbers + PrevNext</strong>
                     </span>
@@ -3174,7 +3180,10 @@ module.exports = {
                 <div id="category-section-cat3" className="w-full pt-6 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                      <div
+                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
+                      >
                         03
                       </div>
                       <div>
@@ -3200,7 +3209,7 @@ module.exports = {
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                           MetricStat
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Telemetry KPI
                         </span>
                       </div>
@@ -3210,7 +3219,10 @@ module.exports = {
                     </div>
 
                     {/* Interactive Horizon Switcher */}
-                    <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
+                    <div
+                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                      className="flex items-center gap-1 bg-neutral-100 p-0.5 border border-neutral-200"
+                    >
                       {(["24h", "7d", "30d", "1y"] as const).map((h) => {
                         const isSelected = metricHorizon === h;
                         return (
@@ -3351,7 +3363,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">MetricLabel + HorizonSwitch + ValueCounter + TrendBadge + Sparkline</strong>
                     </span>
@@ -3368,7 +3380,7 @@ module.exports = {
                           <DollarSign className="w-4 h-4 text-neutral-500" />
                           <span>DataTableRow</span>
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Expandable Record
                         </span>
                       </div>
@@ -3376,13 +3388,23 @@ module.exports = {
                         Multi-select checkbox, status pill, tabular figures, and click-to-expand telemetry details.
                       </p>
                     </div>
-                    <span className="text-[11px] bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-md border border-neutral-200 font-medium">
+                    <span
+                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                      className="text-[11px] bg-neutral-100 text-neutral-700 px-2.5 py-1 border border-neutral-200 font-medium"
+                    >
                       Click row to expand
                     </span>
                   </div>
 
                   {/* Financial Table Row Preview */}
-                  <div className="border border-neutral-200 rounded-xl overflow-hidden bg-white">
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledMenuRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                    }}
+                    className="border overflow-hidden bg-white"
+                  >
                     <table className="w-full text-xs">
                       <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
                         <tr>
@@ -3527,18 +3549,27 @@ module.exports = {
                                       >
                                         <div className="flex items-center justify-between text-neutral-500 font-medium">
                                           <span>Expanded Telemetry Payload</span>
-                                          <span className="font-mono text-[10px]">SHA-256: 8f9a2b10cd4e...</span>
+                                          <span className="font-sans tabular-nums text-[10px]">SHA-256: 8f9a2b10cd4e...</span>
                                         </div>
                                         <div className="grid grid-cols-3 gap-2">
-                                          <div className="bg-white p-2.5 rounded-lg border border-neutral-200">
+                                          <div
+                                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                                            className="bg-white p-2.5 border border-neutral-200"
+                                          >
                                             <div className="text-[10px] text-neutral-400 font-semibold uppercase">Cluster Region</div>
                                             <div className="font-semibold text-neutral-800">{row.region}</div>
                                           </div>
-                                          <div className="bg-white p-2.5 rounded-lg border border-neutral-200">
+                                          <div
+                                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                                            className="bg-white p-2.5 border border-neutral-200"
+                                          >
                                             <div className="text-[10px] text-neutral-400 font-semibold uppercase">Routing Target</div>
                                             <div className="font-semibold text-neutral-800">{row.node}</div>
                                           </div>
-                                          <div className="bg-white p-2.5 rounded-lg border border-neutral-200">
+                                          <div
+                                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                                            className="bg-white p-2.5 border border-neutral-200"
+                                          >
                                             <div className="text-[10px] text-neutral-400 font-semibold uppercase">Roundtrip Latency</div>
                                             <div className="font-semibold text-emerald-600">{row.latency}</div>
                                           </div>
@@ -3557,7 +3588,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">TableHead + TableRow + Checkbox + StatusPill + ActionPopover + ExpandableDrawer</strong>
                     </span>
@@ -3571,7 +3602,10 @@ module.exports = {
                 <div id="category-section-cat4" className="w-full pt-6 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                      <div
+                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
+                      >
                         04
                       </div>
                       <div>
@@ -3598,7 +3632,7 @@ module.exports = {
                           <AlertCircle className="w-4 h-4 text-neutral-500" />
                           <span>AlertCallout</span>
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Semantic Alert
                         </span>
                       </div>
@@ -3607,7 +3641,10 @@ module.exports = {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
+                    <div
+                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                      className="flex items-center gap-1 bg-neutral-100 p-0.5 border border-neutral-200"
+                    >
                       {(["info", "warning", "success", "critical"] as const).map((v) => {
                         const isSelected = alertVariant === v;
                         return (
@@ -3724,7 +3761,10 @@ module.exports = {
                         </button>
                       </motion.div>
                     ) : (
-                      <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-center">
+                      <div
+                        style={{ borderRadius: `${scaled.scaledMenuRadius}px` }}
+                        className="p-3 bg-neutral-50 border border-neutral-200 text-center"
+                      >
                         <button
                           type="button"
                           onClick={() => setIsAlertDismissed(false)}
@@ -3738,7 +3778,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">Icon + SeverityHeading + BodyCopy + ActionLink + DismissTrigger</strong>
                     </span>
@@ -3755,7 +3795,7 @@ module.exports = {
                           <Inbox className="w-4 h-4 text-neutral-500" />
                           <span>EmptyStateCard</span>
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Zero-State
                         </span>
                       </div>
@@ -3848,7 +3888,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">CenteredIcon + HeadingTitle + BodyText + PrimaryAction + SecondaryAction</strong>
                     </span>
@@ -3865,7 +3905,7 @@ module.exports = {
                           <Info className="w-4 h-4 text-neutral-500" />
                           <span>TooltipPopover</span>
                         </h2>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                        <span className="text-[10px] font-sans tabular-nums px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
                           Hover Overlay
                         </span>
                       </div>
@@ -3929,7 +3969,7 @@ module.exports = {
 
                   {/* Architecture Anatomy Footer */}
                   <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
-                    <span className="flex items-center gap-1 font-mono">
+                    <span className="flex items-center gap-1 font-sans text-[11px]">
                       <span>Anatomy:</span>
                       <strong className="text-neutral-600">TriggerTarget + Caret + FloatingCard + BodyText</strong>
                     </span>
