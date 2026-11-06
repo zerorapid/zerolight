@@ -43,6 +43,9 @@ export interface ScaledTokens {
   headingFontSize: number;
   scaledRadius: number;
   scaledInnerRadius: number;
+  scaledMenuRadius: number;
+  scaledOptionRadius: number;
+  scaledCheckboxRadius: number;
   scaledPaddingX: number;
   scaledPaddingY: number;
   scaledCardRadius: number;
@@ -70,23 +73,38 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     }
   };
 
-  // True universal corner radius scaling
+  // True universal corner radius scaling with structured container protection
   let scaledRadius = 0;
   let scaledCardRadius = 0;
   let scaledInnerRadius = 0;
+  let scaledMenuRadius = 0;
+  let scaledOptionRadius = 0;
+  let scaledCheckboxRadius = 0;
 
   if (tokens.cornerRadius === 999) {
+    // When Pill mode is chosen, interactive trigger elements (buttons, pills, chips, standalone inputs)
+    // receive 9999px pill curves, while multi-row popover menus, cards, and list items maintain
+    // crisp, structural modern B2B SaaS geometry to prevent distorted capsule/egg clipping.
     scaledRadius = 9999;
-    scaledCardRadius = Math.round(28 * scale);
-    scaledInnerRadius = 9999;
+    scaledCardRadius = Math.round(20 * scale);
+    scaledMenuRadius = Math.round(14 * scale);
+    scaledInnerRadius = Math.round(10 * scale);
+    scaledOptionRadius = Math.round(8 * scale);
+    scaledCheckboxRadius = 4;
   } else if (tokens.cornerRadius === 0) {
     scaledRadius = 0;
     scaledCardRadius = 0;
+    scaledMenuRadius = 0;
     scaledInnerRadius = 0;
+    scaledOptionRadius = 0;
+    scaledCheckboxRadius = 0;
   } else {
     scaledRadius = Math.round(tokens.cornerRadius * scale);
     scaledCardRadius = Math.round((tokens.cornerRadius + 4) * scale);
+    scaledMenuRadius = Math.round(Math.min(tokens.cornerRadius, 14) * scale);
     scaledInnerRadius = Math.max(2, Math.round((tokens.cornerRadius - 4) * scale));
+    scaledOptionRadius = Math.max(2, Math.round((tokens.cornerRadius - 6) * scale));
+    scaledCheckboxRadius = Math.max(2, Math.min(4, Math.round(tokens.cornerRadius * 0.25)));
   }
 
   const isZeroBorder = tokens.borderWidth === 0;
@@ -118,6 +136,9 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     headingFontSize: Math.max(13, Math.round((baseFont + 2) * scale)),
     scaledRadius,
     scaledInnerRadius,
+    scaledMenuRadius,
+    scaledOptionRadius,
+    scaledCheckboxRadius,
     scaledPaddingX: Math.round(14 * scale),
     scaledPaddingY: Math.round(8 * scale),
     scaledCardRadius,

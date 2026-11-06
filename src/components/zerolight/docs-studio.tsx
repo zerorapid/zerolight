@@ -1169,7 +1169,7 @@ module.exports = {
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setCheckboxValue((prev) => !prev)}
                         style={{
-                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : Math.max(2, Math.round(scaled.scaledRadius * 0.35))}px`,
+                          borderRadius: `${scaled.scaledCheckboxRadius}px`,
                           backgroundColor: checkboxValue ? tokens.primaryButtonColor : tokens.universalFillColor,
                           borderColor: checkboxValue ? tokens.primaryButtonColor : tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
@@ -1217,7 +1217,7 @@ module.exports = {
                           );
                         }}
                         style={{
-                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : Math.max(2, Math.round(scaled.scaledRadius * 0.35))}px`,
+                          borderRadius: `${scaled.scaledCheckboxRadius}px`,
                           backgroundColor:
                             triCheckboxState !== "unchecked"
                               ? tokens.primaryButtonColor
@@ -1247,7 +1247,7 @@ module.exports = {
                     <div className="flex items-center gap-2 opacity-50 cursor-not-allowed">
                       <div
                         style={{
-                          borderRadius: `${scaled.scaledRadius === 0 ? 0 : Math.max(2, Math.round(scaled.scaledRadius * 0.35))}px`,
+                          borderRadius: `${scaled.scaledCheckboxRadius}px`,
                           backgroundColor: tokens.hoverBackplateTint,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
@@ -1899,7 +1899,7 @@ module.exports = {
                           transition={{ duration: 0.15, ease: "easeOut" }}
                           style={{
                             marginTop: `${tokens.menuOffsetGap}px`,
-                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderRadius: `${scaled.scaledMenuRadius}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
@@ -1929,7 +1929,7 @@ module.exports = {
                                       setDateRangeString(p.range);
                                     }}
                                     style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      borderRadius: `${scaled.scaledOptionRadius}px`,
                                       backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
                                       color: isSelected ? "#FFFFFF" : tokens.textIconColor,
                                       fontSize: `${scaled.sublabelFontSize}px`,
@@ -2033,7 +2033,7 @@ module.exports = {
                           transition={{ duration: 0.15, ease: "easeOut" }}
                           style={{
                             marginTop: `${tokens.menuOffsetGap}px`,
-                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderRadius: `${scaled.scaledMenuRadius}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
@@ -2075,7 +2075,7 @@ module.exports = {
                                     setRoleFilter("");
                                   }}
                                   style={{
-                                    borderRadius: `${scaled.scaledInnerRadius}px`,
+                                    borderRadius: `${scaled.scaledOptionRadius}px`,
                                     backgroundColor: isSelected ? tokens.primaryButtonColor : isHovered ? tokens.hoverBackplateTint : "transparent",
                                     color: isSelected ? "#FFFFFF" : tokens.textIconColor,
                                     fontSize: `${scaled.labelFontSize}px`,
@@ -2191,7 +2191,7 @@ module.exports = {
                           transition={{ duration: 0.15, ease: "easeOut" }}
                           style={{
                             marginTop: `${tokens.menuOffsetGap}px`,
-                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderRadius: `${scaled.scaledMenuRadius}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
@@ -2228,7 +2228,7 @@ module.exports = {
                                   onMouseLeave={() => setHoveredTag(null)}
                                   onClick={() => handleToggleTag(opt)}
                                   style={{
-                                    borderRadius: `${scaled.scaledInnerRadius}px`,
+                                    borderRadius: `${scaled.scaledOptionRadius}px`,
                                     backgroundColor: isHovered ? tokens.hoverBackplateTint : "transparent",
                                     color: tokens.textIconColor,
                                     fontSize: `${scaled.labelFontSize}px`,
@@ -2241,7 +2241,7 @@ module.exports = {
                                   </span>
                                   <div
                                     style={{
-                                      borderRadius: `${scaled.scaledRadius === 0 ? 0 : Math.max(2, Math.round(scaled.scaledRadius * 0.35))}px`,
+                                      borderRadius: `${scaled.scaledCheckboxRadius}px`,
                                       backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
                                       borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
                                       borderWidth: `${tokens.borderWidth}px`,
@@ -2556,7 +2556,7 @@ module.exports = {
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.15 }}
                         style={{
-                          borderRadius: `${scaled.scaledRadius}px`,
+                          borderRadius: `${scaled.scaledMenuRadius}px`,
                           borderWidth: `${tokens.borderWidth}px`,
                           borderColor:
                             alertVariant === "critical"
@@ -2738,7 +2738,7 @@ module.exports = {
 
                   <div
                     style={{
-                      borderRadius: `${scaled.scaledRadius}px`,
+                      borderRadius: `${scaled.scaledMenuRadius}px`,
                       borderWidth: `${tokens.borderWidth}px`,
                       borderColor: tokens.universalBorderColor,
                       backgroundColor: scaled.effectiveInputFill,
