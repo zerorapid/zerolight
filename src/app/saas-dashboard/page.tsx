@@ -205,6 +205,7 @@ export default function SaaSDashboardPage() {
   const [selectedStage, setSelectedStage] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [roleFilter, setRoleFilter] = useState<string>("All Roles");
+  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState<boolean>(false);
   const [selectedCandidateIds, setSelectedCandidateIds] = useState<string[]>([]);
   const [inspectCandidate, setInspectCandidate] = useState<Candidate | null>(null);
   const [activeDrawerTab, setActiveDrawerTab] = useState<"overview" | "evaluation" | "notes">("overview");
@@ -597,20 +598,57 @@ export default function SaaSDashboardPage() {
               })}
             </div>
 
-            {/* Department / Role Selector */}
-            <div className="flex items-center gap-2">
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="h-9.5 px-3 rounded-xl border border-neutral-300 bg-white text-xs font-medium text-neutral-800 focus:outline-none focus:border-neutral-900 transition-colors cursor-pointer"
+            {/* Department / Role Selector - ZeroLight Custom Popover (No Native Select!) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsRoleDropdownOpen((prev) => !prev)}
+                className="h-9.5 px-3 rounded-xl border border-neutral-300 bg-white text-xs font-medium text-neutral-800 hover:border-neutral-900 transition-colors cursor-pointer flex items-center gap-2 select-none"
               >
-                <option value="All Roles">All Roles (Any)</option>
-                <option value="Senior Full-Stack Engineer">Senior Full-Stack Engineer</option>
-                <option value="Staff Product Designer">Staff Product Designer</option>
-                <option value="Lead DevOps / Platform Architect">Lead DevOps / Platform Architect</option>
-                <option value="Senior Product Manager">Senior Product Manager</option>
-                <option value="Frontend Engineer (Design Engineer)">Frontend Engineer</option>
-              </select>
+                <span>{roleFilter}</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-neutral-400 transition-transform ${isRoleDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              <AnimatePresence>
+                {isRoleDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                    transition={{ duration: 0.12 }}
+                    className="absolute right-0 top-full mt-1.5 w-64 bg-white border border-neutral-200 rounded-xl shadow-xl p-1 z-30 space-y-0.5"
+                  >
+                    {[
+                      "All Roles",
+                      "Senior Full-Stack Engineer",
+                      "Staff Product Designer",
+                      "Lead DevOps / Platform Architect",
+                      "Senior Product Manager",
+                      "Frontend Engineer (Design Engineer)",
+                    ].map((opt) => {
+                      const isSelected = roleFilter === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => {
+                            setRoleFilter(opt);
+                            setIsRoleDropdownOpen(false);
+                          }}
+                          className={`w-full text-left px-2.5 py-1.5 text-xs rounded-lg flex items-center justify-between cursor-pointer transition-colors ${
+                            isSelected
+                              ? "bg-neutral-900 text-white font-medium"
+                              : "text-neutral-700 hover:bg-neutral-100"
+                          }`}
+                        >
+                          <span className="truncate">{opt}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0 ml-2" />}
+                        </button>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 

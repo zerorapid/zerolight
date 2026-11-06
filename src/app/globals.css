@@ -62,3 +62,23 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
+/* ZeroLight Enterprise Ultra-Sleek Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4D4D8;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A1A1AA;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #D4D4D8 transparent;
+}

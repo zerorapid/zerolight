@@ -36,6 +36,10 @@ import {
   CheckCircle2,
   ChevronLeft,
   Inbox,
+  Mail,
+  MoreHorizontal,
+  FileText,
+  Download,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -127,6 +131,17 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   // 4. PaginationBar
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [isPageSizeOpen, setIsPageSizeOpen] = useState<boolean>(false);
+  const pageSizeRef = useRef<HTMLDivElement>(null);
+
+  // FormField & SearchBar Enterprise States
+  const [isEmailError, setIsEmailError] = useState<boolean>(false);
+  const [searchBarQuery, setSearchBarQuery] = useState<string>("cluster-node-us-east-1");
+
+  // DataTableRow Enterprise States
+  const [selectedTableRows, setSelectedTableRows] = useState<string[]>(["INV-2627-101"]);
+  const [isRowActionsOpen, setIsRowActionsOpen] = useState<boolean>(false);
+  const rowActionsRef = useRef<HTMLDivElement>(null);
 
   // Notifications
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -250,6 +265,12 @@ module.exports = {
       if (datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
         setIsDatePickerOpen(false);
       }
+      if (pageSizeRef.current && !pageSizeRef.current.contains(e.target as Node)) {
+        setIsPageSizeOpen(false);
+      }
+      if (rowActionsRef.current && !rowActionsRef.current.contains(e.target as Node)) {
+        setIsRowActionsOpen(false);
+      }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -257,6 +278,8 @@ module.exports = {
         setIsRoleOpen(false);
         setIsTagOpen(false);
         setIsDatePickerOpen(false);
+        setIsPageSizeOpen(false);
+        setIsRowActionsOpen(false);
       }
     };
 
@@ -460,9 +483,10 @@ module.exports = {
                 </>
               ) : (
                 <>
+                  {/* Category 1: Forms & Data Entry */}
                   <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Form Compositions
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                      Forms &amp; Data Entry
                     </div>
                     <a href="#mol-form-field" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>FormField</span>
@@ -473,44 +497,24 @@ module.exports = {
                     <a href="#mol-search-bar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>SearchBar</span>
                     </a>
-                    <a href="#mol-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>DateRangePicker</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Selection &amp; Control
-                    </div>
                     <a href="#mol-search-select" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>SearchableSelect</span>
                     </a>
                     <a href="#mol-tag-deck" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>TagDeck</span>
                     </a>
+                    <a href="#mol-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>DateRangePicker</span>
+                    </a>
+                  </div>
+
+                  {/* Category 2: Navigation & Commands */}
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                      Navigation &amp; Commands
+                    </div>
                     <a href="#mol-segmented" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>SegmentedControl</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Feedback &amp; Alerts
-                    </div>
-                    <a href="#mol-alert-callout" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>AlertCallout</span>
-                    </a>
-                    <a href="#mol-empty-state" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>EmptyStateCard</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Overlays &amp; Navigation
-                    </div>
-                    <a href="#mol-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Tooltip popover</span>
                     </a>
                     <a href="#mol-breadcrumbs" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Breadcrumbs</span>
@@ -520,15 +524,32 @@ module.exports = {
                     </a>
                   </div>
 
+                  {/* Category 3: Data Display & Analytics */}
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Data &amp; Telemetry
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                      Data Display &amp; Analytics
                     </div>
+                    <a href="#mol-metric-stat" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>MetricStat</span>
+                    </a>
                     <a href="#mol-table-row" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>DataTableRow</span>
                     </a>
-                    <a href="#mol-metric-stat" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>MetricStat</span>
+                  </div>
+
+                  {/* Category 4: Feedback & Overlays */}
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                      Feedback &amp; Overlays
+                    </div>
+                    <a href="#mol-alert-callout" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>AlertCallout</span>
+                    </a>
+                    <a href="#mol-empty-state" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>EmptyStateCard</span>
+                    </a>
+                    <a href="#mol-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Tooltip popover</span>
                     </a>
                   </div>
                 </>
@@ -1658,15 +1679,48 @@ module.exports = {
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "molecules" && (
               <>
+                {/* ══════════════════════════════════════════════════════════
+                    CATEGORY 1: FORMS & DATA ENTRY
+                   ══════════════════════════════════════════════════════════ */}
+                <div className="w-full flex items-center justify-between pb-2 mb-1 border-b border-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
+                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
+                      Category 1: Forms &amp; Data Entry
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-neutral-400 font-medium">
+                    6 Composed Molecules
+                  </span>
+                </div>
+
                 {/* ── MOLECULE 1: FORM FIELD ── */}
                 <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      FormField molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Label + Input + HelperText
-                    </span>
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                        FormField molecule
+                      </h2>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Label + Leading Icon + HelperText + Dynamic Validation
+                      </span>
+                    </div>
+                    {/* Enterprise Error Simulation Toggle */}
+                    <button
+                      type="button"
+                      onClick={() => setIsEmailError((prev) => !prev)}
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                      }}
+                      className={`px-2.5 py-1 font-semibold border cursor-pointer transition-all select-none ${
+                        isEmailError
+                          ? "bg-rose-50 text-rose-700 border-rose-300"
+                          : "bg-neutral-100 text-neutral-600 border-neutral-200 hover:text-black"
+                      }`}
+                    >
+                      {isEmailError ? "Reset valid state" : "Simulate error"}
+                    </button>
                   </div>
 
                   <div className="space-y-1.5">
@@ -1676,20 +1730,26 @@ module.exports = {
                     <div
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
-                        borderColor: isInputFocused ? tokens.textIconColor : tokens.universalBorderColor,
+                        borderColor: isEmailError
+                          ? "#F43F5E"
+                          : isInputFocused
+                          ? tokens.textIconColor
+                          : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: scaled.effectiveInputFill,
                         height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
                         paddingRight: `${scaled.scaledPaddingX}px`,
-                        boxShadow: isInputFocused
+                        boxShadow: isEmailError
+                          ? "0 0 0 3px rgba(244, 63, 94, 0.15)"
+                          : isInputFocused
                           ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
                           : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
                         transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
                       }}
                       className="flex items-center gap-2.5 border"
                     >
-                      <Search className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
+                      <Mail className={`w-4 h-4 shrink-0 transition-colors ${isEmailError ? "text-rose-500" : "text-neutral-400"}`} strokeWidth={1.8} />
                       <input
                         type="email"
                         value={textInput}
@@ -1700,10 +1760,19 @@ module.exports = {
                         style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
                       />
+                      {isEmailError && (
+                        <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" strokeWidth={2} />
+                      )}
                     </div>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 block">
-                      We send monthly receipts and settlement summaries to this inbox.
-                    </span>
+                    {isEmailError ? (
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-rose-600 font-medium flex items-center gap-1 block">
+                        <span>Please enter a valid business email domain (e.g. name@enterprise.com)</span>
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 block">
+                        We send monthly receipts and settlement summaries to this inbox.
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -1793,7 +1862,7 @@ module.exports = {
                       SearchBar molecule
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Icon + Input + Kbd Shortcut
+                      Live Input + Clear Trigger + Kbd Shortcut
                     </span>
                   </div>
 
@@ -1808,170 +1877,48 @@ module.exports = {
                       paddingRight: `${scaled.scaledPaddingX}px`,
                       transition: scaled.transitionStyle,
                     }}
-                    className="flex items-center justify-between border"
+                    className="flex items-center justify-between border focus-within:ring-2 focus-within:ring-neutral-900/10 focus-within:border-neutral-900"
                   >
                     <div className="flex items-center gap-2.5 flex-1 mr-2">
                       <Search className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={2} />
                       <input
                         type="text"
-                        placeholder="Search resources, customers, invoices..."
+                        value={searchBarQuery}
+                        onChange={(e) => setSearchBarQuery(e.target.value)}
+                        placeholder="Search resources, clusters, audit logs..."
                         style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
                       />
                     </div>
-                    <kbd
-                      style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
-                        backgroundColor: tokens.hoverBackplateTint,
-                        borderColor: tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        fontSize: `${scaled.sublabelFontSize - 1}px`,
-                        padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
-                      }}
-                      className="font-medium text-neutral-500 border shadow-2xs"
-                    >
-                      ⌘K
-                    </kbd>
-                  </div>
-                </div>
-
-                {/* ── MOLECULE: DATE RANGE PICKER ── */}
-                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-neutral-500" />
-                      DateRangePicker molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Trigger + Floating Presets Popover
-                    </span>
-                  </div>
-
-                  <div ref={datePickerRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
-                      Audit &amp; Query Period
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setIsDatePickerOpen((prev) => !prev)}
-                      style={{
-                        borderRadius: `${scaled.scaledRadius}px`,
-                        borderColor: isDatePickerOpen ? tokens.textIconColor : tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: scaled.effectiveInputFill,
-                        height: `${scaled.scaledHeight}px`,
-                        paddingLeft: `${scaled.scaledPaddingX}px`,
-                        paddingRight: `${scaled.scaledPaddingX}px`,
-                        boxShadow: isDatePickerOpen
-                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
-                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
-                        transition: scaled.transitionStyle,
-                      }}
-                      className="w-full flex items-center justify-between text-left cursor-pointer border select-none font-medium tabular-nums text-xs"
-                    >
-                      <div className="flex items-center gap-2.5 truncate">
-                        <Calendar className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
-                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }} className="truncate">
-                          {dateRangeString}
-                        </span>
-                      </div>
-                      <motion.div
-                        animate={{ rotate: isDatePickerOpen ? 180 : 0 }}
-                        transition={{ duration: 0.15 }}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {searchBarQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setSearchBarQuery("")}
+                          className="p-1 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer rounded-full hover:bg-neutral-100"
+                          title="Clear query"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      <kbd
                         style={{
                           borderRadius: `${scaled.scaledInnerRadius}px`,
                           backgroundColor: tokens.hoverBackplateTint,
-                          color: tokens.textIconColor,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          fontSize: `${scaled.sublabelFontSize - 1}px`,
+                          padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                         }}
-                        className="w-5 h-5 flex items-center justify-center shrink-0"
+                        className="font-medium text-neutral-500 border shadow-2xs select-none"
                       >
-                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
-                      </motion.div>
-                    </button>
-
-                    {/* Floating Popover adhering 100% to universal tokens */}
-                    <AnimatePresence>
-                      {isDatePickerOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
-                          transition={{ duration: 0.15, ease: "easeOut" }}
-                          style={{
-                            marginTop: `${tokens.menuOffsetGap}px`,
-                            borderRadius: `${scaled.scaledMenuRadius}px`,
-                            borderColor: tokens.universalBorderColor,
-                            borderWidth: `${tokens.borderWidth}px`,
-                            backgroundColor: tokens.universalFillColor,
-                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                            padding: `${Math.round(12 * scaled.scale)}px`,
-                          }}
-                          className="absolute top-full left-0 right-0 z-30 space-y-3 border"
-                        >
-                          <div className="space-y-1">
-                            <span style={{ fontSize: `${scaled.sublabelFontSize - 1}px` }} className="text-neutral-400 font-semibold uppercase tracking-wider block">
-                              Quick Presets
-                            </span>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                              {[
-                                { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
-                                { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
-                                { id: "quarter", label: "This Quarter", range: "Oct 01, 2026 – Dec 31, 2026" },
-                                { id: "custom", label: "Year to Date", range: "Jan 01, 2026 – Nov 06, 2026" },
-                              ].map((p) => {
-                                const isSelected = datePreset === p.id;
-                                return (
-                                  <button
-                                    key={p.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setDatePreset(p.id as any);
-                                      setDateRangeString(p.range);
-                                    }}
-                                    style={{
-                                      borderRadius: `${scaled.scaledOptionRadius}px`,
-                                      backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
-                                      color: isSelected ? "#FFFFFF" : tokens.textIconColor,
-                                      fontSize: `${scaled.sublabelFontSize}px`,
-                                      padding: `${Math.round(6 * scaled.scale)}px ${Math.round(8 * scaled.scale)}px`,
-                                    }}
-                                    className={`font-medium transition-colors cursor-pointer text-center select-none ${
-                                      isSelected ? "font-semibold shadow-xs" : "hover:text-black"
-                                    }`}
-                                  >
-                                    {p.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
-                            <div className="text-[11px] text-neutral-500 tabular-nums">
-                              Selected: <span className="font-semibold text-neutral-900">{dateRangeString}</span>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setIsDatePickerOpen(false)}
-                              style={{
-                                borderRadius: `${scaled.scaledInnerRadius}px`,
-                                backgroundColor: tokens.primaryButtonColor,
-                                color: "#FFFFFF",
-                                fontSize: `${scaled.sublabelFontSize}px`,
-                                padding: `${Math.round(5 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
-                              }}
-                              className="font-semibold cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors"
-                            >
-                              Apply Range
-                            </button>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                        ⌘K
+                      </kbd>
+                    </div>
                   </div>
                 </div>
 
-                {/* ── MOLECULE 4: SEARCHABLE SELECT (UNIVERSAL DROPDOWN TOKEN APPLIED!) ── */}
+                {/* ── MOLECULE 4: SEARCHABLE SELECT ── */}
                 <div id="mol-search-select" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
@@ -2262,7 +2209,158 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── MOLECULE 6: SEGMENTED CONTROL ── */}
+                {/* ── MOLECULE 6: DATE RANGE PICKER ── */}
+                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-neutral-500" />
+                      DateRangePicker molecule
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                      Trigger + Floating Presets Popover
+                    </span>
+                  </div>
+
+                  <div ref={datePickerRef} className="relative space-y-1.5">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                      Audit &amp; Query Period
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setIsDatePickerOpen((prev) => !prev)}
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: isDatePickerOpen ? tokens.textIconColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: scaled.effectiveInputFill,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
+                        boxShadow: isDatePickerOpen
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="w-full flex items-center justify-between text-left cursor-pointer border select-none font-medium tabular-nums text-xs"
+                    >
+                      <div className="flex items-center gap-2.5 truncate">
+                        <Calendar className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
+                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }} className="truncate">
+                          {dateRangeString}
+                        </span>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: isDatePickerOpen ? 180 : 0 }}
+                        transition={{ duration: 0.15 }}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                        }}
+                        className="w-5 h-5 flex items-center justify-center shrink-0"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
+                      </motion.div>
+                    </button>
+
+                    {/* Floating Popover adhering 100% to universal tokens */}
+                    <AnimatePresence>
+                      {isDatePickerOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          style={{
+                            marginTop: `${tokens.menuOffsetGap}px`,
+                            borderRadius: `${scaled.scaledMenuRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
+                            padding: `${Math.round(12 * scaled.scale)}px`,
+                          }}
+                          className="absolute top-full left-0 right-0 z-30 space-y-3 border"
+                        >
+                          <div className="space-y-1">
+                            <span style={{ fontSize: `${scaled.sublabelFontSize - 1}px` }} className="text-neutral-400 font-semibold uppercase tracking-wider block">
+                              Quick Presets
+                            </span>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                              {[
+                                { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
+                                { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
+                                { id: "quarter", label: "This Quarter", range: "Oct 01, 2026 – Dec 31, 2026" },
+                                { id: "custom", label: "Year to Date", range: "Jan 01, 2026 – Nov 06, 2026" },
+                              ].map((p) => {
+                                const isSelected = datePreset === p.id;
+                                return (
+                                  <button
+                                    key={p.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setDatePreset(p.id as any);
+                                      setDateRangeString(p.range);
+                                    }}
+                                    style={{
+                                      borderRadius: `${scaled.scaledOptionRadius}px`,
+                                      backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
+                                      color: isSelected ? "#FFFFFF" : tokens.textIconColor,
+                                      fontSize: `${scaled.sublabelFontSize}px`,
+                                      padding: `${Math.round(6 * scaled.scale)}px ${Math.round(8 * scaled.scale)}px`,
+                                    }}
+                                    className={`font-medium transition-colors cursor-pointer text-center select-none ${
+                                      isSelected ? "font-semibold shadow-xs" : "hover:text-black"
+                                    }`}
+                                  >
+                                    {p.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                            <div className="text-[11px] text-neutral-500 tabular-nums">
+                              Selected: <span className="font-semibold text-neutral-900">{dateRangeString}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsDatePickerOpen(false)}
+                              style={{
+                                borderRadius: `${scaled.scaledInnerRadius}px`,
+                                backgroundColor: tokens.primaryButtonColor,
+                                color: "#FFFFFF",
+                                fontSize: `${scaled.sublabelFontSize}px`,
+                                padding: `${Math.round(5 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
+                              }}
+                              className="font-semibold cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors"
+                            >
+                              Apply Range
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                {/* ══════════════════════════════════════════════════════════
+                    CATEGORY 2: NAVIGATION & COMMANDS
+                   ══════════════════════════════════════════════════════════ */}
+                <div className="w-full flex items-center justify-between pb-2 pt-4 mb-1 border-b border-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
+                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
+                      Category 2: Navigation &amp; Commands
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-neutral-400 font-medium">
+                    3 Composed Molecules
+                  </span>
+                </div>
+
+                {/* ── MOLECULE 7: SEGMENTED CONTROL ── */}
                 <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
@@ -2326,7 +2424,234 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── MOLECULE 7: METRIC STAT MOLECULE ── */}
+                {/* ── MOLECULE 8: BREADCRUMBS ── */}
+                <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-neutral-500" />
+                      Breadcrumbs wayfinding molecule
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                      Hierarchical route + Chevrons
+                    </span>
+                  </div>
+
+                  <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
+                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
+                      Infrastructure
+                    </span>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
+                      US-East Clusters
+                    </span>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
+                      Production Node-4
+                    </span>
+                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
+                    <span
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        color: tokens.textIconColor,
+                      }}
+                      className="px-2 py-0.5 font-semibold"
+                    >
+                      Telemetry Metrics
+                    </span>
+                  </nav>
+                </div>
+
+                {/* ── MOLECULE 9: PAGINATION BAR ── */}
+                <div id="mol-pagination" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-neutral-500" />
+                      PaginationBar molecule
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                      Summary + Custom Popover + Chevrons
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledMenuRadius}px`,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      borderColor: tokens.universalBorderColor,
+                      backgroundColor: scaled.effectiveInputFill,
+                      boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "none",
+                      padding: `${Math.round(8 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
+                    }}
+                    className="border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
+                  >
+                    {/* Record Range Text in Tabular figures */}
+                    <div style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 tabular-nums">
+                      Showing <span className="font-semibold text-neutral-900">{(currentPage - 1) * pageSize + 1}</span>–
+                      <span className="font-semibold text-neutral-900">{Math.min(currentPage * pageSize, 148)}</span> of{" "}
+                      <span className="font-semibold text-neutral-900">148</span> candidate records
+                    </div>
+
+                    {/* Controls */}
+                    <div className="flex items-center gap-2">
+                      {/* Rows per page selector - ZeroLight Tokenized Custom Popover (NO native select!) */}
+                      <div ref={pageSizeRef} className="relative flex items-center gap-1.5">
+                        <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">Rows:</span>
+                        <button
+                          type="button"
+                          onClick={() => setIsPageSizeOpen((prev) => !prev)}
+                          style={{
+                            borderRadius: `${scaled.scaledInnerRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            color: tokens.textIconColor,
+                            fontSize: `${scaled.sublabelFontSize}px`,
+                            height: `${Math.round(28 * scaled.scale)}px`,
+                            padding: "0 8px",
+                          }}
+                          className="border flex items-center gap-1.5 font-medium cursor-pointer hover:bg-neutral-50 transition-colors select-none"
+                        >
+                          <span>{pageSize}</span>
+                          <ChevronDown className={`w-3 h-3 text-neutral-400 transition-transform ${isPageSizeOpen ? "rotate-180" : ""}`} />
+                        </button>
+
+                        <AnimatePresence>
+                          {isPageSizeOpen && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 4, scale: 0.96 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                              transition={{ duration: 0.12 }}
+                              style={{
+                                borderRadius: `${scaled.scaledMenuRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: tokens.universalFillColor,
+                                boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
+                                padding: "4px",
+                              }}
+                              className="absolute bottom-full mb-1.5 left-8 w-20 z-40 space-y-0.5 border"
+                            >
+                              {[10, 25, 50].map((size) => {
+                                const isSelected = pageSize === size;
+                                return (
+                                  <button
+                                    key={size}
+                                    type="button"
+                                    onClick={() => {
+                                      setPageSize(size);
+                                      setIsPageSizeOpen(false);
+                                    }}
+                                    style={{
+                                      borderRadius: `${scaled.scaledOptionRadius}px`,
+                                      backgroundColor: isSelected ? tokens.primaryButtonColor : "transparent",
+                                      color: isSelected ? "#FFFFFF" : tokens.textIconColor,
+                                      fontSize: `${scaled.sublabelFontSize}px`,
+                                      padding: "4px 8px",
+                                    }}
+                                    className="w-full text-left flex items-center justify-between font-medium cursor-pointer transition-colors"
+                                  >
+                                    <span>{size}</span>
+                                    {isSelected && <Check className="w-3 h-3 text-white" />}
+                                  </button>
+                                );
+                              })}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Previous Button */}
+                      <button
+                        type="button"
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.universalFillColor,
+                          color: currentPage === 1 ? "#A3A3A3" : tokens.textIconColor,
+                          height: `${Math.round(28 * scaled.scale)}px`,
+                          padding: "0 8px",
+                          fontSize: `${scaled.sublabelFontSize}px`,
+                        }}
+                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span>Prev</span>
+                      </button>
+
+                      {/* Page Numbers */}
+                      <div className="flex items-center gap-1 tabular-nums">
+                        {[1, 2, 3, 4, 15].map((pageNum, idx) => {
+                          const isActive = currentPage === pageNum;
+                          return (
+                            <React.Fragment key={pageNum}>
+                              {idx === 4 && <span className="text-neutral-400 px-1">...</span>}
+                              <button
+                                type="button"
+                                onClick={() => setCurrentPage(pageNum)}
+                                style={{
+                                  borderRadius: `${scaled.scaledInnerRadius}px`,
+                                  backgroundColor: isActive ? tokens.primaryButtonColor : "transparent",
+                                  color: isActive ? "#FFFFFF" : tokens.textIconColor,
+                                  width: `${Math.round(28 * scaled.scale)}px`,
+                                  height: `${Math.round(28 * scaled.scale)}px`,
+                                  fontSize: `${scaled.sublabelFontSize}px`,
+                                }}
+                                className={`flex items-center justify-center font-medium transition-colors cursor-pointer select-none ${
+                                  isActive ? "font-semibold shadow-xs" : "hover:bg-black/5"
+                                }`}
+                              >
+                                {pageNum}
+                              </button>
+                            </React.Fragment>
+                          );
+                        })}
+                      </div>
+
+                      {/* Next Button */}
+                      <button
+                        type="button"
+                        disabled={currentPage === 15}
+                        onClick={() => setCurrentPage((p) => Math.min(15, p + 1))}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.universalFillColor,
+                          color: currentPage === 15 ? "#A3A3A3" : tokens.textIconColor,
+                          height: `${Math.round(28 * scaled.scale)}px`,
+                          padding: "0 8px",
+                          fontSize: `${scaled.sublabelFontSize}px`,
+                        }}
+                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
+                      >
+                        <span>Next</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ══════════════════════════════════════════════════════════
+                    CATEGORY 3: DATA DISPLAY & ANALYTICS
+                   ══════════════════════════════════════════════════════════ */}
+                <div className="w-full flex items-center justify-between pb-2 pt-4 mb-1 border-b border-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
+                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
+                      Category 3: Data Display &amp; Analytics
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-neutral-400 font-medium">
+                    2 Composed Molecules
+                  </span>
+                </div>
+
+                {/* ── MOLECULE 10: METRIC STAT MOLECULE ── */}
                 <div id="mol-metric-stat" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
@@ -2343,7 +2668,7 @@ module.exports = {
                         Net Revenue Run Rate
                       </span>
                       <div className="flex items-baseline gap-2 pt-0.5">
-                        <span style={{ fontSize: `${scaled.headingFontSize + 8}px` }} className="font-semibold text-neutral-900 tracking-tight">
+                        <span style={{ fontSize: `${scaled.headingFontSize + 8}px` }} className="font-semibold text-neutral-900 tracking-tight tabular-nums">
                           $148,200
                         </span>
                         <span
@@ -2351,9 +2676,9 @@ module.exports = {
                             fontSize: `${scaled.sublabelFontSize}px`,
                             borderRadius: `${scaled.scaledRadius}px`,
                           }}
-                          className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 font-medium inline-flex items-center gap-0.5"
+                          className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 font-medium inline-flex items-center gap-1 select-none tabular-nums"
                         >
-                          <ArrowRight className="w-3 h-3 text-emerald-600 -rotate-45" strokeWidth={2.5} />
+                          <TrendingUp className="w-3 h-3 text-emerald-600" strokeWidth={2.5} />
                           <span>+18.4%</span>
                         </span>
                       </div>
@@ -2365,104 +2690,7 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── MOLECULE 8: TOOLTIP POPOVER (COMPOSED TRIGGER + OVERLAY) ── */}
-                <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <Info className="w-4 h-4 text-neutral-500" />
-                      Tooltip popover molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Trigger + Contextual Card
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-4 pt-1">
-                    <div className="relative inline-flex items-center gap-1.5">
-                      <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-medium text-neutral-700">
-                        Glaze percentage
-                      </span>
-                      <button
-                        type="button"
-                        onMouseEnter={() => setIsTooltipOpen(true)}
-                        onMouseLeave={() => setIsTooltipOpen(false)}
-                        onClick={() => setIsTooltipOpen((prev) => !prev)}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
-                          color: tokens.textIconColor,
-                        }}
-                        className="w-4 h-4 flex items-center justify-center text-[11px] font-bold cursor-pointer hover:bg-neutral-200 transition-colors"
-                      >
-                        ⓘ
-                      </button>
-
-                      {/* Floating Tooltip Card */}
-                      <AnimatePresence>
-                        {isTooltipOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
-                            transition={{ duration: 0.12 }}
-                            style={{
-                              borderRadius: `${scaled.scaledInnerRadius}px`,
-                              borderColor: tokens.universalBorderColor,
-                              borderWidth: `${tokens.borderWidth}px`,
-                              boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
-                            }}
-                            className="absolute bottom-full left-0 mb-2 w-64 p-2.5 bg-[#111111] text-white text-[11px] leading-relaxed z-30"
-                          >
-                            <p className="font-medium text-white/90">
-                              Sub-zero protective ice glaze added to frozen seafood to prevent dehydration during cold-chain transit.
-                            </p>
-                            <div className="w-2 h-2 bg-[#111111] rotate-45 absolute -bottom-1 left-4" />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                </div>
-
-                {/* ── MOLECULE 9: BREADCRUMBS (COMPOSED LINKS + SEPARATORS) ── */}
-                <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <ChevronRight className="w-4 h-4 text-neutral-500" />
-                      Breadcrumbs wayfinding molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Links + Chevrons
-                    </span>
-                  </div>
-
-                  <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
-                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
-                      Operations
-                    </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
-                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
-                      Coldstore Unit-1
-                    </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
-                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
-                      Pre-Processing
-                    </span>
-                    <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
-                    <span
-                      style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
-                        backgroundColor: tokens.hoverBackplateTint,
-                        color: tokens.textIconColor,
-                      }}
-                      className="px-2 py-0.5 font-semibold"
-                    >
-                      Batch #8812-B
-                    </span>
-                  </nav>
-                </div>
-
-                {/* ── MOLECULE 10: DATA TABLE ROW (FORMATTED FINANCIAL & METRIC RECORD) ── */}
+                {/* ── MOLECULE 11: DATA TABLE ROW ── */}
                 <div id="mol-table-row" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -2471,7 +2699,7 @@ module.exports = {
                         DataTableRow molecule
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Composed tabular record with deterministic numerical alignment (tabular figures without monospace fonts).
+                        Composed tabular record with multi-select checkbox, status pill, tabular currency, and contextual actions popover.
                       </p>
                     </div>
                     <span className="text-[11px] bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-md border border-neutral-200 font-medium">
@@ -2484,34 +2712,142 @@ module.exports = {
                     <table className="w-full text-xs">
                       <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-500">
                         <tr>
+                          <th className="w-10 py-2.5 px-3 text-center">
+                            <span className="sr-only">Select</span>
+                          </th>
                           <th className="py-2.5 px-3.5 text-left font-semibold uppercase tracking-wider text-[10px]">Invoice / Batch</th>
-                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Weight (kg)</th>
-                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Yield Delta</th>
-                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Settled Value ($)</th>
+                          <th className="py-2.5 px-3.5 text-left font-semibold uppercase tracking-wider text-[10px]">Plan Tier</th>
+                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Usage (GB)</th>
+                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Growth Delta</th>
+                          <th className="py-2.5 px-3.5 text-right font-semibold uppercase tracking-wider text-[10px]">Settled Amount</th>
+                          <th className="py-2.5 px-3.5 text-center font-semibold uppercase tracking-wider text-[10px]">Status</th>
+                          <th className="w-12 py-2.5 px-3 text-center">
+                            <span className="sr-only">Actions</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-neutral-100 tabular-nums">
-                        <tr className="hover:bg-neutral-50/70 transition-colors">
-                          <td className="py-2.5 px-3.5 font-medium text-neutral-900">INV-2627-101</td>
-                          <td className="py-2.5 px-3.5 text-right text-neutral-700 font-medium">1,840.50 kg</td>
-                          <td className="py-2.5 px-3.5 text-right text-emerald-600 font-semibold">
-                            <span className="inline-flex items-center gap-1 justify-end">
-                              <TrendingUp className="w-3 h-3" /> +14.8%
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-3.5 text-right font-bold text-neutral-900">$ 42,500.00</td>
-                        </tr>
-                        <tr className="hover:bg-neutral-50/70 transition-colors">
-                          <td className="py-2.5 px-3.5 font-medium text-neutral-900">INV-2627-102</td>
-                          <td className="py-2.5 px-3.5 text-right text-neutral-700 font-medium">920.00 kg</td>
-                          <td className="py-2.5 px-3.5 text-right text-rose-600 font-semibold">
-                            -3.2%
-                          </td>
-                          <td className="py-2.5 px-3.5 text-right font-bold text-neutral-900">$ 19,850.00</td>
-                        </tr>
+                        {[
+                          { id: "INV-2627-101", plan: "Enterprise Dedicated", usage: "1,840 GB", delta: "+14.8%", amount: "$ 42,500.00", status: "Settled" },
+                          { id: "INV-2627-102", plan: "Pro Scale Cluster", usage: "920 GB", delta: "-3.2%", amount: "$ 19,850.00", status: "Auditing" },
+                        ].map((row) => {
+                          const isRowSelected = selectedTableRows.includes(row.id);
+                          return (
+                            <tr key={row.id} className="hover:bg-neutral-50/70 transition-colors">
+                              <td className="w-10 py-2.5 px-3 text-center">
+                                <div
+                                  onClick={() => {
+                                    setSelectedTableRows((prev) =>
+                                      prev.includes(row.id) ? prev.filter((id) => id !== row.id) : [...prev, row.id]
+                                    );
+                                  }}
+                                  style={{
+                                    borderRadius: `${scaled.scaledCheckboxRadius}px`,
+                                    backgroundColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
+                                    borderColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                                    borderWidth: `${tokens.borderWidth}px`,
+                                  }}
+                                  className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto transition-colors"
+                                >
+                                  {isRowSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-3.5 font-medium text-neutral-900">{row.id}</td>
+                              <td className="py-2.5 px-3.5 text-neutral-600 font-normal">{row.plan}</td>
+                              <td className="py-2.5 px-3.5 text-right text-neutral-700 font-medium">{row.usage}</td>
+                              <td className={`py-2.5 px-3.5 text-right font-semibold ${row.delta.startsWith("+") ? "text-emerald-600" : "text-rose-600"}`}>
+                                <span className="inline-flex items-center gap-1 justify-end">
+                                  {row.delta.startsWith("+") && <TrendingUp className="w-3 h-3" />}
+                                  {row.delta}
+                                </span>
+                              </td>
+                              <td className="py-2.5 px-3.5 text-right font-bold text-neutral-900">{row.amount}</td>
+                              <td className="py-2.5 px-3.5 text-center">
+                                <span
+                                  style={{ borderRadius: `${scaled.scaledRadius}px` }}
+                                  className={`px-2 py-0.5 text-[10px] font-semibold border ${
+                                    row.status === "Settled"
+                                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                      : "bg-amber-50 text-amber-700 border-amber-200"
+                                  }`}
+                                >
+                                  {row.status}
+                                </span>
+                              </td>
+                              <td className="w-12 py-2.5 px-3 text-center relative">
+                                <div ref={row.id === "INV-2627-101" ? rowActionsRef : undefined} className="relative inline-block text-right">
+                                  <button
+                                    type="button"
+                                    onClick={() => setIsRowActionsOpen((prev) => !prev)}
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      padding: "4px 6px",
+                                    }}
+                                    className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                                  >
+                                    <MoreHorizontal className="w-4 h-4" />
+                                  </button>
+
+                                  <AnimatePresence>
+                                    {isRowActionsOpen && row.id === "INV-2627-101" && (
+                                      <motion.div
+                                        initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: -4 }}
+                                        transition={{ duration: 0.12 }}
+                                        style={{
+                                          borderRadius: `${scaled.scaledMenuRadius}px`,
+                                          borderColor: tokens.universalBorderColor,
+                                          borderWidth: `${tokens.borderWidth}px`,
+                                          backgroundColor: tokens.universalFillColor,
+                                          boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
+                                        }}
+                                        className="absolute right-0 top-full mt-1 w-44 p-1 z-30 border space-y-0.5 text-left"
+                                      >
+                                        <button
+                                          type="button"
+                                          onClick={() => { setIsRowActionsOpen(false); triggerToast("Opening batch invoice details"); }}
+                                          style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
+                                          className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
+                                        >
+                                          <FileText className="w-3.5 h-3.5 text-neutral-400" />
+                                          <span>View Invoice</span>
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => { setIsRowActionsOpen(false); triggerToast("Downloading PDF audit receipt"); }}
+                                          style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
+                                          className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
+                                        >
+                                          <Download className="w-3.5 h-3.5 text-neutral-400" />
+                                          <span>Download Audit PDF</span>
+                                        </button>
+                                      </motion.div>
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
+                </div>
+
+                {/* ══════════════════════════════════════════════════════════
+                    CATEGORY 4: FEEDBACK & OVERLAYS
+                   ══════════════════════════════════════════════════════════ */}
+                <div className="w-full flex items-center justify-between pb-2 pt-4 mb-1 border-b border-neutral-200">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
+                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
+                      Category 4: Feedback &amp; Overlays
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-neutral-400 font-medium">
+                    3 Composed Molecules
+                  </span>
                 </div>
 
                 {/* ── MOLECULE 11: ALERT CALLOUT (SEMANTIC FEEDBACK BANNER) ── */}
@@ -2724,131 +3060,61 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── MOLECULE 13: PAGINATION BAR (DATASET CONTROLS) ── */}
-                <div id="mol-pagination" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── MOLECULE 14: TOOLTIP POPOVER ── */}
+                <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <ChevronRight className="w-4 h-4 text-neutral-500" />
-                      PaginationBar molecule
+                      <Info className="w-4 h-4 text-neutral-500" />
+                      Tooltip popover molecule
                     </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Summary + Page Selection + Chevrons
+                      Trigger + Contextual Card
                     </span>
                   </div>
 
-                  <div
-                    style={{
-                      borderRadius: `${scaled.scaledMenuRadius}px`,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      borderColor: tokens.universalBorderColor,
-                      backgroundColor: scaled.effectiveInputFill,
-                      boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "none",
-                      padding: `${Math.round(8 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
-                    }}
-                    className="border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
-                  >
-                    {/* Record Range Text in Tabular figures */}
-                    <div style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 tabular-nums">
-                      Showing <span className="font-semibold text-neutral-900">{(currentPage - 1) * pageSize + 1}</span>–
-                      <span className="font-semibold text-neutral-900">{Math.min(currentPage * pageSize, 148)}</span> of{" "}
-                      <span className="font-semibold text-neutral-900">148</span> candidate records
-                    </div>
-
-                    {/* Controls */}
-                    <div className="flex items-center gap-2">
-                      {/* Rows per page selector */}
-                      <div className="flex items-center gap-1.5">
-                        <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">Rows:</span>
-                        <select
-                          value={pageSize}
-                          onChange={(e) => setPageSize(Number(e.target.value))}
-                          style={{
-                            borderRadius: `${scaled.scaledInnerRadius}px`,
-                            borderColor: tokens.universalBorderColor,
-                            borderWidth: `${tokens.borderWidth}px`,
-                            backgroundColor: tokens.universalFillColor,
-                            color: tokens.textIconColor,
-                            fontSize: `${scaled.sublabelFontSize}px`,
-                            padding: "3px 6px",
-                          }}
-                          className="border outline-none cursor-pointer"
-                        >
-                          <option value={10}>10</option>
-                          <option value={25}>25</option>
-                          <option value={50}>50</option>
-                        </select>
-                      </div>
-
-                      {/* Previous Button */}
+                  <div className="flex items-center gap-4 pt-1">
+                    <div className="relative inline-flex items-center gap-1.5">
+                      <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-medium text-neutral-700">
+                        p99 Replication Latency
+                      </span>
                       <button
                         type="button"
-                        disabled={currentPage === 1}
-                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        onMouseEnter={() => setIsTooltipOpen(true)}
+                        onMouseLeave={() => setIsTooltipOpen(false)}
+                        onClick={() => setIsTooltipOpen((prev) => !prev)}
                         style={{
                           borderRadius: `${scaled.scaledInnerRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                          color: currentPage === 1 ? "#A3A3A3" : tokens.textIconColor,
-                          height: `${Math.round(28 * scaled.scale)}px`,
-                          padding: "0 8px",
-                          fontSize: `${scaled.sublabelFontSize}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
                         }}
-                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
+                        className="w-4 h-4 flex items-center justify-center text-[11px] font-bold cursor-pointer hover:bg-neutral-200 transition-colors"
                       >
-                        <ChevronLeft className="w-3.5 h-3.5" />
-                        <span>Prev</span>
+                        ⓘ
                       </button>
 
-                      {/* Page Numbers */}
-                      <div className="flex items-center gap-1 tabular-nums">
-                        {[1, 2, 3, 4, 15].map((pageNum, idx) => {
-                          const isActive = currentPage === pageNum;
-                          return (
-                            <React.Fragment key={pageNum}>
-                              {idx === 4 && <span className="text-neutral-400 px-1">...</span>}
-                              <button
-                                type="button"
-                                onClick={() => setCurrentPage(pageNum)}
-                                style={{
-                                  borderRadius: `${scaled.scaledInnerRadius}px`,
-                                  backgroundColor: isActive ? tokens.primaryButtonColor : "transparent",
-                                  color: isActive ? "#FFFFFF" : tokens.textIconColor,
-                                  width: `${Math.round(28 * scaled.scale)}px`,
-                                  height: `${Math.round(28 * scaled.scale)}px`,
-                                  fontSize: `${scaled.sublabelFontSize}px`,
-                                }}
-                                className={`flex items-center justify-center font-medium transition-colors cursor-pointer select-none ${
-                                  isActive ? "font-semibold shadow-xs" : "hover:bg-black/5"
-                                }`}
-                              >
-                                {pageNum}
-                              </button>
-                            </React.Fragment>
-                          );
-                        })}
-                      </div>
-
-                      {/* Next Button */}
-                      <button
-                        type="button"
-                        disabled={currentPage === 15}
-                        onClick={() => setCurrentPage((p) => Math.min(15, p + 1))}
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.universalFillColor,
-                          color: currentPage === 15 ? "#A3A3A3" : tokens.textIconColor,
-                          height: `${Math.round(28 * scaled.scale)}px`,
-                          padding: "0 8px",
-                          fontSize: `${scaled.sublabelFontSize}px`,
-                        }}
-                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
-                      >
-                        <span>Next</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </button>
+                      {/* Floating Tooltip Card */}
+                      <AnimatePresence>
+                        {isTooltipOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                            transition={{ duration: 0.12 }}
+                            style={{
+                              borderRadius: `${scaled.scaledInnerRadius}px`,
+                              borderColor: tokens.universalBorderColor,
+                              borderWidth: `${tokens.borderWidth}px`,
+                              boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
+                            }}
+                            className="absolute bottom-full left-0 mb-2 w-64 p-2.5 bg-[#111111] text-white text-[11px] leading-relaxed z-30"
+                          >
+                            <p className="font-medium text-white/90">
+                              Calculated 99th percentile write-to-read sync latency across cross-regional database replica clusters.
+                            </p>
+                            <div className="w-2 h-2 bg-[#111111] rotate-45 absolute -bottom-1 left-4" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </div>
                 </div>
