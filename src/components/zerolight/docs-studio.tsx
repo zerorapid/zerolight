@@ -31,6 +31,11 @@ import {
   Minus,
   Code2,
   ExternalLink,
+  Calendar,
+  AlertTriangle,
+  CheckCircle2,
+  ChevronLeft,
+  Inbox,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -104,6 +109,24 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   const [progressValue, setProgressValue] = useState<number>(72);
   const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false);
   const [activeIconStroke, setActiveIconStroke] = useState<1.5 | 2.0 | 2.5>(2.0);
+
+  // New Molecules State
+  // 1. DateRangePicker
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false);
+  const [datePreset, setDatePreset] = useState<"7d" | "30d" | "quarter" | "custom">("30d");
+  const [dateRangeString, setDateRangeString] = useState<string>("Oct 08, 2026 – Nov 06, 2026");
+  const datePickerRef = useRef<HTMLDivElement>(null);
+
+  // 2. AlertCallout
+  const [alertVariant, setAlertVariant] = useState<"info" | "warning" | "success" | "critical">("warning");
+  const [isAlertDismissed, setIsAlertDismissed] = useState<boolean>(false);
+
+  // 3. EmptyStateCard
+  const [emptySearchTerm, setEmptySearchTerm] = useState<string>("quantum-cache-v4");
+
+  // 4. PaginationBar
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   // Notifications
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -224,12 +247,16 @@ module.exports = {
       if (tagRef.current && !tagRef.current.contains(e.target as Node)) {
         setIsTagOpen(false);
       }
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
+        setIsDatePickerOpen(false);
+      }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setIsRoleOpen(false);
         setIsTagOpen(false);
+        setIsDatePickerOpen(false);
       }
     };
 
@@ -446,6 +473,9 @@ module.exports = {
                     <a href="#mol-search-bar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>SearchBar</span>
                     </a>
+                    <a href="#mol-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>DateRangePicker</span>
+                    </a>
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
@@ -465,6 +495,18 @@ module.exports = {
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Feedback &amp; Alerts
+                    </div>
+                    <a href="#mol-alert-callout" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>AlertCallout</span>
+                    </a>
+                    <a href="#mol-empty-state" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>EmptyStateCard</span>
+                    </a>
+                  </div>
+
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
                       Overlays &amp; Navigation
                     </div>
                     <a href="#mol-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
@@ -472,6 +514,9 @@ module.exports = {
                     </a>
                     <a href="#mol-breadcrumbs" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Breadcrumbs</span>
+                    </a>
+                    <a href="#mol-pagination" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>PaginationBar</span>
                     </a>
                   </div>
 
@@ -1790,6 +1835,142 @@ module.exports = {
                   </div>
                 </div>
 
+                {/* ── MOLECULE: DATE RANGE PICKER ── */}
+                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-neutral-500" />
+                      DateRangePicker molecule
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                      Trigger + Floating Presets Popover
+                    </span>
+                  </div>
+
+                  <div ref={datePickerRef} className="relative space-y-1.5">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                      Audit &amp; Query Period
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setIsDatePickerOpen((prev) => !prev)}
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: isDatePickerOpen ? tokens.textIconColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: scaled.effectiveInputFill,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
+                        boxShadow: isDatePickerOpen
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="w-full flex items-center justify-between text-left cursor-pointer border select-none font-medium tabular-nums text-xs"
+                    >
+                      <div className="flex items-center gap-2.5 truncate">
+                        <Calendar className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
+                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }} className="truncate">
+                          {dateRangeString}
+                        </span>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: isDatePickerOpen ? 180 : 0 }}
+                        transition={{ duration: 0.15 }}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                        }}
+                        className="w-5 h-5 flex items-center justify-center shrink-0"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
+                      </motion.div>
+                    </button>
+
+                    {/* Floating Popover adhering 100% to universal tokens */}
+                    <AnimatePresence>
+                      {isDatePickerOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
+                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          style={{
+                            marginTop: `${tokens.menuOffsetGap}px`,
+                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
+                            padding: `${Math.round(12 * scaled.scale)}px`,
+                          }}
+                          className="absolute top-full left-0 right-0 z-30 space-y-3 border"
+                        >
+                          <div className="space-y-1">
+                            <span style={{ fontSize: `${scaled.sublabelFontSize - 1}px` }} className="text-neutral-400 font-semibold uppercase tracking-wider block">
+                              Quick Presets
+                            </span>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                              {[
+                                { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
+                                { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
+                                { id: "quarter", label: "This Quarter", range: "Oct 01, 2026 – Dec 31, 2026" },
+                                { id: "custom", label: "Year to Date", range: "Jan 01, 2026 – Nov 06, 2026" },
+                              ].map((p) => {
+                                const isSelected = datePreset === p.id;
+                                return (
+                                  <button
+                                    key={p.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setDatePreset(p.id as any);
+                                      setDateRangeString(p.range);
+                                    }}
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
+                                      color: isSelected ? "#FFFFFF" : tokens.textIconColor,
+                                      fontSize: `${scaled.sublabelFontSize}px`,
+                                      padding: `${Math.round(6 * scaled.scale)}px ${Math.round(8 * scaled.scale)}px`,
+                                    }}
+                                    className={`font-medium transition-colors cursor-pointer text-center select-none ${
+                                      isSelected ? "font-semibold shadow-xs" : "hover:text-black"
+                                    }`}
+                                  >
+                                    {p.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                            <div className="text-[11px] text-neutral-500 tabular-nums">
+                              Selected: <span className="font-semibold text-neutral-900">{dateRangeString}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setIsDatePickerOpen(false)}
+                              style={{
+                                borderRadius: `${scaled.scaledInnerRadius}px`,
+                                backgroundColor: tokens.primaryButtonColor,
+                                color: "#FFFFFF",
+                                fontSize: `${scaled.sublabelFontSize}px`,
+                                padding: `${Math.round(5 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
+                              }}
+                              className="font-semibold cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors"
+                            >
+                              Apply Range
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
                 {/* ── MOLECULE 4: SEARCHABLE SELECT (UNIVERSAL DROPDOWN TOKEN APPLIED!) ── */}
                 <div id="mol-search-select" style={cardStyle} className="p-5 shadow-sm space-y-3">
                   <div className="flex items-center justify-between">
@@ -2330,6 +2511,345 @@ module.exports = {
                         </tr>
                       </tbody>
                     </table>
+                  </div>
+                </div>
+
+                {/* ── MOLECULE 11: ALERT CALLOUT (SEMANTIC FEEDBACK BANNER) ── */}
+                <div id="mol-alert-callout" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-neutral-500" />
+                      AlertCallout molecule
+                    </h2>
+                    <div className="flex items-center gap-1">
+                      {(["info", "warning", "success", "critical"] as const).map((v) => (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => {
+                            setAlertVariant(v);
+                            setIsAlertDismissed(false);
+                          }}
+                          style={{
+                            borderRadius: `${scaled.scaledInnerRadius}px`,
+                            backgroundColor: alertVariant === v ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
+                            color: alertVariant === v ? "#FFFFFF" : tokens.textIconColor,
+                            fontSize: `${scaled.sublabelFontSize - 1}px`,
+                            padding: "2px 8px",
+                          }}
+                          className={`capitalize font-medium cursor-pointer transition-colors ${
+                            alertVariant === v ? "font-semibold shadow-2xs" : ""
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    {!isAlertDismissed ? (
+                      <motion.div
+                        key={alertVariant}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.15 }}
+                        style={{
+                          borderRadius: `${scaled.scaledRadius}px`,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          borderColor:
+                            alertVariant === "critical"
+                              ? "#FCA5A5"
+                              : alertVariant === "warning"
+                              ? "#FCD34D"
+                              : alertVariant === "success"
+                              ? "#86EFAC"
+                              : tokens.universalBorderColor,
+                          backgroundColor:
+                            alertVariant === "critical"
+                              ? "#FEF2F2"
+                              : alertVariant === "warning"
+                              ? "#FFFBEB"
+                              : alertVariant === "success"
+                              ? "#F0FDF4"
+                              : tokens.universalFillColor,
+                          boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "0 1px 2px 0 rgba(0,0,0,0.02)",
+                          padding: `${Math.round(14 * scaled.scale)}px ${Math.round(16 * scaled.scale)}px`,
+                        }}
+                        className="border flex items-start gap-3 relative transition-all"
+                      >
+                        <div className="shrink-0 mt-0.5">
+                          {alertVariant === "critical" && <AlertCircle className="w-4 h-4 text-rose-600" />}
+                          {alertVariant === "warning" && <AlertTriangle className="w-4 h-4 text-amber-600" />}
+                          {alertVariant === "success" && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                          {alertVariant === "info" && <Info className="w-4 h-4 text-neutral-700" />}
+                        </div>
+
+                        <div className="flex-1 space-y-1">
+                          <div style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-semibold text-neutral-900">
+                            {alertVariant === "critical" && "Payment Gateway Authorization Failed"}
+                            {alertVariant === "warning" && "API Rate Quota Nearing Threshold (88%)"}
+                            {alertVariant === "success" && "Database Migration Successfully Applied"}
+                            {alertVariant === "info" && "Scheduled System Maintenance Window"}
+                          </div>
+                          <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-600 leading-relaxed font-normal">
+                            {alertVariant === "critical" && "Your monthly cluster subscription could not be charged. Automated retries will run in 24 hours."}
+                            {alertVariant === "warning" && "Your workspace has consumed 88,400 of 100,000 monthly API calls. Upgrade your plan to prevent throttling."}
+                            {alertVariant === "success" && "Schema batch #2026-v8 deployed to all 4 multi-region clusters with zero downtime."}
+                            {alertVariant === "info" && "ZeroLight cluster telemetry upgrades are scheduled for Sunday 02:00 UTC."}
+                          </p>
+                          <div className="pt-1">
+                            <button
+                              type="button"
+                              style={{
+                                fontSize: `${scaled.sublabelFontSize}px`,
+                                color: tokens.textIconColor,
+                              }}
+                              className="font-semibold underline cursor-pointer hover:opacity-80"
+                            >
+                              View audit logs →
+                            </button>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setIsAlertDismissed(true)}
+                          style={{
+                            borderRadius: `${scaled.scaledInnerRadius}px`,
+                            padding: `${Math.round(4 * scaled.scale)}px`,
+                          }}
+                          className="text-neutral-400 hover:text-neutral-900 hover:bg-black/5 transition-colors cursor-pointer"
+                          title="Dismiss notification"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </motion.div>
+                    ) : (
+                      <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-center">
+                        <button
+                          type="button"
+                          onClick={() => setIsAlertDismissed(false)}
+                          className="text-xs text-neutral-600 hover:text-neutral-900 font-semibold cursor-pointer"
+                        >
+                          Show dismissed alert again
+                        </button>
+                      </div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* ── MOLECULE 12: EMPTY STATE CARD (ZERO-DATA FALLBACK) ── */}
+                <div id="mol-empty-state" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <Inbox className="w-4 h-4 text-neutral-500" />
+                      EmptyStateCard molecule
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                      Zero-data fallback + Action CTA
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledCardRadius}px`,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      borderColor: tokens.universalBorderColor,
+                      backgroundColor: scaled.effectiveInputFill,
+                      boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "none",
+                      padding: `${Math.round(32 * scaled.scale)}px ${Math.round(20 * scaled.scale)}px`,
+                    }}
+                    className="border border-dashed text-center flex flex-col items-center justify-center space-y-3"
+                  >
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        width: `${Math.round(48 * scaled.scale)}px`,
+                        height: `${Math.round(48 * scaled.scale)}px`,
+                      }}
+                      className="flex items-center justify-center border shadow-2xs"
+                    >
+                      <Inbox className="w-5 h-5 text-neutral-500" strokeWidth={1.8} />
+                    </div>
+
+                    <div className="space-y-1 max-w-sm">
+                      <h3 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-bold text-neutral-900">
+                        No active requisitions found
+                      </h3>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed font-normal">
+                        No candidates or open positions matched your current query criteria. Try clearing active filters or create a new job profile.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2">
+                      <button
+                        type="button"
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          backgroundColor: tokens.primaryButtonColor,
+                          color: "#FFFFFF",
+                          height: `${scaled.scaledHeight}px`,
+                          paddingLeft: `${scaled.scaledPaddingX}px`,
+                          paddingRight: `${scaled.scaledPaddingX}px`,
+                          fontSize: `${scaled.ctaFontSize}px`,
+                        }}
+                        className="font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors select-none"
+                      >
+                        <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
+                        <span>Create New Job</span>
+                      </button>
+                      <button
+                        type="button"
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.universalFillColor,
+                          color: tokens.textIconColor,
+                          height: `${scaled.scaledHeight}px`,
+                          paddingLeft: `${scaled.scaledPaddingX}px`,
+                          paddingRight: `${scaled.scaledPaddingX}px`,
+                          fontSize: `${scaled.ctaFontSize}px`,
+                        }}
+                        className="font-semibold border hover:bg-neutral-50 transition-colors cursor-pointer select-none"
+                      >
+                        Clear All Filters
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── MOLECULE 13: PAGINATION BAR (DATASET CONTROLS) ── */}
+                <div id="mol-pagination" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-neutral-500" />
+                      PaginationBar molecule
+                    </h2>
+                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                      Summary + Page Selection + Chevrons
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledRadius}px`,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      borderColor: tokens.universalBorderColor,
+                      backgroundColor: scaled.effectiveInputFill,
+                      boxShadow: scaled.isZeroBorder ? scaled.focusHalo : "none",
+                      padding: `${Math.round(8 * scaled.scale)}px ${Math.round(14 * scaled.scale)}px`,
+                    }}
+                    className="border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
+                  >
+                    {/* Record Range Text in Tabular figures */}
+                    <div style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 tabular-nums">
+                      Showing <span className="font-semibold text-neutral-900">{(currentPage - 1) * pageSize + 1}</span>–
+                      <span className="font-semibold text-neutral-900">{Math.min(currentPage * pageSize, 148)}</span> of{" "}
+                      <span className="font-semibold text-neutral-900">148</span> candidate records
+                    </div>
+
+                    {/* Controls */}
+                    <div className="flex items-center gap-2">
+                      {/* Rows per page selector */}
+                      <div className="flex items-center gap-1.5">
+                        <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">Rows:</span>
+                        <select
+                          value={pageSize}
+                          onChange={(e) => setPageSize(Number(e.target.value))}
+                          style={{
+                            borderRadius: `${scaled.scaledInnerRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            color: tokens.textIconColor,
+                            fontSize: `${scaled.sublabelFontSize}px`,
+                            padding: "3px 6px",
+                          }}
+                          className="border outline-none cursor-pointer"
+                        >
+                          <option value={10}>10</option>
+                          <option value={25}>25</option>
+                          <option value={50}>50</option>
+                        </select>
+                      </div>
+
+                      {/* Previous Button */}
+                      <button
+                        type="button"
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.universalFillColor,
+                          color: currentPage === 1 ? "#A3A3A3" : tokens.textIconColor,
+                          height: `${Math.round(28 * scaled.scale)}px`,
+                          padding: "0 8px",
+                          fontSize: `${scaled.sublabelFontSize}px`,
+                        }}
+                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span>Prev</span>
+                      </button>
+
+                      {/* Page Numbers */}
+                      <div className="flex items-center gap-1 tabular-nums">
+                        {[1, 2, 3, 4, 15].map((pageNum, idx) => {
+                          const isActive = currentPage === pageNum;
+                          return (
+                            <React.Fragment key={pageNum}>
+                              {idx === 4 && <span className="text-neutral-400 px-1">...</span>}
+                              <button
+                                type="button"
+                                onClick={() => setCurrentPage(pageNum)}
+                                style={{
+                                  borderRadius: `${scaled.scaledInnerRadius}px`,
+                                  backgroundColor: isActive ? tokens.primaryButtonColor : "transparent",
+                                  color: isActive ? "#FFFFFF" : tokens.textIconColor,
+                                  width: `${Math.round(28 * scaled.scale)}px`,
+                                  height: `${Math.round(28 * scaled.scale)}px`,
+                                  fontSize: `${scaled.sublabelFontSize}px`,
+                                }}
+                                className={`flex items-center justify-center font-medium transition-colors cursor-pointer select-none ${
+                                  isActive ? "font-semibold shadow-xs" : "hover:bg-black/5"
+                                }`}
+                              >
+                                {pageNum}
+                              </button>
+                            </React.Fragment>
+                          );
+                        })}
+                      </div>
+
+                      {/* Next Button */}
+                      <button
+                        type="button"
+                        disabled={currentPage === 15}
+                        onClick={() => setCurrentPage((p) => Math.min(15, p + 1))}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.universalFillColor,
+                          color: currentPage === 15 ? "#A3A3A3" : tokens.textIconColor,
+                          height: `${Math.round(28 * scaled.scale)}px`,
+                          padding: "0 8px",
+                          fontSize: `${scaled.sublabelFontSize}px`,
+                        }}
+                        className="border flex items-center gap-1 font-medium cursor-pointer disabled:cursor-not-allowed hover:bg-neutral-50 transition-colors"
+                      >
+                        <span>Next</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </>
