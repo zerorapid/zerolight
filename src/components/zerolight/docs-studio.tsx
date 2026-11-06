@@ -40,6 +40,11 @@ import {
   MoreHorizontal,
   FileText,
   Download,
+  EyeOff,
+  Layers,
+  Compass,
+  BarChart2,
+  Command,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -137,9 +142,20 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   // FormField & SearchBar Enterprise States
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
   const [searchBarQuery, setSearchBarQuery] = useState<string>("cluster-node-us-east-1");
+  const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const [isApiKeyMasked, setIsApiKeyMasked] = useState<boolean>(true);
 
-  // DataTableRow Enterprise States
+  // Category Filtering & Breadcrumbs States
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<"all" | "cat1" | "cat2" | "cat3" | "cat4">("all");
+  const [isBreadcrumbMenuOpen, setIsBreadcrumbMenuOpen] = useState<boolean>(false);
+  const breadcrumbMenuRef = useRef<HTMLDivElement>(null);
+
+  // MetricStat & DataTableRow Enterprise States
+  const [metricHorizon, setMetricHorizon] = useState<"24h" | "7d" | "30d" | "1y">("30d");
+  const [hoveredSparkPoint, setHoveredSparkPoint] = useState<number | null>(null);
   const [selectedTableRows, setSelectedTableRows] = useState<string[]>(["INV-2627-101"]);
+  const [expandedRowId, setExpandedRowId] = useState<string | null>(null);
   const [isRowActionsOpen, setIsRowActionsOpen] = useState<boolean>(false);
   const rowActionsRef = useRef<HTMLDivElement>(null);
 
@@ -271,6 +287,12 @@ module.exports = {
       if (rowActionsRef.current && !rowActionsRef.current.contains(e.target as Node)) {
         setIsRowActionsOpen(false);
       }
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setIsSearchFocused(false);
+      }
+      if (breadcrumbMenuRef.current && !breadcrumbMenuRef.current.contains(e.target as Node)) {
+        setIsBreadcrumbMenuOpen(false);
+      }
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -280,6 +302,8 @@ module.exports = {
         setIsDatePickerOpen(false);
         setIsPageSizeOpen(false);
         setIsRowActionsOpen(false);
+        setIsSearchFocused(false);
+        setIsBreadcrumbMenuOpen(false);
       }
     };
 
@@ -484,73 +508,97 @@ module.exports = {
               ) : (
                 <>
                   {/* Category 1: Forms & Data Entry */}
-                  <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
-                      Forms &amp; Data Entry
+                  <div className="space-y-1">
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">01</span>
+                        <span>Forms &amp; Entry</span>
+                      </span>
+                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">6</span>
                     </div>
-                    <a href="#mol-form-field" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>FormField</span>
-                    </a>
-                    <a href="#mol-input-group" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>InputGroup</span>
-                    </a>
-                    <a href="#mol-search-bar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>SearchBar</span>
-                    </a>
-                    <a href="#mol-search-select" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>SearchableSelect</span>
-                    </a>
-                    <a href="#mol-tag-deck" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>TagDeck</span>
-                    </a>
-                    <a href="#mol-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>DateRangePicker</span>
-                    </a>
+                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
+                      <a href="#mol-form-field" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>FormField</span>
+                      </a>
+                      <a href="#mol-input-group" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>InputGroup</span>
+                      </a>
+                      <a href="#mol-search-bar" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>SearchBar</span>
+                      </a>
+                      <a href="#mol-search-select" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>SearchableSelect</span>
+                      </a>
+                      <a href="#mol-tag-deck" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>TagDeck</span>
+                      </a>
+                      <a href="#mol-date-picker" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>DateRangePicker</span>
+                      </a>
+                    </div>
                   </div>
 
                   {/* Category 2: Navigation & Commands */}
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
-                      Navigation &amp; Commands
+                  <div className="space-y-1 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">02</span>
+                        <span>Navigation</span>
+                      </span>
+                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
                     </div>
-                    <a href="#mol-segmented" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>SegmentedControl</span>
-                    </a>
-                    <a href="#mol-breadcrumbs" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Breadcrumbs</span>
-                    </a>
-                    <a href="#mol-pagination" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>PaginationBar</span>
-                    </a>
+                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
+                      <a href="#mol-segmented" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>SegmentedControl</span>
+                      </a>
+                      <a href="#mol-breadcrumbs" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>Breadcrumbs</span>
+                      </a>
+                      <a href="#mol-pagination" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>PaginationBar</span>
+                      </a>
+                    </div>
                   </div>
 
                   {/* Category 3: Data Display & Analytics */}
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
-                      Data Display &amp; Analytics
+                  <div className="space-y-1 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">03</span>
+                        <span>Data Display</span>
+                      </span>
+                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">2</span>
                     </div>
-                    <a href="#mol-metric-stat" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>MetricStat</span>
-                    </a>
-                    <a href="#mol-table-row" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>DataTableRow</span>
-                    </a>
+                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
+                      <a href="#mol-metric-stat" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>MetricStat</span>
+                      </a>
+                      <a href="#mol-table-row" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>DataTableRow</span>
+                      </a>
+                    </div>
                   </div>
 
                   {/* Category 4: Feedback & Overlays */}
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
-                      Feedback &amp; Overlays
+                  <div className="space-y-1 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-[11px] font-bold text-neutral-900 uppercase tracking-wider flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-mono font-semibold px-1 py-0.2 bg-neutral-100 rounded text-neutral-600">04</span>
+                        <span>Overlays</span>
+                      </span>
+                      <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
                     </div>
-                    <a href="#mol-alert-callout" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>AlertCallout</span>
-                    </a>
-                    <a href="#mol-empty-state" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>EmptyStateCard</span>
-                    </a>
-                    <a href="#mol-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Tooltip popover</span>
-                    </a>
+                    <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
+                      <a href="#mol-alert-callout" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>AlertCallout</span>
+                      </a>
+                      <a href="#mol-empty-state" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>EmptyStateCard</span>
+                      </a>
+                      <a href="#mol-tooltip" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                        <span>TooltipPopover</span>
+                      </a>
+                    </div>
                   </div>
                 </>
               )}
@@ -1680,29 +1728,137 @@ module.exports = {
             {activeTier === "molecules" && (
               <>
                 {/* ══════════════════════════════════════════════════════════
+                    TIER 2 ARCHITECTURE OVERVIEW BANNER & QUICK FILTER BAR
+                   ══════════════════════════════════════════════════════════ */}
+                <div
+                  style={{
+                    borderRadius: `${scaled.scaledCardRadius}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    backgroundColor: tokens.universalFillColor,
+                    boxShadow: scaled.cardShadow,
+                    padding: `${Math.round(20 * scaled.scale)}px`,
+                  }}
+                  className="border space-y-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-full bg-neutral-900 text-white font-mono text-[10px] font-semibold uppercase tracking-wider">
+                        Tier 2 Architecture
+                      </span>
+                      <span className="text-xs text-neutral-400 font-medium">
+                        Brad Frost Hierarchy
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-[11px] text-neutral-500 font-medium">
+                      <span>Physics: <strong className="text-neutral-900 capitalize">{tokens.motionPhysics}</strong></span>
+                      <span>•</span>
+                      <span>14 Molecules</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize + 4}px` }} className="font-bold text-neutral-900 tracking-tight">
+                      Molecules Specification &amp; Composition Matrix
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-600 leading-relaxed max-w-xl">
+                      Molecules are functional UI patterns formed by composing two or more indivisible atomic primitives. Every molecule below strictly binds to universal studio tokens, contains zero unstyled OS controls, and exhibits fluid spring interaction physics.
+                    </p>
+                  </div>
+
+                  {/* Interactive Category Filter Pills with Gliding Motion */}
+                  <div className="flex items-center gap-1.5 pt-2 border-t border-neutral-100 flex-wrap">
+                    {[
+                      { id: "all", label: "All Molecules", count: 14, icon: Layers },
+                      { id: "cat1", label: "01 Forms & Entry", count: 6, icon: Mail },
+                      { id: "cat2", label: "02 Navigation", count: 3, icon: Compass },
+                      { id: "cat3", label: "03 Analytics", count: 2, icon: BarChart2 },
+                      { id: "cat4", label: "04 Overlays", count: 3, icon: AlertCircle },
+                    ].map((tab) => {
+                      const isSelected = activeCategoryFilter === tab.id;
+                      const Icon = tab.icon;
+                      return (
+                        <button
+                          key={tab.id}
+                          type="button"
+                          onClick={() => {
+                            setActiveCategoryFilter(tab.id as any);
+                            if (tab.id !== "all") {
+                              const el = document.getElementById(`category-section-${tab.id}`);
+                              el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                            }
+                          }}
+                          style={{
+                            borderRadius: `${scaled.scaledRadius === 9999 ? 9999 : scaled.scaledInnerRadius}px`,
+                            fontSize: `${scaled.sublabelFontSize}px`,
+                            padding: `${Math.round(4 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                          }}
+                          className={`font-semibold cursor-pointer relative flex items-center gap-1.5 transition-colors select-none ${
+                            isSelected ? "text-white" : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100"
+                          }`}
+                        >
+                          {isSelected && (
+                            <motion.div
+                              layoutId="activeCategoryFilterPill"
+                              transition={scaled.motionConfig.pillTransition}
+                              style={{
+                                borderRadius: `${scaled.scaledRadius === 9999 ? 9999 : scaled.scaledInnerRadius}px`,
+                                backgroundColor: tokens.primaryButtonColor,
+                              }}
+                              className="absolute inset-0 -z-10 shadow-xs"
+                            />
+                          )}
+                          <Icon className="w-3.5 h-3.5" />
+                          <span>{tab.label}</span>
+                          <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                            isSelected ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-500"
+                          }`}>
+                            {tab.count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* ══════════════════════════════════════════════════════════
                     CATEGORY 1: FORMS & DATA ENTRY
                    ══════════════════════════════════════════════════════════ */}
-                <div className="w-full flex items-center justify-between pb-2 mb-1 border-b border-neutral-200">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
-                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
-                      Category 1: Forms &amp; Data Entry
+                <div id="category-section-cat1" className="w-full pt-4 space-y-2">
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                        01
+                      </div>
+                      <div>
+                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
+                          Forms &amp; Parameter Entry
+                        </h2>
+                        <p className="text-[11px] text-neutral-500">
+                          Validated inputs, conjoined action groups, searchable select panels, and dynamic tag decks.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
+                      6 Production Molecules
                     </span>
                   </div>
-                  <span className="text-[11px] text-neutral-400 font-medium">
-                    6 Composed Molecules
-                  </span>
                 </div>
 
                 {/* ── MOLECULE 1: FORM FIELD ── */}
-                <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                        FormField molecule
-                      </h2>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                          FormField
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Validated Compound
+                        </span>
+                      </div>
                       <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                        Label + Leading Icon + HelperText + Dynamic Validation
+                        Label + Leading Icon + HelperText + Dynamic Validation Feedback
                       </span>
                     </div>
                     {/* Enterprise Error Simulation Toggle */}
@@ -1719,7 +1875,7 @@ module.exports = {
                           : "bg-neutral-100 text-neutral-600 border-neutral-200 hover:text-black"
                       }`}
                     >
-                      {isEmailError ? "Reset valid state" : "Simulate error"}
+                      {isEmailError ? "Reset valid state" : "Simulate validation error"}
                     </button>
                   </div>
 
@@ -1756,7 +1912,7 @@ module.exports = {
                         onFocus={() => setIsInputFocused(true)}
                         onBlur={() => setIsInputFocused(false)}
                         onChange={(e) => setTextInput(e.target.value)}
-                        placeholder="name@company.com"
+                        placeholder="name@enterprise.com"
                         style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
                       />
@@ -1764,27 +1920,77 @@ module.exports = {
                         <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" strokeWidth={2} />
                       )}
                     </div>
-                    {isEmailError ? (
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-rose-600 font-medium flex items-center gap-1 block">
-                        <span>Please enter a valid business email domain (e.g. name@enterprise.com)</span>
-                      </span>
-                    ) : (
-                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 block">
-                        We send monthly receipts and settlement summaries to this inbox.
-                      </span>
-                    )}
+                    {/* Fluid Animated Validation Feedback with AnimatePresence */}
+                    <AnimatePresence mode="wait">
+                      {isEmailError ? (
+                        <motion.span
+                          key="error"
+                          initial={{ opacity: 0, y: -4, height: 0 }}
+                          animate={{ opacity: 1, y: 0, height: "auto" }}
+                          exit={{ opacity: 0, y: -4, height: 0 }}
+                          transition={scaled.motionConfig.spring}
+                          style={{ fontSize: `${scaled.sublabelFontSize}px` }}
+                          className="text-rose-600 font-medium flex items-center gap-1.5 pt-0.5 overflow-hidden"
+                        >
+                          <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                          <span>Please enter a valid corporate email domain (e.g. name@enterprise.com)</span>
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="hint"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.12 }}
+                          style={{ fontSize: `${scaled.sublabelFontSize}px` }}
+                          className="text-neutral-500 flex items-center gap-1 pt-0.5"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                          <span>Monthly invoice telemetry and settlements will route to this inbox.</span>
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Label + Input + LeadingIcon + ErrorAlert + HelperText</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Universal Halos Active</span>
                   </div>
                 </div>
 
-                {/* ── MOLECULE 2: INPUT GROUP (UNIVERSAL RADIUS & BLACK BUTTON) ── */}
-                <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── MOLECULE 2: INPUT GROUP (UNIVERSAL RADIUS & CONJOINED ACTION) ── */}
+                <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      InputGroup molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Input + Conjoined Button
-                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                          InputGroup
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Conjoined Action
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Input + Mask Toggle + Conjoined Copy Button
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsApiKeyMasked((prev) => !prev)}
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                      }}
+                      className="px-2.5 py-1 font-semibold border border-neutral-200 text-neutral-600 hover:text-black hover:bg-neutral-50 flex items-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      {isApiKeyMasked ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                      <span>{isApiKeyMasked ? "Reveal Secret" : "Mask Secret"}</span>
+                    </button>
                   </div>
 
                   <div className="space-y-1.5">
@@ -1808,7 +2014,7 @@ module.exports = {
                         className="flex-1 flex items-center border"
                       >
                         <input
-                          type="text"
+                          type={isApiKeyMasked ? "password" : "text"}
                           readOnly
                           value={apiKey}
                           style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
@@ -1827,7 +2033,7 @@ module.exports = {
                       )}
                       <motion.button
                         type="button"
-                        whileTap={{ scale: 0.96 }}
+                        whileTap={{ scale: scaled.motionConfig.tapScale }}
                         onClick={handleCopyApiKey}
                         style={{
                           borderTopRightRadius: `${scaled.scaledRadius}px`,
@@ -1853,79 +2059,192 @@ module.exports = {
                       </motion.button>
                     </div>
                   </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Atom:Input + Atom:Button + Atom:EyeToggle + Atom:Divider</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Conjoined Geometry</span>
+                  </div>
                 </div>
 
                 {/* ── MOLECULE 3: SEARCH BAR ── */}
-                <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      SearchBar molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Live Input + Clear Trigger + Kbd Shortcut
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                          SearchBar
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Live Command
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Live Input + Fluid Clear Trigger + Command Palette Popover
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium">
+                      Press ⌘K to focus
                     </span>
                   </div>
 
-                  <div
-                    style={{
-                      borderRadius: `${scaled.scaledRadius}px`,
-                      borderColor: tokens.universalBorderColor,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      backgroundColor: scaled.effectiveInputFill,
-                      height: `${scaled.scaledHeight}px`,
-                      paddingLeft: `${scaled.scaledPaddingX}px`,
-                      paddingRight: `${scaled.scaledPaddingX}px`,
-                      transition: scaled.transitionStyle,
-                    }}
-                    className="flex items-center justify-between border focus-within:ring-2 focus-within:ring-neutral-900/10 focus-within:border-neutral-900"
-                  >
-                    <div className="flex items-center gap-2.5 flex-1 mr-2">
-                      <Search className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={2} />
-                      <input
-                        type="text"
-                        value={searchBarQuery}
-                        onChange={(e) => setSearchBarQuery(e.target.value)}
-                        placeholder="Search resources, clusters, audit logs..."
-                        style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
-                        className="w-full bg-transparent outline-none"
-                      />
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {searchBarQuery && (
-                        <button
-                          type="button"
-                          onClick={() => setSearchBarQuery("")}
-                          className="p-1 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer rounded-full hover:bg-neutral-100"
-                          title="Clear query"
+                  <div ref={searchRef} className="relative">
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: isSearchFocused ? tokens.textIconColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: scaled.effectiveInputFill,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
+                        boxShadow: isSearchFocused
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+                      }}
+                      className="flex items-center justify-between border select-none"
+                    >
+                      <div className="flex items-center gap-2.5 flex-1 mr-2">
+                        <Search className={`w-4 h-4 shrink-0 transition-colors ${isSearchFocused ? "text-neutral-900" : "text-neutral-400"}`} strokeWidth={2} />
+                        <input
+                          type="text"
+                          value={searchBarQuery}
+                          onFocus={() => setIsSearchFocused(true)}
+                          onChange={(e) => setSearchBarQuery(e.target.value)}
+                          placeholder="Search clusters, telemetry metrics, audit logs..."
+                          style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
+                          className="w-full bg-transparent outline-none"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <AnimatePresence>
+                          {searchBarQuery && (
+                            <motion.button
+                              type="button"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                              transition={scaled.motionConfig.spring}
+                              onClick={() => setSearchBarQuery("")}
+                              className="p-1 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer rounded-full hover:bg-neutral-100"
+                              title="Clear query"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </motion.button>
+                          )}
+                        </AnimatePresence>
+                        <kbd
+                          style={{
+                            borderRadius: `${scaled.scaledInnerRadius}px`,
+                            backgroundColor: isSearchFocused ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            color: isSearchFocused ? "#FFFFFF" : undefined,
+                            fontSize: `${scaled.sublabelFontSize - 1}px`,
+                            padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
+                            transition: scaled.transitionStyle,
+                          }}
+                          className="font-medium border shadow-2xs select-none flex items-center gap-0.5"
                         >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                      <kbd
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          fontSize: `${scaled.sublabelFontSize - 1}px`,
-                          padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
-                        }}
-                        className="font-medium text-neutral-500 border shadow-2xs select-none"
-                      >
-                        ⌘K
-                      </kbd>
+                          <Command className="w-2.5 h-2.5" />
+                          <span>K</span>
+                        </kbd>
+                      </div>
                     </div>
+
+                    {/* Fluid Command Palette / Suggestions Popover */}
+                    <AnimatePresence>
+                      {isSearchFocused && (
+                        <motion.div
+                          initial={scaled.motionConfig.popover.initial}
+                          animate={scaled.motionConfig.popover.animate}
+                          exit={scaled.motionConfig.popover.exit}
+                          transition={scaled.motionConfig.popover.transition}
+                          style={{
+                            marginTop: `${tokens.menuOffsetGap}px`,
+                            borderRadius: `${scaled.scaledMenuRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
+                            padding: `${Math.round(6 * scaled.scale)}px`,
+                          }}
+                          className="absolute top-full left-0 right-0 z-30 space-y-1 border"
+                        >
+                          <div className="px-2.5 py-1 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
+                            Suggested Quick Actions
+                          </div>
+                          {[
+                            { icon: Zap, label: "Trigger automated cluster failover drill", category: "Operations" },
+                            { icon: BarChart2, label: "Export monthly egress telemetry ledger (.csv)", category: "Analytics" },
+                            { icon: Shield, label: "Review RBAC privilege escalation matrix", category: "Security" },
+                          ].map((item, idx) => {
+                            const Icon = item.icon;
+                            return (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => {
+                                  setSearchBarQuery(item.label);
+                                  setIsSearchFocused(false);
+                                  triggerToast(`Executing: ${item.label}`);
+                                }}
+                                style={{
+                                  borderRadius: `${scaled.scaledOptionRadius}px`,
+                                  fontSize: `${scaled.sublabelFontSize}px`,
+                                  padding: `${Math.round(6 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
+                                }}
+                                className="w-full text-left flex items-center justify-between text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer group"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <Icon className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-900" />
+                                  <span>{item.label}</span>
+                                </span>
+                                <span className="text-[10px] text-neutral-400 font-medium">
+                                  {item.category}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Atom:Input + Atom:SearchIcon + Atom:ClearButton + Atom:KeycapKbd + FloatingPalette</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Fluid Motion Ready</span>
                   </div>
                 </div>
 
                 {/* ── MOLECULE 4: SEARCHABLE SELECT ── */}
-                <div id="mol-search-select" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-search-select" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      SearchableSelect molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Trigger + Universal Popover + Filter
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                          SearchableSelect
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Selection Popover
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Trigger + Filtered Popover + Universal Tokens
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium">
+                      Esc to close
                     </span>
                   </div>
 
@@ -1958,7 +2277,7 @@ module.exports = {
                       </div>
                       <motion.div
                         animate={{ rotate: isRoleOpen ? 180 : 0 }}
-                        transition={{ duration: 0.15 }}
+                        transition={scaled.motionConfig.spring}
                         style={{
                           borderRadius: `${scaled.scaledInnerRadius}px`,
                           backgroundColor: tokens.hoverBackplateTint,
@@ -1970,14 +2289,14 @@ module.exports = {
                       </motion.div>
                     </button>
 
-                    {/* Popover Dropdown adhering 100% to Universal Tokens */}
+                    {/* Popover Dropdown adhering 100% to Universal Tokens & Fluid Motion */}
                     <AnimatePresence>
                       {isRoleOpen && (
                         <motion.div
-                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
-                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          initial={scaled.motionConfig.popover.initial}
+                          animate={scaled.motionConfig.popover.animate}
+                          exit={scaled.motionConfig.popover.exit}
+                          transition={scaled.motionConfig.popover.transition}
                           style={{
                             marginTop: `${tokens.menuOffsetGap}px`,
                             borderRadius: `${scaled.scaledMenuRadius}px`,
@@ -2011,9 +2330,10 @@ module.exports = {
                               const isSelected = role === opt;
                               const isHovered = hoveredRole === opt;
                               return (
-                                <button
+                                <motion.button
                                   key={opt}
                                   type="button"
+                                  whileTap={{ scale: scaled.motionConfig.tapScale }}
                                   onMouseEnter={() => setHoveredRole(opt)}
                                   onMouseLeave={() => setHoveredRole(null)}
                                   onClick={() => {
@@ -2029,13 +2349,13 @@ module.exports = {
                                     padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
                                     transition: scaled.transitionStyle,
                                   }}
-                                  className="w-full text-left flex items-center justify-between font-normal cursor-pointer"
+                                  className="w-full text-left flex items-center justify-between font-normal cursor-pointer select-none"
                                 >
                                   <span>{opt}</span>
                                   {isSelected && (
                                     <Check className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
                                   )}
-                                </button>
+                                </motion.button>
                               );
                             })}
                           </div>
@@ -2043,19 +2363,37 @@ module.exports = {
                       )}
                     </AnimatePresence>
                   </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Atom:Button + Atom:KeyIcon + Atom:Chevron + FloatingMenu + OptionList</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Structured Menu Radius</span>
+                  </div>
                 </div>
 
-                {/* ── MOLECULE 5: MULTI-TAG DECK (UNIVERSAL DROPDOWN TOKEN APPLIED!) ── */}
-                <div id="mol-tag-deck" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── MOLECULE 5: MULTI-TAG DECK ── */}
+                <div id="mol-tag-deck" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                        TagDeck molecule
-                      </h2>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                          TagDeck
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Composable Deck
+                        </span>
+                      </div>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Removable tag chips with universal corner radius, border width, and black action defaults.
+                        Removable tag chips with calibrated container geometry, checkmark toggles, and spring animations.
                       </p>
                     </div>
+
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200">
+                      {tags.length} Active Tags
+                    </span>
                   </div>
 
                   <div ref={tagRef} className="relative space-y-1.5">
@@ -2085,7 +2423,7 @@ module.exports = {
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ duration: 0.15 }}
+                            transition={scaled.motionConfig.spring}
                             style={{
                               borderRadius: `${scaled.scaledRadius}px`,
                               fontSize: `${scaled.sublabelFontSize}px`,
@@ -2112,7 +2450,7 @@ module.exports = {
                       {/* Clean SaaS "+ Add tag" Trigger Button */}
                       <motion.button
                         type="button"
-                        whileTap={{ scale: 0.95 }}
+                        whileTap={{ scale: scaled.motionConfig.tapScale }}
                         onClick={() => setIsTagOpen((prev) => !prev)}
                         style={{
                           borderRadius: `${scaled.scaledRadius}px`,
@@ -2132,10 +2470,10 @@ module.exports = {
                     <AnimatePresence>
                       {isTagOpen && (
                         <motion.div
-                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
-                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          initial={scaled.motionConfig.popover.initial}
+                          animate={scaled.motionConfig.popover.animate}
+                          exit={scaled.motionConfig.popover.exit}
+                          transition={scaled.motionConfig.popover.transition}
                           style={{
                             marginTop: `${tokens.menuOffsetGap}px`,
                             borderRadius: `${scaled.scaledMenuRadius}px`,
@@ -2181,7 +2519,7 @@ module.exports = {
                                     fontSize: `${scaled.labelFontSize}px`,
                                     padding: `${Math.round(7 * scaled.scale)}px ${Math.round(10 * scaled.scale)}px`,
                                   }}
-                                  className="flex items-center justify-between cursor-pointer"
+                                  className="flex items-center justify-between cursor-pointer select-none"
                                 >
                                   <span className={isSelected ? "font-semibold" : "font-normal"}>
                                     {opt}
@@ -2207,17 +2545,37 @@ module.exports = {
                       )}
                     </AnimatePresence>
                   </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Container + TagChips + PlusTrigger + PopoverChecklist</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Pill Mode Protected</span>
+                  </div>
                 </div>
 
                 {/* ── MOLECULE 6: DATE RANGE PICKER ── */}
-                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-neutral-500" />
-                      DateRangePicker molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Trigger + Floating Presets Popover
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-neutral-500" />
+                          <span>DateRangePicker</span>
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Temporal Filter
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Trigger + Presets Matrix + Floating Popover
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium tabular-nums">
+                      {dateRangeString}
                     </span>
                   </div>
 
@@ -2251,7 +2609,7 @@ module.exports = {
                       </div>
                       <motion.div
                         animate={{ rotate: isDatePickerOpen ? 180 : 0 }}
-                        transition={{ duration: 0.15 }}
+                        transition={scaled.motionConfig.spring}
                         style={{
                           borderRadius: `${scaled.scaledInnerRadius}px`,
                           backgroundColor: tokens.hoverBackplateTint,
@@ -2263,14 +2621,14 @@ module.exports = {
                       </motion.div>
                     </button>
 
-                    {/* Floating Popover adhering 100% to universal tokens */}
+                    {/* Floating Popover adhering 100% to universal tokens & fluid motion */}
                     <AnimatePresence>
                       {isDatePickerOpen && (
                         <motion.div
-                          initial={{ opacity: 0, scale: 0.97, y: -4 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.97, y: -4 }}
-                          transition={{ duration: 0.15, ease: "easeOut" }}
+                          initial={scaled.motionConfig.popover.initial}
+                          animate={scaled.motionConfig.popover.animate}
+                          exit={scaled.motionConfig.popover.exit}
+                          transition={scaled.motionConfig.popover.transition}
                           style={{
                             marginTop: `${tokens.menuOffsetGap}px`,
                             borderRadius: `${scaled.scaledMenuRadius}px`,
@@ -2286,7 +2644,7 @@ module.exports = {
                             <span style={{ fontSize: `${scaled.sublabelFontSize - 1}px` }} className="text-neutral-400 font-semibold uppercase tracking-wider block">
                               Quick Presets
                             </span>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 relative">
                               {[
                                 { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
                                 { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
@@ -2304,16 +2662,25 @@ module.exports = {
                                     }}
                                     style={{
                                       borderRadius: `${scaled.scaledOptionRadius}px`,
-                                      backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
-                                      color: isSelected ? "#FFFFFF" : tokens.textIconColor,
                                       fontSize: `${scaled.sublabelFontSize}px`,
                                       padding: `${Math.round(6 * scaled.scale)}px ${Math.round(8 * scaled.scale)}px`,
                                     }}
-                                    className={`font-medium transition-colors cursor-pointer text-center select-none ${
-                                      isSelected ? "font-semibold shadow-xs" : "hover:text-black"
+                                    className={`font-medium cursor-pointer text-center select-none relative transition-colors ${
+                                      isSelected ? "text-white font-semibold" : "text-neutral-600 hover:text-black hover:bg-neutral-100"
                                     }`}
                                   >
-                                    {p.label}
+                                    {isSelected && (
+                                      <motion.div
+                                        layoutId="activeDatePresetPill"
+                                        transition={scaled.motionConfig.pillTransition}
+                                        style={{
+                                          borderRadius: `${scaled.scaledOptionRadius}px`,
+                                          backgroundColor: tokens.primaryButtonColor,
+                                        }}
+                                        className="absolute inset-0 -z-10 shadow-xs"
+                                      />
+                                    )}
+                                    <span className="relative z-10">{p.label}</span>
                                   </button>
                                 );
                               })}
@@ -2324,9 +2691,13 @@ module.exports = {
                             <div className="text-[11px] text-neutral-500 tabular-nums">
                               Selected: <span className="font-semibold text-neutral-900">{dateRangeString}</span>
                             </div>
-                            <button
+                            <motion.button
                               type="button"
-                              onClick={() => setIsDatePickerOpen(false)}
+                              whileTap={{ scale: scaled.motionConfig.tapScale }}
+                              onClick={() => {
+                                setIsDatePickerOpen(false);
+                                triggerToast(`Applied date filter: ${dateRangeString}`);
+                              }}
                               style={{
                                 borderRadius: `${scaled.scaledInnerRadius}px`,
                                 backgroundColor: tokens.primaryButtonColor,
@@ -2337,37 +2708,66 @@ module.exports = {
                               className="font-semibold cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors"
                             >
                               Apply Range
-                            </button>
+                            </motion.button>
                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Atom:Button + Atom:CalendarIcon + SlidingPresets + ActionFooter</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Sliding LayoutId Active</span>
                   </div>
                 </div>
 
                 {/* ══════════════════════════════════════════════════════════
                     CATEGORY 2: NAVIGATION & COMMANDS
                    ══════════════════════════════════════════════════════════ */}
-                <div className="w-full flex items-center justify-between pb-2 pt-4 mb-1 border-b border-neutral-200">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
-                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
-                      Category 2: Navigation &amp; Commands
+                <div id="category-section-cat2" className="w-full pt-6 space-y-2">
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                        02
+                      </div>
+                      <div>
+                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
+                          Navigation &amp; Wayfinding Commands
+                        </h2>
+                        <p className="text-[11px] text-neutral-500">
+                          Framer Motion segmented pill transitions, hierarchical wayfinding routes, and fluid pagination controls.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
+                      3 Production Molecules
                     </span>
                   </div>
-                  <span className="text-[11px] text-neutral-400 font-medium">
-                    3 Composed Molecules
-                  </span>
                 </div>
 
                 {/* ── MOLECULE 7: SEGMENTED CONTROL ── */}
-                <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      SegmentedControl molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Framer Motion layoutId sliding pill
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                          SegmentedControl
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Sliding Switcher
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Framer Motion layoutId sliding pill + Motion Physics binding
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium">
+                      Active: <strong className="text-neutral-900 capitalize">{segmentValue}</strong>
                     </span>
                   </div>
 
@@ -2392,10 +2792,14 @@ module.exports = {
                       ).map(({ key, label }) => {
                         const isSelected = segmentValue === key;
                         return (
-                          <button
+                          <motion.button
                             key={key}
                             type="button"
-                            onClick={() => setSegmentValue(key)}
+                            whileTap={{ scale: scaled.motionConfig.tapScale }}
+                            onClick={() => {
+                              setSegmentValue(key);
+                              triggerToast(`Selected plan billing: ${label}`);
+                            }}
                             style={{
                               borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
                               fontSize: `${scaled.sublabelFontSize}px`,
@@ -2408,7 +2812,7 @@ module.exports = {
                             {isSelected && (
                               <motion.div
                                 layoutId="activeSegmentPill"
-                                transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                                transition={scaled.motionConfig.pillTransition}
                                 style={{
                                   borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
                                   backgroundColor: tokens.primaryButtonColor,
@@ -2417,37 +2821,123 @@ module.exports = {
                               />
                             )}
                             {label}
-                          </button>
+                          </motion.button>
                         );
                       })}
                     </div>
                   </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">ContainerTrack + SlidingActivePill + SegmentButtons</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Fluid Physics Connected</span>
+                  </div>
                 </div>
 
                 {/* ── MOLECULE 8: BREADCRUMBS ── */}
-                <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <ChevronRight className="w-4 h-4 text-neutral-500" />
-                      Breadcrumbs wayfinding molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Hierarchical route + Chevrons
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                          <ChevronRight className="w-4 h-4 text-neutral-500" />
+                          <span>Breadcrumbs</span>
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Route Wayfinding
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Hierarchical route + Collapsed Overflow Popover + Chevrons
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium">
+                      4 Levels Deep
                     </span>
                   </div>
 
-                  <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1">
-                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
+                  <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1 select-none">
+                    <button
+                      type="button"
+                      onClick={() => triggerToast("Navigated to: Infrastructure Root")}
+                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 rounded-md transition-colors font-medium cursor-pointer"
+                    >
                       Infrastructure
-                    </span>
+                    </button>
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
-                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
-                      US-East Clusters
-                    </span>
+
+                    {/* Interactive Collapsed Overflow Menu */}
+                    <div ref={breadcrumbMenuRef} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setIsBreadcrumbMenuOpen((prev) => !prev)}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                        }}
+                        className="px-1.5 py-0.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors font-bold cursor-pointer"
+                        title="Show intermediate routes"
+                      >
+                        ...
+                      </button>
+
+                      <AnimatePresence>
+                        {isBreadcrumbMenuOpen && (
+                          <motion.div
+                            initial={scaled.motionConfig.popover.initial}
+                            animate={scaled.motionConfig.popover.animate}
+                            exit={scaled.motionConfig.popover.exit}
+                            transition={scaled.motionConfig.popover.transition}
+                            style={{
+                              borderRadius: `${scaled.scaledMenuRadius}px`,
+                              borderColor: tokens.universalBorderColor,
+                              borderWidth: `${tokens.borderWidth}px`,
+                              backgroundColor: tokens.universalFillColor,
+                              boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
+                              padding: "4px",
+                            }}
+                            className="absolute top-full left-0 mt-1 w-44 z-30 border space-y-0.5 text-left"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsBreadcrumbMenuOpen(false);
+                                triggerToast("Navigated to: AWS US-East Region");
+                              }}
+                              style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
+                              className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center justify-between cursor-pointer"
+                            >
+                              <span>US-East Clusters</span>
+                              <ChevronRight className="w-3 h-3 text-neutral-400" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsBreadcrumbMenuOpen(false);
+                                triggerToast("Navigated to: Production Cluster A");
+                              }}
+                              style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
+                              className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center justify-between cursor-pointer"
+                            >
+                              <span>Production Cluster A</span>
+                              <ChevronRight className="w-3 h-3 text-neutral-400" />
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
-                    <span className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer">
+                    <button
+                      type="button"
+                      onClick={() => triggerToast("Navigated to: Production Node-4")}
+                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 rounded-md transition-colors font-medium cursor-pointer"
+                    >
                       Production Node-4
-                    </span>
+                    </button>
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
                     <span
                       style={{
@@ -2455,22 +2945,43 @@ module.exports = {
                         backgroundColor: tokens.hoverBackplateTint,
                         color: tokens.textIconColor,
                       }}
-                      className="px-2 py-0.5 font-semibold"
+                      className="px-2.5 py-1 font-semibold flex items-center gap-1.5 shadow-2xs"
                     >
-                      Telemetry Metrics
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>Telemetry Metrics</span>
                     </span>
                   </nav>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Nav + WaypointItems + ChevronDelimiters + OverflowMenu + ActiveLeaf</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Live Overflow Menu</span>
+                  </div>
                 </div>
 
                 {/* ── MOLECULE 9: PAGINATION BAR ── */}
-                <div id="mol-pagination" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-pagination" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <ChevronRight className="w-4 h-4 text-neutral-500" />
-                      PaginationBar molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Summary + Custom Popover + Chevrons
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                          <ChevronRight className="w-4 h-4 text-neutral-500" />
+                          <span>PaginationBar</span>
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Data Navigation
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Summary + Custom Popover + Fluid Sliding Page Indicator
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium tabular-nums">
+                      Page {currentPage} of 15
                     </span>
                   </div>
 
@@ -2519,10 +3030,10 @@ module.exports = {
                         <AnimatePresence>
                           {isPageSizeOpen && (
                             <motion.div
-                              initial={{ opacity: 0, y: 4, scale: 0.96 }}
-                              animate={{ opacity: 1, y: 0, scale: 1 }}
-                              exit={{ opacity: 0, y: 4, scale: 0.96 }}
-                              transition={{ duration: 0.12 }}
+                              initial={scaled.motionConfig.popover.initial}
+                              animate={scaled.motionConfig.popover.animate}
+                              exit={scaled.motionConfig.popover.exit}
+                              transition={scaled.motionConfig.popover.transition}
                               style={{
                                 borderRadius: `${scaled.scaledMenuRadius}px`,
                                 borderColor: tokens.universalBorderColor,
@@ -2542,6 +3053,7 @@ module.exports = {
                                     onClick={() => {
                                       setPageSize(size);
                                       setIsPageSizeOpen(false);
+                                      triggerToast(`Page size set to ${size} rows`);
                                     }}
                                     style={{
                                       borderRadius: `${scaled.scaledOptionRadius}px`,
@@ -2563,8 +3075,9 @@ module.exports = {
                       </div>
 
                       {/* Previous Button */}
-                      <button
+                      <motion.button
                         type="button"
+                        whileTap={{ scale: scaled.motionConfig.tapScale }}
                         disabled={currentPage === 1}
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         style={{
@@ -2581,40 +3094,50 @@ module.exports = {
                       >
                         <ChevronLeft className="w-3.5 h-3.5" />
                         <span>Prev</span>
-                      </button>
+                      </motion.button>
 
-                      {/* Page Numbers */}
+                      {/* Page Numbers with Fluid Sliding Pill */}
                       <div className="flex items-center gap-1 tabular-nums">
                         {[1, 2, 3, 4, 15].map((pageNum, idx) => {
                           const isActive = currentPage === pageNum;
                           return (
                             <React.Fragment key={pageNum}>
                               {idx === 4 && <span className="text-neutral-400 px-1">...</span>}
-                              <button
+                              <motion.button
                                 type="button"
+                                whileTap={{ scale: scaled.motionConfig.tapScale }}
                                 onClick={() => setCurrentPage(pageNum)}
                                 style={{
                                   borderRadius: `${scaled.scaledInnerRadius}px`,
-                                  backgroundColor: isActive ? tokens.primaryButtonColor : "transparent",
                                   color: isActive ? "#FFFFFF" : tokens.textIconColor,
                                   width: `${Math.round(28 * scaled.scale)}px`,
                                   height: `${Math.round(28 * scaled.scale)}px`,
                                   fontSize: `${scaled.sublabelFontSize}px`,
                                 }}
-                                className={`flex items-center justify-center font-medium transition-colors cursor-pointer select-none ${
-                                  isActive ? "font-semibold shadow-xs" : "hover:bg-black/5"
-                                }`}
+                                className="font-semibold flex items-center justify-center cursor-pointer transition-colors relative select-none"
                               >
-                                {pageNum}
-                              </button>
+                                {isActive && (
+                                  <motion.div
+                                    layoutId="activePagePill"
+                                    transition={scaled.motionConfig.pillTransition}
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      backgroundColor: tokens.primaryButtonColor,
+                                    }}
+                                    className="absolute inset-0 -z-10 shadow-xs"
+                                  />
+                                )}
+                                <span className="relative z-10">{pageNum}</span>
+                              </motion.button>
                             </React.Fragment>
                           );
                         })}
                       </div>
 
                       {/* Next Button */}
-                      <button
+                      <motion.button
                         type="button"
+                        whileTap={{ scale: scaled.motionConfig.tapScale }}
                         disabled={currentPage === 15}
                         onClick={() => setCurrentPage((p) => Math.min(15, p + 1))}
                         style={{
@@ -2631,35 +3154,93 @@ module.exports = {
                       >
                         <span>Next</span>
                         <ChevronRight className="w-3.5 h-3.5" />
-                      </button>
+                      </motion.button>
                     </div>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">RecordSummary + PopoverSelector + SlidingPageNumbers + PrevNext</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Sliding Page Pill Active</span>
                   </div>
                 </div>
 
                 {/* ══════════════════════════════════════════════════════════
                     CATEGORY 3: DATA DISPLAY & ANALYTICS
                    ══════════════════════════════════════════════════════════ */}
-                <div className="w-full flex items-center justify-between pb-2 pt-4 mb-1 border-b border-neutral-200">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
-                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
-                      Category 3: Data Display &amp; Analytics
+                <div id="category-section-cat3" className="w-full pt-6 space-y-2">
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                        03
+                      </div>
+                      <div>
+                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
+                          Data Display &amp; Analytics Telemetry
+                        </h2>
+                        <p className="text-[11px] text-neutral-500">
+                          Real-time KPI metrics with time horizon switcher, live sparklines, and expandable tabular financial records.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
+                      2 Production Molecules
                     </span>
                   </div>
-                  <span className="text-[11px] text-neutral-400 font-medium">
-                    2 Composed Molecules
-                  </span>
                 </div>
 
                 {/* ── MOLECULE 10: METRIC STAT MOLECULE ── */}
-                <div id="mol-metric-stat" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-metric-stat" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      MetricStat molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Label + Value + TrendBadge
-                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                          MetricStat
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Telemetry KPI
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        KPI Counter + Horizon Switcher + Live Sparkline
+                      </span>
+                    </div>
+
+                    {/* Interactive Horizon Switcher */}
+                    <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
+                      {(["24h", "7d", "30d", "1y"] as const).map((h) => {
+                        const isSelected = metricHorizon === h;
+                        return (
+                          <button
+                            key={h}
+                            type="button"
+                            onClick={() => {
+                              setMetricHorizon(h);
+                              triggerToast(`Telemetry range set to ${h}`);
+                            }}
+                            className={`px-2 py-0.5 text-[11px] font-semibold cursor-pointer relative transition-colors ${
+                              isSelected ? "text-white" : "text-neutral-500 hover:text-neutral-900"
+                            }`}
+                          >
+                            {isSelected && (
+                              <motion.div
+                                layoutId="metricHorizonPill"
+                                transition={scaled.motionConfig.pillTransition}
+                                style={{
+                                  borderRadius: `${scaled.scaledInnerRadius}px`,
+                                  backgroundColor: tokens.primaryButtonColor,
+                                }}
+                                className="absolute inset-0 -z-10 shadow-xs"
+                              />
+                            )}
+                            <span className="relative z-10">{h}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   <div className="flex items-baseline justify-between pt-1">
@@ -2668,10 +3249,24 @@ module.exports = {
                         Net Revenue Run Rate
                       </span>
                       <div className="flex items-baseline gap-2 pt-0.5">
-                        <span style={{ fontSize: `${scaled.headingFontSize + 8}px` }} className="font-semibold text-neutral-900 tracking-tight tabular-nums">
-                          $148,200
-                        </span>
-                        <span
+                        <motion.span
+                          key={metricHorizon}
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={scaled.motionConfig.spring}
+                          style={{ fontSize: `${scaled.headingFontSize + 8}px` }}
+                          className="font-semibold text-neutral-900 tracking-tight tabular-nums"
+                        >
+                          {metricHorizon === "24h" && "$4,820"}
+                          {metricHorizon === "7d" && "$34,150"}
+                          {metricHorizon === "30d" && "$148,200"}
+                          {metricHorizon === "1y" && "$1,780,000"}
+                        </motion.span>
+                        <motion.span
+                          key={`delta-${metricHorizon}`}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={scaled.motionConfig.spring}
                           style={{
                             fontSize: `${scaled.sublabelFontSize}px`,
                             borderRadius: `${scaled.scaledRadius}px`,
@@ -2679,14 +3274,88 @@ module.exports = {
                           className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 font-medium inline-flex items-center gap-1 select-none tabular-nums"
                         >
                           <TrendingUp className="w-3 h-3 text-emerald-600" strokeWidth={2.5} />
-                          <span>+18.4%</span>
-                        </span>
+                          <span>
+                            {metricHorizon === "24h" && "+8.2%"}
+                            {metricHorizon === "7d" && "+12.6%"}
+                            {metricHorizon === "30d" && "+18.4%"}
+                            {metricHorizon === "1y" && "+34.2%"}
+                          </span>
+                        </motion.span>
                       </div>
                     </div>
 
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      vs. previous 30 days
+                      vs. previous {metricHorizon} period
                     </span>
+                  </div>
+
+                  {/* Interactive Mini Sparkline */}
+                  <div className="pt-2">
+                    <div className="flex items-center justify-between text-[10px] text-neutral-400 font-medium pb-1">
+                      <span>Telemetry Trajectory</span>
+                      <span>Hover node for point revenue</span>
+                    </div>
+                    <div className="h-16 w-full relative flex items-center">
+                      <svg className="w-full h-full overflow-visible" viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="metricGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#10B981" stopOpacity="0.25" />
+                            <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                          </linearGradient>
+                        </defs>
+                        <path
+                          d="M 0,50 Q 50,45 100,35 T 200,20 T 300,8 L 300,60 L 0,60 Z"
+                          fill="url(#metricGrad)"
+                        />
+                        <path
+                          d="M 0,50 Q 50,45 100,35 T 200,20 T 300,8"
+                          fill="none"
+                          stroke="#10B981"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                        />
+                        {[
+                          { cx: 0, cy: 50, val: "$120k", date: "Day 1" },
+                          { cx: 75, cy: 40, val: "$128k", date: "Day 8" },
+                          { cx: 150, cy: 30, val: "$136k", date: "Day 15" },
+                          { cx: 225, cy: 18, val: "$142k", date: "Day 22" },
+                          { cx: 300, cy: 8, val: "$148k", date: "Today" },
+                        ].map((pt, idx) => (
+                          <g key={idx} className="cursor-pointer">
+                            <circle
+                              cx={pt.cx}
+                              cy={pt.cy}
+                              r={hoveredSparkPoint === idx ? 5 : 3.5}
+                              fill="#10B981"
+                              stroke="#FFFFFF"
+                              strokeWidth="2"
+                              onMouseEnter={() => setHoveredSparkPoint(idx)}
+                              onMouseLeave={() => setHoveredSparkPoint(null)}
+                              className="transition-all"
+                            />
+                            {hoveredSparkPoint === idx && (
+                              <text
+                                x={Math.min(270, Math.max(30, pt.cx))}
+                                y={pt.cy - 10}
+                                textAnchor="middle"
+                                className="text-[10px] font-bold fill-neutral-900"
+                              >
+                                {pt.val} ({pt.date})
+                              </text>
+                            )}
+                          </g>
+                        ))}
+                      </svg>
+                    </div>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">MetricLabel + HorizonSwitch + ValueCounter + TrendBadge + Sparkline</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Interactive Telemetry</span>
                   </div>
                 </div>
 
@@ -2694,16 +3363,21 @@ module.exports = {
                 <div id="mol-table-row" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                        <DollarSign className="w-4 h-4 text-neutral-500" />
-                        DataTableRow molecule
-                      </h2>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-neutral-500" />
+                          <span>DataTableRow</span>
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Expandable Record
+                        </span>
+                      </div>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Composed tabular record with multi-select checkbox, status pill, tabular currency, and contextual actions popover.
+                        Multi-select checkbox, status pill, tabular figures, and click-to-expand telemetry details.
                       </p>
                     </div>
                     <span className="text-[11px] bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-md border border-neutral-200 font-medium">
-                      tabular-nums
+                      Click row to expand
                     </span>
                   </div>
 
@@ -2728,158 +3402,241 @@ module.exports = {
                       </thead>
                       <tbody className="divide-y divide-neutral-100 tabular-nums">
                         {[
-                          { id: "INV-2627-101", plan: "Enterprise Dedicated", usage: "1,840 GB", delta: "+14.8%", amount: "$ 42,500.00", status: "Settled" },
-                          { id: "INV-2627-102", plan: "Pro Scale Cluster", usage: "920 GB", delta: "-3.2%", amount: "$ 19,850.00", status: "Auditing" },
+                          { id: "INV-2627-101", plan: "Enterprise Dedicated", usage: "1,840 GB", delta: "+14.8%", amount: "$ 42,500.00", status: "Settled", region: "AWS us-east-1", node: "cluster-primary-a", latency: "14ms" },
+                          { id: "INV-2627-102", plan: "Pro Scale Cluster", usage: "920 GB", delta: "-3.2%", amount: "$ 19,850.00", status: "Auditing", region: "GCP us-central1", node: "worker-pool-8", latency: "22ms" },
                         ].map((row) => {
                           const isRowSelected = selectedTableRows.includes(row.id);
+                          const isExpanded = expandedRowId === row.id;
                           return (
-                            <tr key={row.id} className="hover:bg-neutral-50/70 transition-colors">
-                              <td className="w-10 py-2.5 px-3 text-center">
-                                <div
-                                  onClick={() => {
-                                    setSelectedTableRows((prev) =>
-                                      prev.includes(row.id) ? prev.filter((id) => id !== row.id) : [...prev, row.id]
-                                    );
-                                  }}
-                                  style={{
-                                    borderRadius: `${scaled.scaledCheckboxRadius}px`,
-                                    backgroundColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
-                                    borderColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
-                                    borderWidth: `${tokens.borderWidth}px`,
-                                  }}
-                                  className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto transition-colors"
-                                >
-                                  {isRowSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
-                                </div>
-                              </td>
-                              <td className="py-2.5 px-3.5 font-medium text-neutral-900">{row.id}</td>
-                              <td className="py-2.5 px-3.5 text-neutral-600 font-normal">{row.plan}</td>
-                              <td className="py-2.5 px-3.5 text-right text-neutral-700 font-medium">{row.usage}</td>
-                              <td className={`py-2.5 px-3.5 text-right font-semibold ${row.delta.startsWith("+") ? "text-emerald-600" : "text-rose-600"}`}>
-                                <span className="inline-flex items-center gap-1 justify-end">
-                                  {row.delta.startsWith("+") && <TrendingUp className="w-3 h-3" />}
-                                  {row.delta}
-                                </span>
-                              </td>
-                              <td className="py-2.5 px-3.5 text-right font-bold text-neutral-900">{row.amount}</td>
-                              <td className="py-2.5 px-3.5 text-center">
-                                <span
-                                  style={{ borderRadius: `${scaled.scaledRadius}px` }}
-                                  className={`px-2 py-0.5 text-[10px] font-semibold border ${
-                                    row.status === "Settled"
-                                      ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                                      : "bg-amber-50 text-amber-700 border-amber-200"
-                                  }`}
-                                >
-                                  {row.status}
-                                </span>
-                              </td>
-                              <td className="w-12 py-2.5 px-3 text-center relative">
-                                <div ref={row.id === "INV-2627-101" ? rowActionsRef : undefined} className="relative inline-block text-right">
-                                  <button
-                                    type="button"
-                                    onClick={() => setIsRowActionsOpen((prev) => !prev)}
-                                    style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                                      padding: "4px 6px",
+                            <React.Fragment key={row.id}>
+                              <tr
+                                onClick={() => setExpandedRowId((prev) => (prev === row.id ? null : row.id))}
+                                className={`hover:bg-neutral-50/80 transition-colors cursor-pointer select-none ${
+                                  isExpanded ? "bg-neutral-50/50" : ""
+                                }`}
+                              >
+                                <td className="w-10 py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
+                                  <div
+                                    onClick={() => {
+                                      setSelectedTableRows((prev) =>
+                                        prev.includes(row.id) ? prev.filter((id) => id !== row.id) : [...prev, row.id]
+                                      );
                                     }}
-                                    className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                                    style={{
+                                      borderRadius: `${scaled.scaledCheckboxRadius}px`,
+                                      backgroundColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
+                                      borderColor: isRowSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                    }}
+                                    className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto transition-colors"
                                   >
-                                    <MoreHorizontal className="w-4 h-4" />
-                                  </button>
+                                    {isRowSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                                  </div>
+                                </td>
+                                <td className="py-2.5 px-3.5 font-medium text-neutral-900 flex items-center gap-1.5">
+                                  <span>{row.id}</span>
+                                  <ChevronDown className={`w-3 h-3 text-neutral-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                                </td>
+                                <td className="py-2.5 px-3.5 text-neutral-600 font-normal">{row.plan}</td>
+                                <td className="py-2.5 px-3.5 text-right text-neutral-700 font-medium">{row.usage}</td>
+                                <td className={`py-2.5 px-3.5 text-right font-semibold ${row.delta.startsWith("+") ? "text-emerald-600" : "text-rose-600"}`}>
+                                  <span className="inline-flex items-center gap-1 justify-end">
+                                    {row.delta.startsWith("+") && <TrendingUp className="w-3 h-3" />}
+                                    {row.delta}
+                                  </span>
+                                </td>
+                                <td className="py-2.5 px-3.5 text-right font-bold text-neutral-900">{row.amount}</td>
+                                <td className="py-2.5 px-3.5 text-center">
+                                  <span
+                                    style={{ borderRadius: `${scaled.scaledRadius}px` }}
+                                    className={`px-2 py-0.5 text-[10px] font-semibold border ${
+                                      row.status === "Settled"
+                                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                        : "bg-amber-50 text-amber-700 border-amber-200"
+                                    }`}
+                                  >
+                                    {row.status}
+                                  </span>
+                                </td>
+                                <td className="w-12 py-2.5 px-3 text-center relative" onClick={(e) => e.stopPropagation()}>
+                                  <div ref={row.id === "INV-2627-101" ? rowActionsRef : undefined} className="relative inline-block text-right">
+                                    <button
+                                      type="button"
+                                      onClick={() => setIsRowActionsOpen((prev) => !prev)}
+                                      style={{
+                                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                                        padding: "4px 6px",
+                                      }}
+                                      className="text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                                    >
+                                      <MoreHorizontal className="w-4 h-4" />
+                                    </button>
 
-                                  <AnimatePresence>
-                                    {isRowActionsOpen && row.id === "INV-2627-101" && (
+                                    <AnimatePresence>
+                                      {isRowActionsOpen && row.id === "INV-2627-101" && (
+                                        <motion.div
+                                          initial={scaled.motionConfig.popover.initial}
+                                          animate={scaled.motionConfig.popover.animate}
+                                          exit={scaled.motionConfig.popover.exit}
+                                          transition={scaled.motionConfig.popover.transition}
+                                          style={{
+                                            borderRadius: `${scaled.scaledMenuRadius}px`,
+                                            borderColor: tokens.universalBorderColor,
+                                            borderWidth: `${tokens.borderWidth}px`,
+                                            backgroundColor: tokens.universalFillColor,
+                                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
+                                          }}
+                                          className="absolute right-0 top-full mt-1 w-44 p-1 z-30 border space-y-0.5 text-left"
+                                        >
+                                          <button
+                                            type="button"
+                                            onClick={() => { setIsRowActionsOpen(false); triggerToast("Opening batch invoice details"); }}
+                                            style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
+                                            className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
+                                          >
+                                            <FileText className="w-3.5 h-3.5 text-neutral-400" />
+                                            <span>View Invoice</span>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => { setIsRowActionsOpen(false); triggerToast("Downloading PDF audit receipt"); }}
+                                            style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
+                                            className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
+                                          >
+                                            <Download className="w-3.5 h-3.5 text-neutral-400" />
+                                            <span>Download Audit PDF</span>
+                                          </button>
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </div>
+                                </td>
+                              </tr>
+
+                              {/* Fluid Animated Expandable Detail Row */}
+                              <AnimatePresence>
+                                {isExpanded && (
+                                  <tr>
+                                    <td colSpan={8} className="p-0 border-b border-neutral-200">
                                       <motion.div
-                                        initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                                        transition={{ duration: 0.12 }}
-                                        style={{
-                                          borderRadius: `${scaled.scaledMenuRadius}px`,
-                                          borderColor: tokens.universalBorderColor,
-                                          borderWidth: `${tokens.borderWidth}px`,
-                                          backgroundColor: tokens.universalFillColor,
-                                          boxShadow: "0 10px 25px -4px rgba(0,0,0,0.12)",
-                                        }}
-                                        className="absolute right-0 top-full mt-1 w-44 p-1 z-30 border space-y-0.5 text-left"
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: "auto" }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        transition={scaled.motionConfig.spring}
+                                        className="bg-neutral-50/60 p-3.5 space-y-2 border-t border-neutral-100 overflow-hidden text-xs"
                                       >
-                                        <button
-                                          type="button"
-                                          onClick={() => { setIsRowActionsOpen(false); triggerToast("Opening batch invoice details"); }}
-                                          style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
-                                          className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
-                                        >
-                                          <FileText className="w-3.5 h-3.5 text-neutral-400" />
-                                          <span>View Invoice</span>
-                                        </button>
-                                        <button
-                                          type="button"
-                                          onClick={() => { setIsRowActionsOpen(false); triggerToast("Downloading PDF audit receipt"); }}
-                                          style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
-                                          className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center gap-2 cursor-pointer"
-                                        >
-                                          <Download className="w-3.5 h-3.5 text-neutral-400" />
-                                          <span>Download Audit PDF</span>
-                                        </button>
+                                        <div className="flex items-center justify-between text-neutral-500 font-medium">
+                                          <span>Expanded Telemetry Payload</span>
+                                          <span className="font-mono text-[10px]">SHA-256: 8f9a2b10cd4e...</span>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                          <div className="bg-white p-2.5 rounded-lg border border-neutral-200">
+                                            <div className="text-[10px] text-neutral-400 font-semibold uppercase">Cluster Region</div>
+                                            <div className="font-semibold text-neutral-800">{row.region}</div>
+                                          </div>
+                                          <div className="bg-white p-2.5 rounded-lg border border-neutral-200">
+                                            <div className="text-[10px] text-neutral-400 font-semibold uppercase">Routing Target</div>
+                                            <div className="font-semibold text-neutral-800">{row.node}</div>
+                                          </div>
+                                          <div className="bg-white p-2.5 rounded-lg border border-neutral-200">
+                                            <div className="text-[10px] text-neutral-400 font-semibold uppercase">Roundtrip Latency</div>
+                                            <div className="font-semibold text-emerald-600">{row.latency}</div>
+                                          </div>
+                                        </div>
                                       </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </div>
-                              </td>
-                            </tr>
+                                    </td>
+                                  </tr>
+                                )}
+                              </AnimatePresence>
+                            </React.Fragment>
                           );
                         })}
                       </tbody>
                     </table>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">TableHead + TableRow + Checkbox + StatusPill + ActionPopover + ExpandableDrawer</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Row Expansion Active</span>
                   </div>
                 </div>
 
                 {/* ══════════════════════════════════════════════════════════
                     CATEGORY 4: FEEDBACK & OVERLAYS
                    ══════════════════════════════════════════════════════════ */}
-                <div className="w-full flex items-center justify-between pb-2 pt-4 mb-1 border-b border-neutral-200">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-neutral-900" />
-                    <span className="text-xs font-bold text-neutral-900 uppercase tracking-wider">
-                      Category 4: Feedback &amp; Overlays
+                <div id="category-section-cat4" className="w-full pt-6 space-y-2">
+                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                        04
+                      </div>
+                      <div>
+                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
+                          Feedback &amp; Contextual Overlays
+                        </h2>
+                        <p className="text-[11px] text-neutral-500">
+                          Multi-variant semantic alert callouts, zero-data empty state triggers, and contextual hover popover tooltips.
+                        </p>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
+                      3 Production Molecules
                     </span>
                   </div>
-                  <span className="text-[11px] text-neutral-400 font-medium">
-                    3 Composed Molecules
-                  </span>
                 </div>
 
-                {/* ── MOLECULE 11: ALERT CALLOUT (SEMANTIC FEEDBACK BANNER) ── */}
-                <div id="mol-alert-callout" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── MOLECULE 12: ALERT CALLOUT (SEMANTIC FEEDBACK BANNER) ── */}
+                <div id="mol-alert-callout" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 text-neutral-500" />
-                      AlertCallout molecule
-                    </h2>
-                    <div className="flex items-center gap-1">
-                      {(["info", "warning", "success", "critical"] as const).map((v) => (
-                        <button
-                          key={v}
-                          type="button"
-                          onClick={() => {
-                            setAlertVariant(v);
-                            setIsAlertDismissed(false);
-                          }}
-                          style={{
-                            borderRadius: `${scaled.scaledInnerRadius}px`,
-                            backgroundColor: alertVariant === v ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
-                            color: alertVariant === v ? "#FFFFFF" : tokens.textIconColor,
-                            fontSize: `${scaled.sublabelFontSize - 1}px`,
-                            padding: "2px 8px",
-                          }}
-                          className={`capitalize font-medium cursor-pointer transition-colors ${
-                            alertVariant === v ? "font-semibold shadow-2xs" : ""
-                          }`}
-                        >
-                          {v}
-                        </button>
-                      ))}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4 text-neutral-500" />
+                          <span>AlertCallout</span>
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Semantic Alert
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Icon + Severity Heading + Body Copy + Dismiss Action
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
+                      {(["info", "warning", "success", "critical"] as const).map((v) => {
+                        const isSelected = alertVariant === v;
+                        return (
+                          <button
+                            key={v}
+                            type="button"
+                            onClick={() => {
+                              setAlertVariant(v);
+                              setIsAlertDismissed(false);
+                            }}
+                            className={`px-2 py-0.5 text-[11px] capitalize font-medium cursor-pointer relative transition-colors ${
+                              isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900"
+                            }`}
+                          >
+                            {isSelected && (
+                              <motion.div
+                                layoutId="activeAlertVariant"
+                                transition={scaled.motionConfig.pillTransition}
+                                style={{
+                                  borderRadius: `${scaled.scaledInnerRadius}px`,
+                                  backgroundColor: tokens.primaryButtonColor,
+                                }}
+                                className="absolute inset-0 -z-10 shadow-xs"
+                              />
+                            )}
+                            <span className="relative z-10">{v}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
@@ -2887,10 +3644,10 @@ module.exports = {
                     {!isAlertDismissed ? (
                       <motion.div
                         key={alertVariant}
-                        initial={{ opacity: 0, y: 4 }}
+                        initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.15 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={scaled.motionConfig.spring}
                         style={{
                           borderRadius: `${scaled.scaledMenuRadius}px`,
                           borderWidth: `${tokens.borderWidth}px`,
@@ -2938,6 +3695,7 @@ module.exports = {
                           <div className="pt-1">
                             <button
                               type="button"
+                              onClick={() => triggerToast("Opening audit logs...")}
                               style={{
                                 fontSize: `${scaled.sublabelFontSize}px`,
                                 color: tokens.textIconColor,
@@ -2951,7 +3709,10 @@ module.exports = {
 
                         <button
                           type="button"
-                          onClick={() => setIsAlertDismissed(true)}
+                          onClick={() => {
+                            setIsAlertDismissed(true);
+                            triggerToast("Alert dismissed");
+                          }}
                           style={{
                             borderRadius: `${scaled.scaledInnerRadius}px`,
                             padding: `${Math.round(4 * scaled.scale)}px`,
@@ -2974,17 +3735,37 @@ module.exports = {
                       </div>
                     )}
                   </AnimatePresence>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">Icon + SeverityHeading + BodyCopy + ActionLink + DismissTrigger</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Variant Switcher Active</span>
+                  </div>
                 </div>
 
-                {/* ── MOLECULE 12: EMPTY STATE CARD (ZERO-DATA FALLBACK) ── */}
-                <div id="mol-empty-state" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                {/* ── MOLECULE 13: EMPTY STATE CARD (ZERO-DATA FALLBACK) ── */}
+                <div id="mol-empty-state" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <Inbox className="w-4 h-4 text-neutral-500" />
-                      EmptyStateCard molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Zero-data fallback + Action CTA
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                          <Inbox className="w-4 h-4 text-neutral-500" />
+                          <span>EmptyStateCard</span>
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Zero-State
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Zero-data fallback illustration + Action CTAs
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium">
+                      Fallback Template
                     </span>
                   </div>
 
@@ -2999,7 +3780,9 @@ module.exports = {
                     }}
                     className="border border-dashed text-center flex flex-col items-center justify-center space-y-3"
                   >
-                    <div
+                    <motion.div
+                      whileHover={{ y: -4, scale: 1.05 }}
+                      transition={scaled.motionConfig.spring}
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.hoverBackplateTint,
@@ -3008,23 +3791,25 @@ module.exports = {
                         width: `${Math.round(48 * scaled.scale)}px`,
                         height: `${Math.round(48 * scaled.scale)}px`,
                       }}
-                      className="flex items-center justify-center border shadow-2xs"
+                      className="flex items-center justify-center border shadow-2xs cursor-pointer"
                     >
                       <Inbox className="w-5 h-5 text-neutral-500" strokeWidth={1.8} />
-                    </div>
+                    </motion.div>
 
                     <div className="space-y-1 max-w-sm">
                       <h3 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-bold text-neutral-900">
-                        No active requisitions found
+                        No active telemetry records found
                       </h3>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed font-normal">
-                        No candidates or open positions matched your current query criteria. Try clearing active filters or create a new job profile.
+                        No clusters or database replications matched your current query criteria. Try resetting query parameters or create a new cluster.
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 pt-2">
-                      <button
+                      <motion.button
                         type="button"
+                        whileTap={{ scale: scaled.motionConfig.tapScale }}
+                        onClick={() => triggerToast("Initializing new cluster registration...")}
                         style={{
                           borderRadius: `${scaled.scaledInnerRadius}px`,
                           backgroundColor: tokens.primaryButtonColor,
@@ -3037,10 +3822,12 @@ module.exports = {
                         className="font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs hover:bg-neutral-800 transition-colors select-none"
                       >
                         <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
-                        <span>Create New Job</span>
-                      </button>
-                      <button
+                        <span>Register Cluster</span>
+                      </motion.button>
+                      <motion.button
                         type="button"
+                        whileTap={{ scale: scaled.motionConfig.tapScale }}
+                        onClick={() => triggerToast("Cleared active filters")}
                         style={{
                           borderRadius: `${scaled.scaledInnerRadius}px`,
                           borderColor: tokens.universalBorderColor,
@@ -3055,20 +3842,40 @@ module.exports = {
                         className="font-semibold border hover:bg-neutral-50 transition-colors cursor-pointer select-none"
                       >
                         Clear All Filters
-                      </button>
+                      </motion.button>
                     </div>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">CenteredIcon + HeadingTitle + BodyText + PrimaryAction + SecondaryAction</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Zero-State Ready</span>
                   </div>
                 </div>
 
                 {/* ── MOLECULE 14: TOOLTIP POPOVER ── */}
-                <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                      <Info className="w-4 h-4 text-neutral-500" />
-                      Tooltip popover molecule
-                    </h2>
-                    <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
-                      Trigger + Contextual Card
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                          <Info className="w-4 h-4 text-neutral-500" />
+                          <span>TooltipPopover</span>
+                        </h2>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 font-semibold border border-neutral-200">
+                          Hover Overlay
+                        </span>
+                      </div>
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 font-medium">
+                        Trigger + Contextual Floating Card + Arrow Caret
+                      </span>
+                    </div>
+
+                    <span className="text-[11px] text-neutral-400 font-medium">
+                      Hover ⓘ below
                     </span>
                   </div>
 
@@ -3077,8 +3884,10 @@ module.exports = {
                       <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-medium text-neutral-700">
                         p99 Replication Latency
                       </span>
-                      <button
+                      <motion.button
                         type="button"
+                        whileHover={{ scale: 1.15 }}
+                        whileTap={{ scale: scaled.motionConfig.tapScale }}
                         onMouseEnter={() => setIsTooltipOpen(true)}
                         onMouseLeave={() => setIsTooltipOpen(false)}
                         onClick={() => setIsTooltipOpen((prev) => !prev)}
@@ -3090,16 +3899,16 @@ module.exports = {
                         className="w-4 h-4 flex items-center justify-center text-[11px] font-bold cursor-pointer hover:bg-neutral-200 transition-colors"
                       >
                         ⓘ
-                      </button>
+                      </motion.button>
 
                       {/* Floating Tooltip Card */}
                       <AnimatePresence>
                         {isTooltipOpen && (
                           <motion.div
-                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
-                            transition={{ duration: 0.12 }}
+                            initial={scaled.motionConfig.popover.initial}
+                            animate={scaled.motionConfig.popover.animate}
+                            exit={scaled.motionConfig.popover.exit}
+                            transition={scaled.motionConfig.popover.transition}
                             style={{
                               borderRadius: `${scaled.scaledInnerRadius}px`,
                               borderColor: tokens.universalBorderColor,
@@ -3116,6 +3925,15 @@ module.exports = {
                         )}
                       </AnimatePresence>
                     </div>
+                  </div>
+
+                  {/* Architecture Anatomy Footer */}
+                  <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] text-neutral-400">
+                    <span className="flex items-center gap-1 font-mono">
+                      <span>Anatomy:</span>
+                      <strong className="text-neutral-600">TriggerTarget + Caret + FloatingCard + BodyText</strong>
+                    </span>
+                    <span className="font-semibold text-neutral-500">Fluid Popover Ready</span>
                   </div>
                 </div>
               </>

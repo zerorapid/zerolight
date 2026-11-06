@@ -33,6 +33,24 @@ export const DEFAULT_TOKENS: ZeroLightTokens = {
   motionPhysics: "damped",
 };
 
+export interface MotionConfig {
+  physics: MotionPhysicsPreset;
+  spring: {
+    type: "spring";
+    stiffness: number;
+    damping: number;
+    mass?: number;
+  };
+  popover: {
+    initial: { opacity: number; scale: number; y: number };
+    animate: { opacity: number; scale: number; y: number };
+    exit: { opacity: number; scale: number; y: number };
+    transition: any;
+  };
+  pillTransition: any;
+  tapScale: number;
+}
+
 export interface ScaledTokens {
   scale: number;
   scaledHeight: number;
@@ -55,6 +73,7 @@ export interface ScaledTokens {
   effectiveInputFill: string;
   conjoinedDivider: string;
   focusHalo: string;
+  motionConfig: MotionConfig;
 }
 
 export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
@@ -126,6 +145,51 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
   // Inset focus ring to guarantee ZERO cumulative layout shift
   const focusHalo = `inset 0 0 0 2px ${tokens.primaryButtonColor}`;
 
+  const getMotionConfig = (): MotionConfig => {
+    switch (tokens.motionPhysics) {
+      case "elastic":
+        return {
+          physics: "elastic",
+          spring: { type: "spring", stiffness: 460, damping: 20, mass: 0.8 },
+          popover: {
+            initial: { opacity: 0, scale: 0.93, y: -8 },
+            animate: { opacity: 1, scale: 1, y: 0 },
+            exit: { opacity: 0, scale: 0.93, y: -8 },
+            transition: { type: "spring", stiffness: 460, damping: 22 },
+          },
+          pillTransition: { type: "spring", stiffness: 460, damping: 22 },
+          tapScale: 0.93,
+        };
+      case "linear":
+        return {
+          physics: "linear",
+          spring: { type: "spring", stiffness: 500, damping: 45, mass: 1 },
+          popover: {
+            initial: { opacity: 0, scale: 0.98, y: -2 },
+            animate: { opacity: 1, scale: 1, y: 0 },
+            exit: { opacity: 0, scale: 0.98, y: -2 },
+            transition: { duration: 0.12, ease: "linear" },
+          },
+          pillTransition: { duration: 0.12, ease: "linear" },
+          tapScale: 0.98,
+        };
+      case "damped":
+      default:
+        return {
+          physics: "damped",
+          spring: { type: "spring", stiffness: 380, damping: 28, mass: 0.9 },
+          popover: {
+            initial: { opacity: 0, scale: 0.96, y: -4 },
+            animate: { opacity: 1, scale: 1, y: 0 },
+            exit: { opacity: 0, scale: 0.96, y: -4 },
+            transition: { type: "spring", stiffness: 380, damping: 28 },
+          },
+          pillTransition: { type: "spring", stiffness: 380, damping: 28 },
+          tapScale: 0.96,
+        };
+    }
+  };
+
   return {
     scale,
     scaledHeight: Math.round(tokens.heightDensity * scale),
@@ -148,5 +212,6 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     effectiveInputFill,
     conjoinedDivider,
     focusHalo,
+    motionConfig: getMotionConfig(),
   };
 }
