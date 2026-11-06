@@ -192,13 +192,20 @@ export default function IntentWorkbenchPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <Link
+              href="/saas-dashboard"
+              className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-white text-black hover:bg-neutral-200 transition flex items-center gap-1.5 shadow-sm"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+              <span>Live SaaS App →</span>
+            </Link>
             <Link
               href="/docs/atoms"
-              className="text-xs font-mono px-3 py-1.5 rounded border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 transition text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5"
+              className="text-xs px-3 py-1.5 rounded-lg border border-neutral-700 bg-neutral-900 hover:bg-neutral-800 transition text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              <span>Atomic Lab Docs →</span>
+              <span>Design Studio →</span>
             </Link>
             <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-neutral-400 bg-neutral-900/80 border border-neutral-800 px-3 py-1 rounded">
               <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
