@@ -517,22 +517,22 @@ module.exports = {
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">6</span>
                     </div>
                     <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-form-field" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-form-field" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>FormField</span>
                       </a>
-                      <a href="#mol-input-group" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-input-group" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>InputGroup</span>
                       </a>
-                      <a href="#mol-search-bar" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-search-bar" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>SearchBar</span>
                       </a>
-                      <a href="#mol-search-select" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-search-select" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>SearchableSelect</span>
                       </a>
-                      <a href="#mol-tag-deck" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-tag-deck" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>TagDeck</span>
                       </a>
-                      <a href="#mol-date-picker" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-date-picker" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>DateRangePicker</span>
                       </a>
                     </div>
@@ -548,13 +548,13 @@ module.exports = {
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
                     </div>
                     <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-segmented" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-segmented" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>SegmentedControl</span>
                       </a>
-                      <a href="#mol-breadcrumbs" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-breadcrumbs" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>Breadcrumbs</span>
                       </a>
-                      <a href="#mol-pagination" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-pagination" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>PaginationBar</span>
                       </a>
                     </div>
@@ -570,10 +570,10 @@ module.exports = {
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">2</span>
                     </div>
                     <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-metric-stat" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-metric-stat" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>MetricStat</span>
                       </a>
-                      <a href="#mol-table-row" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-table-row" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>DataTableRow</span>
                       </a>
                     </div>
@@ -589,13 +589,13 @@ module.exports = {
                       <span className="text-[10px] font-semibold text-neutral-400 bg-neutral-100 px-1.5 py-0.5 rounded-full">3</span>
                     </div>
                     <div className="space-y-0.5 pl-2 border-l-2 border-neutral-100 ml-3">
-                      <a href="#mol-alert-callout" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-alert-callout" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>AlertCallout</span>
                       </a>
-                      <a href="#mol-empty-state" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-empty-state" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>EmptyStateCard</span>
                       </a>
-                      <a href="#mol-tooltip" className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-md flex items-center justify-between transition-colors">
+                      <a href="#mol-tooltip" style={{ borderRadius: `${scaled.scaledInnerRadius}px` }} className="px-2.5 py-1 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 flex items-center justify-between transition-colors">
                         <span>TooltipPopover</span>
                       </a>
                     </div>
@@ -1824,29 +1824,38 @@ module.exports = {
                 {/* ══════════════════════════════════════════════════════════
                     CATEGORY 1: FORMS & DATA ENTRY
                    ══════════════════════════════════════════════════════════ */}
-                <div id="category-section-cat1" className="w-full pt-4 space-y-2">
-                  <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
-                    <div className="flex items-center gap-2.5">
-                      <div
-                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                        className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
-                      >
-                        01
-                      </div>
-                      <div>
-                        <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
-                          Forms &amp; Parameter Entry
-                        </h2>
-                        <p className="text-[11px] text-neutral-500">
-                          Validated inputs, conjoined action groups, searchable select panels, and dynamic tag decks.
-                        </p>
+                {(activeCategoryFilter === "all" || activeCategoryFilter === "cat1") && (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 12 }}
+                    transition={scaled.motionConfig.spring}
+                    className="space-y-4"
+                  >
+                    <div id="category-section-cat1" className="w-full pt-4 space-y-2">
+                      <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
+                        <div className="flex items-center gap-2.5">
+                          <div
+                            style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                            className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-xs shadow-xs"
+                          >
+                            01
+                          </div>
+                          <div>
+                            <h2 className="text-sm font-bold text-neutral-900 uppercase tracking-wider">
+                              Forms &amp; Parameter Entry
+                            </h2>
+                            <p className="text-[11px] text-neutral-500">
+                              Validated inputs, conjoined action groups, searchable select panels, and dynamic tag decks.
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
+                          6 Production Molecules
+                        </span>
                       </div>
                     </div>
-                    <span className="text-[11px] font-semibold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2.5 py-0.5 rounded-full">
-                      6 Production Molecules
-                    </span>
-                  </div>
-                </div>
 
                 {/* ── MOLECULE 1: FORM FIELD ── */}
                 <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-3.5">
@@ -1913,8 +1922,19 @@ module.exports = {
                         type="email"
                         value={textInput}
                         onFocus={() => setIsInputFocused(true)}
-                        onBlur={() => setIsInputFocused(false)}
-                        onChange={(e) => setTextInput(e.target.value)}
+                        onBlur={() => {
+                          setIsInputFocused(false);
+                          if (textInput.length > 0 && (!textInput.includes("@") || !textInput.includes("."))) {
+                            setIsEmailError(true);
+                          }
+                        }}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setTextInput(val);
+                          if (val.length > 0 && val.includes("@") && val.includes(".")) {
+                            setIsEmailError(false);
+                          }
+                        }}
                         placeholder="name@enterprise.com"
                         style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
                         className="w-full bg-transparent outline-none"
@@ -2727,10 +2747,21 @@ module.exports = {
                     <span className="font-semibold text-neutral-500">Sliding LayoutId Active</span>
                   </div>
                 </div>
+              </motion.div>
+            )}
 
-                {/* ══════════════════════════════════════════════════════════
-                    CATEGORY 2: NAVIGATION & COMMANDS
-                   ══════════════════════════════════════════════════════════ */}
+            {/* ══════════════════════════════════════════════════════════
+                CATEGORY 2: NAVIGATION & COMMANDS
+               ══════════════════════════════════════════════════════════ */}
+            {(activeCategoryFilter === "all" || activeCategoryFilter === "cat2") && (
+              <motion.div
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                transition={scaled.motionConfig.spring}
+                className="space-y-4"
+              >
                 <div id="category-section-cat2" className="w-full pt-6 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
                     <div className="flex items-center gap-2.5">
@@ -2870,7 +2901,8 @@ module.exports = {
                     <button
                       type="button"
                       onClick={() => triggerToast("Navigated to: Infrastructure Root")}
-                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 rounded-md transition-colors font-medium cursor-pointer"
+                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 transition-colors font-medium cursor-pointer"
                     >
                       Infrastructure
                     </button>
@@ -2940,7 +2972,8 @@ module.exports = {
                     <button
                       type="button"
                       onClick={() => triggerToast("Navigated to: Production Node-4")}
-                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 rounded-md transition-colors font-medium cursor-pointer"
+                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                      className="text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 px-2 py-1 transition-colors font-medium cursor-pointer"
                     >
                       Production Node-4
                     </button>
@@ -3173,10 +3206,21 @@ module.exports = {
                     <span className="font-semibold text-neutral-500">Sliding Page Pill Active</span>
                   </div>
                 </div>
+              </motion.div>
+            )}
 
-                {/* ══════════════════════════════════════════════════════════
-                    CATEGORY 3: DATA DISPLAY & ANALYTICS
-                   ══════════════════════════════════════════════════════════ */}
+            {/* ══════════════════════════════════════════════════════════
+                CATEGORY 3: DATA DISPLAY & ANALYTICS
+               ══════════════════════════════════════════════════════════ */}
+            {(activeCategoryFilter === "all" || activeCategoryFilter === "cat3") && (
+              <motion.div
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                transition={scaled.motionConfig.spring}
+                className="space-y-4"
+              >
                 <div id="category-section-cat3" className="w-full pt-6 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
                     <div className="flex items-center gap-2.5">
@@ -3595,10 +3639,21 @@ module.exports = {
                     <span className="font-semibold text-neutral-500">Row Expansion Active</span>
                   </div>
                 </div>
+              </motion.div>
+            )}
 
-                {/* ══════════════════════════════════════════════════════════
-                    CATEGORY 4: FEEDBACK & OVERLAYS
-                   ══════════════════════════════════════════════════════════ */}
+            {/* ══════════════════════════════════════════════════════════
+                CATEGORY 4: FEEDBACK & OVERLAYS
+               ══════════════════════════════════════════════════════════ */}
+            {(activeCategoryFilter === "all" || activeCategoryFilter === "cat4") && (
+              <motion.div
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                transition={scaled.motionConfig.spring}
+                className="space-y-4"
+              >
                 <div id="category-section-cat4" className="w-full pt-6 space-y-2">
                   <div className="flex items-center justify-between pb-2 border-b-2 border-neutral-900">
                     <div className="flex items-center gap-2.5">
@@ -3976,6 +4031,8 @@ module.exports = {
                     <span className="font-semibold text-neutral-500">Fluid Popover Ready</span>
                   </div>
                 </div>
+              </motion.div>
+            )}
               </>
             )}
 
