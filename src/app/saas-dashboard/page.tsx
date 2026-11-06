@@ -210,6 +210,19 @@ export default function SaaSDashboardPage() {
   const [inspectCandidate, setInspectCandidate] = useState<Candidate | null>(null);
   const [activeDrawerTab, setActiveDrawerTab] = useState<"overview" | "evaluation" | "notes">("overview");
 
+  // Add Candidate modal state
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [newCandidateName, setNewCandidateName] = useState<string>("");
+  const [newCandidateRole, setNewCandidateRole] = useState<string>("Senior Full-Stack Engineer");
+  const [newCandidateDept, setNewCandidateDept] = useState<Candidate["department"]>("Engineering");
+
+  // Toast feedback state
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const triggerToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
   // Rubric state in drawer
   const [rubricScores, setRubricScores] = useState<{ [id: string]: { tech: number; comm: number; problem: number; notes: string } }>({
     "CAN-101": { tech: 95, comm: 90, problem: 94, notes: "Excellent grasp of state hydration and distributed databases." },
@@ -331,34 +344,10 @@ export default function SaaSDashboardPage() {
             <span>Visual Studio</span>
           </Link>
 
-          {/* Solid Black Primary Action Button */}
+          {/* Solid Black Primary Action Button - Opens Enterprise Modal (No window.prompt!) */}
           <button
             type="button"
-            onClick={() => {
-              const newName = prompt("Candidate Full Name:");
-              if (newName) {
-                const newCandidate: Candidate = {
-                  id: `CAN-${Math.floor(108 + Math.random() * 899)}`,
-                  name: newName,
-                  email: `${newName.toLowerCase().replace(/\s+/g, ".")}@example.com`,
-                  avatar: newName.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2),
-                  avatarBg: "bg-neutral-800",
-                  role: "Software Engineer",
-                  department: "Engineering",
-                  stage: "Screening",
-                  score: 82,
-                  experience: "2.0 yrs",
-                  noticePeriod: "30 days",
-                  expectedSalary: "$110,000",
-                  location: "Remote",
-                  appliedDate: "Today",
-                  skills: ["TypeScript", "React"],
-                  tags: ["New"],
-                  notes: "Manually registered into candidate pipeline.",
-                };
-                setCandidates((prev) => [newCandidate, ...prev]);
-              }
-            }}
+            onClick={() => setIsAddModalOpen(true)}
             className="h-9 px-3.5 rounded-xl bg-[#111111] hover:bg-neutral-800 text-white text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors select-none"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
@@ -1197,7 +1186,9 @@ export default function SaaSDashboardPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      alert(`Rejected ${inspectCandidate.name}`);
+                      const name = inspectCandidate.name;
+                      setCandidates((prev) => prev.filter((c) => c.id !== inspectCandidate.id));
+                      triggerToast(`Archived application for ${name}`);
                       setInspectCandidate(null);
                     }}
                     className="px-4 py-2 rounded-xl border border-neutral-300 hover:bg-neutral-50 text-neutral-600 hover:text-rose-600 font-semibold text-xs transition-colors cursor-pointer"
@@ -1207,7 +1198,10 @@ export default function SaaSDashboardPage() {
 
                   <button
                     type="button"
-                    onClick={() => handleAdvanceStage(inspectCandidate.id)}
+                    onClick={() => {
+                      handleAdvanceStage(inspectCandidate.id);
+                      triggerToast(`Advanced ${inspectCandidate.name} to next stage`);
+                    }}
                     className="px-5 py-2 rounded-xl bg-[#111111] hover:bg-neutral-800 text-white font-semibold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors select-none"
                   >
                     <span>Advance to Next Stage</span>
@@ -1217,6 +1211,145 @@ export default function SaaSDashboardPage() {
               </motion.div>
             </div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Add Candidate Modal - ZeroLight Enterprise Dialog (No window.prompt!) */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAddModalOpen(false)}
+              className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="relative w-full max-w-md bg-white rounded-2xl border border-neutral-200 shadow-2xl p-6 space-y-4 z-10"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+                <div>
+                  <h3 className="text-sm font-bold text-neutral-900">Add Candidate to Pipeline</h3>
+                  <p className="text-xs text-neutral-500">Register candidate record into screening round.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="p-1 rounded-lg text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="space-y-1">
+                  <label className="font-medium text-neutral-700">Full Name *</label>
+                  <input
+                    type="text"
+                    autoFocus
+                    value={newCandidateName}
+                    onChange={(e) => setNewCandidateName(e.target.value)}
+                    placeholder="e.g. Elena Rostova"
+                    className="w-full h-9 px-3 rounded-xl border border-neutral-300 bg-white text-neutral-900 focus:outline-none focus:border-neutral-900 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-neutral-700">Role Title</label>
+                  <input
+                    type="text"
+                    value={newCandidateRole}
+                    onChange={(e) => setNewCandidateRole(e.target.value)}
+                    className="w-full h-9 px-3 rounded-xl border border-neutral-300 bg-white text-neutral-900 focus:outline-none focus:border-neutral-900 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-medium text-neutral-700">Department</label>
+                  <div className="grid grid-cols-4 gap-1.5 pt-1">
+                    {(["Engineering", "Design", "Product", "Operations"] as const).map((dept) => (
+                      <button
+                        key={dept}
+                        type="button"
+                        onClick={() => setNewCandidateDept(dept)}
+                        className={`py-1.5 text-center rounded-lg border font-medium cursor-pointer transition-colors ${
+                          newCandidateDept === dept
+                            ? "bg-neutral-900 text-white border-neutral-900 font-semibold"
+                            : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
+                        }`}
+                      >
+                        {dept}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-neutral-100">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-3 py-2 rounded-xl text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={!newCandidateName.trim()}
+                  onClick={() => {
+                    const name = newCandidateName.trim();
+                    const newCand: Candidate = {
+                      id: `CAN-${Math.floor(108 + Math.random() * 899)}`,
+                      name,
+                      email: `${name.toLowerCase().replace(/\s+/g, ".")}@pulsehire.io`,
+                      avatar: name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2),
+                      avatarBg: "bg-neutral-800",
+                      role: newCandidateRole,
+                      department: newCandidateDept,
+                      stage: "Screening",
+                      score: 85,
+                      experience: "3.5 yrs",
+                      noticePeriod: "30 days",
+                      expectedSalary: "$125,000",
+                      location: "Remote",
+                      appliedDate: "Today",
+                      skills: ["TypeScript", "System Design"],
+                      tags: ["Active Pipeline"],
+                      notes: "Candidate registered into screening round via PulseHire console.",
+                    };
+                    setCandidates((prev) => [newCand, ...prev]);
+                    triggerToast(`Added ${name} to pipeline`);
+                    setNewCandidateName("");
+                    setIsAddModalOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#111111] hover:bg-neutral-800 text-white disabled:opacity-40 cursor-pointer shadow-xs transition-colors select-none"
+                >
+                  Register Candidate
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            transition={{ duration: 0.15 }}
+            className="fixed bottom-6 right-6 z-50 bg-[#111111] text-white px-4 py-2.5 rounded-xl text-xs font-medium shadow-2xl flex items-center gap-2 border border-neutral-800"
+          >
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <span>{toastMessage}</span>
+          </motion.div>
         )}
       </AnimatePresence>
 
