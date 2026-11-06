@@ -73,6 +73,61 @@ const TAG_OPTIONS = [
   "Analytics",
 ];
 
+const CALENDAR_MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const CALENDAR_WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+const getCalendarDays = (year: number, month: number) => {
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  const days: { day: number; month: "prev" | "curr" | "next"; year: number; monthIndex: number }[] = [];
+
+  for (let i = firstDayIndex - 1; i >= 0; i--) {
+    days.push({
+      day: daysInPrevMonth - i,
+      month: "prev",
+      year: month === 0 ? year - 1 : year,
+      monthIndex: month === 0 ? 11 : month - 1,
+    });
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    days.push({
+      day: d,
+      month: "curr",
+      year,
+      monthIndex: month,
+    });
+  }
+
+  const remaining = (7 - (days.length % 7)) % 7;
+  for (let d = 1; d <= remaining; d++) {
+    days.push({
+      day: d,
+      month: "next",
+      year: month === 11 ? year + 1 : year,
+      monthIndex: month === 11 ? 0 : month + 1,
+    });
+  }
+
+  return days;
+};
+
 export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atoms" | "molecules" }) {
   const [tokens, setTokens] = useState<ZeroLightTokens>(DEFAULT_TOKENS);
   const [activeTier, setActiveTier] = useState<"atoms" | "molecules">(initialTier);
@@ -125,6 +180,22 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   const [datePreset, setDatePreset] = useState<"7d" | "30d" | "quarter" | "custom">("30d");
   const [dateRangeString, setDateRangeString] = useState<string>("Oct 08, 2026 – Nov 06, 2026");
   const datePickerRef = useRef<HTMLDivElement>(null);
+
+  // Calendar Dropdown with Year Change State
+  const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false);
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<{
+    year: number;
+    month: number;
+    day: number;
+  }>({
+    year: 2026,
+    month: 10, // 0-indexed: 10 = November
+    day: 6,
+  });
+  const [calendarViewYear, setCalendarViewYear] = useState<number>(2026);
+  const [calendarViewMonth, setCalendarViewMonth] = useState<number>(10);
+  const [isYearPickerOpen, setIsYearPickerOpen] = useState<boolean>(false);
+  const calendarRef = useRef<HTMLDivElement>(null);
 
   // 2. AlertCallout
   const [alertVariant, setAlertVariant] = useState<"info" | "warning" | "success" | "critical">("warning");
@@ -281,6 +352,10 @@ module.exports = {
       if (datePickerRef.current && !datePickerRef.current.contains(e.target as Node)) {
         setIsDatePickerOpen(false);
       }
+      if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
+        setIsCalendarOpen(false);
+        setIsYearPickerOpen(false);
+      }
       if (pageSizeRef.current && !pageSizeRef.current.contains(e.target as Node)) {
         setIsPageSizeOpen(false);
       }
@@ -300,6 +375,8 @@ module.exports = {
         setIsRoleOpen(false);
         setIsTagOpen(false);
         setIsDatePickerOpen(false);
+        setIsCalendarOpen(false);
+        setIsYearPickerOpen(false);
         setIsPageSizeOpen(false);
         setIsRowActionsOpen(false);
         setIsSearchFocused(false);
@@ -525,6 +602,9 @@ module.exports = {
                     </a>
                     <a href="#mol-tag-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Tag input</span>
+                    </a>
+                    <a href="#mol-calendar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Calendar dropdown</span>
                     </a>
                     <a href="#mol-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Date range picker</span>
@@ -1783,19 +1863,9 @@ module.exports = {
                   </div>
 
                   <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
-                        Secret API key
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => setIsApiKeyMasked((prev) => !prev)}
-                        className="text-xs text-neutral-500 hover:text-neutral-900 flex items-center gap-1 cursor-pointer transition-colors"
-                      >
-                        {isApiKeyMasked ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                        <span>{isApiKeyMasked ? "Reveal" : "Hide"}</span>
-                      </button>
-                    </div>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                      Secret API key
+                    </label>
 
                     <div className="flex items-center">
                       <div
@@ -1808,7 +1878,7 @@ module.exports = {
                           backgroundColor: scaled.effectiveInputFill,
                           height: `${scaled.scaledHeight}px`,
                           paddingLeft: `${scaled.scaledPaddingX}px`,
-                          paddingRight: `${scaled.scaledPaddingX}px`,
+                          paddingRight: `${Math.round(8 * scaled.scale)}px`,
                           transition: scaled.transitionStyle,
                         }}
                         className="flex-1 flex items-center border"
@@ -1818,8 +1888,22 @@ module.exports = {
                           readOnly
                           value={apiKey}
                           style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
-                          className="w-full bg-transparent outline-none font-medium tabular-nums"
+                          className="w-full bg-transparent outline-none font-medium tabular-nums tracking-wide"
                         />
+                        <button
+                          type="button"
+                          onClick={() => setIsApiKeyMasked((prev) => !prev)}
+                          title={isApiKeyMasked ? "Reveal secret key" : "Hide secret key"}
+                          aria-label={isApiKeyMasked ? "Reveal secret key" : "Hide secret key"}
+                          style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                          className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100/80 transition-colors cursor-pointer shrink-0 ml-1.5 focus:outline-none"
+                        >
+                          {isApiKeyMasked ? (
+                            <Eye className="w-4 h-4" strokeWidth={1.8} />
+                          ) : (
+                            <EyeOff className="w-4 h-4" strokeWidth={1.8} />
+                          )}
+                        </button>
                       </div>
                       <motion.button
                         type="button"
@@ -2241,7 +2325,288 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── 6. DATE RANGE PICKER ── */}
+                {/* ── 6. CALENDAR DROPDOWN ── */}
+                <div id="mol-calendar" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      Calendar dropdown
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Single-date calendar popover with month navigation, year selector, and day grid.
+                    </p>
+                  </div>
+
+                  <div ref={calendarRef} className="relative space-y-1.5">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                      Scheduled deployment date
+                    </label>
+
+                    {/* Trigger button */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCalendarOpen((prev) => !prev);
+                        setIsYearPickerOpen(false);
+                      }}
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: isCalendarOpen ? tokens.textIconColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: scaled.effectiveInputFill,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
+                        boxShadow: isCalendarOpen
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="w-full flex items-center justify-between text-left cursor-pointer border select-none font-medium tabular-nums text-xs"
+                    >
+                      <div className="flex items-center gap-2.5 truncate">
+                        <Calendar className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
+                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }} className="truncate">
+                          {selectedCalendarDate
+                            ? new Date(selectedCalendarDate.year, selectedCalendarDate.month, selectedCalendarDate.day).toLocaleDateString("en-US", {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                            : "Select date"}
+                        </span>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: isCalendarOpen ? 180 : 0 }}
+                        transition={scaled.motionConfig.spring}
+                        className="w-4 h-4 flex items-center justify-center shrink-0 text-neutral-400"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
+                      </motion.div>
+                    </button>
+
+                    {/* Calendar Popover */}
+                    <AnimatePresence>
+                      {isCalendarOpen && (
+                        <motion.div
+                          initial={scaled.motionConfig.popover.initial}
+                          animate={scaled.motionConfig.popover.animate}
+                          exit={scaled.motionConfig.popover.exit}
+                          transition={scaled.motionConfig.popover.transition}
+                          style={{
+                            marginTop: `${tokens.menuOffsetGap}px`,
+                            borderRadius: `${scaled.scaledMenuRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            boxShadow: "0 12px 28px -4px rgba(0,0,0,0.12), 0 4px 8px -2px rgba(0,0,0,0.04)",
+                            width: "310px",
+                            maxWidth: "100%",
+                          }}
+                          className="absolute top-full left-0 z-30 p-3 border space-y-3"
+                        >
+                          {/* Calendar Header with Month Nav & Year Change */}
+                          <div className="flex items-center justify-between gap-1 pb-2 border-b border-neutral-100">
+                            {/* Month Selector with Prev / Next */}
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (calendarViewMonth === 0) {
+                                    setCalendarViewMonth(11);
+                                    setCalendarViewYear((y) => y - 1);
+                                  } else {
+                                    setCalendarViewMonth((m) => m - 1);
+                                  }
+                                }}
+                                aria-label="Previous month"
+                                className="p-1 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors cursor-pointer"
+                              >
+                                <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2.2} />
+                              </button>
+                              <span className="text-xs font-semibold text-neutral-800 w-[74px] text-center select-none">
+                                {CALENDAR_MONTHS[calendarViewMonth]}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (calendarViewMonth === 11) {
+                                    setCalendarViewMonth(0);
+                                    setCalendarViewYear((y) => y + 1);
+                                  } else {
+                                    setCalendarViewMonth((m) => m + 1);
+                                  }
+                                }}
+                                aria-label="Next month"
+                                className="p-1 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors cursor-pointer"
+                              >
+                                <ChevronRight className="w-3.5 h-3.5" strokeWidth={2.2} />
+                              </button>
+                            </div>
+
+                            {/* Year Selector with Stepper & Jump Toggle */}
+                            <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
+                              <button
+                                type="button"
+                                onClick={() => setCalendarViewYear((y) => y - 1)}
+                                aria-label="Previous year"
+                                className="p-0.5 text-neutral-500 hover:text-neutral-900 hover:bg-white rounded transition-colors cursor-pointer"
+                              >
+                                <ChevronLeft className="w-3 h-3" strokeWidth={2.2} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setIsYearPickerOpen((prev) => !prev)}
+                                title="Click to jump year"
+                                className="px-1.5 py-0.5 text-xs font-semibold text-neutral-800 hover:bg-white rounded transition-colors cursor-pointer flex items-center gap-0.5 select-none tabular-nums"
+                              >
+                                <span>{calendarViewYear}</span>
+                                <ChevronDown
+                                  className={`w-2.5 h-2.5 text-neutral-400 transition-transform ${isYearPickerOpen ? "rotate-180" : ""}`}
+                                  strokeWidth={2.5}
+                                />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setCalendarViewYear((y) => y + 1)}
+                                aria-label="Next year"
+                                className="p-0.5 text-neutral-500 hover:text-neutral-900 hover:bg-white rounded transition-colors cursor-pointer"
+                              >
+                                <ChevronRight className="w-3 h-3" strokeWidth={2.2} />
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Year Grid View OR Days Grid View */}
+                          {isYearPickerOpen ? (
+                            <div className="space-y-2 py-1">
+                              <div className="flex items-center justify-between px-1 text-[11px] font-medium text-neutral-400">
+                                <span>Select year</span>
+                                <span>2020 – 2031</span>
+                              </div>
+                              <div className="grid grid-cols-4 gap-1.5">
+                                {Array.from({ length: 12 }, (_, i) => 2020 + i).map((y) => {
+                                  const isSelectedYear = calendarViewYear === y;
+                                  return (
+                                    <button
+                                      key={y}
+                                      type="button"
+                                      onClick={() => {
+                                        setCalendarViewYear(y);
+                                        setIsYearPickerOpen(false);
+                                      }}
+                                      style={{
+                                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                                        backgroundColor: isSelectedYear ? tokens.primaryButtonColor : undefined,
+                                        color: isSelectedYear ? "#FFFFFF" : undefined,
+                                      }}
+                                      className={`py-1.5 text-xs font-medium tabular-nums text-center transition-colors cursor-pointer ${
+                                        isSelectedYear
+                                          ? "font-semibold shadow-xs"
+                                          : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                                      }`}
+                                    >
+                                      {y}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="space-y-1">
+                              {/* Weekdays Row */}
+                              <div className="grid grid-cols-7 gap-1 text-center">
+                                {CALENDAR_WEEKDAYS.map((w) => (
+                                  <div key={w} className="text-[10px] font-semibold text-neutral-400 py-0.5 select-none">
+                                    {w}
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* Days Grid */}
+                              <div className="grid grid-cols-7 gap-1">
+                                {getCalendarDays(calendarViewYear, calendarViewMonth).map((d, idx) => {
+                                  const isSelected =
+                                    selectedCalendarDate &&
+                                    selectedCalendarDate.year === d.year &&
+                                    selectedCalendarDate.month === d.monthIndex &&
+                                    selectedCalendarDate.day === d.day;
+                                  const isToday =
+                                    d.year === 2026 && d.monthIndex === 10 && d.day === 6;
+                                  const isCurrentMonth = d.month === "curr";
+
+                                  return (
+                                    <button
+                                      key={idx}
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedCalendarDate({
+                                          year: d.year,
+                                          month: d.monthIndex,
+                                          day: d.day,
+                                        });
+                                        if (d.month !== "curr") {
+                                          setCalendarViewYear(d.year);
+                                          setCalendarViewMonth(d.monthIndex);
+                                        }
+                                        setIsCalendarOpen(false);
+                                      }}
+                                      style={{
+                                        borderRadius: `${Math.max(4, scaled.scaledInnerRadius)}px`,
+                                        backgroundColor: isSelected ? tokens.primaryButtonColor : undefined,
+                                        color: isSelected ? "#FFFFFF" : undefined,
+                                      }}
+                                      className={`h-7 w-full flex items-center justify-center text-xs tabular-nums select-none transition-colors cursor-pointer ${
+                                        isSelected
+                                          ? "font-semibold shadow-xs"
+                                          : !isCurrentMonth
+                                          ? "text-neutral-300 hover:bg-neutral-50 hover:text-neutral-500"
+                                          : isToday
+                                          ? "font-semibold text-neutral-900 border border-neutral-300 hover:bg-neutral-100"
+                                          : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                                      }`}
+                                    >
+                                      {d.day}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Quick Action Footer */}
+                          <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedCalendarDate({ year: 2026, month: 10, day: 6 });
+                                setCalendarViewYear(2026);
+                                setCalendarViewMonth(10);
+                                setIsYearPickerOpen(false);
+                                setIsCalendarOpen(false);
+                              }}
+                              className="text-neutral-600 hover:text-neutral-900 font-medium px-2 py-1 rounded hover:bg-neutral-100 transition-colors cursor-pointer"
+                            >
+                              Today (Nov 6)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsCalendarOpen(false);
+                                setIsYearPickerOpen(false);
+                              }}
+                              className="text-neutral-400 hover:text-neutral-700 font-medium px-2 py-1 rounded hover:bg-neutral-100 transition-colors cursor-pointer"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                {/* ── 7. DATE RANGE PICKER ── */}
                 <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
@@ -2341,7 +2706,7 @@ module.exports = {
                                         borderRadius: `${scaled.scaledOptionRadius}px`,
                                         backgroundColor: tokens.primaryButtonColor,
                                       }}
-                                      className="absolute inset-0 -z-10 shadow-xs"
+                                      className="absolute inset-0 shadow-xs"
                                     />
                                   )}
                                   <span className="relative z-10">{p.label}</span>
@@ -2397,7 +2762,7 @@ module.exports = {
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: `${Math.round(5 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                             }}
-                            className={`font-medium cursor-pointer relative z-10 transition-colors select-none ${
+                            className={`font-medium cursor-pointer relative transition-colors select-none ${
                               isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900"
                             }`}
                           >
@@ -2409,10 +2774,10 @@ module.exports = {
                                   borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
                                   backgroundColor: tokens.primaryButtonColor,
                                 }}
-                                className="absolute inset-0 shadow-sm -z-10"
+                                className="absolute inset-0 shadow-sm"
                               />
                             )}
-                            {label}
+                            <span className="relative z-10">{label}</span>
                           </motion.button>
                         );
                       })}
@@ -2591,9 +2956,9 @@ module.exports = {
                                 transition={scaled.motionConfig.pillTransition}
                                 style={{
                                   borderRadius: `${scaled.scaledInnerRadius}px`,
-                                  backgroundColor: tokens.primaryButtonColor,
+                                  backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
                                 }}
-                                className="absolute inset-0 -z-10 shadow-xs"
+                                className="absolute inset-0 shadow-xs"
                               />
                             )}
                             <span className="relative z-10">{v}</span>
