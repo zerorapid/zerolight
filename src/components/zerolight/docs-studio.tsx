@@ -2063,7 +2063,7 @@ module.exports = {
 
                     <div
                       style={{
-                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderRadius: tokens.cornerRadius === 999 ? `${Math.round(14 * scaled.scale)}px` : `${scaled.scaledRadius}px`,
                         borderColor: isTagOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: scaled.effectiveInputFill,
@@ -2397,7 +2397,7 @@ module.exports = {
                             type="button"
                             onClick={() => setSegmentValue(key)}
                             style={{
-                              borderRadius: `${scaled.scaledInnerRadius}px`,
+                              borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: `${Math.round(5 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                             }}
@@ -2410,7 +2410,7 @@ module.exports = {
                                 layoutId="activeSegmentPill"
                                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
                                 style={{
-                                  borderRadius: `${scaled.scaledInnerRadius}px`,
+                                  borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
                                   backgroundColor: tokens.primaryButtonColor,
                                 }}
                                 className="absolute inset-0 shadow-sm -z-10"
