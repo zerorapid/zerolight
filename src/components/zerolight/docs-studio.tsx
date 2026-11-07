@@ -58,6 +58,12 @@ import {
   FolderTree,
   CalendarDays,
   Sliders,
+  MousePointerClick,
+  Edit3,
+  CheckSquare,
+  CircleDot,
+  ToggleLeft,
+  Tag,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -1082,6 +1088,15 @@ module.exports = {
                 <>
                   <div className="space-y-0.5">
                     <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
+                      Foundation
+                    </div>
+                    <a href="#atom-typography" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Typography &amp; scale</span>
+                    </a>
+                  </div>
+
+                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
+                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
                       Actions
                     </div>
                     <a href="#atom-buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
@@ -1389,9 +1404,10 @@ module.exports = {
                 {/* ── 1. BUTTON ATOM (UNIVERSAL CORNER RADIUS & BLACK PRIMARY DEFAULT) ── */}
                 <div id="atom-buttons" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Button state matrix
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <MousePointerClick className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Button state matrix</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Primary, outline, and ghost variants dynamically honoring universal corner radius and color tokens.
                     </p>
@@ -1640,9 +1656,10 @@ module.exports = {
                 {/* ── 2. ICON BUTTON ATOM ── */}
                 <div id="atom-icon-button" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Icon button primitive
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Settings className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Icon button primitive</span>
+                      </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Universal radius &amp; border width
                     </span>
@@ -1712,9 +1729,10 @@ module.exports = {
                 {/* ── 3. INPUT ATOM (4 TRUTH STATES) ── */}
                 <div id="atom-input" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Input states
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Edit3 className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Text input primitive</span>
+                      </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Zero-flicker rasterization
                     </span>
@@ -1819,9 +1837,10 @@ module.exports = {
 
                 {/* ── 4. TEXTAREA ATOM ── */}
                 <div id="atom-textarea" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
-                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Textarea primitive
-                  </h2>
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Textarea primitive</span>
+                      </h2>
                   <div
                     style={{
                       borderRadius: `${scaled.scaledRadius}px`,
@@ -1846,9 +1865,10 @@ module.exports = {
                 {/* ── 5. CHECKBOX ATOM (UNIVERSAL RADIUS & BORDER WIDTH) ── */}
                 <div id="atom-checkbox" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Checkbox primitive
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <CheckSquare className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Checkbox (Tri-state)</span>
+                      </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Adaptive geometry &amp; primary color
                     </span>
@@ -1958,9 +1978,10 @@ module.exports = {
                 {/* ── 6. RADIO ATOM (UNIVERSAL PRIMARY BINDING) ── */}
                 <div id="atom-radio" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Radio primitive
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <CircleDot className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Radio button group</span>
+                      </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Concentric indicator with primary color
                     </span>
@@ -2013,9 +2034,10 @@ module.exports = {
                 {/* ── 7. SWITCH ATOM (UNIVERSAL RADIUS & PRIMARY ACTION) ── */}
                 <div id="atom-switch" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Toggle switch
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <ToggleLeft className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Toggle switch</span>
+                      </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Adaptive geometry &amp; primary action fill
                     </span>
@@ -2051,9 +2073,10 @@ module.exports = {
                 {/* ── 8. SLIDER ATOM ── */}
                 <div id="atom-slider" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex justify-between items-center">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Continuous slider
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <SlidersHorizontal className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Range slider primitive</span>
+                      </h2>
                     <span
                       style={{
                         fontSize: `${scaled.sublabelFontSize}px`,
@@ -2079,8 +2102,9 @@ module.exports = {
                 <div id="atom-progress" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-neutral-100">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold tracking-tight">
-                        Progress bar primitive
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold tracking-tight flex items-center gap-2">
+                        <BarChart2 className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Progress bar primitive</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Deterministic visual progress gauge with rounded caps and dynamic fill token.
@@ -2132,8 +2156,9 @@ module.exports = {
                 <div id="atom-lucide-icons" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                        Lucide icon atom
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Lucide vector icon catalog</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Indivisible vector primitives across size, stroke weight, and corner radius tokens.
@@ -2211,9 +2236,10 @@ module.exports = {
 
                 {/* ── 10. STATUS BADGES ATOM ── */}
                 <div id="atom-badge" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
-                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Status badge indicators
-                  </h2>
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Tag className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Status badge chips</span>
+                      </h2>
 
                   <div className="flex flex-wrap items-center gap-2 pt-1">
                     <span
@@ -2262,9 +2288,10 @@ module.exports = {
                 {/* ── 11. TAG CHIP ATOM (UNIVERSAL RADIUS) ── */}
                 <div id="atom-tag-chip" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Tag chip primitive
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Tags className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Tag chip component</span>
+                      </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
                       Static &amp; dismissible states
                     </span>
@@ -2310,9 +2337,10 @@ module.exports = {
 
                 {/* ── 12. KEYBOARD KEYCAP (KBD) ATOM ── */}
                 <div id="atom-kbd" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
-                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Keycap primitives
-                  </h2>
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <Command className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Keycap primitive</span>
+                      </h2>
 
                   <div className="flex items-center gap-1.5 pt-1">
                     <kbd
@@ -2362,9 +2390,10 @@ module.exports = {
 
                 {/* ── 13. AVATAR & LOADER ATOM ── */}
                 <div id="atom-avatar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
-                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                    Avatar &amp; loader
-                  </h2>
+                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                        <User className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Avatar & loader primitive</span>
+                      </h2>
 
                   <div className="flex items-center justify-between pt-1">
                     <div className="flex items-center gap-2">
