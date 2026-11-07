@@ -935,6 +935,126 @@ module.exports = {
         )}
       </AnimatePresence>
 
+      {/* ── Top Header Bar with Spacious Tier Switcher & Quick Meta ── */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EBEBEB] px-6 py-3 flex items-center justify-between select-none shadow-2xs">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div
+              style={{
+                backgroundColor: tokens.primaryButtonColor,
+                borderRadius: `${scaled.scaledRadius === 0 ? 0 : 8}px`,
+                color: scaled.primaryActionTextColor,
+              }}
+              className="w-7 h-7 flex items-center justify-center font-bold text-xs shadow-xs"
+            >
+              ZL
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="font-semibold text-sm tracking-tight text-[#111111]">
+                ZeroLight
+              </span>
+              <span className="text-[11px] font-medium text-neutral-400 hidden sm:inline-block">
+                Design System Studio
+              </span>
+            </div>
+          </Link>
+        </div>
+
+        {/* Elevated Spacious Tier Switcher */}
+        <div
+          style={{
+            borderRadius: `${scaled.scaledPillRadius}px`,
+            borderColor: tokens.universalBorderColor,
+            borderWidth: `${tokens.borderWidth}px`,
+            backgroundColor: tokens.hoverBackplateTint,
+          }}
+          className="inline-flex items-center gap-1.5 p-1 border shadow-xs"
+        >
+          {(
+            [
+              { key: "atoms", label: "Atoms", count: "15" },
+              { key: "molecules", label: "Molecules", count: "11" },
+              { key: "organisms", label: "Organisms", count: "9" },
+            ] as const
+          ).map(({ key, label, count }) => {
+            const isSelected = activeTier === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => {
+                  setActiveTier(key);
+                  if (typeof window !== "undefined") {
+                    window.history.replaceState(null, "", `/docs/${key}`);
+                  }
+                }}
+                className={`px-5 py-2 text-xs font-semibold rounded-full cursor-pointer relative transition-colors whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  isSelected ? "" : "text-neutral-500 hover:text-neutral-900"
+                }`}
+              >
+                {isSelected && (
+                  <motion.div
+                    layoutId="activeGlobalTierPill"
+                    transition={scaled.motionConfig.pillTransition}
+                    style={{
+                      borderRadius: `${scaled.scaledPillRadius}px`,
+                      backgroundColor: tokens.primaryButtonColor,
+                    }}
+                    className="absolute inset-0 shadow-sm"
+                  />
+                )}
+                <span
+                  style={{
+                    color: isSelected ? scaled.primaryActionTextColor : undefined,
+                  }}
+                  className="relative z-10"
+                >
+                  {label}
+                </span>
+                <span
+                  style={{
+                    borderRadius: `${scaled.scaledPillRadius}px`,
+                    backgroundColor: isSelected
+                      ? (scaled.primaryActionTextColor === "#FFFFFF" ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)")
+                      : "#E4E4E7",
+                    color: isSelected ? scaled.primaryActionTextColor : "#71717A",
+                  }}
+                  className="relative z-10 text-[10px] px-1.5 py-0.2 font-bold tabular-nums"
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right meta: Scale & PoC quick links */}
+        <div className="flex items-center gap-3">
+          <span
+            style={{
+              fontSize: `${scaled.sublabelFontSize}px`,
+              borderRadius: `${scaled.scaledPillRadius}px`,
+              borderColor: tokens.universalBorderColor,
+              borderWidth: `${tokens.borderWidth}px`,
+            }}
+            className="text-neutral-600 bg-neutral-50 border px-3 py-1 shadow-2xs tabular-nums font-medium hidden sm:inline-block"
+          >
+            Scale: {tokens.scaleMultiplier.toFixed(2)}x • {tokens.motionPhysics}
+          </span>
+          <button
+            type="button"
+            onClick={() => setIsExportOpen(true)}
+            style={{
+              borderRadius: `${scaled.scaledPillRadius}px`,
+            }}
+            className="px-3.5 py-1.5 text-xs font-semibold bg-[#111111] hover:bg-neutral-800 text-white flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+          >
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Export Tokens</span>
+          </button>
+        </div>
+      </header>
+
       {/* 3-Column Studio Body */}
       <div className="flex-1 flex w-full">
         {/* ══════════════════════════════════════════════════════════
@@ -942,76 +1062,23 @@ module.exports = {
            ══════════════════════════════════════════════════════════ */}
         <aside className="w-64 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
           <div className="space-y-6">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div
-                style={{
-                  backgroundColor: tokens.primaryButtonColor,
-                  borderRadius: `${scaled.scaledRadius === 0 ? 0 : 8}px`,
-                }}
-                className="w-6 h-6 flex items-center justify-center font-bold text-xs text-white"
-              >
-                ZL
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 block">
+                  {activeTier === "atoms"
+                    ? "Atoms Directory"
+                    : activeTier === "molecules"
+                    ? "Molecules Directory"
+                    : "Organisms Directory"}
+                </span>
+                <span className="text-xs font-semibold text-neutral-800">Component Index</span>
               </div>
-              <span className="font-semibold text-sm tracking-tight text-[#111111]">
-                ZeroLight
+              <span
+                style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
+                className="text-[10px] font-semibold bg-neutral-100 text-neutral-600 px-2.5 py-1 tabular-nums border border-neutral-200"
+              >
+                {activeTier === "atoms" ? "15 Primitives" : activeTier === "molecules" ? "11 Compounds" : "9 Organisms"}
               </span>
-            </Link>
-
-            {/* View Switcher: Atoms vs Molecules vs Organisms */}
-            <div
-              style={{
-                borderRadius: `${scaled.scaledRadius === 0 ? 0 : 12}px`,
-              }}
-              className="p-1 bg-neutral-100 flex items-center gap-1 text-xs"
-            >
-              <button
-                type="button"
-                onClick={() => setActiveTier("atoms")}
-                style={{
-                  borderRadius: `${scaled.scaledRadius === 0 ? 0 : 8}px`,
-                  backgroundColor: activeTier === "atoms" ? tokens.primaryButtonColor : "transparent",
-                  color: activeTier === "atoms" ? "#FFFFFF" : undefined,
-                }}
-                className={`flex-1 py-1.5 font-medium text-center transition-all cursor-pointer ${
-                  activeTier === "atoms"
-                    ? "shadow-sm font-semibold"
-                    : "text-neutral-500 hover:text-neutral-900"
-                }`}
-              >
-                Atoms
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTier("molecules")}
-                style={{
-                  borderRadius: `${scaled.scaledRadius === 0 ? 0 : 8}px`,
-                  backgroundColor: activeTier === "molecules" ? tokens.primaryButtonColor : "transparent",
-                  color: activeTier === "molecules" ? "#FFFFFF" : undefined,
-                }}
-                className={`flex-1 py-1.5 font-medium text-center transition-all cursor-pointer ${
-                  activeTier === "molecules"
-                    ? "shadow-sm font-semibold"
-                    : "text-neutral-500 hover:text-neutral-900"
-                }`}
-              >
-                Molecules
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTier("organisms")}
-                style={{
-                  borderRadius: `${scaled.scaledRadius === 0 ? 0 : 8}px`,
-                  backgroundColor: activeTier === "organisms" ? tokens.primaryButtonColor : "transparent",
-                  color: activeTier === "organisms" ? "#FFFFFF" : undefined,
-                }}
-                className={`flex-1 py-1.5 font-medium text-center transition-all cursor-pointer ${
-                  activeTier === "organisms"
-                    ? "shadow-sm font-semibold"
-                    : "text-neutral-500 hover:text-neutral-900"
-                }`}
-              >
-                Organisms
-              </button>
             </div>
 
             {/* Categorized Navigation matching Brad Frost Hierarchy */}
@@ -1231,44 +1298,15 @@ module.exports = {
             COLUMN 2: CENTER STAGE (ATOMS OR MOLECULES VIEW)
            ══════════════════════════════════════════════════════════ */}
         <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start overflow-y-auto">
-          <div className={`w-full ${activeTier === "organisms" ? "max-w-5xl" : "max-w-[720px]"} space-y-6 pb-24`}>
+          <div className={`w-full ${activeTier === "organisms" ? "max-w-5xl" : "max-w-[720px]"} space-y-8 pb-32`}>
             
-            {/* Stage Title */}
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
-              <div>
-                <h1 style={{ fontSize: `${scaled.headingFontSize + 3}px` }} className="font-semibold text-neutral-900 tracking-tight">
-                  {activeTier === "atoms"
-                    ? "Atoms Directory"
-                    : activeTier === "molecules"
-                    ? "Molecules Directory"
-                    : "Organisms Directory"}
-                </h1>
-                <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                  {activeTier === "atoms"
-                    ? "Indivisible primitives with Lucide vector icons and universal token bindings."
-                    : activeTier === "molecules"
-                    ? "Atomic compositions combining two or more primitives for cohesive tasks."
-                    : "High-level standalone functional modules combining molecules and primitives into complete workflows."}
-                </p>
-              </div>
-              <span
-                style={{
-                  fontSize: `${scaled.sublabelFontSize}px`,
-                  borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
-                }}
-                className="text-neutral-500 bg-white border border-neutral-200 px-2.5 py-1 shadow-sm"
-              >
-                Scale: {tokens.scaleMultiplier.toFixed(2)}x
-              </span>
-            </div>
-
             {/* ══════════════════════════════════════════════════════════
                 VIEW A: PURE ATOMS (UNIVERSAL TOKEN CONTROL)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "atoms" && (
               <>
                 {/* ── 0. FOUNDATIONAL TYPE SCALE ── */}
-                <div id="atom-typography" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="atom-typography" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex items-center justify-between">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
@@ -1354,7 +1392,7 @@ module.exports = {
                 </div>
 
                 {/* ── 1. BUTTON ATOM (UNIVERSAL CORNER RADIUS & BLACK PRIMARY DEFAULT) ── */}
-                <div id="atom-buttons" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="atom-buttons" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Button state matrix
@@ -1605,7 +1643,7 @@ module.exports = {
                 </div>
 
                 {/* ── 2. ICON BUTTON ATOM ── */}
-                <div id="atom-icon-button" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-icon-button" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Icon button primitive
@@ -1677,7 +1715,7 @@ module.exports = {
                 </div>
 
                 {/* ── 3. INPUT ATOM (4 TRUTH STATES) ── */}
-                <div id="atom-input" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-input" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Input states
@@ -1785,7 +1823,7 @@ module.exports = {
                 </div>
 
                 {/* ── 4. TEXTAREA ATOM ── */}
-                <div id="atom-textarea" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-textarea" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Textarea primitive
                   </h2>
@@ -1811,7 +1849,7 @@ module.exports = {
                 </div>
 
                 {/* ── 5. CHECKBOX ATOM (UNIVERSAL RADIUS & BORDER WIDTH) ── */}
-                <div id="atom-checkbox" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-checkbox" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Checkbox primitive
@@ -1923,7 +1961,7 @@ module.exports = {
                 </div>
 
                 {/* ── 6. RADIO ATOM (UNIVERSAL PRIMARY BINDING) ── */}
-                <div id="atom-radio" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-radio" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Radio primitive
@@ -1978,7 +2016,7 @@ module.exports = {
                 </div>
 
                 {/* ── 7. SWITCH ATOM (UNIVERSAL RADIUS & PRIMARY ACTION) ── */}
-                <div id="atom-switch" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-switch" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Toggle switch
@@ -2016,7 +2054,7 @@ module.exports = {
                 </div>
 
                 {/* ── 8. SLIDER ATOM ── */}
-                <div id="atom-slider" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-slider" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex justify-between items-center">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Continuous slider
@@ -2043,7 +2081,7 @@ module.exports = {
                 </div>
 
                 {/* ── 9. LUCIDE ICON ATOM ── */}
-                <div id="atom-lucide-icons" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-lucide-icons" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
@@ -2124,7 +2162,7 @@ module.exports = {
                 </div>
 
                 {/* ── 10. STATUS BADGES ATOM ── */}
-                <div id="atom-badge" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-badge" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Status badge indicators
                   </h2>
@@ -2174,7 +2212,7 @@ module.exports = {
                 </div>
 
                 {/* ── 11. TAG CHIP ATOM (UNIVERSAL RADIUS) ── */}
-                <div id="atom-tag-chip" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-tag-chip" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                       Tag chip primitive
@@ -2223,7 +2261,7 @@ module.exports = {
                 </div>
 
                 {/* ── 12. KEYBOARD KEYCAP (KBD) ATOM ── */}
-                <div id="atom-kbd" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-kbd" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Keycap primitives
                   </h2>
@@ -2275,7 +2313,7 @@ module.exports = {
                 </div>
 
                 {/* ── 13. AVATAR & LOADER ATOM ── */}
-                <div id="atom-avatar" style={cardStyle} className="p-5 shadow-sm space-y-3">
+                <div id="atom-avatar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
                     Avatar &amp; loader
                   </h2>
@@ -2318,14 +2356,14 @@ module.exports = {
             {activeTier === "molecules" && (
               <>
                 {/* ── 1. FORM FIELD ── */}
-                <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-form-field" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Form field
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Label, text input with leading icon, and dynamic validation feedback.
+                        Single Sign-On (SSO) email address with corporate domain verification and inline feedback.
                       </p>
                     </div>
 
@@ -2425,13 +2463,13 @@ module.exports = {
                 </div>
 
                 {/* ── 2. INPUT GROUP ── */}
-                <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-input-group" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Input group
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Conjoined text input with embedded visibility toggle and primary action button.
+                      Client credentials input conjoined with secret masking eye toggle and single-tap copy.
                     </p>
                   </div>
 
@@ -2512,7 +2550,7 @@ module.exports = {
                 </div>
 
                 {/* ── 3. SEARCH BAR ── */}
-                <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-search-bar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Search bar
@@ -2639,13 +2677,13 @@ module.exports = {
                 </div>
 
                 {/* ── 4. SELECT DROPDOWN ── */}
-                <div id="mol-select" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-select" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Select dropdown
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Trigger button with popover menu and searchable option list.
+                      Role and tenancy selector popover with keyboard navigation and checkmark indicators.
                     </p>
                   </div>
 
@@ -2768,13 +2806,13 @@ module.exports = {
                 </div>
 
                 {/* ── 5. TAG INPUT ── */}
-                <div id="mol-tag-input" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-tag-input" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Tag input
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Input container with removable tag chips and inline add trigger.
+                      Multi-tag deployment classifier with animated remove transitions and popover tag selector.
                     </p>
                   </div>
 
@@ -2931,13 +2969,13 @@ module.exports = {
                 </div>
 
                 {/* ── 6. CALENDAR DROPDOWN ── */}
-                <div id="mol-calendar" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-calendar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Calendar dropdown
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Single-date calendar popover with month navigation, year selector, and day grid.
+                      Target maintenance deployment date picker with month stepper buttons and year dropdown selector.
                     </p>
                   </div>
 
@@ -3241,13 +3279,13 @@ module.exports = {
                 </div>
 
                 {/* ── 7. SEGMENTED CONTROL ── */}
-                <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-segmented" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Segmented control
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Sliding toggle control for selecting mutually exclusive options.
+                      Sliding billing cadence switcher with fluid spring pill transitions.
                     </p>
                   </div>
 
@@ -3316,7 +3354,7 @@ module.exports = {
                 </div>
 
                 {/* ── 8. BREADCRUMBS ── */}
-                <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-breadcrumbs" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Breadcrumbs
@@ -3419,7 +3457,7 @@ module.exports = {
                 </div>
 
                 {/* ── 9. METRIC STAT ── */}
-                <div id="mol-stat-badge" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-stat-badge" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Metric stat
@@ -3463,14 +3501,14 @@ module.exports = {
                 </div>
 
                 {/* ── 10. ALERT BANNER ── */}
-                <div id="mol-alert" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-alert" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Alert banner
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Contextual feedback banner with status icon, descriptive copy, and dismiss action.
+                        High-priority cluster notifications banner with semantic color tokens and dismiss action.
                       </p>
                     </div>
 
@@ -3611,7 +3649,7 @@ module.exports = {
                 </div>
 
                 {/* ── 11. TOOLTIP POPOVER ── */}
-                <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="mol-tooltip" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Tooltip popover
@@ -3680,14 +3718,14 @@ module.exports = {
             {activeTier === "organisms" && (
               <>
                 {/* ── 1. INTERACTIVE DATA TABLE ORGANISM ── */}
-                <div id="org-data-table" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-data-table" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Interactive data table
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Selectable multi-column grid with tri-state selection, spring bulk actions bar, and pagination.
+                        Production node fleet grid with tri-state multi-select, role filter pills, and batch actions toolbar.
                       </p>
                     </div>
 
@@ -4185,13 +4223,13 @@ module.exports = {
                 </div>
 
                 {/* ── 2. GLOBAL APPLICATION HEADER ORGANISM ── */}
-                <div id="org-global-header" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-global-header" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Global application header
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Top-level enterprise app bar with tenancy switcher, command palette trigger, notification drawer, and user profile.
+                      Enterprise application header with workspace selector, global search accelerator, and active health pulse.
                     </p>
                   </div>
 
@@ -4520,14 +4558,14 @@ module.exports = {
                 </div>
 
                 {/* ── 3. COLLAPSIBLE APP SIDEBAR ORGANISM ── */}
-                <div id="org-navigation-sidebar" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-navigation-sidebar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex items-center justify-between">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Collapsible navigation sidebar
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Workspace navigation shell with animated layoutId active route indicator, telemetry gauge, and expand/collapse density toggling.
+                        Collapsible navigation sidebar with categorical route hierarchy and real-time status telemetry.
                       </p>
                     </div>
 
@@ -4707,7 +4745,7 @@ module.exports = {
                 </div>
 
                 {/* ── 4. COMMAND PALETTE MODAL ORGANISM ── */}
-                <div id="org-command-palette" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-command-palette" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
@@ -4962,7 +5000,7 @@ module.exports = {
                 </div>
 
                 {/* ── 5. COMPOUND FILTER BUILDER ORGANISM ── */}
-                <div id="org-filter-builder" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-filter-builder" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
@@ -5149,13 +5187,13 @@ module.exports = {
                 </div>
 
                 {/* ── 6. DATE RANGE PICKER ORGANISM ── */}
-                <div id="org-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-date-picker" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Date range picker
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Compound temporal selector combining calendar inputs, quick preset range matrix, and action footer.
+                      Audit telemetry evaluation interval with quick presets matrix, date range inputs, and action footer.
                     </p>
                   </div>
 
@@ -5277,14 +5315,14 @@ module.exports = {
                 
 
                 {/* ── 6. METRIC TELEMETRY CHART CARD ORGANISM ── */}
-                <div id="org-metric-card" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-metric-card" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Metric telemetry chart card
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        High-density analytical card with time horizon switcher, metric stat, and interactive SVG sparkline with hover crosshair.
+                        API gateway telemetry card with time horizon switcher, metric stats, and interactive SVG line chart.
                       </p>
                     </div>
 
@@ -5477,14 +5515,14 @@ module.exports = {
                 </div>
 
                 {/* ── 8. SLIDE-OVER DETAIL DRAWER ORGANISM ── */}
-                <div id="org-detail-drawer" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-detail-drawer" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Slide-over detail drawer
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Contextual inspector sheet sliding from the screen edge with key-value property rows and action buttons.
+                        Node diagnostic inspector sheet sliding from the screen edge with key-value metadata and action footer.
                       </p>
                     </div>
 
@@ -5664,7 +5702,7 @@ module.exports = {
                 </div>
 
                 {/* ── 8. CONFIRMATION MODAL ORGANISM ── */}
-                <div id="org-confirmation-modal" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                <div id="org-confirmation-modal" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
@@ -5810,7 +5848,11 @@ module.exports = {
                   </AnimatePresence>
                 </div>
               </>
-            )}\n\n          </div>\n        </main>\n\n        {/* ══════════════════════════════════════════════════════════
+            )}
+          </div>
+        </main>
+
+        {/* ══════════════════════════════════════════════════════════
             COLUMN 3: RIGHT SIDEBAR (DARK MODE "VISUAL STUDIO" DOCK)
            ══════════════════════════════════════════════════════════ */}
         <aside className="w-72 border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 hidden xl:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
