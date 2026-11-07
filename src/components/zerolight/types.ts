@@ -74,7 +74,27 @@ export interface ScaledTokens {
   effectiveInputFill: string;
   conjoinedDivider: string;
   focusHalo: string;
+  primaryActionTextColor: string;
   motionConfig: MotionConfig;
+}
+
+export function getContrastColor(hexColor: string): string {
+  if (!hexColor) return "#FFFFFF";
+  const hex = hexColor.replace("#", "");
+  let r = 0, g = 0, b = 0;
+  if (hex.length === 3) {
+    r = parseInt(hex[0] + hex[0], 16);
+    g = parseInt(hex[1] + hex[1], 16);
+    b = parseInt(hex[2] + hex[2], 16);
+  } else if (hex.length === 6) {
+    r = parseInt(hex.substring(0, 2), 16);
+    g = parseInt(hex.substring(2, 4), 16);
+    b = parseInt(hex.substring(4, 6), 16);
+  } else {
+    return "#FFFFFF";
+  }
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 150 ? "#111111" : "#FFFFFF";
 }
 
 export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
@@ -218,6 +238,7 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     effectiveInputFill,
     conjoinedDivider,
     focusHalo,
+    primaryActionTextColor: getContrastColor(tokens.primaryButtonColor),
     motionConfig: getMotionConfig(),
   };
 }

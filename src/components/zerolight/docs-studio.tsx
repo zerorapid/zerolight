@@ -173,6 +173,7 @@ const CHART_SPARKLINE_POINTS = [
 export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atoms" | "molecules" | "organisms" }) {
   const [tokens, setTokens] = useState<ZeroLightTokens>(DEFAULT_TOKENS);
   const [activeTier, setActiveTier] = useState<"atoms" | "molecules" | "organisms">(initialTier);
+  const [isMobileStudioOpen, setIsMobileStudioOpen] = useState<boolean>(false);
 
   // Form input interactive state
   const [textInput, setTextInput] = useState<string>("sarah.connor@acme.inc");
@@ -535,6 +536,384 @@ module.exports = {
     transition: scaled.transitionStyle,
   };
 
+
+  const renderStudioControls = () => (
+    <>
+
+          <div className="space-y-5">
+            {/* Dark Mode Header with Reset */}
+            <div className="flex justify-between items-center pb-2 border-b border-[#27272A]">
+              <span className="text-xs font-semibold tracking-wide text-white">
+                Visual Studio
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setIsExportOpen(true)}
+                  className="px-2 py-0.5 rounded text-[11px] font-semibold bg-white text-black hover:bg-neutral-200 transition-colors flex items-center gap-1 cursor-pointer shadow-xs"
+                >
+                  <Code2 className="w-3 h-3" />
+                  <span>Export</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetDefaults}
+                  className="text-xs text-neutral-400 hover:text-white transition-colors font-medium cursor-pointer"
+                >
+                  Reset
+                </button>
+                {isMobileStudioOpen && (
+                  <button
+                    type="button"
+                    onClick={() => setIsMobileStudioOpen(false)}
+                    className="xl:hidden ml-1 p-1 rounded text-neutral-400 hover:text-white hover:bg-neutral-800 cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Dark Mode Scale Multiplier Controller */}
+            <div className="space-y-2 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-neutral-300">
+                  Scale multiplier
+                </span>
+                <span className="text-xs font-medium text-white bg-[#27272A] border border-[#3F3F46] px-1.5 py-0.5 rounded shadow-sm">
+                  {tokens.scaleMultiplier.toFixed(2)}x
+                </span>
+              </div>
+
+              <input
+                type="range"
+                min="0.80"
+                max="1.30"
+                step="0.05"
+                value={tokens.scaleMultiplier}
+                onChange={(e) =>
+                  setTokens((prev) => ({ ...prev, scaleMultiplier: Number(e.target.value) }))
+                }
+                className="w-full cursor-pointer accent-white"
+              />
+
+              <div className="grid grid-cols-4 gap-1 pt-1">
+                {[
+                  { label: "0.85x", val: 0.85 },
+                  { label: "1.00x", val: 1.0 },
+                  { label: "1.15x", val: 1.15 },
+                  { label: "1.30x", val: 1.3 },
+                ].map(({ label, val }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, scaleMultiplier: val }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.scaleMultiplier === val
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Dark Mode Colors Section */}
+            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
+              <div className="text-xs font-medium text-neutral-400">
+                Colors
+              </div>
+
+              {/* Universal Border Color */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-neutral-300">Border</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalBorderColor.toUpperCase()}</span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: tokens.universalBorderColor }}
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                    />
+                    <input
+                      type="color"
+                      value={tokens.universalBorderColor}
+                      onChange={(e) => setTokens((prev) => ({ ...prev, universalBorderColor: e.target.value }))}
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Universal Fill Color */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-neutral-300">Surface</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalFillColor.toUpperCase()}</span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: tokens.universalFillColor }}
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                    />
+                    <input
+                      type="color"
+                      value={tokens.universalFillColor}
+                      onChange={(e) => setTokens((prev) => ({ ...prev, universalFillColor: e.target.value }))}
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Text & Icon Color */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-neutral-300">Text &amp; icons</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.textIconColor.toUpperCase()}</span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: tokens.textIconColor }}
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                    />
+                    <input
+                      type="color"
+                      value={tokens.textIconColor}
+                      onChange={(e) => setTokens((prev) => ({ ...prev, textIconColor: e.target.value }))}
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Primary Action Color */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-neutral-300">Primary action</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.primaryButtonColor.toUpperCase()}</span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: tokens.primaryButtonColor }}
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                    />
+                    <input
+                      type="color"
+                      value={tokens.primaryButtonColor}
+                      onChange={(e) => setTokens((prev) => ({ ...prev, primaryButtonColor: e.target.value }))}
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Hover Backplate Tint */}
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-neutral-300">Hover tint</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.hoverBackplateTint.toUpperCase()}</span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: tokens.hoverBackplateTint }}
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                    />
+                    <input
+                      type="color"
+                      value={tokens.hoverBackplateTint}
+                      onChange={(e) => setTokens((prev) => ({ ...prev, hoverBackplateTint: e.target.value }))}
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Dark Mode Geometry Section */}
+            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
+              <div className="text-xs font-medium text-neutral-400">
+                Geometry
+              </div>
+
+              {/* Border Width Slider */}
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Border width</span>
+                  {tokens.borderWidth === 0 ? (
+                    <span className="text-[10px] text-amber-400 font-medium bg-amber-950/60 border border-amber-800/60 px-1.5 py-0.5 rounded">
+                      0px • Luminance Mode
+                    </span>
+                  ) : (
+                    <span className="text-neutral-400 font-medium">{tokens.borderWidth}px</span>
+                  )}
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="5"
+                  step="1"
+                  value={tokens.borderWidth}
+                  onChange={(e) => setTokens((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))}
+                  className="w-full cursor-pointer accent-white"
+                />
+                {tokens.borderWidth === 0 && (
+                  <p className="text-[10px] text-neutral-500 pt-0.5">
+                    Compensatory luminance fill & atmospheric elevation active to prevent edge bleed.
+                  </p>
+                )}
+              </div>
+
+              {/* Corner Radius */}
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-neutral-300">Corner radius</span>
+                  <span className="text-neutral-400 font-medium">
+                    {tokens.cornerRadius === 999 ? "Pill" : `${tokens.cornerRadius}px`}
+                  </span>
+                </div>
+                <div className="grid grid-cols-5 gap-1">
+                  {([0, 8, 16, 24, 999] as CornerRadiusPreset[]).map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setTokens((prev) => ({ ...prev, cornerRadius: r }))}
+                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                        tokens.cornerRadius === r
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                      }`}
+                    >
+                      {r === 0 ? "0px" : r === 999 ? "Pill" : `${r}px`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Height Density */}
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-neutral-300">Height density</span>
+                  <span className="text-neutral-400 font-medium">{tokens.heightDensity}px</span>
+                </div>
+                <div className="grid grid-cols-5 gap-1">
+                  {([36, 40, 44, 48, 52] as HeightDensityPreset[]).map((h) => (
+                    <button
+                      key={h}
+                      type="button"
+                      onClick={() => setTokens((prev) => ({ ...prev, heightDensity: h }))}
+                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                        tokens.heightDensity === h
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                      }`}
+                    >
+                      {h}px
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Menu Offset */}
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-neutral-300">Menu offset</span>
+                  <span className="text-neutral-400 font-medium">{tokens.menuOffsetGap}px</span>
+                </div>
+                <div className="grid grid-cols-4 gap-1">
+                  {([4, 8, 10, 14] as MenuOffsetPreset[]).map((g) => (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setTokens((prev) => ({ ...prev, menuOffsetGap: g }))}
+                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                        tokens.menuOffsetGap === g
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                      }`}
+                    >
+                      {g}px
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Dark Mode Typography Section (Universally Calibrating) */}
+            <div className="space-y-2 pt-2 border-t border-[#27272A]">
+              <div className="text-xs font-medium text-neutral-400">
+                Universal Typography
+              </div>
+
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span className="text-neutral-300">Base font scale</span>
+                  <span className="text-neutral-400 font-medium">{tokens.fontSize}px</span>
+                </div>
+                <input
+                  type="range"
+                  min="12"
+                  max="18"
+                  step="1"
+                  value={tokens.fontSize}
+                  onChange={(e) => setTokens((prev) => ({ ...prev, fontSize: Number(e.target.value) }))}
+                  className="w-full cursor-pointer accent-white"
+                />
+                <div className="flex justify-between text-[10px] text-neutral-500 pt-0.5">
+                  <span>12px Compact</span>
+                  <span>14px Standard</span>
+                  <span>18px Roomy</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Dark Mode Motion Section */}
+            <div className="space-y-2 pt-2 border-t border-[#27272A]">
+              <div className="text-xs font-medium text-neutral-400">
+                Motion
+              </div>
+
+              <div className="grid grid-cols-3 gap-1">
+                {(
+                  [
+                    { key: "linear", label: "Linear" },
+                    { key: "damped", label: "Damped" },
+                    { key: "elastic", label: "Elastic" },
+                  ] as { key: MotionPhysicsPreset; label: string }[]
+                ).map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, motionPhysics: key }))}
+                    className={`py-1.5 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.motionPhysics === key
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 1-Click Export Tokens CTA */}
+            <div className="pt-2 border-t border-[#27272A]">
+              <button
+                type="button"
+                onClick={() => setIsExportOpen(true)}
+                className="w-full py-2.5 px-3 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-colors select-none"
+              >
+                <Code2 className="w-3.5 h-3.5" />
+                <span>Export Theme Tokens</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-[#27272A] flex items-center justify-between text-xs text-neutral-500">
+            <span>Visual Studio Engine</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+          </div>
+        
+    </>
+  );
   return (
     <div className="min-h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200">
       {/* Toast Notification with Framer Motion spring enter/exit */}
@@ -2111,7 +2490,7 @@ module.exports = {
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           backgroundColor: tokens.primaryButtonColor,
-                          color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                          color: scaled.primaryActionTextColor,
                           height: `${scaled.scaledHeight}px`,
                           paddingLeft: `${scaled.scaledPaddingX}px`,
                           paddingRight: `${scaled.scaledPaddingX}px`,
@@ -2199,7 +2578,7 @@ module.exports = {
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             color: isSearchFocused
-                              ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                              ? (scaled.primaryActionTextColor)
                               : tokens.textIconColor,
                             fontSize: `${scaled.sublabelFontSize - 1}px`,
                             padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
@@ -2367,7 +2746,7 @@ module.exports = {
                                       ? tokens.hoverBackplateTint
                                       : "transparent",
                                     color: isSelected
-                                      ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                      ? (scaled.primaryActionTextColor)
                                       : tokens.textIconColor,
                                     fontSize: `${scaled.labelFontSize}px`,
                                     padding: "6px 8px",
@@ -2740,7 +3119,7 @@ module.exports = {
                                         borderRadius: `${scaled.scaledPillRadius}px`,
                                         backgroundColor: isSelectedYear ? tokens.primaryButtonColor : undefined,
                                         color: isSelectedYear
-                                          ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                          ? (scaled.primaryActionTextColor)
                                           : tokens.textIconColor,
                                         transition: scaled.transitionStyle,
                                       }}
@@ -2799,7 +3178,7 @@ module.exports = {
                                         borderRadius: `${scaled.scaledPillRadius}px`,
                                         backgroundColor: isSelected ? tokens.primaryButtonColor : undefined,
                                         color: isSelected
-                                          ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                          ? (scaled.primaryActionTextColor)
                                           : !isCurrentMonth
                                           ? "#A3A3A3"
                                           : tokens.textIconColor,
@@ -2969,7 +3348,7 @@ module.exports = {
                                   <span
                                     style={{
                                       color: isSelected
-                                        ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                        ? (scaled.primaryActionTextColor)
                                         : tokens.textIconColor,
                                     }}
                                     className="relative z-10"
@@ -3047,7 +3426,7 @@ module.exports = {
                             <span
                               style={{
                                 color: isSelected
-                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  ? (scaled.primaryActionTextColor)
                                   : tokens.textIconColor,
                               }}
                               className="relative z-10"
@@ -3257,7 +3636,7 @@ module.exports = {
                             <span
                               style={{
                                 color: isSelected
-                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  ? (scaled.primaryActionTextColor)
                                   : tokens.textIconColor,
                               }}
                               className="relative z-10"
@@ -3310,7 +3689,7 @@ module.exports = {
                         </div>
 
                         <div className="flex-1 space-y-0.5">
-                          <div style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-semibold text-neutral-900">
+                          <div style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                             {alertVariant === "critical" && "Payment Gateway Authorization Failed"}
                             {alertVariant === "warning" && "API Rate Quota Nearing Threshold (88%)"}
                             {alertVariant === "success" && "Database Migration Successfully Applied"}
@@ -3470,7 +3849,7 @@ module.exports = {
                             <span
                               style={{
                                 color: isSelected
-                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  ? (scaled.primaryActionTextColor)
                                   : tokens.textIconColor,
                               }}
                               className="relative z-10"
@@ -3896,7 +4275,7 @@ module.exports = {
                         style={{
                           borderRadius: `${scaled.scaledPillRadius}px`,
                           backgroundColor: tokens.primaryButtonColor,
-                          color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                          color: scaled.primaryActionTextColor,
                         }}
                         className="w-6 h-6 flex items-center justify-center font-semibold text-xs shadow-xs"
                       >
@@ -3959,7 +4338,7 @@ module.exports = {
                         style={{
                           backgroundColor: tokens.primaryButtonColor,
                           borderRadius: `${scaled.scaledPillRadius}px`,
-                          color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                          color: scaled.primaryActionTextColor,
                         }}
                         className="w-7 h-7 flex items-center justify-center font-bold text-xs shrink-0"
                       >
@@ -4185,7 +4564,7 @@ module.exports = {
                           style={{
                             borderRadius: `${scaled.scaledPillRadius}px`,
                             backgroundColor: tokens.primaryButtonColor,
-                            color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                            color: scaled.primaryActionTextColor,
                           }}
                           className="w-7 h-7 flex items-center justify-center font-bold text-[11px] cursor-pointer shadow-xs"
                         >
@@ -4324,7 +4703,7 @@ module.exports = {
                             style={{
                               backgroundColor: tokens.primaryButtonColor,
                               borderRadius: `${scaled.scaledPillRadius}px`,
-                              color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                              color: scaled.primaryActionTextColor,
                             }}
                             className="w-6 h-6 flex items-center justify-center font-bold text-xs shrink-0"
                           >
@@ -4375,7 +4754,7 @@ module.exports = {
                                 <div
                                   style={{
                                     color: isSelected
-                                      ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                      ? (scaled.primaryActionTextColor)
                                       : tokens.textIconColor,
                                   }}
                                   className="flex items-center gap-2.5 relative z-10 truncate"
@@ -4470,7 +4849,7 @@ module.exports = {
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
-                        color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                        color: scaled.primaryActionTextColor,
                         height: `${scaled.scaledHeight}px`,
                         fontSize: `${scaled.ctaFontSize}px`,
                         padding: `0 ${scaled.scaledPaddingX}px`,
@@ -4493,7 +4872,33 @@ module.exports = {
                     }}
                     className="text-xs p-2.5 border"
                   >
-                    💡 Tip: You can press <kbd className="font-mono bg-white px-1.5 py-0.5 rounded border border-neutral-200 text-neutral-800">⌘K</kbd> (or <kbd className="font-mono bg-white px-1.5 py-0.5 rounded border border-neutral-200 text-neutral-800">Ctrl+K</kbd>) anywhere on this page to trigger the modal.
+                    💡 Tip: You can press{" "}
+                    <kbd
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: scaled.effectiveInputFill,
+                        color: tokens.textIconColor,
+                      }}
+                      className="px-1.5 py-0.5 border text-xs font-semibold"
+                    >
+                      ⌘K
+                    </kbd>{" "}
+                    (or{" "}
+                    <kbd
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: scaled.effectiveInputFill,
+                        color: tokens.textIconColor,
+                      }}
+                      className="px-1.5 py-0.5 border text-xs font-semibold"
+                    >
+                      Ctrl+K
+                    </kbd>
+                    ) anywhere on this page to trigger the modal.
                   </p>
 
                   {/* Command Palette Modal */}
@@ -4699,7 +5104,7 @@ module.exports = {
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
-                        color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                        color: scaled.primaryActionTextColor,
                         height: `${scaled.scaledHeight}px`,
                         padding: `0 ${scaled.scaledPaddingX}px`,
                         fontSize: `${scaled.ctaFontSize}px`,
@@ -4913,7 +5318,7 @@ module.exports = {
                             <span
                               style={{
                                 color: isSelected
-                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  ? (scaled.primaryActionTextColor)
                                   : tokens.textIconColor,
                               }}
                               className="relative z-10"
@@ -5086,7 +5491,7 @@ module.exports = {
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
-                        color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                        color: scaled.primaryActionTextColor,
                         height: `${scaled.scaledHeight}px`,
                         padding: `0 ${scaled.scaledPaddingX}px`,
                         fontSize: `${scaled.ctaFontSize}px`,
@@ -5185,7 +5590,7 @@ module.exports = {
                                     <span
                                       style={{
                                         color: isSelected
-                                          ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                          ? (scaled.primaryActionTextColor)
                                           : tokens.textIconColor,
                                       }}
                                       className="relative z-10"
@@ -5368,7 +5773,7 @@ module.exports = {
                               style={{
                                 borderRadius: `${scaled.scaledRadius}px`,
                                 backgroundColor: tokens.primaryButtonColor,
-                                color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                                color: scaled.primaryActionTextColor,
                                 height: `${scaled.scaledHeight}px`,
                                 padding: `0 ${scaled.scaledPaddingX}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
@@ -5536,369 +5941,42 @@ module.exports = {
             COLUMN 3: RIGHT SIDEBAR (DARK MODE "VISUAL STUDIO" DOCK)
            ══════════════════════════════════════════════════════════ */}
         <aside className="w-72 border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 hidden xl:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
-          <div className="space-y-5">
-            {/* Dark Mode Header with Reset */}
-            <div className="flex justify-between items-center pb-2 border-b border-[#27272A]">
-              <span className="text-xs font-semibold tracking-wide text-white">
-                Visual Studio
-              </span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setIsExportOpen(true)}
-                  className="px-2 py-0.5 rounded text-[11px] font-semibold bg-white text-black hover:bg-neutral-200 transition-colors flex items-center gap-1 cursor-pointer shadow-xs"
-                >
-                  <Code2 className="w-3 h-3" />
-                  <span>Export</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleResetDefaults}
-                  className="text-xs text-neutral-400 hover:text-white transition-colors font-medium cursor-pointer"
-                >
-                  Reset
-                </button>
-              </div>
-            </div>
-
-            {/* Dark Mode Scale Multiplier Controller */}
-            <div className="space-y-2 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-neutral-300">
-                  Scale multiplier
-                </span>
-                <span className="text-xs font-medium text-white bg-[#27272A] border border-[#3F3F46] px-1.5 py-0.5 rounded shadow-sm">
-                  {tokens.scaleMultiplier.toFixed(2)}x
-                </span>
-              </div>
-
-              <input
-                type="range"
-                min="0.80"
-                max="1.30"
-                step="0.05"
-                value={tokens.scaleMultiplier}
-                onChange={(e) =>
-                  setTokens((prev) => ({ ...prev, scaleMultiplier: Number(e.target.value) }))
-                }
-                className="w-full cursor-pointer accent-white"
-              />
-
-              <div className="grid grid-cols-4 gap-1 pt-1">
-                {[
-                  { label: "0.85x", val: 0.85 },
-                  { label: "1.00x", val: 1.0 },
-                  { label: "1.15x", val: 1.15 },
-                  { label: "1.30x", val: 1.3 },
-                ].map(({ label, val }) => (
-                  <button
-                    key={label}
-                    type="button"
-                    onClick={() => setTokens((prev) => ({ ...prev, scaleMultiplier: val }))}
-                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                      tokens.scaleMultiplier === val
-                        ? "bg-white text-black border-white font-semibold shadow-sm"
-                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Dark Mode Colors Section */}
-            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Colors
-              </div>
-
-              {/* Universal Border Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Border</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalBorderColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.universalBorderColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.universalBorderColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, universalBorderColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Universal Fill Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Surface</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalFillColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.universalFillColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.universalFillColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, universalFillColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Text & Icon Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Text &amp; icons</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.textIconColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.textIconColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.textIconColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, textIconColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Primary Action Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Primary action</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.primaryButtonColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.primaryButtonColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.primaryButtonColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, primaryButtonColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Hover Backplate Tint */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Hover tint</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.hoverBackplateTint.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.hoverBackplateTint }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.hoverBackplateTint}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, hoverBackplateTint: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Dark Mode Geometry Section */}
-            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Geometry
-              </div>
-
-              {/* Border Width Slider */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-300">Border width</span>
-                  {tokens.borderWidth === 0 ? (
-                    <span className="text-[10px] text-amber-400 font-medium bg-amber-950/60 border border-amber-800/60 px-1.5 py-0.5 rounded">
-                      0px • Luminance Mode
-                    </span>
-                  ) : (
-                    <span className="text-neutral-400 font-medium">{tokens.borderWidth}px</span>
-                  )}
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="5"
-                  step="1"
-                  value={tokens.borderWidth}
-                  onChange={(e) => setTokens((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))}
-                  className="w-full cursor-pointer accent-white"
-                />
-                {tokens.borderWidth === 0 && (
-                  <p className="text-[10px] text-neutral-500 pt-0.5">
-                    Compensatory luminance fill & atmospheric elevation active to prevent edge bleed.
-                  </p>
-                )}
-              </div>
-
-              {/* Corner Radius */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Corner radius</span>
-                  <span className="text-neutral-400 font-medium">
-                    {tokens.cornerRadius === 999 ? "Pill" : `${tokens.cornerRadius}px`}
-                  </span>
-                </div>
-                <div className="grid grid-cols-5 gap-1">
-                  {([0, 8, 16, 24, 999] as CornerRadiusPreset[]).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, cornerRadius: r }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.cornerRadius === r
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {r === 0 ? "0px" : r === 999 ? "Pill" : `${r}px`}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Height Density */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Height density</span>
-                  <span className="text-neutral-400 font-medium">{tokens.heightDensity}px</span>
-                </div>
-                <div className="grid grid-cols-5 gap-1">
-                  {([36, 40, 44, 48, 52] as HeightDensityPreset[]).map((h) => (
-                    <button
-                      key={h}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, heightDensity: h }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.heightDensity === h
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {h}px
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Menu Offset */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Menu offset</span>
-                  <span className="text-neutral-400 font-medium">{tokens.menuOffsetGap}px</span>
-                </div>
-                <div className="grid grid-cols-4 gap-1">
-                  {([4, 8, 10, 14] as MenuOffsetPreset[]).map((g) => (
-                    <button
-                      key={g}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, menuOffsetGap: g }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.menuOffsetGap === g
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {g}px
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Dark Mode Typography Section (Universally Calibrating) */}
-            <div className="space-y-2 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Universal Typography
-              </div>
-
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Base font scale</span>
-                  <span className="text-neutral-400 font-medium">{tokens.fontSize}px</span>
-                </div>
-                <input
-                  type="range"
-                  min="12"
-                  max="18"
-                  step="1"
-                  value={tokens.fontSize}
-                  onChange={(e) => setTokens((prev) => ({ ...prev, fontSize: Number(e.target.value) }))}
-                  className="w-full cursor-pointer accent-white"
-                />
-                <div className="flex justify-between text-[10px] text-neutral-500 pt-0.5">
-                  <span>12px Compact</span>
-                  <span>14px Standard</span>
-                  <span>18px Roomy</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Dark Mode Motion Section */}
-            <div className="space-y-2 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Motion
-              </div>
-
-              <div className="grid grid-cols-3 gap-1">
-                {(
-                  [
-                    { key: "linear", label: "Linear" },
-                    { key: "damped", label: "Damped" },
-                    { key: "elastic", label: "Elastic" },
-                  ] as { key: MotionPhysicsPreset; label: string }[]
-                ).map(({ key, label }) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setTokens((prev) => ({ ...prev, motionPhysics: key }))}
-                    className={`py-1.5 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                      tokens.motionPhysics === key
-                        ? "bg-white text-black border-white font-semibold shadow-sm"
-                        : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 1-Click Export Tokens CTA */}
-            <div className="pt-2 border-t border-[#27272A]">
-              <button
-                type="button"
-                onClick={() => setIsExportOpen(true)}
-                className="w-full py-2.5 px-3 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-colors select-none"
-              >
-                <Code2 className="w-3.5 h-3.5" />
-                <span>Export Theme Tokens</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="pt-4 border-t border-[#27272A] flex items-center justify-between text-xs text-neutral-500">
-            <span>Visual Studio Engine</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-          </div>
+          {renderStudioControls()}
         </aside>
+
+        {/* Floating trigger for viewports < 1280px */}
+        <button
+          type="button"
+          onClick={() => setIsMobileStudioOpen(true)}
+          className="xl:hidden fixed bottom-6 right-6 z-40 bg-[#121214] text-white border border-[#27272A] px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 text-xs font-semibold hover:bg-neutral-800 transition-all cursor-pointer hover:scale-105 active:scale-95"
+        >
+          <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
+          <span>Visual Studio</span>
+        </button>
+
+        {/* Responsive Drawer for viewports < 1280px */}
+        <AnimatePresence>
+          {isMobileStudioOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs xl:hidden flex justify-end"
+              onClick={() => setIsMobileStudioOpen(false)}
+            >
+              <motion.aside
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-80 max-w-[90vw] bg-[#121214] text-[#E4E4E7] p-5 h-full overflow-y-auto border-l border-[#27272A] flex flex-col justify-between select-none"
+              >
+                {renderStudioControls()}
+              </motion.aside>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* ══════════════════════════════════════════════════════════
             1-CLICK TOKEN EXPORT MODAL (TAILWIND, CSS, JSON)
