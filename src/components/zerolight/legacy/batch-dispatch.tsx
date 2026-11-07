@@ -78,7 +78,7 @@ export function BatchDispatch({
         return (
           <div className="space-y-4">
             {/* Header: Batch ID, Unit Count, Destination */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pb-3 border-b border-neutral-800/70 font-mono text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pb-3 border-b border-neutral-800/70 font-sans text-xs">
               <div className="flex items-center gap-2">
                 <span className="text-neutral-500 text-[11px]">Batch:</span>
                 <span className="text-neutral-200 font-bold bg-neutral-900 border border-neutral-800 px-1.5 py-0.5 rounded">
@@ -119,7 +119,7 @@ export function BatchDispatch({
                       }`}
                     >
                       <span className="text-xs font-semibold">{mode}</span>
-                      <div className="flex items-center justify-between mt-1 text-[10px] font-mono text-neutral-500">
+                      <div className="flex items-center justify-between mt-1 text-[10px] font-sans text-neutral-500">
                         <span>{speed}</span>
                         <span className={isSelected ? "text-rose-400" : ""}>{costIndex}</span>
                       </div>
@@ -137,11 +137,11 @@ export function BatchDispatch({
                   className="font-medium text-neutral-300 flex items-center gap-2"
                 >
                   <span>Departure Window Allocation</span>
-                  <span className="text-[10px] font-mono text-neutral-500">
+                  <span className="text-[10px] font-sans text-neutral-500">
                     (Dock hold threshold)
                   </span>
                 </label>
-                <span className="font-mono text-xs font-bold text-rose-400 bg-rose-950/40 border border-rose-900/50 px-2 py-0.5 rounded">
+                <span className="font-sans text-xs font-bold text-rose-400 bg-rose-950/40 border border-rose-900/50 px-2 py-0.5 rounded">
                   {departureWindowDays} {departureWindowDays === 1 ? "Business Day" : "Business Days"}
                 </span>
               </div>
@@ -157,7 +157,7 @@ export function BatchDispatch({
                 className="w-full cursor-pointer accent-rose-500 transition-all"
               />
 
-              <div className="flex justify-between text-[10px] font-mono text-neutral-500">
+              <div className="flex justify-between text-[10px] font-sans text-neutral-500">
                 <span>1d (Express Release)</span>
                 <span>3d (Standard)</span>
                 <span>5d (Consolidated)</span>

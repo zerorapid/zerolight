@@ -34,7 +34,14 @@ export function Input({
         disabled ? "opacity-50 cursor-not-allowed bg-neutral-100" : "focus-within:ring-2 focus-within:ring-black/10"
       } ${className}`}
     >
-      {iconLeft && <span className="text-neutral-400 shrink-0 flex items-center">{iconLeft}</span>}
+      {iconLeft && (
+        <span
+          style={{ color: tokens.iconColor || tokens.textIconColor }}
+          className="shrink-0 flex items-center"
+        >
+          {iconLeft}
+        </span>
+      )}
       <input
         disabled={disabled}
         style={{
@@ -45,7 +52,14 @@ export function Input({
         className="w-full bg-transparent outline-none font-medium placeholder:text-neutral-400"
         {...props}
       />
-      {iconRight && <span className="text-neutral-400 shrink-0 flex items-center">{iconRight}</span>}
+      {iconRight && (
+        <span
+          style={{ color: tokens.iconColor || tokens.textIconColor }}
+          className="shrink-0 flex items-center"
+        >
+          {iconRight}
+        </span>
+      )}
     </div>
   );
 }

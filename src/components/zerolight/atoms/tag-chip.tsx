@@ -33,7 +33,12 @@ export function TagChip({ label, onRemove, className = "" }: TagChipProps) {
           className="text-neutral-400 hover:text-neutral-700 cursor-pointer ml-0.5 rounded-full p-0.5"
           aria-label={`Remove tag ${label}`}
         >
-          <X className="w-3 h-3 shrink-0" />
+          <X
+            size={scaled.iconSmSize ? Math.max(10, Math.round(scaled.iconSmSize * 0.75)) : 12}
+            strokeWidth={tokens.iconStrokeWidth || 2}
+            color={tokens.iconColor || tokens.textIconColor}
+            className="shrink-0"
+          />
         </button>
       )}
     </span>

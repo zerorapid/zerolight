@@ -120,7 +120,7 @@ export function Aperture<T>({
           aria-live="polite"
           data-aperture-id={apertureId}
           data-aperture-state="settled"
-          className={`group flex items-center justify-between gap-4 px-3.5 py-2.5 rounded-md border border-neutral-800/80 bg-neutral-950/90 text-xs font-mono transition-all duration-200 hover:border-neutral-700 hover:bg-neutral-900/60 shadow-sm ${className}`}
+          className={`group flex items-center justify-between gap-4 px-3.5 py-2.5 rounded-md border border-neutral-800/80 bg-neutral-950/90 text-xs font-sans transition-all duration-200 hover:border-neutral-700 hover:bg-neutral-900/60 shadow-sm ${className}`}
         >
           <div className="flex items-center gap-2.5 min-w-0 overflow-hidden">
             {/* Live Audit Pulse Indicator */}
@@ -206,7 +206,7 @@ export function Aperture<T>({
 
           <div className="flex items-center gap-2">
             <span
-              className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded border font-medium ${badgeColorClasses}`}
+              className={`text-[10px] font-sans uppercase tracking-widest px-2 py-0.5 rounded border font-medium ${badgeColorClasses}`}
             >
               {badgeText}
             </span>

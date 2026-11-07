@@ -101,7 +101,7 @@ export function DiscountOverride({
         return (
           <div className="space-y-4">
             {/* Context Meta Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-800/70 text-xs font-mono">
+            <div className="flex items-center justify-between pb-3 border-b border-neutral-800/70 text-xs font-sans">
               <div className="flex items-center gap-3">
                 <span className="text-neutral-400">Target Invoice:</span>
                 <span className="font-semibold text-neutral-100">{invoiceId}</span>
@@ -129,11 +129,11 @@ export function DiscountOverride({
                   className="font-medium text-neutral-300 flex items-center gap-2"
                 >
                   <span>Override Concession</span>
-                  <span className="text-[10px] font-mono text-neutral-500">
+                  <span className="text-[10px] font-sans text-neutral-500">
                     (Limit: 40% Max Policy)
                   </span>
                 </label>
-                <span className="font-mono text-sm font-bold text-rose-400 bg-rose-950/40 border border-rose-900/50 px-2 py-0.5 rounded">
+                <span className="font-sans text-sm font-bold text-rose-400 bg-rose-950/40 border border-rose-900/50 px-2 py-0.5 rounded">
                   {percentage}%
                 </span>
               </div>
@@ -149,7 +149,7 @@ export function DiscountOverride({
                 className="w-full cursor-pointer accent-rose-500 transition-all"
               />
 
-              <div className="flex justify-between text-[10px] font-mono text-neutral-500">
+              <div className="flex justify-between text-[10px] font-sans text-neutral-500">
                 <span>0% (Standard)</span>
                 <span>10%</span>
                 <span>20% (Director Approval)</span>
@@ -159,7 +159,7 @@ export function DiscountOverride({
             </div>
 
             {/* Real-time Net Payable Calculator Board */}
-            <div className="grid grid-cols-3 gap-2 p-3 rounded-md bg-neutral-900/70 border border-neutral-800 font-mono text-xs">
+            <div className="grid grid-cols-3 gap-2 p-3 rounded-md bg-neutral-900/70 border border-neutral-800 font-sans text-xs">
               <div className="space-y-0.5">
                 <div className="text-[10px] text-neutral-500 uppercase tracking-wider font-sans">
                   Gross Original

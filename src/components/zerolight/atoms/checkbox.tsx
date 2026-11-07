@@ -50,8 +50,20 @@ export function Checkbox({
         }}
         className="w-4 h-4 flex items-center justify-center border mt-0.5 shrink-0 shadow-2xs transition-colors"
       >
-        {checked && !indeterminate && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
-        {indeterminate && <Minus className="w-3 h-3 text-white" strokeWidth={3} />}
+        {checked && !indeterminate && (
+          <Check
+            size={12}
+            strokeWidth={tokens.iconStrokeWidth || 2.5}
+            color={scaled.primaryActionTextColor}
+          />
+        )}
+        {indeterminate && (
+          <Minus
+            size={12}
+            strokeWidth={tokens.iconStrokeWidth || 2.5}
+            color={scaled.primaryActionTextColor}
+          />
+        )}
       </button>
 
       {(label || description) && (

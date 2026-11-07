@@ -39,14 +39,22 @@ export function FormField({
 
       {errorMessage && (
         <div className="flex items-center gap-1.5 text-xs text-rose-600 font-medium pt-0.5">
-          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+          <AlertCircle
+            size={scaled.iconSmSize || 14}
+            strokeWidth={tokens.iconStrokeWidth || 1.75}
+            className="shrink-0"
+          />
           <span>{errorMessage}</span>
         </div>
       )}
 
       {!errorMessage && successMessage && (
         <div className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium pt-0.5">
-          <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+          <CheckCircle2
+            size={scaled.iconSmSize || 14}
+            strokeWidth={tokens.iconStrokeWidth || 1.75}
+            className="shrink-0"
+          />
           <span>{successMessage}</span>
         </div>
       )}

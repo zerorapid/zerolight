@@ -53,7 +53,7 @@ export function ZeroLightDispatcher({
         <div
           role="alert"
           data-dispatcher-state="fault"
-          className={`rounded-lg border border-amber-900/60 bg-neutral-950 p-4 space-y-3 font-mono text-xs shadow-xl ${className}`}
+          className={`rounded-lg border border-amber-900/60 bg-neutral-950 p-4 space-y-3 font-sans text-xs shadow-xl ${className}`}
         >
           <div className="flex items-center justify-between pb-2 border-b border-amber-950/80">
             <div className="flex items-center gap-2 text-amber-400 font-semibold uppercase tracking-wider text-[11px]">
@@ -80,7 +80,7 @@ export function ZeroLightDispatcher({
           <div className="space-y-1 text-neutral-400 font-sans text-xs">
             <p>
               The intent dispatcher failed to resolve aperture type:{" "}
-              <code className="text-amber-300 font-mono bg-neutral-900 px-1 py-0.5 rounded border border-neutral-800">
+              <code className="text-amber-300 font-sans bg-neutral-900 px-1 py-0.5 rounded border border-neutral-800">
                 &quot;{aperture}&quot;
               </code>
             </p>
