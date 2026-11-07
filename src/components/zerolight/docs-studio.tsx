@@ -3285,7 +3285,7 @@ module.exports = {
                               padding: `${Math.round(5 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
                               transition: scaled.transitionStyle,
                             }}
-                            className="font-medium cursor-pointer relative transition-colors select-none"
+                            className="font-medium cursor-pointer relative transition-colors select-none whitespace-nowrap shrink-0"
                           >
                             {isSelected && (
                               <motion.div
@@ -3493,7 +3493,7 @@ module.exports = {
                               setAlertVariant(v);
                               setIsAlertDismissed(false);
                             }}
-                            className={`px-2.5 py-1 text-[11px] capitalize font-medium cursor-pointer relative transition-colors ${
+                            className={`px-3 py-1.5 text-xs capitalize font-medium cursor-pointer relative transition-colors whitespace-nowrap shrink-0 ${
                               isSelected ? "font-semibold" : "opacity-70 hover:opacity-100"
                             }`}
                           >
@@ -3699,7 +3699,7 @@ module.exports = {
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.hoverBackplateTint,
                       }}
-                      className="inline-flex items-center gap-1 p-0.5 border self-start sm:self-auto"
+                      className="inline-flex items-center gap-1.5 p-1 border self-start sm:self-auto shrink-0 whitespace-nowrap"
                     >
                       {(["all", "API Gateway", "Worker", "Cache"] as const).map((r) => {
                         const isSelected = orgTableRoleFilter === r;
@@ -3708,7 +3708,7 @@ module.exports = {
                             key={r}
                             type="button"
                             onClick={() => setOrgTableRoleFilter(r)}
-                            className="px-2.5 py-1 text-[11px] capitalize cursor-pointer relative transition-colors font-medium"
+                            className="px-3.5 py-1.5 text-xs capitalize cursor-pointer relative transition-colors font-medium whitespace-nowrap shrink-0"
                           >
                             {isSelected && (
                               <motion.div
@@ -3727,7 +3727,7 @@ module.exports = {
                                   ? (scaled.primaryActionTextColor)
                                   : tokens.textIconColor,
                               }}
-                              className="relative z-10"
+                              className="relative z-10 whitespace-nowrap"
                             >
                               {r === "all" ? "All Roles" : r}
                             </span>
@@ -3892,7 +3892,7 @@ module.exports = {
                                     backgroundColor: tokens.hoverBackplateTint,
                                     color: tokens.textIconColor,
                                   }}
-                                  className="inline-block px-2 py-0.5 text-[10px] font-medium border"
+                                  className="inline-block px-2.5 py-1 text-xs font-medium border whitespace-nowrap shrink-0"
                                 >
                                   {node.role}
                                 </span>
@@ -3905,7 +3905,7 @@ module.exports = {
                                       borderColor: tokens.universalBorderColor,
                                       borderWidth: `${tokens.borderWidth}px`,
                                     }}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 border"
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-emerald-700 bg-emerald-50 border whitespace-nowrap shrink-0"
                                   >
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                     Healthy
@@ -3918,7 +3918,7 @@ module.exports = {
                                       borderColor: tokens.universalBorderColor,
                                       borderWidth: `${tokens.borderWidth}px`,
                                     }}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-amber-700 bg-amber-50 border"
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-amber-700 bg-amber-50 border whitespace-nowrap shrink-0"
                                   >
                                     <AlertTriangle className="w-2.5 h-2.5 text-amber-500" />
                                     Degraded
@@ -3931,7 +3931,7 @@ module.exports = {
                                       borderColor: tokens.universalBorderColor,
                                       borderWidth: `${tokens.borderWidth}px`,
                                     }}
-                                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-sky-700 bg-sky-50 border"
+                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-sky-700 bg-sky-50 border whitespace-nowrap shrink-0"
                                   >
                                     <RefreshCw className="w-2.5 h-2.5 text-sky-500 animate-spin" />
                                     Syncing
@@ -5305,7 +5305,7 @@ module.exports = {
                             key={h}
                             type="button"
                             onClick={() => setChartHorizon(h)}
-                            className="px-2.5 py-1 text-[11px] cursor-pointer relative transition-colors font-medium"
+                            className="px-3.5 py-1.5 text-xs cursor-pointer relative transition-colors font-medium whitespace-nowrap shrink-0"
                           >
                             {isSelected && (
                               <motion.div
