@@ -79,7 +79,7 @@ export function CommandPalette({
             initial={{ opacity: 0, scale: 0.96, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -10 }}
-            transition={scaled.motionConfig.spring}
+            transition={scaled.motionConfig.modalTransition}
             style={{
               borderRadius: `${scaled.scaledCardRadius}px`,
               borderColor: tokens.universalBorderColor,
@@ -87,7 +87,7 @@ export function CommandPalette({
               backgroundColor: tokens.universalFillColor,
               boxShadow: "0 20px 50px rgba(0,0,0,0.15)",
             }}
-            className="w-full max-w-lg border shadow-2xl overflow-hidden select-none"
+            className="w-full max-w-lg border shadow-2xl overflow-hidden select-none transform-gpu"
           >
             {/* Search Input Bar */}
             <div

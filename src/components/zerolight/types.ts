@@ -41,6 +41,16 @@ export interface MotionConfig {
     damping: number;
     mass?: number;
   };
+  drawerTransition: {
+    type: "spring";
+    stiffness: number;
+    damping: number;
+  };
+  modalTransition: {
+    type: "spring";
+    stiffness: number;
+    damping: number;
+  };
   popover: {
     initial: { opacity: number; scale: number; y: number };
     animate: { opacity: number; scale: number; y: number };
@@ -176,6 +186,8 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
         return {
           physics: "elastic",
           spring: { type: "spring", stiffness: 460, damping: 20, mass: 0.8 },
+          drawerTransition: { type: "spring", stiffness: 440, damping: 24 },
+          modalTransition: { type: "spring", stiffness: 480, damping: 22 },
           popover: {
             initial: { opacity: 0, scale: 0.93, y: -8 },
             animate: { opacity: 1, scale: 1, y: 0 },
@@ -183,12 +195,14 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
             transition: { type: "spring", stiffness: 460, damping: 22 },
           },
           pillTransition: { type: "spring", stiffness: 460, damping: 22 },
-          tapScale: 0.93,
+          tapScale: 0.95,
         };
       case "linear":
         return {
           physics: "linear",
           spring: { type: "spring", stiffness: 500, damping: 45, mass: 1 },
+          drawerTransition: { type: "spring", stiffness: 500, damping: 45 },
+          modalTransition: { type: "spring", stiffness: 500, damping: 45 },
           popover: {
             initial: { opacity: 0, scale: 0.98, y: -2 },
             animate: { opacity: 1, scale: 1, y: 0 },
@@ -202,15 +216,17 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
       default:
         return {
           physics: "damped",
-          spring: { type: "spring", stiffness: 380, damping: 28, mass: 0.9 },
+          spring: { type: "spring", stiffness: 400, damping: 28, mass: 0.9 },
+          drawerTransition: { type: "spring", stiffness: 380, damping: 30 },
+          modalTransition: { type: "spring", stiffness: 420, damping: 26 },
           popover: {
             initial: { opacity: 0, scale: 0.96, y: -4 },
             animate: { opacity: 1, scale: 1, y: 0 },
             exit: { opacity: 0, scale: 0.96, y: -4 },
-            transition: { type: "spring", stiffness: 380, damping: 28 },
+            transition: { type: "spring", stiffness: 400, damping: 28 },
           },
-          pillTransition: { type: "spring", stiffness: 380, damping: 28 },
-          tapScale: 0.96,
+          pillTransition: { type: "spring", stiffness: 400, damping: 28 },
+          tapScale: 0.97,
         };
     }
   };

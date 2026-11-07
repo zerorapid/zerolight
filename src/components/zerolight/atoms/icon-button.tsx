@@ -2,8 +2,9 @@
 
 import React from "react";
 import { useZeroLight } from "../context";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IconButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   icon: React.ReactNode;
   ariaLabel: string;
   variant?: "ghost" | "outline" | "solid";
@@ -49,10 +50,12 @@ export function IconButton({
   };
 
   return (
-    <button
+    <motion.button
       type="button"
       aria-label={ariaLabel}
       disabled={disabled}
+      whileTap={{ scale: disabled ? 1 : 0.92 }}
+      transition={scaled.motionConfig.spring}
       style={{
         width: `${dimension}px`,
         height: `${dimension}px`,
@@ -62,12 +65,12 @@ export function IconButton({
         ...getVariantStyles(),
         ...style,
       }}
-      className={`inline-flex items-center justify-center shrink-0 cursor-pointer hover:opacity-80 active:scale-95 border transition-all ${
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer hover:opacity-80 border transition-colors transform-gpu ${
         disabled ? "opacity-40 cursor-not-allowed" : ""
       } ${className}`}
       {...props}
     >
       {icon}
-    </button>
+    </motion.button>
   );
 }

@@ -3,11 +3,12 @@
 import React from "react";
 import { useZeroLight } from "../context";
 import { Loader2 } from "lucide-react";
+import { motion, HTMLMotionProps } from "framer-motion";
 
 export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive";
 export type ButtonSize = "sm" | "md" | "lg";
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
@@ -31,7 +32,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const { tokens, scaled } = useZeroLight();
-  const isDisabled = disabled || loading;
+  const isDisabled = Boolean(disabled || loading);
 
   const sizeMultiplier = size === "sm" ? 0.85 : size === "lg" ? 1.15 : 1.0;
   const height = Math.round(scaled.scaledHeight * sizeMultiplier);
@@ -74,9 +75,11 @@ export function Button({
   };
 
   return (
-    <button
+    <motion.button
       type={type}
       disabled={isDisabled}
+      whileTap={{ scale: isDisabled ? 1 : scaled.motionConfig.tapScale }}
+      transition={scaled.motionConfig.spring}
       style={{
         borderRadius: `${scaled.scaledRadius}px`,
         borderWidth: `${variant === "ghost" ? 0 : Math.max(1, tokens.borderWidth)}px`,
@@ -88,8 +91,8 @@ export function Button({
         ...getVariantStyles(),
         ...style,
       }}
-      className={`inline-flex items-center justify-center gap-2 font-semibold shadow-xs select-none whitespace-nowrap shrink-0 transition-opacity ${
-        isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-90 active:scale-[0.985]"
+      className={`inline-flex items-center justify-center gap-2 font-semibold shadow-xs select-none whitespace-nowrap shrink-0 transition-opacity transform-gpu ${
+        isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-90"
       } ${className}`}
       {...props}
     >
@@ -100,6 +103,6 @@ export function Button({
       )}
       {children && <span className="whitespace-nowrap">{children}</span>}
       {!loading && iconRight && <span className="shrink-0 flex items-center">{iconRight}</span>}
-    </button>
+    </motion.button>
   );
 }

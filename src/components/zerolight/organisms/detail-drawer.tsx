@@ -32,14 +32,14 @@ export function DetailDrawer({
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={scaled.motionConfig.spring}
+            transition={scaled.motionConfig.drawerTransition}
             style={{
               borderColor: tokens.universalBorderColor,
               borderWidth: 0,
               borderLeftWidth: `${tokens.borderWidth}px`,
               backgroundColor: tokens.universalFillColor,
             }}
-            className="w-full max-w-[420px] h-full border-l shadow-2xl flex flex-col justify-between select-none"
+            className="w-full max-w-[420px] h-full border-l shadow-2xl flex flex-col justify-between select-none transform-gpu"
           >
             {/* Drawer Header */}
             <div

@@ -38,7 +38,7 @@ export function ConfirmationModal({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={scaled.motionConfig.spring}
+            transition={scaled.motionConfig.modalTransition}
             style={{
               borderRadius: `${scaled.scaledCardRadius}px`,
               borderColor: tokens.universalBorderColor,
@@ -46,7 +46,7 @@ export function ConfirmationModal({
               backgroundColor: tokens.universalFillColor,
               boxShadow: scaled.cardShadow,
             }}
-            className="w-full max-w-md p-6 border shadow-2xl space-y-5 select-none"
+            className="w-full max-w-md p-6 border shadow-2xl space-y-5 select-none transform-gpu"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
