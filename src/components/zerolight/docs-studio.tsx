@@ -2405,13 +2405,13 @@ module.exports = {
               <>
                 {/* ── 1. FORM FIELD ── */}
                 <div id="mol-form-field" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <Mail className="w-4 h-4 text-neutral-500 shrink-0" />
-                        Form field
+                        <span>Form field</span>
                       </h2>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
                         Single Sign-On (SSO) email address with corporate domain verification and inline feedback.
                       </p>
                     </div>
@@ -2426,12 +2426,22 @@ module.exports = {
                         backgroundColor: tokens.universalFillColor,
                         color: tokens.textIconColor,
                         fontSize: `${scaled.sublabelFontSize}px`,
-                        padding: "4px 10px",
+                        padding: "6px 14px",
                         transition: scaled.transitionStyle,
                       }}
-                      className="border font-medium cursor-pointer shadow-2xs hover:opacity-80 transition-opacity whitespace-nowrap shrink-0 px-3"
+                      className="border font-medium cursor-pointer shadow-2xs hover:opacity-80 transition-opacity whitespace-nowrap shrink-0 self-start sm:self-auto inline-flex items-center justify-center gap-1.5"
                     >
-                      {isEmailError ? "Clear error" : "Simulate error"}
+                      {isEmailError ? (
+                        <>
+                          <Check className="w-3 h-3 text-emerald-600 shrink-0" />
+                          <span>Clear error</span>
+                        </>
+                      ) : (
+                        <>
+                          <AlertCircle className="w-3 h-3 text-rose-500 shrink-0" />
+                          <span>Simulate error</span>
+                        </>
+                      )}
                     </button>
                   </div>
 
@@ -3559,13 +3569,13 @@ module.exports = {
 
                 {/* ── 10. ALERT BANNER ── */}
                 <div id="mol-alert" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <AlertCircle className="w-4 h-4 text-neutral-500 shrink-0" />
-                        Alert banner
+                        <span>Alert banner</span>
                       </h2>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
                         High-priority cluster notifications banner with semantic color tokens and dismiss action.
                       </p>
                     </div>
@@ -4808,13 +4818,13 @@ module.exports = {
 
                 {/* ── 4. COMMAND PALETTE MODAL ORGANISM ── */}
                 <div id="org-command-palette" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <Command className="w-4 h-4 text-neutral-500 shrink-0" />
                         <span>Global command palette (⌘K)</span>
                       </h2>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
                         Universal keyboard-driven command runner modal with fuzzy filtering and categorized actions.
                       </p>
                     </div>
@@ -4826,15 +4836,15 @@ module.exports = {
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
                         color: scaled.primaryActionTextColor,
-                        height: `${scaled.scaledHeight}px`,
+                        minHeight: `${scaled.scaledHeight}px`,
                         fontSize: `${scaled.ctaFontSize}px`,
-                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        padding: `0 ${Math.max(16, scaled.scaledPaddingX)}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
+                      className="inline-flex items-center justify-center gap-2 font-semibold shadow-xs cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 self-start sm:self-auto py-2"
                     >
                       <Command className="w-3.5 h-3.5 shrink-0" />
-                      <span className="whitespace-nowrap">Open Palette (⌘K)</span>
+                      <span className="whitespace-nowrap font-semibold">Open Palette (⌘K)</span>
                     </button>
                   </div>
 
@@ -5064,13 +5074,13 @@ module.exports = {
 
                 {/* ── 5. COMPOUND FILTER BUILDER ORGANISM ── */}
                 <div id="org-filter-builder" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <Filter className="w-4 h-4 text-neutral-500 shrink-0" />
                         <span>Multi-clause filter builder</span>
                       </h2>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
                         Multi-condition parameter query builder with dynamic criteria rows, logic joiners, and saved views.
                       </p>
                     </div>
@@ -5082,15 +5092,15 @@ module.exports = {
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
                         color: scaled.primaryActionTextColor,
-                        height: `${scaled.scaledHeight}px`,
-                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        minHeight: `${scaled.scaledHeight}px`,
+                        padding: `0 ${Math.max(16, scaled.scaledPaddingX)}px`,
                         fontSize: `${scaled.ctaFontSize}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
+                      className="inline-flex items-center justify-center gap-2 font-semibold shadow-xs cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 self-start sm:self-auto py-2"
                     >
-                      <Filter className="w-3.5 h-3.5" />
-                      <span className="whitespace-nowrap">Save Filter View</span>
+                      <Filter className="w-3.5 h-3.5 shrink-0" />
+                      <span className="whitespace-nowrap font-semibold">Save Filter View</span>
                     </button>
                   </div>
 
@@ -5582,13 +5592,13 @@ module.exports = {
 
                 {/* ── 8. SLIDE-OVER DETAIL DRAWER ORGANISM ── */}
                 <div id="org-detail-drawer" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <Sliders className="w-4 h-4 text-neutral-500 shrink-0" />
-                        Slide-over detail drawer
+                        <span>Slide-over detail drawer</span>
                       </h2>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
                         Node diagnostic inspector sheet sliding from the screen edge with key-value metadata and action footer.
                       </p>
                     </div>
@@ -5600,15 +5610,15 @@ module.exports = {
                         borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
                         color: scaled.primaryActionTextColor,
-                        height: `${scaled.scaledHeight}px`,
-                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        minHeight: `${scaled.scaledHeight}px`,
+                        padding: `0 ${Math.max(16, scaled.scaledPaddingX)}px`,
                         fontSize: `${scaled.ctaFontSize}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
+                      className="inline-flex items-center justify-center gap-2 font-semibold shadow-xs cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 self-start sm:self-auto py-2"
                     >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>Open Inspector Drawer</span>
+                      <Layers className="w-3.5 h-3.5 shrink-0" />
+                      <span className="whitespace-nowrap font-semibold">Open Inspector Drawer</span>
                     </button>
                   </div>
 
@@ -5770,13 +5780,13 @@ module.exports = {
 
                 {/* ── 8. CONFIRMATION MODAL ORGANISM ── */}
                 <div id="org-confirmation-modal" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" />
                         <span>Confirmation dialog modal</span>
                       </h2>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
                         High-stakes safety confirmation dialog requiring explicit phrase verification before executing destructive operations.
                       </p>
                     </div>
@@ -5789,15 +5799,15 @@ module.exports = {
                       }}
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
-                        height: `${scaled.scaledHeight}px`,
-                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        minHeight: `${scaled.scaledHeight}px`,
+                        padding: `0 ${Math.max(16, scaled.scaledPaddingX)}px`,
                         fontSize: `${scaled.ctaFontSize}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-semibold shadow-2xs cursor-pointer transition-colors whitespace-nowrap shrink-0 px-4"
+                      className="bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 inline-flex items-center justify-center gap-2 font-semibold shadow-2xs cursor-pointer transition-colors whitespace-nowrap shrink-0 self-start sm:self-auto py-2"
                     >
                       <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
-                      <span className="whitespace-nowrap">Trigger Confirmation Modal</span>
+                      <span className="whitespace-nowrap font-semibold">Trigger Confirmation Modal</span>
                     </button>
                   </div>
 
