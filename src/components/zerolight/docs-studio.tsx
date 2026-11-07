@@ -1108,9 +1108,7 @@ module.exports = {
                     <a href="#mol-calendar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Calendar dropdown</span>
                     </a>
-                    <a href="#mol-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Date range picker</span>
-                    </a>
+                    
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
@@ -1166,6 +1164,9 @@ module.exports = {
                     </a>
                     <a href="#org-filter-builder" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Filter builder</span>
+                    </a>
+                    <a href="#org-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Date range picker</span>
                     </a>
                     <a href="#org-metric-card" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Metric chart card</span>
@@ -1230,7 +1231,7 @@ module.exports = {
             COLUMN 2: CENTER STAGE (ATOMS OR MOLECULES VIEW)
            ══════════════════════════════════════════════════════════ */}
         <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start overflow-y-auto">
-          <div className={`w-full ${activeTier === "organisms" ? "max-w-4xl" : "max-w-[620px]"} space-y-6 pb-24`}>
+          <div className="w-full max-w-[640px] space-y-6 pb-24">
             
             {/* Stage Title */}
             <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
@@ -3239,132 +3240,6 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── 7. DATE RANGE PICKER ── */}
-                <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Date range picker
-                    </h2>
-                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Calendar input trigger with quick preset ranges and popover selector.
-                    </p>
-                  </div>
-
-                  <div ref={datePickerRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
-                      Query period
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setIsDatePickerOpen((prev) => !prev)}
-                      style={{
-                        borderRadius: `${scaled.scaledRadius}px`,
-                        borderColor: isDatePickerOpen ? tokens.textIconColor : tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: scaled.effectiveInputFill,
-                        height: `${scaled.scaledHeight}px`,
-                        paddingLeft: `${scaled.scaledPaddingX}px`,
-                        paddingRight: `${scaled.scaledPaddingX}px`,
-                        boxShadow: isDatePickerOpen
-                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
-                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
-                        transition: scaled.transitionStyle,
-                      }}
-                      className="w-full flex items-center justify-between text-left cursor-pointer border select-none font-medium tabular-nums text-xs"
-                    >
-                      <div className="flex items-center gap-2.5 truncate">
-                        <Calendar className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
-                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }} className="truncate">
-                          {dateRangeString}
-                        </span>
-                      </div>
-                      <motion.div
-                        animate={{ rotate: isDatePickerOpen ? 180 : 0 }}
-                        transition={scaled.motionConfig.spring}
-                        className="w-4 h-4 flex items-center justify-center shrink-0 text-neutral-400"
-                      >
-                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
-                      </motion.div>
-                    </button>
-
-                    <AnimatePresence>
-                      {isDatePickerOpen && (
-                        <motion.div
-                          initial={scaled.motionConfig.popover.initial}
-                          animate={scaled.motionConfig.popover.animate}
-                          exit={scaled.motionConfig.popover.exit}
-                          transition={scaled.motionConfig.popover.transition}
-                          style={{
-                            marginTop: `${tokens.menuOffsetGap}px`,
-                            borderRadius: `${scaled.scaledMenuRadius}px`,
-                            borderColor: tokens.universalBorderColor,
-                            borderWidth: `${tokens.borderWidth}px`,
-                            backgroundColor: tokens.universalFillColor,
-                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
-                            padding: "10px",
-                          }}
-                          className="absolute top-full left-0 right-0 z-30 space-y-2 border"
-                        >
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 relative">
-                            {[
-                              { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
-                              { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
-                              { id: "quarter", label: "This Quarter", range: "Oct 01, 2026 – Dec 31, 2026" },
-                              { id: "custom", label: "Year to Date", range: "Jan 01, 2026 – Nov 06, 2026" },
-                            ].map((p) => {
-                              const isSelected = datePreset === p.id;
-                              return (
-                                <button
-                                  key={p.id}
-                                  type="button"
-                                  onClick={() => {
-                                    setDatePreset(p.id as any);
-                                    setDateRangeString(p.range);
-                                    setIsDatePickerOpen(false);
-                                  }}
-                                  style={{
-                                    borderRadius: `${scaled.scaledPillRadius}px`,
-                                    fontSize: `${scaled.sublabelFontSize}px`,
-                                    padding: "6px 8px",
-                                    transition: scaled.transitionStyle,
-                                  }}
-                                  className={`font-medium cursor-pointer text-center select-none relative transition-colors ${
-                                    isSelected
-                                      ? "text-white font-semibold"
-                                      : "hover:opacity-80 hover:bg-black/5"
-                                  }`}
-                                >
-                                  {isSelected && (
-                                    <motion.div
-                                      layoutId="activeDatePresetPill"
-                                      transition={scaled.motionConfig.pillTransition}
-                                      style={{
-                                        borderRadius: `${scaled.scaledPillRadius}px`,
-                                        backgroundColor: tokens.primaryButtonColor,
-                                      }}
-                                      className="absolute inset-0 shadow-xs"
-                                    />
-                                  )}
-                                  <span
-                                    style={{
-                                      color: isSelected
-                                        ? (scaled.primaryActionTextColor)
-                                        : tokens.textIconColor,
-                                    }}
-                                    className="relative z-10"
-                                  >
-                                    {p.label}
-                                  </span>
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-
                 {/* ── 7. SEGMENTED CONTROL ── */}
                 <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
@@ -5273,6 +5148,134 @@ module.exports = {
                   </div>
                 </div>
 
+                {/* ── 6. DATE RANGE PICKER ORGANISM ── */}
+                <div id="org-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-4">
+                  <div>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                      Date range picker
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      Compound temporal selector combining calendar inputs, quick preset range matrix, and action footer.
+                    </p>
+                  </div>
+
+                  <div ref={datePickerRef} className="relative space-y-1.5">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
+                      Query period
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setIsDatePickerOpen((prev) => !prev)}
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: isDatePickerOpen ? tokens.textIconColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: scaled.effectiveInputFill,
+                        height: `${scaled.scaledHeight}px`,
+                        paddingLeft: `${scaled.scaledPaddingX}px`,
+                        paddingRight: `${scaled.scaledPaddingX}px`,
+                        boxShadow: isDatePickerOpen
+                          ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
+                          : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="w-full flex items-center justify-between text-left cursor-pointer border select-none font-medium tabular-nums text-xs"
+                    >
+                      <div className="flex items-center gap-2.5 truncate">
+                        <Calendar className="w-4 h-4 text-neutral-400 shrink-0" strokeWidth={1.8} />
+                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }} className="truncate">
+                          {dateRangeString}
+                        </span>
+                      </div>
+                      <motion.div
+                        animate={{ rotate: isDatePickerOpen ? 180 : 0 }}
+                        transition={scaled.motionConfig.spring}
+                        className="w-4 h-4 flex items-center justify-center shrink-0 text-neutral-400"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.2} />
+                      </motion.div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isDatePickerOpen && (
+                        <motion.div
+                          initial={scaled.motionConfig.popover.initial}
+                          animate={scaled.motionConfig.popover.animate}
+                          exit={scaled.motionConfig.popover.exit}
+                          transition={scaled.motionConfig.popover.transition}
+                          style={{
+                            marginTop: `${tokens.menuOffsetGap}px`,
+                            borderRadius: `${scaled.scaledMenuRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            boxShadow: "0 10px 25px -4px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.03)",
+                            padding: "10px",
+                          }}
+                          className="absolute top-full left-0 right-0 z-30 space-y-2 border"
+                        >
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 relative">
+                            {[
+                              { id: "7d", label: "Last 7 Days", range: "Oct 31, 2026 – Nov 06, 2026" },
+                              { id: "30d", label: "Last 30 Days", range: "Oct 08, 2026 – Nov 06, 2026" },
+                              { id: "quarter", label: "This Quarter", range: "Oct 01, 2026 – Dec 31, 2026" },
+                              { id: "custom", label: "Year to Date", range: "Jan 01, 2026 – Nov 06, 2026" },
+                            ].map((p) => {
+                              const isSelected = datePreset === p.id;
+                              return (
+                                <button
+                                  key={p.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setDatePreset(p.id as any);
+                                    setDateRangeString(p.range);
+                                    setIsDatePickerOpen(false);
+                                  }}
+                                  style={{
+                                    borderRadius: `${scaled.scaledPillRadius}px`,
+                                    fontSize: `${scaled.sublabelFontSize}px`,
+                                    padding: "6px 8px",
+                                    transition: scaled.transitionStyle,
+                                  }}
+                                  className={`font-medium cursor-pointer text-center select-none relative transition-colors ${
+                                    isSelected
+                                      ? "text-white font-semibold"
+                                      : "hover:opacity-80 hover:bg-black/5"
+                                  }`}
+                                >
+                                  {isSelected && (
+                                    <motion.div
+                                      layoutId="activeDatePresetPill"
+                                      transition={scaled.motionConfig.pillTransition}
+                                      style={{
+                                        borderRadius: `${scaled.scaledPillRadius}px`,
+                                        backgroundColor: tokens.primaryButtonColor,
+                                      }}
+                                      className="absolute inset-0 shadow-xs"
+                                    />
+                                  )}
+                                  <span
+                                    style={{
+                                      color: isSelected
+                                        ? (scaled.primaryActionTextColor)
+                                        : tokens.textIconColor,
+                                    }}
+                                    className="relative z-10"
+                                  >
+                                    {p.label}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                
+
                 {/* ── 6. METRIC TELEMETRY CHART CARD ORGANISM ── */}
                 <div id="org-metric-card" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
@@ -5473,7 +5476,7 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── 7. SLIDE-OVER DETAIL DRAWER ORGANISM ── */}
+                {/* ── 8. SLIDE-OVER DETAIL DRAWER ORGANISM ── */}
                 <div id="org-detail-drawer" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -5481,7 +5484,7 @@ module.exports = {
                         Slide-over detail drawer
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Contextual inspector sheet sliding from the right edge with segmented tabs and key-value properties.
+                        Contextual inspector sheet sliding from the screen edge with key-value property rows and action buttons.
                       </p>
                     </div>
 
@@ -5500,11 +5503,11 @@ module.exports = {
                       className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
                     >
                       <Layers className="w-3.5 h-3.5" />
-                      <span>Inspect Node (Drawer)</span>
+                      <span>Open Inspector Drawer</span>
                     </button>
                   </div>
 
-                  {/* Drawer Component Render */}
+                  {/* Drawer Overlay & Panel */}
                   <AnimatePresence>
                     {isDrawerOpen && (
                       <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end">
@@ -5519,7 +5522,7 @@ module.exports = {
                             borderLeftWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                           }}
-                          className="w-full max-w-[440px] h-full border-l shadow-2xl flex flex-col justify-between select-none"
+                          className="w-full max-w-[400px] h-full border-l shadow-2xl flex flex-col justify-between select-none"
                         >
                           {/* Drawer Header */}
                           <div
@@ -5553,222 +5556,92 @@ module.exports = {
                             </button>
                           </div>
 
-                          {/* Tab Navigation */}
-                          <div
-                            style={{ borderColor: tokens.universalBorderColor, borderBottomWidth: `${tokens.borderWidth}px` }}
-                            className="p-3 border-b"
-                          >
-                            <div
-                              style={{
-                                borderRadius: `${scaled.scaledPillRadius}px`,
-                                borderColor: tokens.universalBorderColor,
-                                borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.hoverBackplateTint,
-                              }}
-                              className="flex items-center gap-1 p-0.5 border text-xs"
-                            >
-                              {(["overview", "config", "logs"] as const).map((t) => {
-                                const isSelected = drawerActiveTab === t;
-                                return (
-                                  <button
-                                    key={t}
-                                    type="button"
-                                    onClick={() => setDrawerActiveTab(t)}
-                                    className="flex-1 py-1 text-center capitalize cursor-pointer relative transition-colors font-medium"
-                                  >
-                                    {isSelected && (
-                                      <motion.div
-                                        layoutId="activeDrawerTab"
-                                        transition={scaled.motionConfig.pillTransition}
-                                        style={{
-                                          borderRadius: `${scaled.scaledPillRadius}px`,
-                                          backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
-                                        }}
-                                        className="absolute inset-0 shadow-xs"
-                                      />
-                                    )}
-                                    <span
-                                      style={{
-                                        color: isSelected
-                                          ? (scaled.primaryActionTextColor)
-                                          : tokens.textIconColor,
-                                      }}
-                                      className="relative z-10"
-                                    >
-                                      {t}
-                                    </span>
-                                  </button>
-                                );
-                              })}
+                          {/* Drawer Content: Key-Value Properties */}
+                          <div className="p-4 space-y-3 flex-1 overflow-y-auto">
+                            <div className="space-y-1">
+                              <h4 style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                                Node Attributes &amp; Telemetry
+                              </h4>
+                              <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                                Real-time metadata bound to the production cluster cluster-01.
+                              </p>
                             </div>
-                          </div>
 
-                          {/* Drawer Body */}
-                          <div className="p-4 space-y-4 flex-1 overflow-y-auto text-xs">
-                            {drawerActiveTab === "overview" && (
-                              <div className="space-y-4">
-                                <div className="grid grid-cols-3 gap-2 text-center">
-                                  <div
-                                    style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                                      borderColor: tokens.universalBorderColor,
-                                      borderWidth: `${tokens.borderWidth}px`,
-                                      backgroundColor: tokens.hoverBackplateTint,
-                                    }}
-                                    className="p-2.5 border"
-                                  >
-                                    <div className="text-[10px] text-neutral-400">CPU Usage</div>
-                                    <div style={{ color: tokens.textIconColor }} className="font-bold tabular-nums">24%</div>
-                                  </div>
-                                  <div
-                                    style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                                      borderColor: tokens.universalBorderColor,
-                                      borderWidth: `${tokens.borderWidth}px`,
-                                      backgroundColor: tokens.hoverBackplateTint,
-                                    }}
-                                    className="p-2.5 border"
-                                  >
-                                    <div className="text-[10px] text-neutral-400">Memory</div>
-                                    <div style={{ color: tokens.textIconColor }} className="font-bold tabular-nums">4.2 GB</div>
-                                  </div>
-                                  <div
-                                    style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                                      borderColor: tokens.universalBorderColor,
-                                      borderWidth: `${tokens.borderWidth}px`,
-                                      backgroundColor: tokens.hoverBackplateTint,
-                                    }}
-                                    className="p-2.5 border"
-                                  >
-                                    <div className="text-[10px] text-neutral-400">Uptime</div>
-                                    <div className="font-bold text-emerald-600 tabular-nums">99.98%</div>
-                                  </div>
-                                </div>
-
-                                <div className="space-y-2 pt-2">
-                                  <div style={{ color: tokens.textIconColor }} className="font-semibold text-xs">
-                                    Node Metadata
-                                  </div>
-                                  <div
-                                    style={{ borderColor: tokens.universalBorderColor }}
-                                    className="space-y-1.5 text-xs divide-y divide-neutral-100"
-                                  >
-                                    <div className="flex justify-between py-1.5">
-                                      <span className="text-neutral-500">Instance ID</span>
-                                      <span style={{ color: tokens.textIconColor }} className="font-mono">
-                                        i-0a8f9c1182bc
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between py-1.5">
-                                      <span className="text-neutral-500">Public IP</span>
-                                      <span style={{ color: tokens.textIconColor }} className="font-mono">
-                                        54.218.42.109
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between py-1.5">
-                                      <span className="text-neutral-500">Availability Zone</span>
-                                      <span style={{ color: tokens.textIconColor }} className="font-medium">
-                                        us-east-1a
-                                      </span>
-                                    </div>
-                                    <div className="flex justify-between py-1.5">
-                                      <span className="text-neutral-500">Kubernetes Version</span>
-                                      <span style={{ color: tokens.textIconColor }} className="font-mono">
-                                        v1.30.2-eks
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                            {drawerActiveTab === "config" && (
-                              <div className="space-y-3">
-                                <div style={{ color: tokens.textIconColor }} className="font-semibold">
-                                  Routing Configuration
-                                </div>
-                                <div
-                                  style={{
-                                    borderRadius: `${scaled.scaledInnerRadius}px`,
-                                    borderColor: tokens.universalBorderColor,
-                                    borderWidth: `${tokens.borderWidth}px`,
-                                  }}
-                                  className="p-3 bg-neutral-900 text-neutral-100 font-mono text-[11px] space-y-1 overflow-x-auto border"
-                                >
-                                  <div>max_connections: 50000</div>
-                                  <div>keepalive_timeout: 65s</div>
-                                  <div>tls_protocols: [TLSv1.2, TLSv1.3]</div>
-                                </div>
-                              </div>
-                            )}
-
-                            {drawerActiveTab === "logs" && (
-                              <div className="space-y-2">
-                                <div style={{ color: tokens.textIconColor }} className="font-semibold">
-                                  Recent Audit Events
-                                </div>
-                                <div className="space-y-1 font-mono text-[11px]">
-                                  <div
-                                    style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                                      borderColor: tokens.universalBorderColor,
-                                      borderWidth: `${tokens.borderWidth}px`,
-                                      backgroundColor: tokens.hoverBackplateTint,
-                                      color: tokens.textIconColor,
-                                    }}
-                                    className="p-2 border"
-                                  >
-                                    [16:42:01] Ingress healthcheck 200 OK
-                                  </div>
-                                  <div
-                                    style={{
-                                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                                      borderColor: tokens.universalBorderColor,
-                                      borderWidth: `${tokens.borderWidth}px`,
-                                      backgroundColor: tokens.hoverBackplateTint,
-                                      color: tokens.textIconColor,
-                                    }}
-                                    className="p-2 border"
-                                  >
-                                    [16:38:12] Auto-scaled replicas to 4
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Drawer Sticky Footer */}
-                          <div
-                            style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
-                            className="p-4 border-t flex items-center justify-between gap-2"
-                          >
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setIsDrawerOpen(false);
-                                triggerToast("Restarting cluster node...");
-                              }}
+                            <div
                               style={{
                                 borderRadius: `${scaled.scaledRadius}px`,
                                 borderColor: tokens.universalBorderColor,
                                 borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: tokens.universalFillColor,
+                                backgroundColor: scaled.effectiveInputFill,
+                              }}
+                              className="divide-y divide-neutral-100 border text-xs"
+                            >
+                              {[
+                                { label: "Instance ID", value: "i-08f3a9e2c140", isCopyable: true },
+                                { label: "Cloud Region", value: "us-east-1a (N. Virginia)" },
+                                { label: "Public IPv4", value: "54.210.18.92" },
+                                { label: "Assigned Role", value: "API Gateway" },
+                                { label: "Memory Allocation", value: "32 GB ECC DDR5" },
+                                { label: "CPU Allocation", value: "8 vCPUs (Intel Xeon)" },
+                                { label: "Measured Uptime", value: "99.98% (42 days)" },
+                                { label: "Security Profile", value: "sg-prod-ingress-tls" },
+                              ].map((prop) => (
+                                <div key={prop.label} className="p-2.5 flex items-center justify-between gap-2">
+                                  <span className="text-neutral-500 font-medium">{prop.label}</span>
+                                  <div className="flex items-center gap-1.5">
+                                    <span style={{ color: tokens.textIconColor }} className="font-medium tabular-nums">
+                                      {prop.value}
+                                    </span>
+                                    {prop.isCopyable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(prop.value);
+                                          triggerToast("Instance ID copied");
+                                        }}
+                                        className="text-neutral-400 hover:text-neutral-700 cursor-pointer p-0.5"
+                                        title="Copy value"
+                                      >
+                                        <Copy className="w-3 h-3" />
+                                      </button>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Drawer Action Footer */}
+                          <div
+                            style={{
+                              borderColor: tokens.universalBorderColor,
+                              borderTopWidth: `${tokens.borderWidth}px`,
+                              backgroundColor: tokens.universalFillColor,
+                            }}
+                            className="p-4 border-t flex items-center justify-end gap-2"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => setIsDrawerOpen(false)}
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
                                 color: tokens.textIconColor,
                                 height: `${scaled.scaledHeight}px`,
                                 padding: `0 ${scaled.scaledPaddingX}px`,
                                 fontSize: `${scaled.ctaFontSize}px`,
                                 transition: scaled.transitionStyle,
                               }}
-                              className="border font-medium hover:bg-black/5 cursor-pointer"
+                              className="border font-medium cursor-pointer hover:bg-black/5 transition-colors"
                             >
-                              Restart
+                              Close
                             </button>
                             <button
                               type="button"
                               onClick={() => {
                                 setIsDrawerOpen(false);
-                                triggerToast("Saved node configuration changes");
+                                triggerToast("Node properties updated");
                               }}
                               style={{
                                 borderRadius: `${scaled.scaledRadius}px`,
@@ -5781,7 +5654,7 @@ module.exports = {
                               }}
                               className="font-semibold shadow-xs cursor-pointer hover:opacity-90 transition-opacity"
                             >
-                              Save Config
+                              Done
                             </button>
                           </div>
                         </motion.div>
