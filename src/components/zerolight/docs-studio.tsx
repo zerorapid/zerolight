@@ -2080,7 +2080,60 @@ module.exports = {
                   />
                 </div>
 
-                {/* ── 9. LUCIDE ICON ATOM ── */}
+                {/* ── 9. PROGRESS BAR ATOM ── */}
+                <div id="atom-progress" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-neutral-100">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold tracking-tight">
+                        Progress bar primitive
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Deterministic visual progress gauge with rounded caps and dynamic fill token.
+                      </p>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                      }}
+                      className="font-semibold text-neutral-800 bg-neutral-50 px-2.5 py-1 tabular-nums border shrink-0"
+                    >
+                      {sliderValue}% Complete
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs text-neutral-500 font-medium">
+                      <span>Database partition migration batch</span>
+                      <span className="tabular-nums">{sliderValue} of 100 shards</span>
+                    </div>
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        height: "10px",
+                      }}
+                      className="w-full overflow-hidden border p-0.5"
+                    >
+                      <motion.div
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          backgroundColor: tokens.primaryButtonColor,
+                          height: "100%",
+                        }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${sliderValue}%` }}
+                        transition={scaled.motionConfig.spring}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── 10. LUCIDE ICON ATOM ── */}
                 <div id="atom-lucide-icons" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
