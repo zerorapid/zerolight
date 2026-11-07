@@ -1,19 +1,19 @@
 "use client";
 
 import React from "react";
-import { Spinner } from "./spinner";
+import { useZeroLight } from "../context";
+import { Loader2 } from "lucide-react";
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
-  loadingText?: string;
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   className?: string;
 }
 
@@ -21,59 +21,85 @@ export function Button({
   variant = "primary",
   size = "md",
   loading = false,
-  loadingText,
   iconLeft,
   iconRight,
   children,
   disabled,
   className = "",
+  style,
   type = "button",
   ...props
 }: ButtonProps) {
+  const { tokens, scaled } = useZeroLight();
   const isDisabled = disabled || loading;
 
-  const sizeClasses: Record<ButtonSize, string> = {
-    sm: "h-7 px-2.5 text-xs gap-1.5 rounded-md",
-    md: "h-9 px-3.5 text-xs font-semibold gap-2 rounded-lg",
-    lg: "h-11 px-5 text-sm font-semibold gap-2.5 rounded-xl",
-  };
+  const sizeMultiplier = size === "sm" ? 0.85 : size === "lg" ? 1.15 : 1.0;
+  const height = Math.round(scaled.scaledHeight * sizeMultiplier);
+  const paddingX = Math.round(scaled.scaledPaddingX * sizeMultiplier);
+  const fontSize = Math.max(11, Math.round(scaled.ctaFontSize * (size === "sm" ? 0.9 : size === "lg" ? 1.1 : 1.0)));
 
-  const variantClasses: Record<ButtonVariant, string> = {
-    primary:
-      "bg-neutral-100 text-neutral-950 hover:bg-white active:bg-neutral-200 border border-neutral-100 shadow-sm focus-visible:ring-2 focus-visible:ring-emerald-500/50",
-    secondary:
-      "bg-neutral-900 text-neutral-200 hover:text-white hover:bg-neutral-850 border border-neutral-800 hover:border-neutral-700 shadow-inner focus-visible:ring-2 focus-visible:ring-neutral-400/50",
-    outline:
-      "bg-transparent text-neutral-300 hover:text-white hover:bg-neutral-900/60 border border-neutral-750 hover:border-neutral-600 focus-visible:ring-2 focus-visible:ring-neutral-400/50",
-    ghost:
-      "bg-transparent text-neutral-400 hover:text-neutral-100 hover:bg-neutral-900 border border-transparent focus-visible:ring-2 focus-visible:ring-neutral-400/50",
-    danger:
-      "bg-rose-950/80 text-rose-300 hover:bg-rose-900/80 hover:text-rose-200 border border-rose-800/80 shadow-sm focus-visible:ring-2 focus-visible:ring-rose-500/50",
+  const getVariantStyles = (): React.CSSProperties => {
+    switch (variant) {
+      case "primary":
+        return {
+          backgroundColor: tokens.primaryButtonColor,
+          color: scaled.primaryActionTextColor,
+          borderColor: tokens.borderWidth > 0 ? tokens.primaryButtonColor : "transparent",
+        };
+      case "secondary":
+        return {
+          backgroundColor: tokens.hoverBackplateTint,
+          color: tokens.textIconColor,
+          borderColor: tokens.universalBorderColor,
+        };
+      case "outline":
+        return {
+          backgroundColor: "transparent",
+          color: tokens.textIconColor,
+          borderColor: tokens.universalBorderColor,
+        };
+      case "ghost":
+        return {
+          backgroundColor: "transparent",
+          color: tokens.textIconColor,
+          borderColor: "transparent",
+        };
+      case "destructive":
+        return {
+          backgroundColor: "#FFF1F2",
+          color: "#E11D48",
+          borderColor: "#FECDD3",
+        };
+    }
   };
 
   return (
     <button
       type={type}
       disabled={isDisabled}
-      className={`relative inline-flex items-center justify-center font-sans select-none transition-all duration-200 ease-spring-tactile transform-gpu will-change-transform focus:outline-none active:scale-[0.985] ${
-        sizeClasses[size]
-      } ${variantClasses[variant]} ${
-        isDisabled ? "opacity-45 pointer-events-none cursor-not-allowed shadow-none" : ""
+      style={{
+        borderRadius: `${scaled.scaledRadius}px`,
+        borderWidth: `${variant === "ghost" ? 0 : Math.max(1, tokens.borderWidth)}px`,
+        minHeight: `${height}px`,
+        paddingLeft: `${paddingX}px`,
+        paddingRight: `${paddingX}px`,
+        fontSize: `${fontSize}px`,
+        transition: scaled.transitionStyle,
+        ...getVariantStyles(),
+        ...style,
+      }}
+      className={`inline-flex items-center justify-center gap-2 font-semibold shadow-xs select-none whitespace-nowrap shrink-0 transition-opacity ${
+        isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-90 active:scale-[0.985]"
       } ${className}`}
       {...props}
     >
       {loading ? (
-        <>
-          <Spinner size={size === "lg" ? "md" : "xs"} color="currentColor" />
-          <span>{loadingText || children}</span>
-        </>
+        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
       ) : (
-        <>
-          {iconLeft && <span className="flex-shrink-0">{iconLeft}</span>}
-          <span>{children}</span>
-          {iconRight && <span className="flex-shrink-0">{iconRight}</span>}
-        </>
+        iconLeft && <span className="shrink-0 flex items-center">{iconLeft}</span>
       )}
+      {children && <span className="whitespace-nowrap">{children}</span>}
+      {!loading && iconRight && <span className="shrink-0 flex items-center">{iconRight}</span>}
     </button>
   );
 }
