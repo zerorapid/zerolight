@@ -291,6 +291,39 @@ test("Chat Conversation Suite: TypingIndicator, MessageStatus, ChatBubble, ChatI
   assert.ok(chatConversation.includes("handleSendMessage"));
 });
 
+// -----------------------------------------------------------------
+// Test Suite 8: Button Icon Tuning, Shortcut Removal & Close Icons
+// -----------------------------------------------------------------
+console.log("\n8. Button Icon Tuning, Shortcut Removal & Semantic Close Icons:");
+
+const buttonContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/button.tsx"), "utf8");
+const iconButtonContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/icon-button.tsx"), "utf8");
+const commandPaletteContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/command-palette.tsx"), "utf8");
+const searchBarContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/search-bar.tsx"), "utf8");
+const confirmModalContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/confirmation-modal.tsx"), "utf8");
+const detailDrawerContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/detail-drawer.tsx"), "utf8");
+
+test("Button & IconButton: Automatically bind icons to Visual Studio scale, stroke, fill & color", () => {
+  assert.ok(buttonContent.includes("renderIcon"));
+  assert.ok(buttonContent.includes("tokens.iconStrokeWidth"));
+  assert.ok(buttonContent.includes("baseIconSize"));
+  assert.ok(iconButtonContent.includes("renderIcon"));
+  assert.ok(iconButtonContent.includes("tokens.iconStrokeWidth"));
+});
+
+test("No shortcuts or ⌘K displayed in SearchBar or CommandPalette", () => {
+  assert.ok(!searchBarContent.includes("⌘K"), "SearchBar should not show ⌘K");
+  assert.ok(!commandPaletteContent.includes("⌘K"), "CommandPalette should not show ⌘K");
+  assert.ok(!commandPaletteContent.includes("shortcut:"), "CommandPalette should not have shortcuts");
+});
+
+test("Semantic close icons (X) used across CommandPalette, Modal, and Drawer", () => {
+  assert.ok(commandPaletteContent.includes("Close command palette"));
+  assert.ok(confirmModalContent.includes("Close modal"));
+  assert.ok(detailDrawerContent.includes("Close drawer"));
+  assert.ok(confirmModalContent.includes("Trash2"));
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

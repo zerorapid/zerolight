@@ -19,7 +19,6 @@ export function SearchBar({
   onChange,
   onClear,
   placeholder = "Search resources, logs, and telemetry...",
-  showKbd = true,
   className = "",
 }: SearchBarProps) {
   const { tokens, scaled } = useZeroLight();
@@ -75,10 +74,6 @@ export function SearchBar({
             color={tokens.iconColor || tokens.textIconColor}
           />
         </button>
-      )}
-
-      {showKbd && !value && (
-        <Kbd className="shrink-0 hidden sm:inline-flex">⌘K</Kbd>
       )}
     </div>
   );

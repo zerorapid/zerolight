@@ -329,9 +329,6 @@ export default function SaaSDashboardPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 outline-none"
           />
-          <kbd className="text-[10px] font-medium text-neutral-400 px-1.5 py-0.5 rounded border border-neutral-200 bg-neutral-100 shrink-0 select-none">
-            ⌘K
-          </kbd>
         </div>
 
         {/* Quick CTAs, Studio Link, and User Profile */}

@@ -85,7 +85,7 @@ import {
   computeScaledTokens,
 } from "./types";
 import { ZeroLightProvider } from "./context";
-import { Skeleton, Separator, Spinner, Avatar, TypingIndicator, MessageStatus } from "./atoms";
+import { Skeleton, Separator, Spinner, Avatar, TypingIndicator, MessageStatus, Button, IconButton } from "./atoms";
 import { Pagination, EmptyState, Accordion, FileUpload, Stepper, ChatBubble, ChatInput } from "./molecules";
 import { AuditLog, QuotaMatrix, TreeView, ChatConversation } from "./organisms";
 
@@ -170,13 +170,13 @@ const CLUSTER_NODES = [
 ];
 
 const COMMAND_PALETTE_ITEMS = [
-  { id: "nav-clusters", title: "Cluster Nodes & Pods", category: "Navigation", icon: Layers, shortcut: "G C" },
-  { id: "nav-security", title: "Security & API Keys", category: "Navigation", icon: Shield, shortcut: "G S" },
-  { id: "nav-audit", title: "Audit Trail & Logs", category: "Navigation", icon: Terminal, shortcut: "G A" },
-  { id: "act-create-node", title: "Create New Cluster Node", category: "Quick Actions", icon: Plus, shortcut: "C N" },
-  { id: "act-rotate-key", title: "Rotate Secret API Key", category: "Quick Actions", icon: Key, shortcut: "R K" },
-  { id: "act-export-csv", title: "Export Active Audit Logs", category: "Quick Actions", icon: Download, shortcut: "E A" },
-  { id: "act-invite", title: "Invite Team Member", category: "Quick Actions", icon: User, shortcut: "I M" },
+  { id: "nav-clusters", title: "Cluster Nodes & Pods", category: "Navigation", icon: Layers },
+  { id: "nav-security", title: "Security & API Keys", category: "Navigation", icon: Shield },
+  { id: "nav-audit", title: "Audit Trail & Logs", category: "Navigation", icon: Terminal },
+  { id: "act-create-node", title: "Create New Cluster Node", category: "Quick Actions", icon: Plus },
+  { id: "act-rotate-key", title: "Rotate Secret API Key", category: "Quick Actions", icon: Key },
+  { id: "act-export-csv", title: "Export Active Audit Logs", category: "Quick Actions", icon: Download },
+  { id: "act-invite", title: "Invite Team Member", category: "Quick Actions", icon: User },
 ];
 
 const INITIAL_FILTER_CONDITIONS = [
@@ -1615,78 +1615,72 @@ module.exports = {
                       </tbody>
                     </table>
                   </div>
+
+                  {/* Buttons with Reactive Icons */}
+                  <div className="pt-3 border-t border-neutral-100 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="font-semibold text-neutral-700">
+                        Icon-Augmented Buttons (Bound to Visual Studio Icon Tuning)
+                      </span>
+                      <span className="text-[11px] text-neutral-400">
+                        Scale: {tokens.iconScaleMultiplier}x • Stroke: {tokens.iconStrokeWidth}px
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <Button variant="primary" iconLeft={<Plus />}>
+                        Create Cluster
+                      </Button>
+                      <Button variant="secondary" iconRight={<ArrowRight />}>
+                        Deploy Workload
+                      </Button>
+                      <Button variant="outline" iconLeft={<SlidersHorizontal />}>
+                        Filter Metrics
+                      </Button>
+                      <Button variant="destructive" iconLeft={<Trash2 />}>
+                        Terminate Node
+                      </Button>
+                      <Button variant="outline" iconLeft={<X />}>
+                        Dismiss
+                      </Button>
+                    </div>
+                  </div>
                 </div>
 
                 {/* ── 2. ICON BUTTON ATOM ── */}
                 <div id="atom-icon-button" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
-                        <Settings className="w-4 h-4 text-neutral-500 shrink-0" />
-                        <span>Icon button primitive</span>
-                      </h2>
+                      <Settings className="w-4 h-4 text-neutral-500 shrink-0" />
+                      <span>Icon button primitive</span>
+                    </h2>
                     <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
-                      Universal radius &amp; border width
+                      Bound to Icon Scale ({tokens.iconScaleMultiplier}x) &amp; Stroke ({tokens.iconStrokeWidth}px)
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3 pt-1">
-                    {/* Primary Icon Button */}
-                    <motion.button
-                      type="button"
-                      whileTap={{ scale: 0.92 }}
-                      whileHover={{ scale: 1.04 }}
-                      style={{
-                        backgroundColor: tokens.primaryButtonColor,
-                        borderRadius: `${scaled.scaledRadius}px`,
-                        width: `${scaled.scaledHeight}px`,
-                        height: `${scaled.scaledHeight}px`,
-                        transition: scaled.transitionStyle,
-                      }}
-                      className="text-white flex items-center justify-center shadow-xs cursor-pointer select-none"
-                      title="Add item"
-                    >
-                      <Plus className="w-4 h-4" strokeWidth={2.5} />
-                    </motion.button>
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    {/* Solid Primary */}
+                    <IconButton variant="solid" size="md" icon={<Plus />} ariaLabel="Add item" />
+                    {/* Outline */}
+                    <IconButton variant="outline" size="md" icon={<SlidersHorizontal />} ariaLabel="Filter" />
+                    {/* Ghost */}
+                    <IconButton variant="ghost" size="md" icon={<Settings />} ariaLabel="Settings" />
+                    {/* Close / Dismiss */}
+                    <IconButton variant="outline" size="md" icon={<X />} ariaLabel="Close or dismiss" />
+                    {/* Confirm / Check */}
+                    <IconButton variant="solid" size="md" icon={<Check />} ariaLabel="Confirm action" />
 
-                    {/* Secondary Outline Icon Button */}
-                    <motion.button
-                      type="button"
-                      whileTap={{ scale: 0.92 }}
-                      whileHover={{ scale: 1.04 }}
-                      style={{
-                        borderColor: tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: tokens.universalFillColor,
-                        color: tokens.textIconColor,
-                        borderRadius: `${scaled.scaledRadius}px`,
-                        width: `${scaled.scaledHeight}px`,
-                        height: `${scaled.scaledHeight}px`,
-                        transition: scaled.transitionStyle,
-                      }}
-                      className="border flex items-center justify-center shadow-xs cursor-pointer select-none hover:bg-neutral-50"
-                      title="Filter"
-                    >
-                      <SlidersHorizontal className="w-4 h-4" strokeWidth={2} />
-                    </motion.button>
+                    <div className="h-6 w-px bg-neutral-200 mx-1 hidden sm:block" />
 
-                    {/* Ghost Icon Button */}
-                    <motion.button
-                      type="button"
-                      whileTap={{ scale: 0.92 }}
-                      whileHover={{ scale: 1.04 }}
-                      style={{
-                        backgroundColor: tokens.hoverBackplateTint,
-                        color: tokens.textIconColor,
-                        borderRadius: `${scaled.scaledRadius}px`,
-                        width: `${scaled.scaledHeight}px`,
-                        height: `${scaled.scaledHeight}px`,
-                        transition: scaled.transitionStyle,
-                      }}
-                      className="flex items-center justify-center cursor-pointer select-none hover:brightness-95"
-                      title="Settings"
-                    >
-                      <Settings className="w-4 h-4" strokeWidth={2} />
-                    </motion.button>
+                    {/* Sizing Spectrum */}
+                    <div className="flex items-center gap-2">
+                      <IconButton variant="outline" size="sm" icon={<Plus />} ariaLabel="Small add" />
+                      <span className="text-[11px] text-neutral-400">sm</span>
+                      <IconButton variant="outline" size="md" icon={<Plus />} ariaLabel="Medium add" />
+                      <span className="text-[11px] text-neutral-400">md</span>
+                      <IconButton variant="outline" size="lg" icon={<Plus />} ariaLabel="Large add" />
+                      <span className="text-[11px] text-neutral-400">lg</span>
+                    </div>
                   </div>
                 </div>
 
@@ -2324,7 +2318,7 @@ module.exports = {
                       }}
                       className="font-medium border shadow-xs"
                     >
-                      ⌘K
+                      Shift
                     </kbd>
                     <kbd
                       style={{
@@ -2338,7 +2332,7 @@ module.exports = {
                       }}
                       className="font-medium border shadow-xs"
                     >
-                      Esc
+                      Tab
                     </kbd>
                     <kbd
                       style={{
@@ -2352,7 +2346,7 @@ module.exports = {
                       }}
                       className="font-medium border shadow-xs"
                     >
-                      ↵ Enter
+                      Space
                     </kbd>
                   </div>
                 </div>
@@ -2991,7 +2985,7 @@ module.exports = {
                       Search bar
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Search input with leading search icon, clear trigger, and keyboard shortcut badge.
+                      Search input with leading search icon and dynamic clear action trigger.
                     </p>
                   </div>
 
@@ -3045,24 +3039,6 @@ module.exports = {
                             </motion.button>
                           )}
                         </AnimatePresence>
-                        <kbd
-                          style={{
-                            borderRadius: `${scaled.scaledInnerRadius}px`,
-                            backgroundColor: isSearchFocused ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
-                            borderColor: tokens.universalBorderColor,
-                            borderWidth: `${tokens.borderWidth}px`,
-                            color: isSearchFocused
-                              ? (scaled.primaryActionTextColor)
-                              : tokens.textIconColor,
-                            fontSize: `${scaled.sublabelFontSize - 1}px`,
-                            padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
-                            transition: scaled.transitionStyle,
-                          }}
-                          className="font-medium border shadow-2xs select-none flex items-center gap-0.5"
-                        >
-                          <Command className="w-2.5 h-2.5" />
-                          <span>K</span>
-                        </kbd>
                       </div>
                     </div>
 
@@ -5057,18 +5033,6 @@ module.exports = {
                         <Search className="w-3.5 h-3.5 text-neutral-400" />
                         <span>Search commands...</span>
                       </div>
-                      <span
-                        style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          borderColor: tokens.universalBorderColor,
-                          borderWidth: `${tokens.borderWidth}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
-                          color: tokens.textIconColor,
-                        }}
-                        className="font-sans text-[10px] border px-1.5 py-0.5"
-                      >
-                        ⌘K
-                      </span>
                     </button>
 
                     {/* Right: Telemetry Pulse, Notifications, Profile */}
@@ -5452,10 +5416,10 @@ module.exports = {
                     <div className="flex-1 max-w-xl space-y-1">
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <Command className="w-4 h-4 text-neutral-500 shrink-0" />
-                        <span>Global command palette (⌘K)</span>
+                        <span>Global command palette</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
-                        Universal keyboard-driven command runner modal with fuzzy filtering and categorized actions.
+                        Interactive command runner modal with instant filtering, icon-augmented action list, and quick dispatch.
                       </p>
                     </div>
 
@@ -5474,48 +5438,9 @@ module.exports = {
                       className="inline-flex items-center justify-center gap-2 font-semibold shadow-xs cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 self-start sm:self-auto py-2"
                     >
                       <Command className="w-3.5 h-3.5 shrink-0" />
-                      <span className="whitespace-nowrap font-semibold">Open Palette (⌘K)</span>
+                      <span className="whitespace-nowrap font-semibold">Open Command Palette</span>
                     </button>
                   </div>
-
-                  <p
-                    style={{
-                      borderRadius: `${scaled.scaledInnerRadius}px`,
-                      borderColor: tokens.universalBorderColor,
-                      borderWidth: `${tokens.borderWidth}px`,
-                      backgroundColor: tokens.hoverBackplateTint,
-                      color: tokens.textIconColor,
-                    }}
-                    className="text-xs p-2.5 border"
-                  >
-                    💡 Tip: You can press{" "}
-                    <kbd
-                      style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
-                        borderColor: tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: scaled.effectiveInputFill,
-                        color: tokens.textIconColor,
-                      }}
-                      className="px-1.5 py-0.5 border text-xs font-semibold"
-                    >
-                      ⌘K
-                    </kbd>{" "}
-                    (or{" "}
-                    <kbd
-                      style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
-                        borderColor: tokens.universalBorderColor,
-                        borderWidth: `${tokens.borderWidth}px`,
-                        backgroundColor: scaled.effectiveInputFill,
-                        color: tokens.textIconColor,
-                      }}
-                      className="px-1.5 py-0.5 border text-xs font-semibold"
-                    >
-                      Ctrl+K
-                    </kbd>
-                    ) anywhere on this page to trigger the modal.
-                  </p>
 
                   {/* Command Palette Modal */}
                   <AnimatePresence>
@@ -5544,7 +5469,7 @@ module.exports = {
                             <input
                               autoFocus
                               type="text"
-                              placeholder="Type a command or search..."
+                              placeholder="Type a command or search action..."
                               value={cmdPaletteQuery}
                               onChange={(e) => {
                                 setCmdPaletteQuery(e.target.value);
@@ -5557,7 +5482,8 @@ module.exports = {
                               <button
                                 type="button"
                                 onClick={() => setCmdPaletteQuery("")}
-                                className="text-neutral-400 hover:text-neutral-700"
+                                className="text-neutral-400 hover:text-neutral-700 p-1 rounded-full cursor-pointer"
+                                aria-label="Clear query"
                               >
                                 <X className="w-3.5 h-3.5" />
                               </button>
@@ -5572,9 +5498,11 @@ module.exports = {
                                 backgroundColor: tokens.hoverBackplateTint,
                                 color: tokens.textIconColor,
                               }}
-                              className="font-sans text-[10px] px-1.5 py-0.5 border cursor-pointer"
+                              className="p-1 rounded-full border cursor-pointer hover:bg-neutral-200 transition-colors shrink-0"
+                              aria-label="Close command palette"
+                              title="Close"
                             >
-                              esc
+                              <X className="w-3.5 h-3.5" />
                             </button>
                           </div>
 
@@ -5627,74 +5555,37 @@ module.exports = {
                                       {item.category}
                                     </span>
                                   </div>
-                                  <span
-                                    className={`font-sans text-[10px] ${
-                                      isSelected ? "text-white/80" : "text-neutral-400"
+                                  <ArrowRight
+                                    className={`w-3.5 h-3.5 transition-opacity ${
+                                      isSelected ? "opacity-100 text-white" : "opacity-30 text-neutral-400"
                                     }`}
-                                  >
-                                    {item.shortcut}
-                                  </span>
+                                  />
                                 </button>
                               );
                             })}
                           </div>
 
-                          {/* Keyboard Navigation Footer */}
+                          {/* Footer with Icons */}
                           <div
                             style={{
                               borderColor: tokens.universalBorderColor,
                               borderTopWidth: `${tokens.borderWidth}px`,
                               backgroundColor: tokens.hoverBackplateTint,
                             }}
-                            className="p-2 border-t flex items-center justify-between text-[11px] text-neutral-400"
+                            className="p-2.5 border-t flex items-center justify-between text-xs text-neutral-500"
                           >
-                            <div className="flex items-center gap-3">
-                              <span>
-                                <kbd
-                                  style={{
-                                    borderRadius: `${scaled.scaledInnerRadius}px`,
-                                    borderColor: tokens.universalBorderColor,
-                                    borderWidth: `${tokens.borderWidth}px`,
-                                    backgroundColor: tokens.universalFillColor,
-                                    color: tokens.textIconColor,
-                                  }}
-                                  className="font-sans px-1 py-0.5 border mr-1"
-                                >
-                                  ↑↓
-                                </kbd>
-                                navigate
-                              </span>
-                              <span>
-                                <kbd
-                                  style={{
-                                    borderRadius: `${scaled.scaledInnerRadius}px`,
-                                    borderColor: tokens.universalBorderColor,
-                                    borderWidth: `${tokens.borderWidth}px`,
-                                    backgroundColor: tokens.universalFillColor,
-                                    color: tokens.textIconColor,
-                                  }}
-                                  className="font-sans px-1 py-0.5 border mr-1"
-                                >
-                                  ↵
-                                </kbd>
-                                select
-                              </span>
+                            <div className="flex items-center gap-1.5 font-medium">
+                              <Command className="w-3.5 h-3.5" />
+                              <span>Command & Quick Action Launcher</span>
                             </div>
-                            <span>
-                              <kbd
-                                style={{
-                                  borderRadius: `${scaled.scaledInnerRadius}px`,
-                                  borderColor: tokens.universalBorderColor,
-                                  borderWidth: `${tokens.borderWidth}px`,
-                                  backgroundColor: tokens.universalFillColor,
-                                  color: tokens.textIconColor,
-                                }}
-                                className="font-sans px-1 py-0.5 border mr-1"
-                              >
-                                esc
-                              </kbd>
-                              dismiss
-                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setIsCmdPaletteOpen(false)}
+                              className="flex items-center gap-1 text-neutral-500 hover:text-neutral-900 cursor-pointer font-medium"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                              <span>Dismiss</span>
+                            </button>
                           </div>
                         </motion.div>
                       </div>

@@ -39,6 +39,39 @@ export function Button({
   const paddingX = Math.round(scaled.scaledPaddingX * sizeMultiplier);
   const fontSize = Math.max(11, Math.round(scaled.ctaFontSize * (size === "sm" ? 0.9 : size === "lg" ? 1.1 : 1.0)));
 
+  // Calculate dynamic icon sizing & styling reactive to Visual Studio icon tokens
+  const baseIconSize = size === "sm" ? (scaled.iconSmSize || 14) : size === "lg" ? (scaled.iconLgSize || 20) : (scaled.iconSize || 16);
+  const buttonIconColor = variant === "primary"
+    ? scaled.primaryActionTextColor
+    : variant === "destructive"
+    ? "#E11D48"
+    : (tokens.iconColor || tokens.textIconColor);
+
+  const renderIcon = (node: React.ReactNode) => {
+    if (!node || !React.isValidElement(node)) return node;
+    const existingProps = (node.props as Record<string, any>) || {};
+    const effectiveFill = existingProps.fill || (
+      tokens.iconFill === "currentColor"
+        ? buttonIconColor
+        : tokens.iconFill === "subtle"
+        ? `${buttonIconColor}25`
+        : "none"
+    );
+
+    return React.cloneElement(node as React.ReactElement<any>, {
+      size: existingProps.size || baseIconSize,
+      strokeWidth: existingProps.strokeWidth || tokens.iconStrokeWidth,
+      color: existingProps.color || buttonIconColor,
+      fill: effectiveFill,
+      style: {
+        width: `${baseIconSize}px`,
+        height: `${baseIconSize}px`,
+        transition: scaled.transitionStyle,
+        ...(existingProps.style || {}),
+      },
+    });
+  };
+
   const getVariantStyles = (): React.CSSProperties => {
     switch (variant) {
       case "primary":
@@ -97,12 +130,16 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+        <Loader2
+          size={baseIconSize}
+          strokeWidth={tokens.iconStrokeWidth}
+          className="animate-spin shrink-0"
+        />
       ) : (
-        iconLeft && <span className="shrink-0 flex items-center">{iconLeft}</span>
+        iconLeft && <span className="shrink-0 flex items-center">{renderIcon(iconLeft)}</span>
       )}
       {children && <span className="whitespace-nowrap">{children}</span>}
-      {!loading && iconRight && <span className="shrink-0 flex items-center">{iconRight}</span>}
+      {!loading && iconRight && <span className="shrink-0 flex items-center">{renderIcon(iconRight)}</span>}
     </motion.button>
   );
 }

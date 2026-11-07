@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useZeroLight } from "../context";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sliders, CheckCircle2 } from "lucide-react";
+import { X, Sliders, CheckCircle2, Check } from "lucide-react";
 import { Button } from "../atoms/button";
 
 export interface DetailDrawerProps {
@@ -58,10 +58,15 @@ export function DetailDrawer({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-neutral-400 hover:text-neutral-700 cursor-pointer p-1 rounded-full"
+                className="text-neutral-400 hover:text-neutral-700 cursor-pointer p-1 rounded-full hover:bg-neutral-100 transition-colors"
                 aria-label="Close drawer"
+                title="Close"
               >
-                <X className="w-4 h-4" />
+                <X
+                  size={scaled.iconSmSize || 16}
+                  strokeWidth={tokens.iconStrokeWidth || 1.75}
+                  color={tokens.iconColor || tokens.textIconColor}
+                />
               </button>
             </div>
 
@@ -132,12 +137,18 @@ export function DetailDrawer({
               style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
               className="p-4 border-t flex items-center justify-end gap-2 bg-neutral-50/50"
             >
-              <Button variant="outline" size="sm" onClick={onClose}>
+              <Button
+                variant="outline"
+                size="sm"
+                iconLeft={<X />}
+                onClick={onClose}
+              >
                 Close
               </Button>
               <Button
                 variant="primary"
                 size="sm"
+                iconLeft={<Check />}
                 onClick={() => {
                   onSave?.();
                   onClose();

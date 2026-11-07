@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useZeroLight } from "../context";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, X, Trash2 } from "lucide-react";
 import { Button } from "../atoms/button";
 
 export interface ConfirmationModalProps {
@@ -46,12 +46,15 @@ export function ConfirmationModal({
               backgroundColor: tokens.universalFillColor,
               boxShadow: scaled.cardShadow,
             }}
-            className="w-full max-w-md p-6 border shadow-2xl space-y-5 select-none transform-gpu"
+            className="w-full max-w-[calc(100vw-2rem)] sm:max-w-md p-6 border shadow-2xl space-y-5 select-none transform-gpu"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-                  <AlertTriangle className="w-5 h-5" />
+                  <AlertTriangle
+                    size={scaled.iconSize || 20}
+                    strokeWidth={tokens.iconStrokeWidth || 1.75}
+                  />
                 </div>
                 <div>
                   <h3 style={{ color: tokens.textIconColor }} className="font-semibold text-sm">
@@ -63,10 +66,14 @@ export function ConfirmationModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="text-neutral-400 hover:text-neutral-700 cursor-pointer p-1 rounded-full"
+                className="text-neutral-400 hover:text-neutral-700 cursor-pointer p-1 rounded-full hover:bg-neutral-100 transition-colors shrink-0"
                 aria-label="Close modal"
               >
-                <X className="w-4 h-4" />
+                <X
+                  size={scaled.iconSmSize || 16}
+                  strokeWidth={tokens.iconStrokeWidth || 1.75}
+                  color={tokens.iconColor || tokens.textIconColor}
+                />
               </button>
             </div>
 
@@ -101,12 +108,18 @@ export function ConfirmationModal({
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-2">
-              <Button variant="outline" size="sm" onClick={onClose}>
+              <Button
+                variant="outline"
+                size="sm"
+                iconLeft={<X />}
+                onClick={onClose}
+              >
                 Cancel
               </Button>
               <Button
                 variant="destructive"
                 size="sm"
+                iconLeft={<Trash2 />}
                 disabled={!isVerified}
                 onClick={() => {
                   if (isVerified) {

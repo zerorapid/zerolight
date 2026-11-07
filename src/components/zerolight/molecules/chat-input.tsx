@@ -137,15 +137,8 @@ export function ChatInput({
           </button>
         </div>
 
-        {/* Right helper & Send Button */}
+        {/* Right Send Action Button */}
         <div className="flex items-center gap-2">
-          <span
-            style={{ fontSize: `${scaled.sublabelFontSize - 1}px` }}
-            className="text-neutral-400 hidden sm:inline-block tabular-nums"
-          >
-            Enter ↵ to send
-          </span>
-
           <motion.button
             whileTap={{ scale: canSend ? 0.94 : 1 }}
             type="button"

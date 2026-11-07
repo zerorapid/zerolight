@@ -23,7 +23,37 @@ export function IconButton({
 }: IconButtonProps) {
   const { tokens, scaled } = useZeroLight();
 
-  const dimension = size === "sm" ? 28 : size === "lg" ? 40 : 34;
+  const dimension = size === "sm" ? 28 : size === "lg" ? 44 : 36;
+  const baseIconSize = size === "sm" ? (scaled.iconSmSize || 14) : size === "lg" ? (scaled.iconLgSize || 20) : (scaled.iconSize || 16);
+
+  const iconColor = variant === "solid"
+    ? scaled.primaryActionTextColor
+    : (tokens.iconColor || tokens.textIconColor);
+
+  const renderIcon = (node: React.ReactNode) => {
+    if (!node || !React.isValidElement(node)) return node;
+    const existingProps = (node.props as Record<string, any>) || {};
+    const effectiveFill = existingProps.fill || (
+      tokens.iconFill === "currentColor"
+        ? iconColor
+        : tokens.iconFill === "subtle"
+        ? `${iconColor}25`
+        : "none"
+    );
+
+    return React.cloneElement(node as React.ReactElement<any>, {
+      size: existingProps.size || baseIconSize,
+      strokeWidth: existingProps.strokeWidth || tokens.iconStrokeWidth,
+      color: existingProps.color || iconColor,
+      fill: effectiveFill,
+      style: {
+        width: `${baseIconSize}px`,
+        height: `${baseIconSize}px`,
+        transition: scaled.transitionStyle,
+        ...(existingProps.style || {}),
+      },
+    });
+  };
 
   const getVariantStyles = (): React.CSSProperties => {
     switch (variant) {
@@ -70,7 +100,7 @@ export function IconButton({
       } ${className}`}
       {...props}
     >
-      {icon}
+      {renderIcon(icon)}
     </motion.button>
   );
 }
