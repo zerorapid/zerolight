@@ -2,6 +2,8 @@ export type CornerRadiusPreset = 0 | 8 | 16 | 24 | 999;
 export type HeightDensityPreset = 36 | 40 | 44 | 48 | 52;
 export type MenuOffsetPreset = 4 | 8 | 10 | 14;
 export type MotionPhysicsPreset = "linear" | "damped" | "elastic";
+export type IconStrokePreset = 1.25 | 1.5 | 2.0 | 2.5 | 3.0;
+export type IconFillPreset = "none" | "currentColor" | "subtle";
 
 export interface ZeroLightTokens {
   scaleMultiplier: number;
@@ -16,6 +18,11 @@ export interface ZeroLightTokens {
   menuOffsetGap: MenuOffsetPreset;
   fontSize: number;
   motionPhysics: MotionPhysicsPreset;
+  // Icon specific tokens
+  iconScaleMultiplier: number;
+  iconStrokeWidth: IconStrokePreset;
+  iconFill: IconFillPreset;
+  iconColor: string;
 }
 
 export const DEFAULT_TOKENS: ZeroLightTokens = {
@@ -31,6 +38,11 @@ export const DEFAULT_TOKENS: ZeroLightTokens = {
   menuOffsetGap: 8,
   fontSize: 14,
   motionPhysics: "damped",
+  // Icon specific defaults
+  iconScaleMultiplier: 1.0,
+  iconStrokeWidth: 2.0,
+  iconFill: "none",
+  iconColor: "#71717A",
 };
 
 export interface MotionConfig {
@@ -86,6 +98,14 @@ export interface ScaledTokens {
   focusHalo: string;
   primaryActionTextColor: string;
   motionConfig: MotionConfig;
+  // Vector Icon Tokens
+  iconScale: number;
+  iconSize: number;
+  iconSmSize: number;
+  iconLgSize: number;
+  iconStrokeWidth: number;
+  iconFill: string;
+  iconColor: string;
 }
 
 export function getContrastColor(hexColor: string): string {
@@ -256,5 +276,18 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     focusHalo,
     primaryActionTextColor: getContrastColor(tokens.primaryButtonColor),
     motionConfig: getMotionConfig(),
+    // Vector Icon Computations
+    iconScale: (tokens.iconScaleMultiplier ?? 1.0) * scale,
+    iconSize: Math.max(12, Math.round(16 * (tokens.iconScaleMultiplier ?? 1.0) * scale)),
+    iconSmSize: Math.max(10, Math.round(14 * (tokens.iconScaleMultiplier ?? 1.0) * scale)),
+    iconLgSize: Math.max(16, Math.round(20 * (tokens.iconScaleMultiplier ?? 1.0) * scale)),
+    iconStrokeWidth: tokens.iconStrokeWidth ?? 2.0,
+    iconFill:
+      tokens.iconFill === "currentColor"
+        ? "currentColor"
+        : tokens.iconFill === "subtle"
+        ? tokens.hoverBackplateTint || "rgba(0,0,0,0.06)"
+        : "none",
+    iconColor: tokens.iconColor || tokens.textIconColor || "#71717A",
   };
 }

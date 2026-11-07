@@ -159,9 +159,9 @@ expectedOrganisms.forEach((org) => {
 });
 
 // -----------------------------------------------------------------
-// Test Suite 4: Studio Header & Navigation Heuristics
+// Test Suite 4: Studio Header & Clean Full-Width Layout
 // -----------------------------------------------------------------
-console.log("\n4. Studio Layout, Spacing & Directory Integrity:");
+console.log("\n4. Studio Layout, Focus & Component Showcase Integrity:");
 
 const studioContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8");
 
@@ -174,7 +174,14 @@ test("Top Header uses deterministic CSS transitions (no layoutId jump from botto
   assert.ok(studioContent.includes('mainRef.current?.scrollTo({ top: 0, behavior: "instant" })'));
 });
 
-test("All 46 Brad Frost components have 1:1 anchor links in the Left Sidebar", () => {
+test("Side directory is removed for clean full-width center stage focus", () => {
+  assert.ok(!studioContent.includes('COLUMN 1: LEFT SIDEBAR'));
+  assert.ok(!studioContent.includes('Atoms Directory'));
+  assert.ok(!studioContent.includes('Molecules Directory'));
+  assert.ok(!studioContent.includes('Organisms Directory'));
+});
+
+test("All 46 Brad Frost components are mounted with unique IDs in Center Stage", () => {
   const allIds = [
     // 18 Atoms
     "atom-typography", "atom-separator", "atom-buttons", "atom-icon-button", "atom-input",
@@ -193,7 +200,7 @@ test("All 46 Brad Frost components have 1:1 anchor links in the Left Sidebar", (
   ];
 
   allIds.forEach((id) => {
-    assert.ok(studioContent.includes(`href="#${id}"`), `Sidebar missing link to #${id}`);
+    assert.ok(studioContent.includes(`id="${id}"`), `Center stage missing card #${id}`);
   });
 });
 
@@ -207,6 +214,37 @@ test("All card headers have semantic Lucide vector icons", () => {
   assert.ok(studioContent.includes('<UploadCloud className="w-4 h-4 text-neutral-500'));
   assert.ok(studioContent.includes('<ListOrdered className="w-4 h-4 text-neutral-500'));
   assert.ok(studioContent.includes('<FolderTree className="w-4 h-4 text-neutral-500'));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 5: Vector Icon Settings & Dynamic Calibration
+// -----------------------------------------------------------------
+console.log("\n5. Vector Icon Tuning & Visual Studio Controls:");
+
+test("Icon Tokens: DEFAULT_TOKENS provides scale, stroke, fill, and color invariants", () => {
+  assert.ok(typesContent.includes("iconScaleMultiplier: 1.0"));
+  assert.ok(typesContent.includes("iconStrokeWidth: 2.0"));
+  assert.ok(typesContent.includes('iconFill: "none"'));
+  assert.ok(typesContent.includes('iconColor: "#71717A"'));
+});
+
+test("Icon Tokens: computeScaledTokens calculates dynamic icon sizes and fills", () => {
+  assert.ok(typesContent.includes("iconScale: (tokens.iconScaleMultiplier ?? 1.0) * scale"));
+  assert.ok(typesContent.includes("iconSize: Math.max(12, Math.round(16 *"));
+  assert.ok(typesContent.includes("iconStrokeWidth: tokens.iconStrokeWidth ?? 2.0"));
+  assert.ok(typesContent.includes("tokens.iconFill === \"currentColor\""));
+});
+
+test("Visual Studio Dock: Renders comprehensive Iconography & Vector controls", () => {
+  assert.ok(studioContent.includes("Iconography &amp; Vectors"));
+  assert.ok(studioContent.includes("Icon scale"));
+  assert.ok(studioContent.includes("Stroke width"));
+  assert.ok(studioContent.includes("Fill style"));
+  assert.ok(studioContent.includes("Icon color"));
+  assert.ok(studioContent.includes("iconScaleMultiplier: Number(e.target.value)"));
+  assert.ok(studioContent.includes("iconStrokeWidth: s"));
+  assert.ok(studioContent.includes("iconFill: key"));
+  assert.ok(studioContent.includes("iconColor: e.target.value"));
 });
 
 console.log("\n==================================================");

@@ -12,3 +12,4 @@ export * from "./avatar";
 export * from "./skeleton";
 export * from "./separator";
 export * from "./spinner";
+export * from "./icon";

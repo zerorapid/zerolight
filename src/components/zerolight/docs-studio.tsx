@@ -77,6 +77,8 @@ import {
   HeightDensityPreset,
   MenuOffsetPreset,
   MotionPhysicsPreset,
+  IconStrokePreset,
+  IconFillPreset,
   computeScaledTokens,
 } from "./types";
 import { ZeroLightProvider } from "./context";
@@ -393,6 +395,10 @@ module.exports = {
   --zl-menu-gap: ${t.menuOffsetGap}px;
   --zl-base-font-size: ${t.fontSize}px;
   --zl-scale-factor: ${t.scaleMultiplier};
+  --zl-icon-scale: ${t.iconScaleMultiplier};
+  --zl-icon-stroke: ${t.iconStrokeWidth}px;
+  --zl-icon-fill: ${t.iconFill};
+  --zl-icon-color: ${t.iconColor};
 }`;
     }
     return JSON.stringify(
@@ -409,6 +415,10 @@ module.exports = {
         menuOffsetGap: t.menuOffsetGap,
         fontSize: t.fontSize,
         motionPhysics: t.motionPhysics,
+        iconScaleMultiplier: t.iconScaleMultiplier,
+        iconStrokeWidth: t.iconStrokeWidth,
+        iconFill: t.iconFill,
+        iconColor: t.iconColor,
       },
       null,
       2
@@ -892,6 +902,164 @@ module.exports = {
               </div>
             </div>
 
+            {/* Dark Mode Iconography & Vector Tuning */}
+            <div className="space-y-3 pt-2 border-t border-[#27272A]">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-neutral-400">
+                  Iconography &amp; Vectors
+                </span>
+                <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
+                  {tokens.iconScaleMultiplier.toFixed(2)}x • {tokens.iconStrokeWidth}px
+                </span>
+              </div>
+
+              {/* Icon Scale Multiplier */}
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Icon scale</span>
+                  <span className="text-neutral-400 font-medium">
+                    {tokens.iconScaleMultiplier.toFixed(2)}x ({scaled.iconSize}px)
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.75"
+                  max="1.50"
+                  step="0.05"
+                  value={tokens.iconScaleMultiplier}
+                  onChange={(e) =>
+                    setTokens((prev) => ({ ...prev, iconScaleMultiplier: Number(e.target.value) }))
+                  }
+                  className="w-full cursor-pointer accent-white"
+                />
+                <div className="grid grid-cols-4 gap-1 pt-0.5">
+                  {[
+                    { label: "0.85x", val: 0.85 },
+                    { label: "1.00x", val: 1.0 },
+                    { label: "1.20x", val: 1.2 },
+                    { label: "1.40x", val: 1.4 },
+                  ].map(({ label, val }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => setTokens((prev) => ({ ...prev, iconScaleMultiplier: val }))}
+                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                        Math.abs(tokens.iconScaleMultiplier - val) < 0.02
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Icon Stroke Width */}
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Stroke width</span>
+                  <span className="text-neutral-400 font-medium">{tokens.iconStrokeWidth}px</span>
+                </div>
+                <div className="grid grid-cols-5 gap-1">
+                  {([1.25, 1.5, 2.0, 2.5, 3.0] as IconStrokePreset[]).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => setTokens((prev) => ({ ...prev, iconStrokeWidth: s }))}
+                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                        tokens.iconStrokeWidth === s
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                      }`}
+                    >
+                      {s}px
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Icon Fill */}
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Fill style</span>
+                  <span className="text-neutral-400 font-medium capitalize">{tokens.iconFill}</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1">
+                  {(
+                    [
+                      { key: "none", label: "None" },
+                      { key: "subtle", label: "Subtle Tint" },
+                      { key: "currentColor", label: "Solid" },
+                    ] as { key: IconFillPreset; label: string }[]
+                  ).map(({ key, label }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setTokens((prev) => ({ ...prev, iconFill: key }))}
+                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                        tokens.iconFill === key
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Icon Color */}
+              <div className="space-y-1 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-neutral-300">Icon color</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-neutral-400 font-mono font-medium">
+                      {tokens.iconColor.toUpperCase()}
+                    </span>
+                    <label className="relative cursor-pointer">
+                      <span
+                        style={{ backgroundColor: tokens.iconColor }}
+                        className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                      />
+                      <input
+                        type="color"
+                        value={tokens.iconColor}
+                        onChange={(e) => setTokens((prev) => ({ ...prev, iconColor: e.target.value }))}
+                        className="sr-only"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                {/* Quick Swatches */}
+                <div className="flex items-center justify-between gap-1 pt-1">
+                  {[
+                    { label: "Muted", color: "#71717A" },
+                    { label: "Deep", color: "#18181B" },
+                    { label: "Brand", color: tokens.primaryButtonColor },
+                    { label: "Indigo", color: "#6366F1" },
+                    { label: "Emerald", color: "#10B981" },
+                    { label: "Amber", color: "#F59E0B" },
+                    { label: "Rose", color: "#EF4444" },
+                  ].map(({ label, color }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      title={label}
+                      onClick={() => setTokens((prev) => ({ ...prev, iconColor: color }))}
+                      style={{ backgroundColor: color }}
+                      className={`w-6 h-6 rounded-md border transition-all cursor-pointer ${
+                        tokens.iconColor.toLowerCase() === color.toLowerCase()
+                          ? "ring-2 ring-white ring-offset-1 ring-offset-[#121214] scale-110"
+                          : "border-white/20 hover:scale-105 opacity-80 hover:opacity-100"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
             {/* Dark Mode Motion Section */}
             <div className="space-y-2 pt-2 border-t border-[#27272A]">
               <div className="text-xs font-medium text-neutral-400">
@@ -1047,8 +1215,29 @@ module.exports = {
           })}
         </div>
 
-        {/* Right meta: Scale & PoC quick links */}
-        <div className="flex items-center gap-3">
+        {/* Right meta: Scale, PoC links & Export Tokens */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden md:flex items-center gap-1.5 mr-1">
+            <Link
+              href="/saas-dashboard"
+              className="px-2.5 py-1 text-xs font-medium text-neutral-700 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors flex items-center gap-1"
+            >
+              <Sparkles className="w-3 h-3 text-amber-500" />
+              <span>PulseHire SaaS</span>
+            </Link>
+            <Link
+              href="/fresher-profile"
+              className="px-2.5 py-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+            >
+              Fresher Bio
+            </Link>
+            <Link
+              href="/example-form"
+              className="px-2.5 py-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
+            >
+              Settings
+            </Link>
+          </div>
           <span
             style={{
               fontSize: `${scaled.sublabelFontSize}px`,
@@ -1056,7 +1245,7 @@ module.exports = {
               borderColor: tokens.universalBorderColor,
               borderWidth: `${tokens.borderWidth}px`,
             }}
-            className="text-neutral-600 bg-neutral-50 border px-3 py-1 shadow-2xs tabular-nums font-medium hidden sm:inline-block"
+            className="text-neutral-600 bg-neutral-50 border px-3 py-1 shadow-2xs tabular-nums font-medium hidden xl:inline-block"
           >
             Scale: {tokens.scaleMultiplier.toFixed(2)}x • {tokens.motionPhysics}
           </span>
@@ -1066,7 +1255,7 @@ module.exports = {
             style={{
               borderRadius: `${scaled.scaledPillRadius}px`,
             }}
-            className="px-3.5 py-1.5 text-xs font-semibold bg-[#111111] hover:bg-neutral-800 text-white flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+            className="px-3.5 py-1.5 text-xs font-semibold bg-[#111111] hover:bg-neutral-800 text-white flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs whitespace-nowrap"
           >
             <Code2 className="w-3.5 h-3.5" />
             <span>Export Tokens</span>
@@ -1074,291 +1263,13 @@ module.exports = {
         </div>
       </header>
 
-      {/* 3-Column Studio Body */}
+      {/* 2-Column Studio Body (Center Stage + Visual Studio Dock) */}
       <div className="flex-1 flex w-full overflow-hidden">
         {/* ══════════════════════════════════════════════════════════
-            COLUMN 1: LEFT SIDEBAR (CLEAN CATEGORICAL HIERARCHY)
-           ══════════════════════════════════════════════════════════ */}
-        <aside className="w-64 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none h-full overflow-y-auto shrink-0">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
-              <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 block">
-                  {activeTier === "atoms"
-                    ? "Atoms Directory"
-                    : activeTier === "molecules"
-                    ? "Molecules Directory"
-                    : "Organisms Directory"}
-                </span>
-                <span className="text-xs font-semibold text-neutral-800">Component Index</span>
-              </div>
-              <span
-                style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
-                className="text-[10px] font-semibold bg-neutral-100 text-neutral-600 px-2.5 py-1 tabular-nums border border-neutral-200"
-              >
-                {activeTier === "atoms" ? "18 Primitives" : activeTier === "molecules" ? "16 Compounds" : "12 Organisms"}
-              </span>
-            </div>
-
-            {/* Categorized Navigation matching Brad Frost Hierarchy */}
-            <nav className="space-y-4">
-              {activeTier === "atoms" ? (
-                <>
-                  <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Foundation
-                    </div>
-                    <a href="#atom-typography" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Typography &amp; scale</span>
-                    </a>
-                    <a href="#atom-separator" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Hairline separator</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Actions
-                    </div>
-                    <a href="#atom-buttons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Button matrix</span>
-                    </a>
-                    <a href="#atom-icon-button" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Icon button</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Text &amp; Entry
-                    </div>
-                    <a href="#atom-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Input</span>
-                    </a>
-                    <a href="#atom-textarea" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Textarea</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Selection &amp; Controls
-                    </div>
-                    <a href="#atom-checkbox" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Checkbox (Tri-state)</span>
-                    </a>
-                    <a href="#atom-radio" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Radio button</span>
-                    </a>
-                    <a href="#atom-switch" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Toggle switch</span>
-                    </a>
-                    <a href="#atom-slider" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Range slider</span>
-                    </a>
-                    <a href="#atom-progress" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Progress bar</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Indicators &amp; Identity
-                    </div>
-                    <a href="#atom-lucide-icons" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Lucide icon atom</span>
-                    </a>
-                    <a href="#atom-badge" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Status badge</span>
-                    </a>
-                    <a href="#atom-tag-chip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Tag chip</span>
-                    </a>
-                    <a href="#atom-kbd" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Keycap</span>
-                    </a>
-                    <a href="#atom-avatar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Avatar &amp; loader</span>
-                    </a>
-                    <a href="#atom-skeleton" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Skeleton shimmer</span>
-                    </a>
-                    <a href="#atom-spinner" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Activity spinner</span>
-                    </a>
-                  </div>
-                </>
-              ) : activeTier === "molecules" ? (
-                <>
-                  <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Form &amp; Entry
-                    </div>
-                    <a href="#mol-form-field" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Form field</span>
-                    </a>
-                    <a href="#mol-input-group" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Input group</span>
-                    </a>
-                    <a href="#mol-search-bar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Search bar</span>
-                    </a>
-                    <a href="#mol-select" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Select dropdown</span>
-                    </a>
-                    <a href="#mol-tag-input" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Tag input</span>
-                    </a>
-                    <a href="#mol-calendar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Calendar dropdown</span>
-                    </a>
-                    <a href="#mol-file-upload" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>File upload dropzone</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Navigation &amp; Stepping
-                    </div>
-                    <a href="#mol-segmented" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Segmented control</span>
-                    </a>
-                    <a href="#mol-breadcrumbs" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Breadcrumbs</span>
-                    </a>
-                    <a href="#mol-stepper" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Workflow stepper</span>
-                    </a>
-                    <a href="#mol-pagination" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Table pagination</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Display &amp; Feedback
-                    </div>
-                    <a href="#mol-stat-badge" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Metric stat</span>
-                    </a>
-                    <a href="#mol-alert" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Alert banner</span>
-                    </a>
-                    <a href="#mol-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Tooltip popover</span>
-                    </a>
-                    <a href="#mol-empty-state" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Empty state callout</span>
-                    </a>
-                    <a href="#mol-accordion" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Accordion disclosure</span>
-                    </a>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="space-y-0.5">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Data &amp; Layout
-                    </div>
-                    <a href="#org-data-table" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Data table</span>
-                    </a>
-                    <a href="#org-global-header" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Global header</span>
-                    </a>
-                    <a href="#org-navigation-sidebar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>App sidebar</span>
-                    </a>
-                    <a href="#org-tree-view" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Resource tree view</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Query &amp; Actions
-                    </div>
-                    <a href="#org-command-palette" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Command palette</span>
-                    </a>
-                    <a href="#org-filter-builder" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Filter builder</span>
-                    </a>
-                    <a href="#org-date-picker" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Date range picker</span>
-                    </a>
-                    <a href="#org-metric-card" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Metric chart card</span>
-                    </a>
-                    <a href="#org-audit-log" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Audit log trail</span>
-                    </a>
-                    <a href="#org-quota-matrix" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Tenant quota matrix</span>
-                    </a>
-                  </div>
-
-                  <div className="space-y-0.5 pt-2 border-t border-neutral-100">
-                    <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Overlays &amp; Sheets
-                    </div>
-                    <a href="#org-detail-drawer" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Slide-over drawer</span>
-                    </a>
-                    <a href="#org-confirmation-modal" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
-                      <span>Confirmation modal</span>
-                    </a>
-                  </div>
-                </>
-              )}
-            </nav>
-
-            {/* Live PoC Apps & SaaS Navigation */}
-            <div className="pt-4 border-t border-neutral-100 space-y-1">
-              <div className="px-3 py-1 text-[10px] font-bold text-neutral-400 uppercase tracking-wider">
-                Live PoC SaaS &amp; Forms
-              </div>
-              <Link
-                href="/saas-dashboard"
-                className="px-3 py-2 text-xs font-semibold text-white bg-[#111111] hover:bg-neutral-800 rounded-lg flex items-center justify-between transition-colors shadow-xs"
-              >
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  <span>PulseHire SaaS</span>
-                </span>
-                <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded uppercase font-bold tracking-wider">
-                  Live
-                </span>
-              </Link>
-              <Link
-                href="/fresher-profile"
-                className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-              >
-                <span>Fresher Job Bio</span>
-                <ExternalLink className="w-3 h-3 text-neutral-400" />
-              </Link>
-              <Link
-                href="/example-form"
-                className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors"
-              >
-                <span>Workspace Settings</span>
-                <ExternalLink className="w-3 h-3 text-neutral-400" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="text-xs text-neutral-400 pt-4 border-t border-neutral-100">
-            Brad Frost Atomic Architecture
-          </div>
-        </aside>
-
-        {/* ══════════════════════════════════════════════════════════
-            COLUMN 2: CENTER STAGE (ATOMS OR MOLECULES VIEW)
+            CENTER STAGE (EXPANDED DEDICATED SHOWCASE)
            ══════════════════════════════════════════════════════════ */}
         <main ref={mainRef} className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start h-full overflow-y-auto">
-          <div className={`w-full ${activeTier === "organisms" ? "max-w-5xl" : "max-w-[720px]"} space-y-8 pb-32`}>
+          <div className={`w-full ${activeTier === "organisms" ? "max-w-5xl" : "max-w-4xl"} space-y-8 pb-32`}>
             
             {/* ══════════════════════════════════════════════════════════
                 VIEW A: PURE ATOMS (UNIVERSAL TOKEN CONTROL)
@@ -2204,44 +2115,36 @@ module.exports = {
 
                 {/* ── 10. LUCIDE ICON ATOM ── */}
                 <div id="atom-lucide-icons" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
                         <Layers className="w-4 h-4 text-neutral-500 shrink-0" />
                         <span>Lucide vector icon catalog</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Indivisible vector primitives across size, stroke weight, and corner radius tokens.
+                        Indivisible vector primitives dynamically calibrated by Visual Studio scaling, stroke, fill, and color tokens.
                       </p>
                     </div>
 
-                    {/* Stroke selector */}
+                    {/* Live Icon Token Readout */}
                     <div
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="flex items-center gap-1 bg-neutral-100 p-0.5 text-xs"
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="inline-flex items-center gap-2 px-3 py-1 border text-xs shadow-2xs self-start sm:self-auto shrink-0"
                     >
-                      {([1.5, 2.0, 2.5] as const).map((s) => (
-                        <button
-                          key={s}
-                          type="button"
-                          onClick={() => setActiveIconStroke(s)}
-                          style={{
-                            borderRadius: `${scaled.scaledInnerRadius === 0 ? 0 : Math.max(2, scaled.scaledInnerRadius - 2)}px`,
-                          }}
-                          className={`px-2 py-0.5 font-medium cursor-pointer transition-all ${
-                            activeIconStroke === s
-                              ? "bg-white text-neutral-900 shadow-xs font-semibold"
-                              : "text-neutral-500 hover:text-neutral-900"
-                          }`}
-                        >
-                          {s}px
-                        </button>
-                      ))}
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tokens.iconColor }} />
+                      <span className="font-mono text-[11px] text-neutral-700 font-medium">
+                        {tokens.iconScaleMultiplier.toFixed(2)}x ({scaled.iconSize}px) • {tokens.iconStrokeWidth}px stroke • {tokens.iconFill}
+                      </span>
                     </div>
                   </div>
 
                   {/* Curated SaaS Lucide glyph grid */}
-                  <div className="grid grid-cols-6 sm:grid-cols-8 gap-3 pt-2">
+                  <div className="grid grid-cols-4 sm:grid-cols-8 gap-3 pt-2">
                     {[
                       { icon: Check, label: "check" },
                       { icon: Plus, label: "plus" },
@@ -2268,15 +2171,28 @@ module.exports = {
                           borderWidth: `${tokens.borderWidth}px`,
                           borderRadius: `${scaled.scaledInnerRadius}px`,
                         }}
-                        className="flex flex-col items-center justify-center p-2 border hover:border-neutral-400 transition-colors cursor-pointer group"
-                        title={label}
+                        className="flex flex-col items-center justify-center p-3 border hover:border-neutral-400 transition-all cursor-pointer group"
+                        title={`${label} (${scaled.iconSize}px)`}
                       >
-                        <IconComponent
-                          className="w-4 h-4 transition-transform group-hover:scale-110"
-                          style={{ color: tokens.textIconColor }}
-                          strokeWidth={activeIconStroke}
-                        />
-                        <span className="text-[10px] text-neutral-400 mt-1 truncate max-w-full">
+                        <div
+                          style={{
+                            width: `${Math.max(28, scaled.iconSize + 8)}px`,
+                            height: `${Math.max(28, scaled.iconSize + 8)}px`,
+                          }}
+                          className="flex items-center justify-center"
+                        >
+                          <IconComponent
+                            className="transition-transform group-hover:scale-110"
+                            style={{
+                              width: `${scaled.iconSize}px`,
+                              height: `${scaled.iconSize}px`,
+                              color: tokens.iconColor,
+                              fill: scaled.iconFill,
+                            }}
+                            strokeWidth={tokens.iconStrokeWidth}
+                          />
+                        </div>
+                        <span className="text-[10px] text-neutral-500 mt-1.5 truncate max-w-full font-medium">
                           {label}
                         </span>
                       </div>

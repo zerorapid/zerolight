@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useZeroLight } from "../context";
 
 export type IconSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type IconStroke = "thin" | "regular" | "bold";
@@ -25,9 +26,12 @@ export type IconName =
 
 export interface IconProps {
   name: IconName;
-  size?: IconSize;
-  stroke?: IconStroke;
+  size?: IconSize | number;
+  stroke?: IconStroke | number;
+  color?: string;
+  fill?: string;
   className?: string;
+  style?: React.CSSProperties;
   ariaLabel?: string;
 }
 
@@ -47,13 +51,32 @@ const STROKE_MAP: Record<IconStroke, number> = {
 
 export function Icon({
   name,
-  size = "md",
-  stroke = "regular",
+  size,
+  stroke,
+  color,
+  fill,
   className = "",
+  style,
   ariaLabel,
 }: IconProps) {
-  const dimension = SIZE_MAP[size];
-  const strokeWidth = STROKE_MAP[stroke];
+  const { tokens, scaled } = useZeroLight();
+
+  const dimension =
+    typeof size === "number"
+      ? size
+      : size && SIZE_MAP[size]
+      ? SIZE_MAP[size]
+      : scaled.iconSize;
+
+  const strokeWidth =
+    typeof stroke === "number"
+      ? stroke
+      : stroke && STROKE_MAP[stroke]
+      ? STROKE_MAP[stroke]
+      : tokens.iconStrokeWidth;
+
+  const strokeColor = color || tokens.iconColor || "currentColor";
+  const fillColor = fill || scaled.iconFill || "none";
 
   const renderPath = () => {
     switch (name) {
@@ -159,10 +182,11 @@ export function Icon({
       width={dimension}
       height={dimension}
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
+      fill={fillColor}
+      stroke={strokeColor}
       strokeWidth={strokeWidth}
-      className={`inline-block flex-shrink-0 align-middle ${className}`}
+      style={style}
+      className={`inline-block flex-shrink-0 align-middle transition-colors ${className}`}
     >
       {renderPath()}
     </svg>
