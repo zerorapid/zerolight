@@ -52,7 +52,7 @@ export function MonoValue({
 
   return (
     <span
-      className={`inline-flex items-baseline gap-1.5 font-mono tabular-nums tracking-tight ${sizeClasses} ${className}`}
+      className={`inline-flex items-baseline gap-1.5 font-sans tabular-nums tracking-tight ${sizeClasses} ${className}`}
     >
       {previousValue !== undefined && previousValue !== null && (
         <span

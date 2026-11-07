@@ -77,8 +77,11 @@ export function Accordion({
                 )}
               </div>
               <ChevronDown
-                className={`w-4 h-4 text-neutral-400 transition-transform duration-200 ${
-                  isOpen ? "rotate-180 text-neutral-800" : ""
+                size={scaled.iconSmSize || 16}
+                strokeWidth={tokens.iconStrokeWidth || 1.75}
+                color={tokens.iconColor || tokens.textIconColor}
+                className={`transition-transform duration-200 shrink-0 ${
+                  isOpen ? "rotate-180" : ""
                 }`}
               />
             </button>

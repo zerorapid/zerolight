@@ -6,3 +6,4 @@ export * from "./filter-builder";
 export * from "./audit-log";
 export * from "./quota-matrix";
 export * from "./tree-view";
+export * from "./chat-conversation";

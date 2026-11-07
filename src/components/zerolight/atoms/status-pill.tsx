@@ -54,7 +54,7 @@ export function StatusPill({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[11px] font-medium border select-none ${pill} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-sans text-[11px] font-medium border select-none ${pill} ${className}`}
     >
       {showDot && <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${dot}`} />}
       <span>{label}</span>

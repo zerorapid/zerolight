@@ -47,7 +47,7 @@ export function ApertureSlider({
             </label>
           )}
 
-          <div className="flex items-center gap-1 font-mono text-xs font-semibold tabular-nums text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded">
+          <div className="flex items-center gap-1 font-sans text-xs font-semibold tabular-nums text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded">
             <span>{value}</span>
             {unit && <span className="text-[10px] text-emerald-500 font-normal">{unit}</span>}
           </div>
@@ -74,7 +74,7 @@ export function ApertureSlider({
       </div>
 
       {showLimits && (
-        <div className="flex justify-between text-[10px] font-mono text-neutral-500 tabular-nums select-none px-0.5">
+        <div className="flex justify-between text-[10px] font-sans text-neutral-500 tabular-nums select-none px-0.5">
           <span>
             {min}
             {unit}

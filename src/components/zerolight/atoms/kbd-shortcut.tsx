@@ -23,7 +23,7 @@ export function KbdShortcut({
   }[size];
 
   return (
-    <span className={`inline-flex items-center gap-1 font-mono ${className}`}>
+    <span className={`inline-flex items-center gap-1 font-sans ${className}`}>
       {parsedKeys.map((key, idx) => (
         <kbd
           key={idx}

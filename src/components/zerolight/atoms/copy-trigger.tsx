@@ -50,7 +50,7 @@ export function CopyTrigger({
       onClick={handleCopy}
       aria-label={label || `Copy ${text} to clipboard`}
       title="Click to copy"
-      className={`relative overflow-hidden inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-xs select-none transition-all duration-300 ease-spring-tactile transform-gpu will-change-transform focus:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400 active:scale-95 ${
+      className={`relative overflow-hidden inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-sans text-xs select-none transition-all duration-300 ease-spring-tactile transform-gpu will-change-transform focus:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400 active:scale-95 ${
         copied
           ? "border border-emerald-500/80 bg-emerald-950/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.35)]"
           : "border border-neutral-800 bg-neutral-900 text-neutral-300 hover:text-white hover:border-neutral-700 hover:bg-neutral-850"

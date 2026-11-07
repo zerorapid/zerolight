@@ -39,7 +39,12 @@ export function SearchBar({
       }}
       className={`flex items-center gap-2 border w-full focus-within:ring-2 focus-within:ring-black/10 transition-colors ${className}`}
     >
-      <Search className="w-4 h-4 text-neutral-400 shrink-0" />
+      <Search
+        size={scaled.iconSmSize || 16}
+        strokeWidth={tokens.iconStrokeWidth || 1.75}
+        color={tokens.iconColor || tokens.textIconColor}
+        className="shrink-0"
+      />
       <input
         ref={inputRef}
         type="text"
@@ -64,7 +69,11 @@ export function SearchBar({
           className="text-neutral-400 hover:text-neutral-700 cursor-pointer shrink-0"
           aria-label="Clear search query"
         >
-          <X className="w-3.5 h-3.5" />
+          <X
+            size={scaled.iconSmSize || 14}
+            strokeWidth={tokens.iconStrokeWidth || 1.75}
+            color={tokens.iconColor || tokens.textIconColor}
+          />
         </button>
       )}
 

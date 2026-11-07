@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useZeroLight } from "../context";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface PaginationProps {
   currentPage: number;
@@ -26,14 +27,29 @@ export function Pagination({
   className = "",
 }: PaginationProps) {
   const { tokens, scaled } = useZeroLight();
+  const [isPageSizeOpen, setIsPageSizeOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(totalItems, currentPage * pageSize);
 
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsPageSizeOpen(false);
+      }
+    };
+    if (isPageSizeOpen) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [isPageSizeOpen]);
+
+  // Generate page numbers with ellipsis
   const getVisiblePages = () => {
     const pages: (number | "ellipsis")[] = [];
-    if (totalPages <= 5) {
+    if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
       pages.push(1);
@@ -59,13 +75,13 @@ export function Pagination({
         </span>
 
         {onPageSizeChange && (
-          <div className="flex items-center gap-1.5 pl-2 border-l border-neutral-200">
+          <div ref={dropdownRef} className="relative flex items-center gap-1.5 pl-2 border-l border-neutral-200">
             <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400">
               Per page:
             </span>
-            <select
-              value={pageSize}
-              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            <button
+              type="button"
+              onClick={() => setIsPageSizeOpen((prev) => !prev)}
               style={{
                 borderRadius: `${scaled.scaledInnerRadius === 0 ? 0 : 6}px`,
                 borderColor: tokens.universalBorderColor,
@@ -73,15 +89,76 @@ export function Pagination({
                 backgroundColor: tokens.universalFillColor,
                 fontSize: `${scaled.sublabelFontSize}px`,
                 color: tokens.textIconColor,
+                transition: scaled.transitionStyle,
               }}
-              className="py-1 px-2 border outline-none font-semibold cursor-pointer"
+              className="inline-flex items-center gap-1 px-2.5 py-1 border font-semibold cursor-pointer shadow-2xs hover:bg-neutral-50"
+              aria-haspopup="listbox"
+              aria-expanded={isPageSizeOpen}
             >
-              {pageSizeOptions.map((sz) => (
-                <option key={sz} value={sz}>
-                  {sz}
-                </option>
-              ))}
-            </select>
+              <span className="tabular-nums">{pageSize}</span>
+              <ChevronDown
+                size={12}
+                strokeWidth={tokens.iconStrokeWidth || 1.75}
+                color={tokens.iconColor || tokens.textIconColor}
+                className={`transition-transform duration-200 ${isPageSizeOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {/* Custom Token-Reactive Dropdown Menu */}
+            <AnimatePresence>
+              {isPageSizeOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -4, scale: 0.96 }}
+                  transition={{ duration: 0.12 }}
+                  style={{
+                    borderRadius: `${scaled.scaledMenuRadius === 0 ? 0 : 8}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    backgroundColor: tokens.universalFillColor,
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)",
+                  }}
+                  className="absolute left-16 bottom-full mb-1 z-50 min-w-[70px] p-1 border overflow-hidden"
+                  role="listbox"
+                >
+                  {pageSizeOptions.map((sz) => {
+                    const isSelected = sz === pageSize;
+                    return (
+                      <button
+                        key={sz}
+                        type="button"
+                        role="option"
+                        aria-selected={isSelected}
+                        onClick={() => {
+                          onPageSizeChange(sz);
+                          setIsPageSizeOpen(false);
+                        }}
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius === 0 ? 0 : 4}px`,
+                          backgroundColor: isSelected ? tokens.hoverBackplateTint : "transparent",
+                          color: isSelected ? tokens.primaryButtonColor : tokens.textIconColor,
+                          fontSize: `${scaled.sublabelFontSize}px`,
+                        }}
+                        className={`w-full flex items-center justify-between px-2 py-1 font-semibold cursor-pointer text-left transition-colors hover:bg-neutral-100 ${
+                          isSelected ? "font-bold" : ""
+                        }`}
+                      >
+                        <span className="tabular-nums">{sz}</span>
+                        {isSelected && (
+                          <Check
+                            size={12}
+                            strokeWidth={2.5}
+                            color={tokens.primaryButtonColor}
+                            className="shrink-0 ml-1.5"
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
       </div>
@@ -99,42 +176,48 @@ export function Pagination({
             backgroundColor: tokens.universalFillColor,
             transition: scaled.transitionStyle,
           }}
-          className={`p-1.5 border flex items-center justify-center ${
+          className={`p-1.5 border flex items-center justify-center transition-all ${
             currentPage <= 1
-              ? "opacity-30 cursor-not-allowed"
-              : "cursor-pointer hover:bg-neutral-100 text-neutral-700"
+              ? "opacity-30 cursor-not-allowed text-neutral-400"
+              : "hover:bg-neutral-100 text-neutral-700 cursor-pointer shadow-2xs"
           }`}
           aria-label="Previous page"
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
+          <ChevronLeft
+            size={scaled.iconSmSize || 16}
+            strokeWidth={tokens.iconStrokeWidth || 1.75}
+            color={tokens.iconColor || tokens.textIconColor}
+          />
         </button>
 
-        {getVisiblePages().map((page, idx) => {
-          if (page === "ellipsis") {
+        {getVisiblePages().map((p, idx) => {
+          if (p === "ellipsis") {
             return (
-              <span key={`ell-${idx}`} className="px-1 text-neutral-400 font-bold">
+              <span key={`ell-${idx}`} className="px-2 text-neutral-400 font-medium select-none">
                 …
               </span>
             );
           }
-
-          const isSelected = page === currentPage;
+          const isSelected = p === currentPage;
           return (
             <button
-              key={page}
+              key={p}
               type="button"
-              onClick={() => onPageChange(page)}
+              onClick={() => onPageChange(p)}
               style={{
                 borderRadius: `${scaled.scaledPillRadius}px`,
-                backgroundColor: isSelected ? tokens.primaryButtonColor : "transparent",
+                borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                borderWidth: `${tokens.borderWidth}px`,
+                backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
                 color: isSelected ? scaled.primaryActionTextColor : tokens.textIconColor,
-                transition: "background-color 0.15s ease, color 0.15s ease",
+                fontSize: `${scaled.sublabelFontSize}px`,
+                transition: scaled.transitionStyle,
               }}
-              className={`min-w-[28px] h-7 px-2 font-semibold tabular-nums text-xs cursor-pointer flex items-center justify-center ${
-                isSelected ? "shadow-xs font-bold" : "hover:bg-neutral-100"
+              className={`min-w-[28px] h-7 px-2 flex items-center justify-center font-bold tabular-nums cursor-pointer ${
+                isSelected ? "shadow-2xs" : "hover:bg-neutral-100"
               }`}
             >
-              {page}
+              {p}
             </button>
           );
         })}
@@ -150,14 +233,18 @@ export function Pagination({
             backgroundColor: tokens.universalFillColor,
             transition: scaled.transitionStyle,
           }}
-          className={`p-1.5 border flex items-center justify-center ${
+          className={`p-1.5 border flex items-center justify-center transition-all ${
             currentPage >= totalPages
-              ? "opacity-30 cursor-not-allowed"
-              : "cursor-pointer hover:bg-neutral-100 text-neutral-700"
+              ? "opacity-30 cursor-not-allowed text-neutral-400"
+              : "hover:bg-neutral-100 text-neutral-700 cursor-pointer shadow-2xs"
           }`}
           aria-label="Next page"
         >
-          <ChevronRight className="w-3.5 h-3.5" />
+          <ChevronRight
+            size={scaled.iconSmSize || 16}
+            strokeWidth={tokens.iconStrokeWidth || 1.75}
+            color={tokens.iconColor || tokens.textIconColor}
+          />
         </button>
       </div>
     </div>

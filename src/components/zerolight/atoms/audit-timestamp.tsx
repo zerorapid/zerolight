@@ -21,7 +21,7 @@ export function AuditTimestamp({
 
   // Fallback for invalid date
   if (isNaN(d.getTime())) {
-    return <span className="font-mono text-neutral-500 text-xs">[INVALID_DATE]</span>;
+    return <span className="font-sans text-neutral-500 text-xs">[INVALID_DATE]</span>;
   }
 
   let formatted = "";
@@ -64,7 +64,7 @@ export function AuditTimestamp({
   if (showPill) {
     return (
       <span
-        className={`inline-flex items-center gap-1 font-mono text-[10px] tabular-nums text-neutral-400 bg-neutral-900 border border-neutral-800 px-1.5 py-0.5 rounded select-none ${className}`}
+        className={`inline-flex items-center gap-1 font-sans text-[10px] tabular-nums text-neutral-400 bg-neutral-900 border border-neutral-800 px-1.5 py-0.5 rounded select-none ${className}`}
         title={`ISO: ${d.toISOString()}`}
       >
         <span className="w-1 h-1 rounded-full bg-neutral-500" />
@@ -75,7 +75,7 @@ export function AuditTimestamp({
 
   return (
     <span
-      className={`font-mono text-xs tabular-nums text-neutral-400 select-none ${className}`}
+      className={`font-sans text-xs tabular-nums text-neutral-400 select-none ${className}`}
       title={`ISO: ${d.toISOString()}`}
     >
       [{formatted}]

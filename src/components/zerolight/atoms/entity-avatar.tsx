@@ -59,7 +59,7 @@ export function EntityAvatar({
       role="img"
       aria-label={`Entity avatar for ${name}`}
       title={name}
-      className={`inline-flex items-center justify-center rounded-md border font-mono select-none flex-shrink-0 ${sizeClasses} ${palette.bg} ${className}`}
+      className={`inline-flex items-center justify-center rounded-md border font-sans select-none flex-shrink-0 ${sizeClasses} ${palette.bg} ${className}`}
     >
       {initials}
     </div>

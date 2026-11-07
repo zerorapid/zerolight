@@ -109,7 +109,7 @@ export function TreeView({
 
           <div className="flex items-center gap-3 shrink-0">
             {node.size && (
-              <span className="text-[11px] text-neutral-400 font-mono tabular-nums">
+              <span className="text-[11px] text-neutral-400 font-medium tabular-nums">
                 {node.size}
               </span>
             )}

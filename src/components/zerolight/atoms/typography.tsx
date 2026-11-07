@@ -58,7 +58,7 @@ export function Text({
     "body-bold": "text-sm font-semibold leading-relaxed",
     caption: "text-xs font-medium leading-normal",
     label: "text-[11px] font-semibold uppercase tracking-wider select-none",
-    code: "text-xs font-mono font-medium px-1.5 py-0.5 rounded bg-neutral-900 border border-neutral-800",
+    code: "text-xs font-sans font-semibold px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-800 border border-neutral-200",
   };
 
   const colorStyles: Record<TextColor, string> = {

@@ -85,7 +85,19 @@ export function InputGroup({
             aria-label={isMasked ? "Reveal token" : "Hide token"}
             className="px-3 h-full flex items-center justify-center text-neutral-400 hover:text-neutral-700 cursor-pointer transition-colors shrink-0"
           >
-            {isMasked ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+            {isMasked ? (
+              <Eye
+                size={scaled.iconSmSize || 14}
+                strokeWidth={tokens.iconStrokeWidth || 1.75}
+                color={tokens.iconColor || tokens.textIconColor}
+              />
+            ) : (
+              <EyeOff
+                size={scaled.iconSmSize || 14}
+                strokeWidth={tokens.iconStrokeWidth || 1.75}
+                color={tokens.iconColor || tokens.textIconColor}
+              />
+            )}
           </button>
         )}
 
@@ -97,9 +109,17 @@ export function InputGroup({
             className="px-3 h-full flex items-center justify-center text-neutral-400 hover:text-neutral-700 cursor-pointer transition-colors shrink-0"
           >
             {copied ? (
-              <Check className="w-3.5 h-3.5 text-emerald-600" />
+              <Check
+                size={scaled.iconSmSize || 14}
+                strokeWidth={tokens.iconStrokeWidth || 2}
+                color="#059669"
+              />
             ) : (
-              <Copy className="w-3.5 h-3.5" />
+              <Copy
+                size={scaled.iconSmSize || 14}
+                strokeWidth={tokens.iconStrokeWidth || 1.75}
+                color={tokens.iconColor || tokens.textIconColor}
+              />
             )}
           </button>
         )}

@@ -69,6 +69,9 @@ import {
   Loader2,
   Folder,
   File,
+  MessageSquare,
+  Send,
+  CheckCheck,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -82,9 +85,9 @@ import {
   computeScaledTokens,
 } from "./types";
 import { ZeroLightProvider } from "./context";
-import { Skeleton, Separator, Spinner, Avatar } from "./atoms";
-import { Pagination, EmptyState, Accordion, FileUpload, Stepper } from "./molecules";
-import { AuditLog, QuotaMatrix, TreeView } from "./organisms";
+import { Skeleton, Separator, Spinner, Avatar, TypingIndicator, MessageStatus } from "./atoms";
+import { Pagination, EmptyState, Accordion, FileUpload, Stepper, ChatBubble, ChatInput } from "./molecules";
+import { AuditLog, QuotaMatrix, TreeView, ChatConversation } from "./organisms";
 
 const ROLE_OPTIONS = [
   "Administrator",
@@ -908,7 +911,7 @@ module.exports = {
                 <span className="text-xs font-medium text-neutral-400">
                   Iconography &amp; Vectors
                 </span>
-                <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded font-mono">
+                <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded font-sans">
                   {tokens.iconScaleMultiplier.toFixed(2)}x • {tokens.iconStrokeWidth}px
                 </span>
               </div>
@@ -1014,7 +1017,7 @@ module.exports = {
                 <div className="flex items-center justify-between">
                   <span className="text-neutral-300">Icon color</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-neutral-400 font-mono font-medium">
+                    <span className="text-[11px] text-neutral-400 font-sans font-medium">
                       {tokens.iconColor.toUpperCase()}
                     </span>
                     <label className="relative cursor-pointer">
@@ -1169,9 +1172,9 @@ module.exports = {
         >
           {(
             [
-              { key: "atoms", label: "Atoms", count: "18" },
-              { key: "molecules", label: "Molecules", count: "16" },
-              { key: "organisms", label: "Organisms", count: "12" },
+              { key: "atoms", label: "Atoms", count: "20" },
+              { key: "molecules", label: "Molecules", count: "18" },
+              { key: "organisms", label: "Organisms", count: "13" },
             ] as const
           ).map(({ key, label, count }) => {
             const isSelected = activeTier === key;
@@ -2137,7 +2140,7 @@ module.exports = {
                       className="inline-flex items-center gap-2 px-3 py-1 border text-xs shadow-2xs self-start sm:self-auto shrink-0"
                     >
                       <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tokens.iconColor }} />
-                      <span className="font-mono text-[11px] text-neutral-700 font-medium">
+                      <span className="font-sans text-[11px] text-neutral-700 font-medium">
                         {tokens.iconScaleMultiplier.toFixed(2)}x ({scaled.iconSize}px) • {tokens.iconStrokeWidth}px stroke • {tokens.iconFill}
                       </span>
                     </div>
@@ -2374,7 +2377,7 @@ module.exports = {
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.hoverBackplateTint,
                       }}
-                      className="px-3 py-1 text-xs font-mono text-neutral-600 border shadow-2xs self-start sm:self-auto shrink-0"
+                      className="px-3 py-1 text-xs font-sans text-neutral-600 border shadow-2xs self-start sm:self-auto shrink-0"
                     >
                       5 Sizes • xs to xl
                     </div>
@@ -2703,6 +2706,66 @@ module.exports = {
                     <div className="flex items-center gap-3">
                       <Spinner size="sm" color="#10B981" />
                       <span className="text-xs text-emerald-600 font-medium">Custom Tint</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── 19. TYPING INDICATOR ATOM ── */}
+                <div id="atom-typing-indicator" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Typing indicator</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Animated spring dot telemetry communicating real-time conversational presence and active peer typing states.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4 pt-2">
+                    <TypingIndicator size="sm" />
+                    <TypingIndicator size="md" />
+                    <TypingIndicator size="md" label="Sarah is typing..." />
+                    <TypingIndicator size="md" label="AI Assistant generating response..." />
+                  </div>
+                </div>
+
+                {/* ── 20. MESSAGE DELIVERY STATUS ATOM ── */}
+                <div id="atom-message-status" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <CheckCheck className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Message delivery status receipts</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Granular message receipt indicators for dispatched, delivered, read, and active transmission states.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg border border-neutral-200 bg-neutral-50/60">
+                      <MessageStatus status="sending" size={14} />
+                      <span className="text-xs font-semibold text-neutral-600">Sending</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg border border-neutral-200 bg-neutral-50/60">
+                      <MessageStatus status="sent" size={14} />
+                      <span className="text-xs font-semibold text-neutral-600">Sent</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg border border-neutral-200 bg-neutral-50/60">
+                      <MessageStatus status="delivered" size={14} />
+                      <span className="text-xs font-semibold text-neutral-600">Delivered</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg border border-neutral-200 bg-neutral-50/60">
+                      <MessageStatus status="read" size={14} />
+                      <span className="text-xs font-semibold text-neutral-900">Read</span>
+                    </div>
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg border border-neutral-200 bg-neutral-50/60">
+                      <MessageStatus status="failed" size={14} />
+                      <span className="text-xs font-semibold text-rose-600">Failed</span>
                     </div>
                   </div>
                 </div>
@@ -4279,6 +4342,72 @@ module.exports = {
                     />
                   </div>
                 </div>
+
+                {/* ── 17. CHAT MESSAGE BUBBLE MOLECULE ── */}
+                <div id="mol-chat-bubble" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Chat message bubble</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Incoming and outgoing message bubbles with token-reactive corner geometry, high-contrast primary accent fills, Unsplash portrait avatars, hover action bars, and interactive emoji reactions.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl border border-neutral-200 bg-neutral-50/50 space-y-4">
+                    {/* Incoming Peer Bubble */}
+                    <ChatBubble
+                      sender="peer"
+                      senderName="Sarah Chen"
+                      avatarSrc="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
+                      message="Hey team! The new ZeroLight design system token engine is live on staging. All corner radiuses, heights, and icon strokes are updating in real-time."
+                      timestamp="11:42 AM"
+                      reactions={[{ emoji: "🎉", count: 4, active: true }, { emoji: "🚀", count: 2 }]}
+                      attachment={{
+                        type: "file",
+                        name: "zerolight-token-audit.pdf",
+                        size: "1.8 MB",
+                      }}
+                      onCopy={() => triggerToast("Copied peer message to clipboard")}
+                    />
+
+                    {/* Outgoing User Bubble */}
+                    <ChatBubble
+                      sender="user"
+                      message="Confirmed! Tested with 0px sharp geometry, pill presets, and custom primary colors. The contrast calculation is crisp across all screen densities."
+                      timestamp="11:45 AM"
+                      status="read"
+                      reactions={[{ emoji: "🔥", count: 3 }]}
+                      onCopy={() => triggerToast("Copied your message to clipboard")}
+                    />
+                  </div>
+                </div>
+
+                {/* ── 18. CHAT COMPOSER INPUT MOLECULE ── */}
+                <div id="mol-chat-input" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Send className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Chat composer input</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Rich multi-line auto-expanding conversational composer with file attachment trigger, emoji selector, keyboard submission hints, and token-reactive spring send button.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="max-w-xl">
+                    <ChatInput
+                      placeholder="Type a message or paste a snippet..."
+                      onSend={(msg) => triggerToast(`Message dispatched: "${msg.slice(0, 30)}..."`)}
+                      onAttach={() => triggerToast("File attachment dialog triggered")}
+                    />
+                  </div>
+                </div>
               </>
             )}
 
@@ -4936,7 +5065,7 @@ module.exports = {
                           backgroundColor: tokens.hoverBackplateTint,
                           color: tokens.textIconColor,
                         }}
-                        className="font-mono text-[10px] border px-1.5 py-0.5"
+                        className="font-sans text-[10px] border px-1.5 py-0.5"
                       >
                         ⌘K
                       </span>
@@ -5443,7 +5572,7 @@ module.exports = {
                                 backgroundColor: tokens.hoverBackplateTint,
                                 color: tokens.textIconColor,
                               }}
-                              className="font-mono text-[10px] px-1.5 py-0.5 border cursor-pointer"
+                              className="font-sans text-[10px] px-1.5 py-0.5 border cursor-pointer"
                             >
                               esc
                             </button>
@@ -5499,7 +5628,7 @@ module.exports = {
                                     </span>
                                   </div>
                                   <span
-                                    className={`font-mono text-[10px] ${
+                                    className={`font-sans text-[10px] ${
                                       isSelected ? "text-white/80" : "text-neutral-400"
                                     }`}
                                   >
@@ -5529,7 +5658,7 @@ module.exports = {
                                     backgroundColor: tokens.universalFillColor,
                                     color: tokens.textIconColor,
                                   }}
-                                  className="font-mono px-1 py-0.5 border mr-1"
+                                  className="font-sans px-1 py-0.5 border mr-1"
                                 >
                                   ↑↓
                                 </kbd>
@@ -5544,7 +5673,7 @@ module.exports = {
                                     backgroundColor: tokens.universalFillColor,
                                     color: tokens.textIconColor,
                                   }}
-                                  className="font-mono px-1 py-0.5 border mr-1"
+                                  className="font-sans px-1 py-0.5 border mr-1"
                                 >
                                   ↵
                                 </kbd>
@@ -5560,7 +5689,7 @@ module.exports = {
                                   backgroundColor: tokens.universalFillColor,
                                   color: tokens.textIconColor,
                                 }}
-                                className="font-mono px-1 py-0.5 border mr-1"
+                                className="font-sans px-1 py-0.5 border mr-1"
                               >
                                 esc
                               </kbd>
@@ -5657,7 +5786,7 @@ module.exports = {
                             backgroundColor: tokens.universalFillColor,
                             color: tokens.textIconColor,
                           }}
-                          className="font-mono px-2 py-1 border"
+                          className="font-sans px-2 py-1 border"
                         >
                           {cond.operator}
                         </span>
@@ -6033,14 +6162,14 @@ module.exports = {
                         style={{
                           borderRadius: `${scaled.scaledInnerRadius}px`,
                         }}
-                        className="absolute top-2 right-3 bg-neutral-900 text-white text-[11px] px-2 py-1 shadow-md font-mono tabular-nums"
+                        className="absolute top-2 right-3 bg-neutral-900 text-white text-[11px] px-2 py-1 shadow-md font-sans tabular-nums"
                       >
                         {hoveredChartPoint.time} → {hoveredChartPoint.value} req/s
                       </div>
                     )}
 
                     {/* X-Axis Timestamps */}
-                    <div className="flex justify-between text-[10px] text-neutral-400 font-mono pt-1">
+                    <div className="flex justify-between text-[10px] text-neutral-400 font-sans pt-1">
                       {CHART_SPARKLINE_POINTS.map((pt) => (
                         <span key={pt.time}>{pt.time}</span>
                       ))}
@@ -6350,7 +6479,7 @@ module.exports = {
 
                           <div className="space-y-1.5 pt-1">
                             <label style={{ color: tokens.textIconColor }} className="block text-xs font-medium">
-                              Type <span className="font-mono font-bold select-all">us-east-prod-01</span> to confirm:
+                              Type <span className="font-sans font-bold select-all">us-east-prod-01</span> to confirm:
                             </label>
                             <input
                               autoFocus
@@ -6369,7 +6498,7 @@ module.exports = {
                                 fontSize: `${scaled.scaledFontSize}px`,
                                 transition: scaled.transitionStyle,
                               }}
-                              className="w-full border font-mono outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
+                              className="w-full border font-sans outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
                             />
                           </div>
 
@@ -6490,6 +6619,25 @@ module.exports = {
                         triggerToast("Quota expansion request dispatched to billing administrator");
                       }}
                     />
+                  </div>
+                </div>
+
+                {/* ── 13. SAAS CHAT CONVERSATION THREAD ORGANISM ── */}
+                <div id="org-chat-conversation" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <MessageSquare className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>SaaS chat conversation thread</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Full-stack conversational workspace with live peer presence, date dividers, interactive outgoing message dispatch, simulated intelligent responses, and token-reactive message bubbles.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1 max-w-3xl">
+                    <ChatConversation />
                   </div>
                 </div>
               </>

@@ -32,7 +32,7 @@ export function KeyBadge({
 
   return (
     <span
-      className={`inline-flex items-center justify-center font-mono uppercase font-medium rounded select-none ${sizeClasses} ${variantClasses} ${className}`}
+      className={`inline-flex items-center justify-center font-sans uppercase font-medium rounded select-none ${sizeClasses} ${variantClasses} ${className}`}
     >
       {label}
     </span>

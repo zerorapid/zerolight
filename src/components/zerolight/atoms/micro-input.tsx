@@ -44,7 +44,7 @@ export function MicroInput({
 
   return (
     <div
-      className={`inline-flex items-center rounded border border-neutral-800 bg-neutral-950 font-mono transition-colors focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500/50 ${sizeClasses} ${
+      className={`inline-flex items-center rounded border border-neutral-800 bg-neutral-950 font-sans transition-colors focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500/50 ${sizeClasses} ${
         disabled ? "opacity-40 cursor-not-allowed bg-neutral-900/50" : ""
       } ${className}`}
     >

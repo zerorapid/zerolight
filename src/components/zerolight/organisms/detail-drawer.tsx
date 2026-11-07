@@ -97,7 +97,7 @@ export function DetailDrawer({
               >
                 <div className="flex items-center justify-between">
                   <span className="text-neutral-500">Instance ID</span>
-                  <span className="font-semibold tabular-nums font-mono">i-04f828a1c9</span>
+                  <span className="font-semibold tabular-nums font-sans">i-04f828a1c9</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-neutral-500">Health State</span>

@@ -14,3 +14,5 @@ export * from "./empty-state";
 export * from "./accordion";
 export * from "./file-upload";
 export * from "./stepper";
+export * from "./chat-bubble";
+export * from "./chat-input";

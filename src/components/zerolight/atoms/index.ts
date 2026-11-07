@@ -13,3 +13,5 @@ export * from "./skeleton";
 export * from "./separator";
 export * from "./spinner";
 export * from "./icon";
+export * from "./typing-indicator";
+export * from "./message-status";

@@ -84,7 +84,10 @@ export function Select({
           {selectedOpt ? selectedOpt.label : placeholder}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-neutral-400 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          size={scaled.iconSmSize || 16}
+          strokeWidth={tokens.iconStrokeWidth || 1.75}
+          color={tokens.iconColor || tokens.textIconColor}
+          className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 

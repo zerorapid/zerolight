@@ -49,7 +49,7 @@ export function CapacityMeter({
           <div className="flex items-center gap-1.5 font-medium text-neutral-300">
             {label && <span>{label}</span>}
             <span
-              className={`text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-neutral-900 border border-neutral-800 transition-colors duration-300 ${textColor} ${
+              className={`text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded bg-neutral-900 border border-neutral-800 transition-colors duration-300 ${textColor} ${
                 isCritical ? "animate-pulse border-rose-800/80 bg-rose-950/40" : ""
               }`}
             >
@@ -57,7 +57,7 @@ export function CapacityMeter({
             </span>
           </div>
 
-          <div className="font-mono text-xs tabular-nums text-neutral-400">
+          <div className="font-sans text-xs tabular-nums text-neutral-400">
             <span className={`font-semibold transition-colors duration-300 ${textColor}`}>{value}</span>
             <span className="text-neutral-500">/{max}{unit}</span>
             <span className="text-neutral-500 ml-1">({percentage}%)</span>

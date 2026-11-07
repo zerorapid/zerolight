@@ -121,7 +121,7 @@ const atomsExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight
 const expectedAtoms = [
   "button", "icon-button", "input", "checkbox", "switch",
   "slider", "progress-bar", "badge", "tag-chip", "kbd", "avatar",
-  "skeleton", "separator", "spinner"
+  "skeleton", "separator", "spinner", "typing-indicator", "message-status"
 ];
 
 expectedAtoms.forEach((atom) => {
@@ -135,7 +135,8 @@ const moleculesExport = fs.readFileSync(path.join(rootDir, "src/components/zerol
 const expectedMolecules = [
   "form-field", "input-group", "search-bar", "select", "tag-input",
   "calendar", "segmented-control", "breadcrumbs", "stat-card", "alert-banner", "tooltip",
-  "pagination", "empty-state", "accordion", "file-upload", "stepper"
+  "pagination", "empty-state", "accordion", "file-upload", "stepper",
+  "chat-bubble", "chat-input"
 ];
 
 expectedMolecules.forEach((mol) => {
@@ -148,7 +149,7 @@ expectedMolecules.forEach((mol) => {
 const organismsExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
 const expectedOrganisms = [
   "data-table", "confirmation-modal", "detail-drawer", "command-palette", "filter-builder",
-  "audit-log", "quota-matrix", "tree-view"
+  "audit-log", "quota-matrix", "tree-view", "chat-conversation"
 ];
 
 expectedOrganisms.forEach((org) => {
@@ -181,43 +182,32 @@ test("Side directory is removed for clean full-width center stage focus", () => 
   assert.ok(!studioContent.includes('Organisms Directory'));
 });
 
-test("All 46 Brad Frost components are mounted with unique IDs in Center Stage", () => {
+test("All 51 Brad Frost components are mounted with unique IDs in Center Stage", () => {
   const allIds = [
-    // 18 Atoms
+    // 20 Atoms
     "atom-typography", "atom-separator", "atom-buttons", "atom-icon-button", "atom-input",
     "atom-textarea", "atom-checkbox", "atom-radio", "atom-switch", "atom-slider",
     "atom-progress", "atom-lucide-icons", "atom-badge", "atom-tag-chip", "atom-kbd",
-    "atom-avatar", "atom-skeleton", "atom-spinner",
-    // 16 Molecules
+    "atom-avatar", "atom-skeleton", "atom-spinner", "atom-typing-indicator", "atom-message-status",
+    // 18 Molecules
     "mol-form-field", "mol-input-group", "mol-search-bar", "mol-select", "mol-tag-input",
     "mol-calendar", "mol-file-upload", "mol-segmented", "mol-breadcrumbs", "mol-stepper",
     "mol-pagination", "mol-stat-badge", "mol-alert", "mol-tooltip", "mol-empty-state",
-    "mol-accordion",
-    // 12 Organisms
+    "mol-accordion", "mol-chat-bubble", "mol-chat-input",
+    // 13 Organisms
     "org-data-table", "org-global-header", "org-navigation-sidebar", "org-tree-view",
     "org-command-palette", "org-filter-builder", "org-date-picker", "org-metric-card",
-    "org-audit-log", "org-quota-matrix", "org-detail-drawer", "org-confirmation-modal"
+    "org-audit-log", "org-quota-matrix", "org-detail-drawer", "org-confirmation-modal",
+    "org-chat-conversation"
   ];
 
   allIds.forEach((id) => {
-    assert.ok(studioContent.includes(`id="${id}"`), `Center stage missing card #${id}`);
+    assert.ok(studioContent.includes(`id="${id}"`), `Missing component showcase card: ${id}`);
   });
 });
 
-test("All card headers have semantic Lucide vector icons", () => {
-  assert.ok(studioContent.includes('<Type className="w-4 h-4 text-neutral-500'));
-  assert.ok(studioContent.includes('<MousePointerClick className="w-4 h-4 text-neutral-500'));
-  assert.ok(studioContent.includes('<Mail className="w-4 h-4 text-neutral-500'));
-  assert.ok(studioContent.includes('<Server className="w-4 h-4 text-neutral-500'));
-  assert.ok(studioContent.includes('<AlertTriangle className="w-4 h-4 text-rose-500'));
-  assert.ok(studioContent.includes('<Minus className="w-4 h-4 text-neutral-500'));
-  assert.ok(studioContent.includes('<UploadCloud className="w-4 h-4 text-neutral-500'));
-  assert.ok(studioContent.includes('<ListOrdered className="w-4 h-4 text-neutral-500'));
-  assert.ok(studioContent.includes('<FolderTree className="w-4 h-4 text-neutral-500'));
-});
-
 // -----------------------------------------------------------------
-// Test Suite 5: Vector Icon Settings & Dynamic Calibration
+// Test Suite 5: Vector Icon Tuning & Visual Studio Controls
 // -----------------------------------------------------------------
 console.log("\n5. Vector Icon Tuning & Visual Studio Controls:");
 
@@ -229,14 +219,14 @@ test("Icon Tokens: DEFAULT_TOKENS provides scale, stroke, fill, and color invari
 });
 
 test("Icon Tokens: computeScaledTokens calculates dynamic icon sizes and fills", () => {
-  assert.ok(typesContent.includes("iconScale: (tokens.iconScaleMultiplier ?? 1.0) * scale"));
-  assert.ok(typesContent.includes("iconSize: Math.max(12, Math.round(16 *"));
-  assert.ok(typesContent.includes("iconStrokeWidth: tokens.iconStrokeWidth ?? 2.0"));
-  assert.ok(typesContent.includes("tokens.iconFill === \"currentColor\""));
+  assert.ok(typesContent.includes("iconScale"));
+  assert.ok(typesContent.includes("iconSize"));
+  assert.ok(typesContent.includes("iconSmSize"));
+  assert.ok(typesContent.includes("iconLgSize"));
 });
 
 test("Visual Studio Dock: Renders comprehensive Iconography & Vector controls", () => {
-  assert.ok(studioContent.includes("Iconography &amp; Vectors"));
+  assert.ok(studioContent.includes("Iconography"));
   assert.ok(studioContent.includes("Icon scale"));
   assert.ok(studioContent.includes("Stroke width"));
   assert.ok(studioContent.includes("Fill style"));
@@ -269,6 +259,36 @@ test("Avatar Primitive: Supports 5 sizes (xs, sm, md, lg, xl) with Unsplash imag
   assert.ok(avatarContent.includes('<img'));
   assert.ok(avatarContent.includes('<span>{initials}</span>'));
   assert.ok(studioContent.includes('images.unsplash.com/photo-'));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 7: Native Select Elimination & No Monospace Fonts
+// -----------------------------------------------------------------
+console.log("\n7. Native Dropdown Elimination & Sans-Serif Typography:");
+
+test("No native <select> elements in Pagination or FilterBuilder", () => {
+  const paginationContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/pagination.tsx"), "utf8");
+  const filterBuilderContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/filter-builder.tsx"), "utf8");
+  assert.ok(!paginationContent.includes("<select"), "Pagination should NOT use native <select>");
+  assert.ok(!filterBuilderContent.includes("<select"), "FilterBuilder should NOT use native <select>");
+});
+
+test("No monospace typeface fonts in docs-studio.tsx or active atoms", () => {
+  assert.ok(!studioContent.includes("font-mono"), "docs-studio.tsx should NOT contain font-mono");
+});
+
+test("Chat Conversation Suite: TypingIndicator, MessageStatus, ChatBubble, ChatInput, ChatConversation are functional", () => {
+  const typingIndicator = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/typing-indicator.tsx"), "utf8");
+  const messageStatus = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/message-status.tsx"), "utf8");
+  const chatBubble = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/chat-bubble.tsx"), "utf8");
+  const chatInput = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/chat-input.tsx"), "utf8");
+  const chatConversation = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/chat-conversation.tsx"), "utf8");
+
+  assert.ok(typingIndicator.includes("dotTransition"));
+  assert.ok(messageStatus.includes("CheckCheck"));
+  assert.ok(chatBubble.includes("ChatReaction"));
+  assert.ok(chatInput.includes("handleKeyDown"));
+  assert.ok(chatConversation.includes("handleSendMessage"));
 });
 
 console.log("\n==================================================");

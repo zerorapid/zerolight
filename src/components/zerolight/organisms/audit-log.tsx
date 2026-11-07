@@ -108,7 +108,7 @@ export function AuditLog({
                       </span>
                       <span className="text-[11px] text-neutral-400">{evt.action}</span>
                     </div>
-                    <div className="text-xs text-neutral-600 font-medium font-mono tabular-nums mt-0.5">
+                    <div className="text-xs text-neutral-600 font-medium tabular-nums mt-0.5">
                       {evt.resource}
                     </div>
                   </div>
@@ -118,7 +118,7 @@ export function AuditLog({
                   <Badge variant={evt.severity}>
                     {evt.severity.toUpperCase()}
                   </Badge>
-                  <span className="text-[11px] text-neutral-400 font-medium font-mono tabular-nums">
+                  <span className="text-[11px] text-neutral-400 font-medium tabular-nums">
                     {evt.timestamp}
                   </span>
                 </div>

@@ -50,7 +50,7 @@ export function TrendDelta({
 
   return (
     <span
-      className={`inline-flex items-center font-mono rounded border select-none tabular-nums ${sizeClasses} ${colorClasses} ${className}`}
+      className={`inline-flex items-center font-sans rounded border select-none tabular-nums ${sizeClasses} ${colorClasses} ${className}`}
       aria-label={`Trend: ${formattedVal} ${isFavorable ? "Favorable" : isUnfavorable ? "Unfavorable" : "Neutral"}`}
     >
       {showArrow && !isZero && (
