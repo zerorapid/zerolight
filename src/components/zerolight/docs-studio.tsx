@@ -54,6 +54,10 @@ import {
   Globe,
   LogOut,
   User,
+  Tags,
+  FolderTree,
+  CalendarDays,
+  Sliders,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -243,6 +247,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   // 2. AlertCallout
   const [alertVariant, setAlertVariant] = useState<"info" | "warning" | "success" | "critical">("warning");
   const [isAlertDismissed, setIsAlertDismissed] = useState<boolean>(false);
+  const mainRef = useRef<HTMLElement>(null);
 
   // 3. EmptyStateCard
   const [emptySearchTerm, setEmptySearchTerm] = useState<string>("quantum-cache-v4");
@@ -915,7 +920,7 @@ module.exports = {
     </>
   );
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200">
+    <div className="h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200 overflow-hidden">
       {/* Toast Notification with Framer Motion spring enter/exit */}
       <AnimatePresence>
         {toastMessage && (
@@ -936,7 +941,7 @@ module.exports = {
       </AnimatePresence>
 
       {/* ── Top Header Bar with Spacious Tier Switcher & Quick Meta ── */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EBEBEB] px-6 py-3 flex items-center justify-between select-none shadow-2xs">
+      <header className="shrink-0 sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EBEBEB] px-6 py-3 flex items-center justify-between select-none shadow-2xs">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2.5">
             <div
@@ -987,30 +992,19 @@ module.exports = {
                   if (typeof window !== "undefined") {
                     window.history.replaceState(null, "", `/docs/${key}`);
                   }
+                  mainRef.current?.scrollTo({ top: 0, behavior: "instant" });
                 }}
-                className={`px-5 py-2 text-xs font-semibold rounded-full cursor-pointer relative transition-colors whitespace-nowrap shrink-0 flex items-center gap-2 ${
-                  isSelected ? "" : "text-neutral-500 hover:text-neutral-900"
+                style={{
+                  backgroundColor: isSelected ? tokens.primaryButtonColor : "transparent",
+                  color: isSelected ? scaled.primaryActionTextColor : tokens.textIconColor,
+                  borderRadius: `${scaled.scaledPillRadius}px`,
+                  transition: "background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
+                }}
+                className={`px-5 py-2 text-xs font-semibold cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                  isSelected ? "shadow-xs" : "hover:text-neutral-900"
                 }`}
               >
-                {isSelected && (
-                  <motion.div
-                    layoutId="activeGlobalTierPill"
-                    transition={scaled.motionConfig.pillTransition}
-                    style={{
-                      borderRadius: `${scaled.scaledPillRadius}px`,
-                      backgroundColor: tokens.primaryButtonColor,
-                    }}
-                    className="absolute inset-0 shadow-sm"
-                  />
-                )}
-                <span
-                  style={{
-                    color: isSelected ? scaled.primaryActionTextColor : undefined,
-                  }}
-                  className="relative z-10"
-                >
-                  {label}
-                </span>
+                <span className="whitespace-nowrap">{label}</span>
                 <span
                   style={{
                     borderRadius: `${scaled.scaledPillRadius}px`,
@@ -1018,8 +1012,9 @@ module.exports = {
                       ? (scaled.primaryActionTextColor === "#FFFFFF" ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.1)")
                       : "#E4E4E7",
                     color: isSelected ? scaled.primaryActionTextColor : "#71717A",
+                    transition: "background-color 0.2s ease, color 0.2s ease",
                   }}
-                  className="relative z-10 text-[10px] px-1.5 py-0.2 font-bold tabular-nums"
+                  className="text-[10px] px-1.5 py-0.2 font-bold tabular-nums whitespace-nowrap shrink-0"
                 >
                   {count}
                 </span>
@@ -1056,11 +1051,11 @@ module.exports = {
       </header>
 
       {/* 3-Column Studio Body */}
-      <div className="flex-1 flex w-full">
+      <div className="flex-1 flex w-full overflow-hidden">
         {/* ══════════════════════════════════════════════════════════
             COLUMN 1: LEFT SIDEBAR (CLEAN CATEGORICAL HIERARCHY)
            ══════════════════════════════════════════════════════════ */}
-        <aside className="w-64 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
+        <aside className="w-64 border-r border-[#EBEBEB] bg-[#FFFFFF] p-5 hidden lg:flex flex-col justify-between select-none h-full overflow-y-auto shrink-0">
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
               <div>
@@ -1297,7 +1292,7 @@ module.exports = {
         {/* ══════════════════════════════════════════════════════════
             COLUMN 2: CENTER STAGE (ATOMS OR MOLECULES VIEW)
            ══════════════════════════════════════════════════════════ */}
-        <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start overflow-y-auto">
+        <main ref={mainRef} className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start h-full overflow-y-auto">
           <div className={`w-full ${activeTier === "organisms" ? "max-w-5xl" : "max-w-[720px]"} space-y-8 pb-32`}>
             
             {/* ══════════════════════════════════════════════════════════
@@ -2412,7 +2407,8 @@ module.exports = {
                 <div id="mol-form-field" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-neutral-500 shrink-0" />
                         Form field
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2518,9 +2514,10 @@ module.exports = {
                 {/* ── 2. INPUT GROUP ── */}
                 <div id="mol-input-group" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Input group
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Key className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Input group (SSO Token & API Key)</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Client credentials input conjoined with secret masking eye toggle and single-tap copy.
                     </p>
@@ -2605,7 +2602,8 @@ module.exports = {
                 {/* ── 3. SEARCH BAR ── */}
                 <div id="mol-search-bar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                      <Search className="w-4 h-4 text-neutral-500 shrink-0" />
                       Search bar
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2732,9 +2730,10 @@ module.exports = {
                 {/* ── 4. SELECT DROPDOWN ── */}
                 <div id="mol-select" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Select dropdown
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <SlidersHorizontal className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Select dropdown (Cluster Region)</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Role and tenancy selector popover with keyboard navigation and checkmark indicators.
                     </p>
@@ -2861,9 +2860,10 @@ module.exports = {
                 {/* ── 5. TAG INPUT ── */}
                 <div id="mol-tag-input" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Tag input
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Tags className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Tag input (VPC Security Groups)</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Multi-tag deployment classifier with animated remove transitions and popover tag selector.
                     </p>
@@ -3024,9 +3024,10 @@ module.exports = {
                 {/* ── 6. CALENDAR DROPDOWN ── */}
                 <div id="mol-calendar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Calendar dropdown
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Calendar date picker</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Target maintenance deployment date picker with month stepper buttons and year dropdown selector.
                     </p>
@@ -3334,8 +3335,9 @@ module.exports = {
                 {/* ── 7. SEGMENTED CONTROL ── */}
                 <div id="mol-segmented" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Segmented control
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-neutral-500 shrink-0" />
+                      Segmented time range control
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Sliding billing cadence switcher with fluid spring pill transitions.
@@ -3409,9 +3411,10 @@ module.exports = {
                 {/* ── 8. BREADCRUMBS ── */}
                 <div id="mol-breadcrumbs" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Breadcrumbs
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <FolderTree className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Breadcrumbs navigation</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Hierarchical wayfinding trail with chevron separators and collapsed overflow.
                     </p>
@@ -3512,9 +3515,10 @@ module.exports = {
                 {/* ── 9. METRIC STAT ── */}
                 <div id="mol-stat-badge" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Metric stat
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Metric stat card</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Telemetry display pairing a metric label, primary value, and trend badge.
                     </p>
@@ -3557,7 +3561,8 @@ module.exports = {
                 <div id="mol-alert" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4 text-neutral-500 shrink-0" />
                         Alert banner
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -3704,7 +3709,8 @@ module.exports = {
                 {/* ── 11. TOOLTIP POPOVER ── */}
                 <div id="mol-tooltip" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                      <Info className="w-4 h-4 text-neutral-500 shrink-0" />
                       Tooltip popover
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -3774,8 +3780,9 @@ module.exports = {
                 <div id="org-data-table" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                        Interactive data table
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Server className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Microservice nodes data table</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Production node fleet grid with tri-state multi-select, role filter pills, and batch actions toolbar.
@@ -3870,7 +3877,7 @@ module.exports = {
                     }}
                     className="overflow-x-auto border"
                   >
-                    <table className="w-full text-left text-xs border-collapse min-w-[740px]">
+                    <table className="w-full text-left text-xs border-collapse min-w-[860px]">
                       <thead>
                         <tr
                           style={{
@@ -4278,7 +4285,8 @@ module.exports = {
                 {/* ── 2. GLOBAL APPLICATION HEADER ORGANISM ── */}
                 <div id="org-global-header" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                      <Compass className="w-4 h-4 text-neutral-500 shrink-0" />
                       Global application header
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -4614,8 +4622,9 @@ module.exports = {
                 <div id="org-navigation-sidebar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                        Collapsible navigation sidebar
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Collapsible navigation sidebar</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Collapsible navigation sidebar with categorical route hierarchy and real-time status telemetry.
@@ -4801,8 +4810,9 @@ module.exports = {
                 <div id="org-command-palette" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                        Command palette (Cmd + K)
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Command className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Global command palette (⌘K)</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Universal keyboard-driven command runner modal with fuzzy filtering and categorized actions.
@@ -4823,8 +4833,8 @@ module.exports = {
                       }}
                       className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
                     >
-                      <Command className="w-3.5 h-3.5" />
-                      <span>Open Palette (⌘K)</span>
+                      <Command className="w-3.5 h-3.5 shrink-0" />
+                      <span className="whitespace-nowrap">Open Palette (⌘K)</span>
                     </button>
                   </div>
 
@@ -5056,8 +5066,9 @@ module.exports = {
                 <div id="org-filter-builder" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                        Compound filter &amp; query builder
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Filter className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Multi-clause filter builder</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Multi-condition parameter query builder with dynamic criteria rows, logic joiners, and saved views.
@@ -5079,7 +5090,7 @@ module.exports = {
                       className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
                     >
                       <Filter className="w-3.5 h-3.5" />
-                      <span>Save View</span>
+                      <span className="whitespace-nowrap">Save Filter View</span>
                     </button>
                   </div>
 
@@ -5242,9 +5253,10 @@ module.exports = {
                 {/* ── 6. DATE RANGE PICKER ORGANISM ── */}
                 <div id="org-date-picker" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                      Date range picker
-                    </h2>
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <CalendarDays className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Date range picker popover</span>
+                      </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                       Audit telemetry evaluation interval with quick presets matrix, date range inputs, and action footer.
                     </p>
@@ -5369,12 +5381,13 @@ module.exports = {
 
                 {/* ── 6. METRIC TELEMETRY CHART CARD ORGANISM ── */}
                 <div id="org-metric-card" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div className="max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <BarChart2 className="w-4 h-4 text-neutral-500 shrink-0" />
                         Metric telemetry chart card
                       </h2>
-                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
                         API gateway telemetry card with time horizon switcher, metric stats, and interactive SVG line chart.
                       </p>
                     </div>
@@ -5387,7 +5400,7 @@ module.exports = {
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: tokens.hoverBackplateTint,
                       }}
-                      className="flex items-center gap-1 p-0.5 border"
+                      className="flex items-center gap-1 p-0.5 border shrink-0 self-start sm:self-auto"
                     >
                       {(["24h", "7d", "30d"] as const).map((h) => {
                         const isSelected = chartHorizon === h;
@@ -5571,7 +5584,8 @@ module.exports = {
                 <div id="org-detail-drawer" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Sliders className="w-4 h-4 text-neutral-500 shrink-0" />
                         Slide-over detail drawer
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -5758,8 +5772,9 @@ module.exports = {
                 <div id="org-confirmation-modal" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
-                        Destructive confirmation modal
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" />
+                        <span>Confirmation dialog modal</span>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         High-stakes safety confirmation dialog requiring explicit phrase verification before executing destructive operations.
@@ -5781,7 +5796,8 @@ module.exports = {
                       }}
                       className="bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-semibold shadow-2xs cursor-pointer transition-colors whitespace-nowrap shrink-0 px-4"
                     >
-                      Trigger Modal
+                      <AlertTriangle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                      <span className="whitespace-nowrap">Trigger Confirmation Modal</span>
                     </button>
                   </div>
 
@@ -5908,7 +5924,7 @@ module.exports = {
         {/* ══════════════════════════════════════════════════════════
             COLUMN 3: RIGHT SIDEBAR (DARK MODE "VISUAL STUDIO" DOCK)
            ══════════════════════════════════════════════════════════ */}
-        <aside className="w-72 border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 hidden xl:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
+        <aside className="w-72 border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 hidden xl:flex flex-col justify-between select-none h-full overflow-y-auto shrink-0">
           {renderStudioControls()}
         </aside>
 
