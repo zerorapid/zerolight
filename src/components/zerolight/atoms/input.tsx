@@ -20,6 +20,17 @@ export function Input({
 }: InputProps) {
   const { tokens, scaled } = useZeroLight();
 
+  const renderIcon = (node: React.ReactNode) => {
+    if (!node || !React.isValidElement(node)) return node;
+    const existingProps = (node.props as Record<string, any>) || {};
+    return React.cloneElement(node as React.ReactElement<any>, {
+      size: existingProps.size || scaled.iconSmSize || 16,
+      strokeWidth: existingProps.strokeWidth || tokens.iconStrokeWidth || 1.75,
+      color: existingProps.color || tokens.iconColor || tokens.textIconColor,
+      fill: existingProps.fill || (tokens.iconFill === "currentColor" ? (tokens.iconColor || tokens.textIconColor) : "none"),
+    });
+  };
+
   return (
     <div
       style={{
@@ -39,7 +50,7 @@ export function Input({
           style={{ color: tokens.iconColor || tokens.textIconColor }}
           className="shrink-0 flex items-center"
         >
-          {iconLeft}
+          {renderIcon(iconLeft)}
         </span>
       )}
       <input
@@ -57,7 +68,7 @@ export function Input({
           style={{ color: tokens.iconColor || tokens.textIconColor }}
           className="shrink-0 flex items-center"
         >
-          {iconRight}
+          {renderIcon(iconRight)}
         </span>
       )}
     </div>

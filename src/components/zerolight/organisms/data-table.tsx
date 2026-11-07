@@ -157,7 +157,7 @@ export function DataTable({
                   }}
                   className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto"
                 >
-                  {selectedIds.length === nodes.length && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                  {selectedIds.length === nodes.length && <Check className="w-3 h-3" color={scaled.primaryActionTextColor} strokeWidth={3} />}
                 </button>
               </th>
               <th className="p-3.5 whitespace-nowrap">Node / Cluster</th>
@@ -193,7 +193,7 @@ export function DataTable({
                       }}
                       className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto"
                     >
-                      {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+                      {isSelected && <Check className="w-3 h-3" color={scaled.primaryActionTextColor} strokeWidth={3} />}
                     </button>
                   </td>
                   <td className="p-3.5 font-medium whitespace-nowrap">
