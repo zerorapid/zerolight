@@ -1,55 +1,59 @@
 "use client";
 
 import React from "react";
-
-export type SpinnerSize = "xs" | "sm" | "md" | "lg";
+import { useZeroLight } from "../context";
 
 export interface SpinnerProps {
-  size?: SpinnerSize;
-  className?: string;
+  size?: "xs" | "sm" | "md" | "lg";
   color?: string;
-  ariaLabel?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export function Spinner({
-  size = "sm",
+  size = "md",
+  color,
   className = "",
-  color = "currentColor",
-  ariaLabel = "Loading...",
+  style,
 }: SpinnerProps) {
-  const sizeMap: Record<SpinnerSize, number> = {
-    xs: 12,
-    sm: 16,
-    md: 20,
-    lg: 28,
+  const { tokens } = useZeroLight();
+
+  const dimensionMap = {
+    xs: 14,
+    sm: 18,
+    md: 24,
+    lg: 32,
   };
 
-  const dimension = sizeMap[size];
+  const dim = dimensionMap[size];
+  const strokeColor = color || tokens.primaryButtonColor;
 
   return (
     <svg
       role="status"
-      aria-label={ariaLabel}
-      width={dimension}
-      height={dimension}
+      aria-label="Loading..."
       viewBox="0 0 24 24"
       fill="none"
-      className={`animate-spin flex-shrink-0 ${className}`}
+      style={{
+        width: `${dim}px`,
+        height: `${dim}px`,
+        ...style,
+      }}
+      className={`animate-spin shrink-0 ${className}`}
     >
       <circle
         cx="12"
         cy="12"
         r="10"
-        stroke={color}
+        stroke="currentColor"
         strokeWidth="3"
         className="opacity-20"
       />
       <path
         d="M12 2a10 10 0 0 1 10 10"
-        stroke={color}
+        stroke={strokeColor}
         strokeWidth="3"
         strokeLinecap="round"
-        className="opacity-90"
       />
     </svg>
   );

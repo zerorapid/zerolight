@@ -120,7 +120,8 @@ test("Root index exports ZeroLightProvider, types, atoms, molecules, and organis
 const atomsExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/index.ts"), "utf8");
 const expectedAtoms = [
   "button", "icon-button", "input", "checkbox", "switch",
-  "slider", "progress-bar", "badge", "tag-chip", "kbd", "avatar"
+  "slider", "progress-bar", "badge", "tag-chip", "kbd", "avatar",
+  "skeleton", "separator", "spinner"
 ];
 
 expectedAtoms.forEach((atom) => {
@@ -133,7 +134,8 @@ expectedAtoms.forEach((atom) => {
 const moleculesExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/index.ts"), "utf8");
 const expectedMolecules = [
   "form-field", "input-group", "search-bar", "select", "tag-input",
-  "calendar", "segmented-control", "breadcrumbs", "stat-card", "alert-banner", "tooltip"
+  "calendar", "segmented-control", "breadcrumbs", "stat-card", "alert-banner", "tooltip",
+  "pagination", "empty-state", "accordion", "file-upload", "stepper"
 ];
 
 expectedMolecules.forEach((mol) => {
@@ -145,7 +147,8 @@ expectedMolecules.forEach((mol) => {
 
 const organismsExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
 const expectedOrganisms = [
-  "data-table", "confirmation-modal", "detail-drawer", "command-palette", "filter-builder"
+  "data-table", "confirmation-modal", "detail-drawer", "command-palette", "filter-builder",
+  "audit-log", "quota-matrix", "tree-view"
 ];
 
 expectedOrganisms.forEach((org) => {
@@ -171,17 +174,22 @@ test("Top Header uses deterministic CSS transitions (no layoutId jump from botto
   assert.ok(studioContent.includes('mainRef.current?.scrollTo({ top: 0, behavior: "instant" })'));
 });
 
-test("All 35 Brad Frost components have 1:1 anchor links in the Left Sidebar", () => {
+test("All 46 Brad Frost components have 1:1 anchor links in the Left Sidebar", () => {
   const allIds = [
-    "atom-typography", "atom-buttons", "atom-icon-button", "atom-input", "atom-textarea",
-    "atom-checkbox", "atom-radio", "atom-switch", "atom-slider", "atom-progress",
-    "atom-lucide-icons", "atom-badge", "atom-tag-chip", "atom-kbd", "atom-avatar",
+    // 18 Atoms
+    "atom-typography", "atom-separator", "atom-buttons", "atom-icon-button", "atom-input",
+    "atom-textarea", "atom-checkbox", "atom-radio", "atom-switch", "atom-slider",
+    "atom-progress", "atom-lucide-icons", "atom-badge", "atom-tag-chip", "atom-kbd",
+    "atom-avatar", "atom-skeleton", "atom-spinner",
+    // 16 Molecules
     "mol-form-field", "mol-input-group", "mol-search-bar", "mol-select", "mol-tag-input",
-    "mol-calendar", "mol-segmented", "mol-breadcrumbs", "mol-stat-badge", "mol-alert",
-    "mol-tooltip",
-    "org-data-table", "org-global-header", "org-navigation-sidebar", "org-command-palette",
-    "org-filter-builder", "org-date-picker", "org-metric-card", "org-detail-drawer",
-    "org-confirmation-modal"
+    "mol-calendar", "mol-file-upload", "mol-segmented", "mol-breadcrumbs", "mol-stepper",
+    "mol-pagination", "mol-stat-badge", "mol-alert", "mol-tooltip", "mol-empty-state",
+    "mol-accordion",
+    // 12 Organisms
+    "org-data-table", "org-global-header", "org-navigation-sidebar", "org-tree-view",
+    "org-command-palette", "org-filter-builder", "org-date-picker", "org-metric-card",
+    "org-audit-log", "org-quota-matrix", "org-detail-drawer", "org-confirmation-modal"
   ];
 
   allIds.forEach((id) => {
@@ -189,12 +197,16 @@ test("All 35 Brad Frost components have 1:1 anchor links in the Left Sidebar", (
   });
 });
 
-test("All 35 card headers have semantic Lucide vector icons", () => {
+test("All card headers have semantic Lucide vector icons", () => {
   assert.ok(studioContent.includes('<Type className="w-4 h-4 text-neutral-500'));
   assert.ok(studioContent.includes('<MousePointerClick className="w-4 h-4 text-neutral-500'));
   assert.ok(studioContent.includes('<Mail className="w-4 h-4 text-neutral-500'));
   assert.ok(studioContent.includes('<Server className="w-4 h-4 text-neutral-500'));
   assert.ok(studioContent.includes('<AlertTriangle className="w-4 h-4 text-rose-500'));
+  assert.ok(studioContent.includes('<Minus className="w-4 h-4 text-neutral-500'));
+  assert.ok(studioContent.includes('<UploadCloud className="w-4 h-4 text-neutral-500'));
+  assert.ok(studioContent.includes('<ListOrdered className="w-4 h-4 text-neutral-500'));
+  assert.ok(studioContent.includes('<FolderTree className="w-4 h-4 text-neutral-500'));
 });
 
 console.log("\n==================================================");

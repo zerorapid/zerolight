@@ -64,6 +64,11 @@ import {
   CircleDot,
   ToggleLeft,
   Tag,
+  UploadCloud,
+  ListOrdered,
+  Loader2,
+  Folder,
+  File,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -74,6 +79,10 @@ import {
   MotionPhysicsPreset,
   computeScaledTokens,
 } from "./types";
+import { ZeroLightProvider } from "./context";
+import { Skeleton, Separator, Spinner } from "./atoms";
+import { Pagination, EmptyState, Accordion, FileUpload, Stepper } from "./molecules";
+import { AuditLog, QuotaMatrix, TreeView } from "./organisms";
 
 const ROLE_OPTIONS = [
   "Administrator",
@@ -264,6 +273,10 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   const [isPageSizeOpen, setIsPageSizeOpen] = useState<boolean>(false);
   const pageSizeRef = useRef<HTMLDivElement>(null);
 
+  // New Primitives & Compounds Interactive States
+  const [isSkeletonSimulated, setIsSkeletonSimulated] = useState<boolean>(true);
+  const [stepperStep, setStepperStep] = useState<number>(1);
+
   // FormField & SearchBar Enterprise States
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
   const [searchBarQuery, setSearchBarQuery] = useState<string>("cluster-node-us-east-1");
@@ -405,6 +418,10 @@ module.exports = {
   // Memory leak protection: references for active timers
   const toastTimerRef = useRef<NodeJS.Timeout | null>(null);
   const copyTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleUpdateTokens = useCallback((updates: Partial<ZeroLightTokens>) => {
+    setTokens((prev) => ({ ...prev, ...updates }));
+  }, []);
 
   const triggerToast = useCallback((msg: string) => {
     if (toastTimerRef.current) {
@@ -926,7 +943,8 @@ module.exports = {
     </>
   );
   return (
-    <div className="h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200 overflow-hidden">
+    <ZeroLightProvider tokens={tokens} updateTokens={handleUpdateTokens}>
+      <div className="h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200 overflow-hidden">
       {/* Toast Notification with Framer Motion spring enter/exit */}
       <AnimatePresence>
         {toastMessage && (
@@ -983,9 +1001,9 @@ module.exports = {
         >
           {(
             [
-              { key: "atoms", label: "Atoms", count: "15" },
-              { key: "molecules", label: "Molecules", count: "11" },
-              { key: "organisms", label: "Organisms", count: "9" },
+              { key: "atoms", label: "Atoms", count: "18" },
+              { key: "molecules", label: "Molecules", count: "16" },
+              { key: "organisms", label: "Organisms", count: "12" },
             ] as const
           ).map(({ key, label, count }) => {
             const isSelected = activeTier === key;
@@ -1078,7 +1096,7 @@ module.exports = {
                 style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
                 className="text-[10px] font-semibold bg-neutral-100 text-neutral-600 px-2.5 py-1 tabular-nums border border-neutral-200"
               >
-                {activeTier === "atoms" ? "15 Primitives" : activeTier === "molecules" ? "11 Compounds" : "9 Organisms"}
+                {activeTier === "atoms" ? "18 Primitives" : activeTier === "molecules" ? "16 Compounds" : "12 Organisms"}
               </span>
             </div>
 
@@ -1092,6 +1110,9 @@ module.exports = {
                     </div>
                     <a href="#atom-typography" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Typography &amp; scale</span>
+                    </a>
+                    <a href="#atom-separator" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Hairline separator</span>
                     </a>
                   </div>
 
@@ -1159,6 +1180,12 @@ module.exports = {
                     <a href="#atom-avatar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Avatar &amp; loader</span>
                     </a>
+                    <a href="#atom-skeleton" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Skeleton shimmer</span>
+                    </a>
+                    <a href="#atom-spinner" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Activity spinner</span>
+                    </a>
                   </div>
                 </>
               ) : activeTier === "molecules" ? (
@@ -1185,18 +1212,26 @@ module.exports = {
                     <a href="#mol-calendar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Calendar dropdown</span>
                     </a>
-                    
+                    <a href="#mol-file-upload" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>File upload dropzone</span>
+                    </a>
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
                     <div className="px-3 py-1 text-xs font-semibold text-neutral-400">
-                      Navigation
+                      Navigation &amp; Stepping
                     </div>
                     <a href="#mol-segmented" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Segmented control</span>
                     </a>
                     <a href="#mol-breadcrumbs" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Breadcrumbs</span>
+                    </a>
+                    <a href="#mol-stepper" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Workflow stepper</span>
+                    </a>
+                    <a href="#mol-pagination" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Table pagination</span>
                     </a>
                   </div>
 
@@ -1212,6 +1247,12 @@ module.exports = {
                     </a>
                     <a href="#mol-tooltip" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Tooltip popover</span>
+                    </a>
+                    <a href="#mol-empty-state" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Empty state callout</span>
+                    </a>
+                    <a href="#mol-accordion" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Accordion disclosure</span>
                     </a>
                   </div>
                 </>
@@ -1230,6 +1271,9 @@ module.exports = {
                     <a href="#org-navigation-sidebar" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>App sidebar</span>
                     </a>
+                    <a href="#org-tree-view" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Resource tree view</span>
+                    </a>
                   </div>
 
                   <div className="space-y-0.5 pt-2 border-t border-neutral-100">
@@ -1247,6 +1291,12 @@ module.exports = {
                     </a>
                     <a href="#org-metric-card" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
                       <span>Metric chart card</span>
+                    </a>
+                    <a href="#org-audit-log" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Audit log trail</span>
+                    </a>
+                    <a href="#org-quota-matrix" className="px-3 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded-lg flex items-center justify-between transition-colors">
+                      <span>Tenant quota matrix</span>
                     </a>
                   </div>
 
@@ -2421,6 +2471,194 @@ module.exports = {
                       <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
                         Syncing...
                       </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── 15. SEPARATOR & HAIRLINE DIVIDER ── */}
+                <div id="atom-separator" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Minus className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Hairline separator & labeled divider</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Precision boundary primitive with horizontal hairline, labeled category chip, and vertical toolbar divider variations.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-1">
+                    <div className="space-y-2">
+                      <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block">Horizontal Hairline</span>
+                      <Separator orientation="horizontal" />
+                    </div>
+
+                    <div className="space-y-2 pt-2">
+                      <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block">Labeled Category Divider</span>
+                      <Separator orientation="horizontal" label="Kubernetes Pod Fleet" />
+                    </div>
+
+                    <div className="space-y-2 pt-2">
+                      <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block">Vertical Toolbar Dividers</span>
+                      <div
+                        style={{
+                          borderRadius: `${scaled.scaledRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="flex items-center gap-4 px-4 py-2 border shadow-2xs w-fit"
+                      >
+                        <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
+                          Cluster: us-east-prod-01
+                        </span>
+                        <Separator orientation="vertical" className="h-5" />
+                        <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="text-neutral-500">
+                          12 Active Pods
+                        </span>
+                        <Separator orientation="vertical" className="h-5" />
+                        <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="text-emerald-600 font-semibold">
+                          99.98% SLA
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── 16. SKELETON LOADING PLACEHOLDER ── */}
+                <div id="atom-skeleton" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Shimmer skeleton placeholder</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Low-contrast animated pulse shimmer placeholders preventing layout shift during asynchronous data hydration.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsSkeletonSimulated(!isSkeletonSimulated)}
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        minHeight: `${scaled.scaledHeight}px`,
+                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        fontSize: `${scaled.ctaFontSize}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                        color: tokens.textIconColor,
+                      }}
+                      className="border font-medium inline-flex items-center justify-center gap-2 shadow-2xs cursor-pointer transition-colors whitespace-nowrap shrink-0 self-start sm:self-auto py-2"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5 text-neutral-500" />
+                      <span>{isSkeletonSimulated ? "View Hydrated Data" : "Simulate Loading Skeleton"}</span>
+                    </button>
+                  </div>
+
+                  <div className="pt-2">
+                    {isSkeletonSimulated ? (
+                      <div
+                        style={{
+                          borderRadius: `${scaled.scaledRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                        }}
+                        className="p-5 border space-y-4 bg-white/50"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Skeleton variant="circle" width={38} height={38} />
+                          <div className="space-y-1.5 flex-1">
+                            <Skeleton variant="text" width="45%" height={14} />
+                            <Skeleton variant="text" width="25%" height={11} />
+                          </div>
+                        </div>
+                        <Skeleton variant="rect" width="100%" height={56} />
+                        <div className="flex items-center justify-between pt-1">
+                          <Skeleton variant="text" width="30%" height={12} />
+                          <Skeleton variant="rect" width={90} height={28} />
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          borderRadius: `${scaled.scaledRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="p-5 border space-y-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            style={{
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              backgroundColor: tokens.primaryButtonColor,
+                            }}
+                            className="w-9 h-9 flex items-center justify-center text-white font-bold text-xs shrink-0 shadow-2xs"
+                          >
+                            K8
+                          </div>
+                          <div>
+                            <h4 style={{ color: tokens.textIconColor }} className="font-semibold text-sm">
+                              k8s-ap-south-worker-fleet
+                            </h4>
+                            <p className="text-xs text-neutral-500">Zone: ap-south-1a • 4 Nodes Active</p>
+                          </div>
+                        </div>
+                        <p style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="leading-relaxed">
+                          Fleet is healthy with 99.98% ingress uptime. Automated health-check probes passing with 14ms round-trip latency.
+                        </p>
+                        <div className="flex items-center justify-between pt-2 border-t border-neutral-100">
+                          <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            Cluster In Sync
+                          </span>
+                          <span className="text-xs text-neutral-500 tabular-nums">Synced 2m ago</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* ── 17. ACTIVITY SPINNER ── */}
+                <div id="atom-spinner" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 text-neutral-500 shrink-0 animate-spin" />
+                        <span>Circular activity spinner</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Pure rotary SVG activity spinner automatically synchronized to the active brand primary token color.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-8 pt-2">
+                    <div className="flex items-center gap-3">
+                      <Spinner size="xs" />
+                      <span className="text-xs text-neutral-500">14px (xs)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Spinner size="sm" />
+                      <span className="text-xs text-neutral-500">18px (sm)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Spinner size="md" />
+                      <span className="text-xs text-neutral-500 font-medium">24px (md - default)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Spinner size="lg" />
+                      <span className="text-xs text-neutral-500">32px (lg)</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Spinner size="sm" color="#10B981" />
+                      <span className="text-xs text-emerald-600 font-medium">Custom Tint</span>
                     </div>
                   </div>
                 </div>
@@ -3805,6 +4043,196 @@ module.exports = {
                         )}
                       </AnimatePresence>
                     </div>
+                  </div>
+                </div>
+
+                {/* ── 12. FILE UPLOAD DROPZONE ── */}
+                <div id="mol-file-upload" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <UploadCloud className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>File upload dropzone</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Drag-and-drop file ingestion zone with MIME-type filtering, file size validation, and simulated upload progress bars.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <FileUpload
+                      label="Upload Kubernetes manifest or certificate"
+                      acceptText="Supports .yaml, .json, .pem, or .crt files"
+                      maxSizeText="Max payload size: 25 MB"
+                      onRemoveFile={() => triggerToast("Removed configuration file")}
+                    />
+                  </div>
+                </div>
+
+                {/* ── 13. WORKFLOW STEPPER ── */}
+                <div id="mol-stepper" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <ListOrdered className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Workflow stepper</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Sequential multi-phase pipeline tracker with completed checkmarks, current active step halo, and future phase locks.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 self-start sm:self-auto">
+                      <button
+                        type="button"
+                        disabled={stepperStep <= 0}
+                        onClick={() => setStepperStep((s) => Math.max(0, s - 1))}
+                        style={{
+                          borderRadius: `${scaled.scaledRadius}px`,
+                          height: `${scaled.scaledHeight}px`,
+                          padding: `0 ${scaled.scaledPaddingX}px`,
+                          fontSize: `${scaled.ctaFontSize}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                        }}
+                        className={`border font-medium inline-flex items-center justify-center gap-1.5 shadow-2xs whitespace-nowrap shrink-0 ${
+                          stepperStep <= 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-black/5"
+                        }`}
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span>Previous</span>
+                      </button>
+                      <button
+                        type="button"
+                        disabled={stepperStep >= 3}
+                        onClick={() => setStepperStep((s) => Math.min(3, s + 1))}
+                        style={{
+                          borderRadius: `${scaled.scaledRadius}px`,
+                          height: `${scaled.scaledHeight}px`,
+                          padding: `0 ${scaled.scaledPaddingX}px`,
+                          fontSize: `${scaled.ctaFontSize}px`,
+                          backgroundColor: tokens.primaryButtonColor,
+                          color: scaled.primaryActionTextColor,
+                        }}
+                        className={`font-semibold inline-flex items-center justify-center gap-1.5 shadow-xs whitespace-nowrap shrink-0 ${
+                          stepperStep >= 3 ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-90"
+                        }`}
+                      >
+                        <span>Next Step</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="p-4 border border-neutral-200 rounded-xl bg-white/50 pt-6 pb-6">
+                    <Stepper
+                      currentStepIndex={stepperStep}
+                      onStepClick={setStepperStep}
+                      steps={[
+                        { id: "step-1", title: "Cluster Specs", description: "VPC & region" },
+                        { id: "step-2", title: "Security & RBAC", description: "Mutual TLS & tokens" },
+                        { id: "step-3", title: "Quota Allocation", description: "vCPU & memory" },
+                        { id: "step-4", title: "Production Rollout", description: "Helm release" },
+                      ]}
+                    />
+                  </div>
+                </div>
+
+                {/* ── 14. TABLE PAGINATION ── */}
+                <div id="mol-pagination" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <ChevronRight className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Table pagination</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Data table navigation control with total item telemetry, page size switcher, and boundary disabled guards.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                    }}
+                    className="p-4 border bg-neutral-50/60"
+                  >
+                    <Pagination
+                      currentPage={currentPage}
+                      totalItems={248}
+                      pageSize={pageSize}
+                      onPageChange={setCurrentPage}
+                      onPageSizeChange={setPageSize}
+                      itemNoun="nodes"
+                    />
+                  </div>
+                </div>
+
+                {/* ── 15. EMPTY STATE CALLOUT ── */}
+                <div id="mol-empty-state" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Inbox className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Empty state callout</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Zero-data informational container with contextual Lucide vector illustration, helpful guidance, and single-click recovery action.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <EmptyState
+                      title="No container pods scheduled in this region"
+                      description="There are currently no Kubernetes pods running in the ap-south-1 availability zone. Deploy a new deployment manifest or adjust your fleet topology."
+                      actionText="Deploy Pod Workload"
+                      onAction={() => triggerToast("Workload manifest deploy triggered")}
+                    />
+                  </div>
+                </div>
+
+                {/* ── 16. ACCORDION DISCLOSURE ── */}
+                <div id="mol-accordion" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <SlidersHorizontal className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Accordion disclosure</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Expandable stacked disclosure panels with smooth framer-motion spring height interpolation and chevron indicator rotation.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <Accordion
+                      defaultOpenId="acc-1"
+                      items={[
+                        {
+                          id: "acc-1",
+                          title: "Virtual Private Cloud (VPC) Peering & CIDR Block Routing",
+                          content: "Configure cross-account peering connections between Amazon EKS and Google Cloud VPCs with dedicated 10.0.0.0/16 non-overlapping subnets and BGP route advertisements.",
+                        },
+                        {
+                          id: "acc-2",
+                          title: "Horizontal Pod Autoscaler (HPA) CPU & Memory Metrics",
+                          content: "Automatically scales deployment replicas between 3 and 40 nodes based on 90th percentile latency spikes and average CPU utilization exceeding 75%.",
+                        },
+                        {
+                          id: "acc-3",
+                          title: "Mutual TLS (mTLS) Mesh & SPIFFE Identity Verification",
+                          content: "Strict cryptographic workload identity validation enforcing short-lived X.509 certificates rotated every 12 hours across the service mesh data plane.",
+                        },
+                      ]}
+                    />
                   </div>
                 </div>
               </>
@@ -5955,6 +6383,71 @@ module.exports = {
                     )}
                   </AnimatePresence>
                 </div>
+
+                {/* ── 10. RESOURCE HIERARCHY TREE VIEW ── */}
+                <div id="org-tree-view" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <FolderTree className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Resource hierarchy tree view</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Hierarchical explorer for multi-region cloud resources, Kubernetes cluster pods, and secure telemetry object stores.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <TreeView
+                      onSelectNode={(node) => {
+                        triggerToast(`Selected resource: ${node.name}`);
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* ── 11. COMPLIANCE AUDIT LOG TRAIL ── */}
+                <div id="org-audit-log" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Terminal className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Audit log compliance trail</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        SOC2 and FedRAMP immutable audit log tracking authentication events, security group modifications, and RBAC changes.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <AuditLog />
+                  </div>
+                </div>
+
+                {/* ── 12. TENANT RESOURCE QUOTA MATRIX ── */}
+                <div id="org-quota-matrix" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+                    <div className="flex-1 max-w-xl space-y-1">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-neutral-500 shrink-0" />
+                        <span>Tenant resource quota matrix</span>
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                        Real-time tenant resource consumption telemetry tracking vCPU cores, memory, outbound egress bandwidth, and monthly API calls.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <QuotaMatrix
+                      onRequestIncrease={() => {
+                        triggerToast("Quota expansion request dispatched to billing administrator");
+                      }}
+                    />
+                  </div>
+                </div>
               </>
             )}
           </div>
@@ -6118,5 +6611,6 @@ module.exports = {
         </AnimatePresence>
       </div>
     </div>
+    </ZeroLightProvider>
   );
 }

@@ -9,3 +9,6 @@ export * from "./badge";
 export * from "./tag-chip";
 export * from "./kbd";
 export * from "./avatar";
+export * from "./skeleton";
+export * from "./separator";
+export * from "./spinner";
