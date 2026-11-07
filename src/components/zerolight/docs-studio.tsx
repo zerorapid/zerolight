@@ -82,7 +82,7 @@ import {
   computeScaledTokens,
 } from "./types";
 import { ZeroLightProvider } from "./context";
-import { Skeleton, Separator, Spinner } from "./atoms";
+import { Skeleton, Separator, Spinner, Avatar } from "./atoms";
 import { Pagination, EmptyState, Accordion, FileUpload, Stepper } from "./molecules";
 import { AuditLog, QuotaMatrix, TreeView } from "./organisms";
 
@@ -2354,38 +2354,166 @@ module.exports = {
                   </div>
                 </div>
 
-                {/* ── 13. AVATAR & LOADER ATOM ── */}
-                <div id="atom-avatar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-4">
-                  <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
+                {/* ── 13. AVATAR & SIZES ATOM ── */}
+                <div id="atom-avatar" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900 flex items-center gap-2">
                         <User className="w-4 h-4 text-neutral-500 shrink-0" />
-                        <span>Avatar & loader primitive</span>
+                        <span>User avatar & size scale</span>
                       </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Profile avatars across enterprise sizes (24px–64px) with Unsplash portraits, initials fallback, and status halos.
+                      </p>
+                    </div>
 
-                  <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center gap-2">
-                      <div className="relative">
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="px-3 py-1 text-xs font-mono text-neutral-600 border shadow-2xs self-start sm:self-auto shrink-0"
+                    >
+                      5 Sizes • xs to xl
+                    </div>
+                  </div>
+
+                  {/* Section A: Photo Avatars across all 5 sizes */}
+                  <div className="space-y-3">
+                    <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block">
+                      Profile Avatars with Presence Indicators
+                    </span>
+                    <div className="flex flex-wrap items-end gap-6 p-4 rounded-xl border border-neutral-100 bg-neutral-50/60">
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar
+                          size="xs"
+                          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=128&q=80"
+                          alt="Alex Rivera"
+                          status="online"
+                        />
+                        <span className="text-[10px] text-neutral-500 font-medium">24px (xs)</span>
+                      </div>
+
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar
+                          size="sm"
+                          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=128&q=80"
+                          alt="Elena Rostova"
+                          status="idle"
+                        />
+                        <span className="text-[10px] text-neutral-500 font-medium">32px (sm)</span>
+                      </div>
+
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar
+                          size="md"
+                          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=128&q=80"
+                          alt="Sarah Chen"
+                          status="online"
+                        />
+                        <span className="text-[10px] text-neutral-500 font-semibold text-neutral-800">40px (md - default)</span>
+                      </div>
+
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar
+                          size="lg"
+                          src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=128&q=80"
+                          alt="Marcus Vance"
+                          status="busy"
+                        />
+                        <span className="text-[10px] text-neutral-500 font-medium">48px (lg)</span>
+                      </div>
+
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar
+                          size="xl"
+                          src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=160&q=80"
+                          alt="Maya Patel"
+                          status="offline"
+                        />
+                        <span className="text-[10px] text-neutral-500 font-medium">64px (xl)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section B: Initials Fallback Avatars across all 5 sizes */}
+                  <div className="space-y-3">
+                    <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider block">
+                      Initials Fallback Avatars (Token Color Reactive)
+                    </span>
+                    <div className="flex flex-wrap items-end gap-6 p-4 rounded-xl border border-neutral-100 bg-neutral-50/60">
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar size="xs" initials="AR" status="online" />
+                        <span className="text-[10px] text-neutral-500 font-medium">24px</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar size="sm" initials="ER" status="idle" />
+                        <span className="text-[10px] text-neutral-500 font-medium">32px</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar size="md" initials="SC" status="online" />
+                        <span className="text-[10px] text-neutral-500 font-medium">40px</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar size="lg" initials="MV" status="busy" />
+                        <span className="text-[10px] text-neutral-500 font-medium">48px</span>
+                      </div>
+                      <div className="flex flex-col items-center gap-2">
+                        <Avatar size="xl" initials="MP" status="offline" />
+                        <span className="text-[10px] text-neutral-500 font-medium">64px</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section C: Team Avatar Stack & Profile Details */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2 border-t border-neutral-100">
+                    <div className="flex items-center gap-3">
+                      {/* Avatar Overlap Stack */}
+                      <div className="flex -space-x-2.5 overflow-hidden p-0.5">
+                        <Avatar
+                          size="sm"
+                          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=128&q=80"
+                          alt="Sarah Chen"
+                          className="ring-2 ring-white"
+                        />
+                        <Avatar
+                          size="sm"
+                          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=128&q=80"
+                          alt="Alex Rivera"
+                          className="ring-2 ring-white"
+                        />
+                        <Avatar
+                          size="sm"
+                          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=128&q=80"
+                          alt="Elena Rostova"
+                          className="ring-2 ring-white"
+                        />
                         <div
                           style={{
-                            width: `${scaled.scaledHeight}px`,
-                            height: `${scaled.scaledHeight}px`,
-                            backgroundColor: tokens.primaryButtonColor,
-                            borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            backgroundColor: tokens.hoverBackplateTint,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
                           }}
-                          className="flex items-center justify-center text-white font-medium text-xs shadow-xs"
+                          className="flex items-center justify-center text-[10px] font-bold text-neutral-600 ring-2 ring-white"
                         >
-                          SC
+                          +4
                         </div>
-                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
                       </div>
-                      <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium">
-                        Sarah Connor
-                      </span>
+                      <div>
+                        <span className="text-xs font-semibold text-neutral-800 block">Platform SRE Team</span>
+                        <span className="text-[11px] text-neutral-500">7 members active on cluster</span>
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full border-2 border-neutral-300 border-t-neutral-800 animate-spin" />
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                       <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Syncing...
+                        Synchronized with IAM Directory
                       </span>
                     </div>
                   </div>

@@ -33,9 +33,8 @@ export function Skeleton({
     <div
       style={{
         borderRadius: getBorderRadius(),
-        backgroundColor: tokens.hoverBackplateTint,
-        borderColor: tokens.borderWidth > 0 ? tokens.universalBorderColor : "transparent",
-        borderWidth: `${tokens.borderWidth}px`,
+        backgroundColor: tokens.hoverBackplateTint === "#FFFFFF" ? "#E4E4E7" : tokens.hoverBackplateTint,
+        border: "none",
         width: width ?? defaultWidth,
         height: height ?? defaultHeight,
         ...style,
@@ -43,7 +42,7 @@ export function Skeleton({
       className={`animate-pulse relative overflow-hidden select-none shrink-0 ${className}`}
       aria-hidden="true"
     >
-      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.8s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.8s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
     </div>
   );
 }

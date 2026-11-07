@@ -247,6 +247,30 @@ test("Visual Studio Dock: Renders comprehensive Iconography & Vector controls", 
   assert.ok(studioContent.includes("iconColor: e.target.value"));
 });
 
+// -----------------------------------------------------------------
+// Test Suite 6: Skeleton & Avatar Invariants
+// -----------------------------------------------------------------
+console.log("\n6. Skeleton & Avatar Invariants:");
+
+const skeletonContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/skeleton.tsx"), "utf8");
+const avatarContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/avatar.tsx"), "utf8");
+
+test("Shimmer Skeleton: Has NO border (clean soft shimmer surface)", () => {
+  assert.ok(skeletonContent.includes('border: "none"'));
+  assert.ok(!skeletonContent.includes("borderWidth: `${tokens.borderWidth}px`"));
+});
+
+test("Avatar Primitive: Supports 5 sizes (xs, sm, md, lg, xl) with Unsplash image support & initials fallback", () => {
+  assert.ok(avatarContent.includes('xs: { dimension: 24'));
+  assert.ok(avatarContent.includes('sm: { dimension: 32'));
+  assert.ok(avatarContent.includes('md: { dimension: 40'));
+  assert.ok(avatarContent.includes('lg: { dimension: 48'));
+  assert.ok(avatarContent.includes('xl: { dimension: 64'));
+  assert.ok(avatarContent.includes('<img'));
+  assert.ok(avatarContent.includes('<span>{initials}</span>'));
+  assert.ok(studioContent.includes('images.unsplash.com/photo-'));
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");
