@@ -1231,7 +1231,7 @@ module.exports = {
             COLUMN 2: CENTER STAGE (ATOMS OR MOLECULES VIEW)
            ══════════════════════════════════════════════════════════ */}
         <main className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start overflow-y-auto">
-          <div className="w-full max-w-[640px] space-y-6 pb-24">
+          <div className={`w-full ${activeTier === "organisms" ? "max-w-5xl" : "max-w-[720px]"} space-y-6 pb-24`}>
             
             {/* Stage Title */}
             <div className="flex items-center justify-between pb-3 border-b border-neutral-200">
@@ -2319,7 +2319,7 @@ module.exports = {
               <>
                 {/* ── 1. FORM FIELD ── */}
                 <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Form field
@@ -2342,7 +2342,7 @@ module.exports = {
                         padding: "4px 10px",
                         transition: scaled.transitionStyle,
                       }}
-                      className="border font-medium cursor-pointer shadow-2xs hover:opacity-80 transition-opacity"
+                      className="border font-medium cursor-pointer shadow-2xs hover:opacity-80 transition-opacity whitespace-nowrap shrink-0 px-3"
                     >
                       {isEmailError ? "Clear error" : "Simulate error"}
                     </button>
@@ -3464,7 +3464,7 @@ module.exports = {
 
                 {/* ── 10. ALERT BANNER ── */}
                 <div id="mol-alert" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Alert banner
@@ -3779,7 +3779,7 @@ module.exports = {
                     }}
                     className="overflow-x-auto border"
                   >
-                    <table className="w-full text-left text-xs border-collapse">
+                    <table className="w-full text-left text-xs border-collapse min-w-[740px]">
                       <thead>
                         <tr
                           style={{
@@ -3790,7 +3790,7 @@ module.exports = {
                           }}
                           className="border-b font-semibold select-none"
                         >
-                          <th className="p-3 w-10">
+                          <th className="p-3.5 w-12 whitespace-nowrap">
                             <button
                               type="button"
                               onClick={() => {
@@ -3818,13 +3818,13 @@ module.exports = {
                               )}
                             </button>
                           </th>
-                          <th className="p-3">Node / Cluster</th>
-                          <th className="p-3">Region</th>
-                          <th className="p-3">Role</th>
-                          <th className="p-3">Status</th>
-                          <th className="p-3">CPU / Memory</th>
-                          <th className="p-3">Latency</th>
-                          <th className="p-3 text-right">Actions</th>
+                          <th className="p-3.5 whitespace-nowrap">Node / Cluster</th>
+                          <th className="p-3.5 whitespace-nowrap">Region</th>
+                          <th className="p-3.5 whitespace-nowrap">Role</th>
+                          <th className="p-3.5 whitespace-nowrap">Status</th>
+                          <th className="p-3.5 whitespace-nowrap">CPU / Memory</th>
+                          <th className="p-3.5 whitespace-nowrap">Latency</th>
+                          <th className="p-3.5 text-right whitespace-nowrap">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -3843,13 +3843,13 @@ module.exports = {
                               style={{
                                 borderColor: tokens.universalBorderColor,
                                 borderBottomWidth: `${tokens.borderWidth}px`,
-                                height: `${scaled.scaledHeight}px`,
+                                minHeight: `${scaled.scaledHeight}px`,
                                 backgroundColor: isSelected ? tokens.hoverBackplateTint : "transparent",
                                 transition: scaled.transitionStyle,
                               }}
                               className="border-b transition-colors hover:bg-black/5"
                             >
-                              <td className="p-3">
+                              <td className="p-3.5 whitespace-nowrap">
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -3869,7 +3869,7 @@ module.exports = {
                                   {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                                 </button>
                               </td>
-                              <td className="p-3 font-medium">
+                              <td className="p-3.5 font-medium whitespace-nowrap">
                                 <div className="flex items-center gap-2">
                                   <Server className="w-3.5 h-3.5 text-neutral-400" />
                                   <span style={{ color: tokens.textIconColor }} className="tabular-nums font-semibold">
@@ -3877,13 +3877,13 @@ module.exports = {
                                   </span>
                                 </div>
                               </td>
-                              <td style={{ color: tokens.textIconColor }} className="p-3 tabular-nums opacity-80">
+                              <td style={{ color: tokens.textIconColor }} className="p-3.5 tabular-nums opacity-80 whitespace-nowrap">
                                 <div className="flex items-center gap-1.5">
                                   <Globe className="w-3 h-3 text-neutral-400" />
                                   <span>{node.region}</span>
                                 </div>
                               </td>
-                              <td className="p-3">
+                              <td className="p-3.5 whitespace-nowrap">
                                 <span
                                   style={{
                                     borderRadius: `${scaled.scaledPillRadius}px`,
@@ -3897,7 +3897,7 @@ module.exports = {
                                   {node.role}
                                 </span>
                               </td>
-                              <td className="p-3">
+                              <td className="p-3.5 whitespace-nowrap">
                                 {node.status === "healthy" && (
                                   <span
                                     style={{
@@ -3938,13 +3938,13 @@ module.exports = {
                                   </span>
                                 )}
                               </td>
-                              <td style={{ color: tokens.textIconColor }} className="p-3 tabular-nums font-medium">
+                              <td style={{ color: tokens.textIconColor }} className="p-3.5 tabular-nums font-medium whitespace-nowrap">
                                 {node.cpu} / {node.memory}
                               </td>
-                              <td style={{ color: tokens.textIconColor }} className="p-3 tabular-nums opacity-80">
+                              <td style={{ color: tokens.textIconColor }} className="p-3.5 tabular-nums opacity-80 whitespace-nowrap">
                                 {node.latency}
                               </td>
-                              <td className="p-3 text-right relative">
+                              <td className="p-3.5 text-right relative whitespace-nowrap">
                                 <button
                                   type="button"
                                   onClick={() => setOrgTableRowMenuOpen((curr) => (curr === node.id ? null : node.id))}
@@ -4340,7 +4340,7 @@ module.exports = {
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                         }}
-                        className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 border px-2 py-0.5"
+                        className="hidden sm:flex items-center gap-2 text-xs font-medium text-emerald-700 bg-emerald-50 border px-3 py-1 whitespace-nowrap shrink-0"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         <span>All clusters 100%</span>
@@ -4708,7 +4708,7 @@ module.exports = {
 
                 {/* ── 4. COMMAND PALETTE MODAL ORGANISM ── */}
                 <div id="org-command-palette" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Command palette (Cmd + K)
@@ -4730,7 +4730,7 @@ module.exports = {
                         padding: `0 ${scaled.scaledPaddingX}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
+                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
                     >
                       <Command className="w-3.5 h-3.5" />
                       <span>Open Palette (⌘K)</span>
@@ -4963,7 +4963,7 @@ module.exports = {
 
                 {/* ── 5. COMPOUND FILTER BUILDER ORGANISM ── */}
                 <div id="org-filter-builder" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Compound filter &amp; query builder
@@ -4985,7 +4985,7 @@ module.exports = {
                         fontSize: `${scaled.ctaFontSize}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
+                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
                     >
                       <Filter className="w-3.5 h-3.5" />
                       <span>Save View</span>
@@ -5278,7 +5278,7 @@ module.exports = {
 
                 {/* ── 6. METRIC TELEMETRY CHART CARD ORGANISM ── */}
                 <div id="org-metric-card" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Metric telemetry chart card
@@ -5478,7 +5478,7 @@ module.exports = {
 
                 {/* ── 8. SLIDE-OVER DETAIL DRAWER ORGANISM ── */}
                 <div id="org-detail-drawer" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Slide-over detail drawer
@@ -5500,7 +5500,7 @@ module.exports = {
                         fontSize: `${scaled.ctaFontSize}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
+                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity whitespace-nowrap shrink-0 px-4"
                     >
                       <Layers className="w-3.5 h-3.5" />
                       <span>Open Inspector Drawer</span>
@@ -5665,7 +5665,7 @@ module.exports = {
 
                 {/* ── 8. CONFIRMATION MODAL ORGANISM ── */}
                 <div id="org-confirmation-modal" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Destructive confirmation modal
@@ -5688,7 +5688,7 @@ module.exports = {
                         fontSize: `${scaled.ctaFontSize}px`,
                         transition: scaled.transitionStyle,
                       }}
-                      className="bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-semibold shadow-2xs cursor-pointer transition-colors"
+                      className="bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-semibold shadow-2xs cursor-pointer transition-colors whitespace-nowrap shrink-0 px-4"
                     >
                       Trigger Modal
                     </button>
