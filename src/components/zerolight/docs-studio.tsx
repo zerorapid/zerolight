@@ -1932,24 +1932,44 @@ module.exports = {
               </>
             )}
 
-            {/* ══════════════════════════════════════════════════════════
-                VIEW B: MOLECULES (UNIVERSAL TOKENS ON ALL INPUTS & DROPDOWNS)
+                        {/* ══════════════════════════════════════════════════════════
+                VIEW B: MOLECULES (DEEPLY BOUND TO UNIVERSAL STUDIO TOKENS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "molecules" && (
               <>
                 {/* ── 1. FORM FIELD ── */}
                 <div id="mol-form-field" style={cardStyle} className="p-5 shadow-sm space-y-4">
-                  <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
-                      Form field
-                    </h2>
-                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Label, text input with leading icon, and dynamic validation feedback.
-                    </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                        Form field
+                      </h2>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Label, text input with leading icon, and dynamic validation feedback.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setIsEmailError((prev) => !prev)}
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
+                        color: tokens.textIconColor,
+                        fontSize: `${scaled.sublabelFontSize}px`,
+                        padding: "4px 10px",
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="border font-medium cursor-pointer shadow-2xs hover:opacity-80 transition-opacity"
+                    >
+                      {isEmailError ? "Clear error" : "Simulate error"}
+                    </button>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
                       Email address
                     </label>
                     <div
@@ -1970,7 +1990,7 @@ module.exports = {
                           : isInputFocused
                           ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
                           : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
-                        transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+                        transition: scaled.transitionStyle,
                       }}
                       className="flex items-center gap-2.5 border"
                     >
@@ -2027,16 +2047,16 @@ module.exports = {
                 {/* ── 2. INPUT GROUP ── */}
                 <div id="mol-input-group" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Input group
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Conjoined text input with visibility toggle and action button.
+                      Conjoined text input with embedded visibility toggle and primary action button.
                     </p>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
                       Secret API key
                     </label>
 
@@ -2068,8 +2088,11 @@ module.exports = {
                           onClick={() => setIsApiKeyMasked((prev) => !prev)}
                           title={isApiKeyMasked ? "Reveal secret key" : "Hide secret key"}
                           aria-label={isApiKeyMasked ? "Reveal secret key" : "Hide secret key"}
-                          style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                          className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100/80 transition-colors cursor-pointer shrink-0 ml-1.5 focus:outline-none"
+                          style={{
+                            borderRadius: `${scaled.scaledInnerRadius}px`,
+                            transition: scaled.transitionStyle,
+                          }}
+                          className="p-1.5 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer shrink-0 ml-1.5 focus:outline-none"
                         >
                           {isApiKeyMasked ? (
                             <Eye className="w-4 h-4" strokeWidth={1.8} />
@@ -2088,7 +2111,7 @@ module.exports = {
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                           backgroundColor: tokens.primaryButtonColor,
-                          color: "#FFFFFF",
+                          color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
                           height: `${scaled.scaledHeight}px`,
                           paddingLeft: `${scaled.scaledPaddingX}px`,
                           paddingRight: `${scaled.scaledPaddingX}px`,
@@ -2111,7 +2134,7 @@ module.exports = {
                 {/* ── 3. SEARCH BAR ── */}
                 <div id="mol-search-bar" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Search bar
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2132,7 +2155,7 @@ module.exports = {
                         boxShadow: isSearchFocused
                           ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
                           : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
-                        transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+                        transition: scaled.transitionStyle,
                       }}
                       className="flex items-center justify-between border select-none"
                     >
@@ -2158,7 +2181,11 @@ module.exports = {
                               exit={{ opacity: 0, scale: 0.8 }}
                               transition={scaled.motionConfig.spring}
                               onClick={() => setSearchBarQuery("")}
-                              className="p-1 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer rounded-full hover:bg-neutral-100"
+                              style={{
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                transition: scaled.transitionStyle,
+                              }}
+                              className="p-1 text-neutral-400 hover:text-neutral-900 transition-colors cursor-pointer hover:bg-black/5"
                               title="Clear query"
                             >
                               <X className="w-3.5 h-3.5" />
@@ -2171,7 +2198,9 @@ module.exports = {
                             backgroundColor: isSearchFocused ? tokens.primaryButtonColor : tokens.hoverBackplateTint,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
-                            color: isSearchFocused ? "#FFFFFF" : undefined,
+                            color: isSearchFocused
+                              ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                              : tokens.textIconColor,
                             fontSize: `${scaled.sublabelFontSize - 1}px`,
                             padding: `${Math.round(2 * scaled.scale)}px ${Math.round(6 * scaled.scale)}px`,
                             transition: scaled.transitionStyle,
@@ -2213,9 +2242,11 @@ module.exports = {
                               style={{
                                 borderRadius: `${scaled.scaledOptionRadius}px`,
                                 fontSize: `${scaled.sublabelFontSize}px`,
+                                color: tokens.textIconColor,
                                 padding: "6px 10px",
+                                transition: scaled.transitionStyle,
                               }}
-                              className="w-full text-left flex items-center gap-2 text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 transition-colors cursor-pointer"
+                              className="w-full text-left flex items-center gap-2 hover:opacity-80 hover:bg-black/5 cursor-pointer"
                             >
                               <Search className="w-3.5 h-3.5 text-neutral-400" />
                               <span>{item}</span>
@@ -2230,7 +2261,7 @@ module.exports = {
                 {/* ── 4. SELECT DROPDOWN ── */}
                 <div id="mol-select" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Select dropdown
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2239,7 +2270,9 @@ module.exports = {
                   </div>
 
                   <div ref={roleRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Team role</label>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
+                      Team role
+                    </label>
 
                     <button
                       type="button"
@@ -2255,13 +2288,16 @@ module.exports = {
                         boxShadow: isRoleOpen
                           ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
                           : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
-                        transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+                        transition: scaled.transitionStyle,
                       }}
-                      className="w-full flex items-center justify-between text-left cursor-pointer border"
+                      className="w-full flex items-center justify-between text-left cursor-pointer border select-none"
                     >
-                      <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: role ? tokens.textIconColor : "#A3A3A3" }} className="truncate font-normal">
-                        {role || "Select a role..."}
-                      </span>
+                      <div className="flex items-center gap-2 truncate">
+                        <Key className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                        <span style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }} className="truncate font-medium">
+                          {role}
+                        </span>
+                      </div>
                       <motion.div
                         animate={{ rotate: isRoleOpen ? 180 : 0 }}
                         transition={scaled.motionConfig.spring}
@@ -2303,8 +2339,9 @@ module.exports = {
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: "5px 8px",
+                              transition: scaled.transitionStyle,
                             }}
-                            className="w-full outline-none border transition-colors focus:ring-1 focus:ring-neutral-900"
+                            className="w-full outline-none border transition-colors"
                           />
                           <div className="max-h-48 overflow-y-auto space-y-0.5 pt-0.5">
                             {filteredRoles.map((opt) => {
@@ -2324,12 +2361,19 @@ module.exports = {
                                   }}
                                   style={{
                                     borderRadius: `${scaled.scaledOptionRadius}px`,
-                                    backgroundColor: isSelected ? tokens.primaryButtonColor : isHovered ? tokens.hoverBackplateTint : "transparent",
-                                    color: isSelected ? "#FFFFFF" : tokens.textIconColor,
+                                    backgroundColor: isSelected
+                                      ? tokens.primaryButtonColor
+                                      : isHovered
+                                      ? tokens.hoverBackplateTint
+                                      : "transparent",
+                                    color: isSelected
+                                      ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                      : tokens.textIconColor,
                                     fontSize: `${scaled.labelFontSize}px`,
                                     padding: "6px 8px",
+                                    transition: scaled.transitionStyle,
                                   }}
-                                  className="w-full text-left flex items-center justify-between cursor-pointer select-none transition-colors"
+                                  className="w-full text-left flex items-center justify-between cursor-pointer select-none"
                                 >
                                   <span>{opt}</span>
                                   {isSelected && <Check className="w-3.5 h-3.5" strokeWidth={2.5} />}
@@ -2346,7 +2390,7 @@ module.exports = {
                 {/* ── 5. TAG INPUT ── */}
                 <div id="mol-tag-input" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Tag input
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2355,11 +2399,13 @@ module.exports = {
                   </div>
 
                   <div ref={tagRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Project tags</label>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
+                      Project tags
+                    </label>
 
                     <div
                       style={{
-                        borderRadius: tokens.cornerRadius === 999 ? `${Math.round(14 * scaled.scale)}px` : `${scaled.scaledRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: isTagOpen ? tokens.textIconColor : tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: scaled.effectiveInputFill,
@@ -2368,7 +2414,7 @@ module.exports = {
                         boxShadow: isTagOpen
                           ? (scaled.isZeroBorder ? scaled.focusHalo : `0 0 0 3px ${tokens.textIconColor}12`)
                           : "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
-                        transition: "border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease",
+                        transition: scaled.transitionStyle,
                       }}
                       className="w-full flex flex-wrap items-center gap-1.5 border"
                     >
@@ -2382,12 +2428,13 @@ module.exports = {
                             exit={{ opacity: 0, scale: 0.8 }}
                             transition={scaled.motionConfig.spring}
                             style={{
-                              borderRadius: `${scaled.scaledRadius}px`,
+                              borderRadius: `${scaled.scaledPillRadius}px`,
                               fontSize: `${scaled.sublabelFontSize}px`,
                               backgroundColor: tokens.hoverBackplateTint,
                               borderColor: tokens.universalBorderColor,
                               borderWidth: `${tokens.borderWidth}px`,
                               color: tokens.textIconColor,
+                              transition: scaled.transitionStyle,
                             }}
                             className="inline-flex items-center gap-1.5 px-2.5 py-0.5 font-medium border"
                           >
@@ -2398,7 +2445,7 @@ module.exports = {
                               className="hover:text-red-600 transition-colors p-0.5 -mr-0.5 cursor-pointer"
                               title="Remove tag"
                             >
-                              <X className="w-3 h-3" strokeWidth={2.5} />
+                              <X className="w-3 h-3" />
                             </button>
                           </motion.span>
                         ))}
@@ -2409,13 +2456,15 @@ module.exports = {
                         whileTap={{ scale: scaled.motionConfig.tapScale }}
                         onClick={() => setIsTagOpen((prev) => !prev)}
                         style={{
-                          borderRadius: `${scaled.scaledRadius}px`,
+                          borderRadius: `${scaled.scaledPillRadius}px`,
                           fontSize: `${scaled.sublabelFontSize}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.universalFillColor,
                           color: tokens.textIconColor,
+                          transition: scaled.transitionStyle,
                         }}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-0.5 font-medium border border-dashed hover:border-neutral-400 hover:bg-neutral-50 transition-colors cursor-pointer bg-white"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-0.5 font-medium border border-dashed hover:opacity-80 cursor-pointer"
                       >
                         <Plus className="w-3 h-3 text-neutral-500" strokeWidth={2.5} />
                         <span>Add tag</span>
@@ -2454,8 +2503,9 @@ module.exports = {
                               color: tokens.textIconColor,
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: "5px 8px",
+                              transition: scaled.transitionStyle,
                             }}
-                            className="w-full outline-none border transition-colors focus:ring-1 focus:ring-neutral-900"
+                            className="w-full outline-none border transition-colors"
                           />
                           <div className="max-h-48 overflow-y-auto space-y-0.5 pt-0.5">
                             {filteredTags.map((opt) => {
@@ -2473,6 +2523,7 @@ module.exports = {
                                     color: tokens.textIconColor,
                                     fontSize: `${scaled.labelFontSize}px`,
                                     padding: "6px 8px",
+                                    transition: scaled.transitionStyle,
                                   }}
                                   className="flex items-center justify-between cursor-pointer select-none"
                                 >
@@ -2483,8 +2534,9 @@ module.exports = {
                                       backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
                                       borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
                                       borderWidth: `${tokens.borderWidth}px`,
+                                      transition: scaled.transitionStyle,
                                     }}
-                                    className="w-4 h-4 flex items-center justify-center shrink-0 border transition-colors"
+                                    className="w-4 h-4 flex items-center justify-center shrink-0 border"
                                   >
                                     {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                                   </div>
@@ -2501,7 +2553,7 @@ module.exports = {
                 {/* ── 6. CALENDAR DROPDOWN ── */}
                 <div id="mol-calendar" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Calendar dropdown
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2510,7 +2562,7 @@ module.exports = {
                   </div>
 
                   <div ref={calendarRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
                       Scheduled deployment date
                     </label>
 
@@ -2579,7 +2631,10 @@ module.exports = {
                           className="absolute top-full left-0 z-30 p-3 border space-y-3"
                         >
                           {/* Calendar Header with Month Nav & Year Change */}
-                          <div className="flex items-center justify-between gap-1 pb-2 border-b border-neutral-100">
+                          <div
+                            style={{ borderColor: tokens.universalBorderColor, borderBottomWidth: `${tokens.borderWidth}px` }}
+                            className="flex items-center justify-between gap-1 pb-2 border-b"
+                          >
                             {/* Month Selector with Prev / Next */}
                             <div className="flex items-center gap-1">
                               <button
@@ -2593,11 +2648,12 @@ module.exports = {
                                   }
                                 }}
                                 aria-label="Previous month"
-                                className="p-1 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors cursor-pointer"
+                                style={{ borderRadius: `${scaled.scaledInnerRadius}px`, color: tokens.textIconColor }}
+                                className="p-1 text-neutral-400 hover:opacity-80 hover:bg-black/5 transition-colors cursor-pointer"
                               >
                                 <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2.2} />
                               </button>
-                              <span className="text-xs font-semibold text-neutral-800 w-[74px] text-center select-none">
+                              <span style={{ color: tokens.textIconColor }} className="text-xs font-semibold w-[74px] text-center select-none">
                                 {CALENDAR_MONTHS[calendarViewMonth]}
                               </span>
                               <button
@@ -2611,19 +2667,29 @@ module.exports = {
                                   }
                                 }}
                                 aria-label="Next month"
-                                className="p-1 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 rounded-md transition-colors cursor-pointer"
+                                style={{ borderRadius: `${scaled.scaledInnerRadius}px`, color: tokens.textIconColor }}
+                                className="p-1 text-neutral-400 hover:opacity-80 hover:bg-black/5 transition-colors cursor-pointer"
                               >
                                 <ChevronRight className="w-3.5 h-3.5" strokeWidth={2.2} />
                               </button>
                             </div>
 
                             {/* Year Selector with Stepper & Jump Toggle */}
-                            <div className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200">
+                            <div
+                              style={{
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: tokens.hoverBackplateTint,
+                              }}
+                              className="flex items-center gap-1 p-0.5 border"
+                            >
                               <button
                                 type="button"
                                 onClick={() => setCalendarViewYear((y) => y - 1)}
                                 aria-label="Previous year"
-                                className="p-0.5 text-neutral-500 hover:text-neutral-900 hover:bg-white rounded transition-colors cursor-pointer"
+                                style={{ borderRadius: `${scaled.scaledInnerRadius}px`, color: tokens.textIconColor }}
+                                className="p-0.5 text-neutral-500 hover:opacity-80 hover:bg-white transition-colors cursor-pointer"
                               >
                                 <ChevronLeft className="w-3 h-3" strokeWidth={2.2} />
                               </button>
@@ -2631,7 +2697,8 @@ module.exports = {
                                 type="button"
                                 onClick={() => setIsYearPickerOpen((prev) => !prev)}
                                 title="Click to jump year"
-                                className="px-1.5 py-0.5 text-xs font-semibold text-neutral-800 hover:bg-white rounded transition-colors cursor-pointer flex items-center gap-0.5 select-none tabular-nums"
+                                style={{ borderRadius: `${scaled.scaledInnerRadius}px`, color: tokens.textIconColor }}
+                                className="px-1.5 py-0.5 text-xs font-semibold hover:bg-white transition-colors cursor-pointer flex items-center gap-0.5 select-none tabular-nums"
                               >
                                 <span>{calendarViewYear}</span>
                                 <ChevronDown
@@ -2643,7 +2710,8 @@ module.exports = {
                                 type="button"
                                 onClick={() => setCalendarViewYear((y) => y + 1)}
                                 aria-label="Next year"
-                                className="p-0.5 text-neutral-500 hover:text-neutral-900 hover:bg-white rounded transition-colors cursor-pointer"
+                                style={{ borderRadius: `${scaled.scaledInnerRadius}px`, color: tokens.textIconColor }}
+                                className="p-0.5 text-neutral-500 hover:opacity-80 hover:bg-white transition-colors cursor-pointer"
                               >
                                 <ChevronRight className="w-3 h-3" strokeWidth={2.2} />
                               </button>
@@ -2669,14 +2737,17 @@ module.exports = {
                                         setIsYearPickerOpen(false);
                                       }}
                                       style={{
-                                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                                        borderRadius: `${scaled.scaledPillRadius}px`,
                                         backgroundColor: isSelectedYear ? tokens.primaryButtonColor : undefined,
-                                        color: isSelectedYear ? "#FFFFFF" : undefined,
+                                        color: isSelectedYear
+                                          ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                          : tokens.textIconColor,
+                                        transition: scaled.transitionStyle,
                                       }}
                                       className={`py-1.5 text-xs font-medium tabular-nums text-center transition-colors cursor-pointer ${
                                         isSelectedYear
                                           ? "font-semibold shadow-xs"
-                                          : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                                          : "hover:bg-black/5"
                                       }`}
                                     >
                                       {y}
@@ -2725,18 +2796,23 @@ module.exports = {
                                         setIsCalendarOpen(false);
                                       }}
                                       style={{
-                                        borderRadius: `${Math.max(4, scaled.scaledInnerRadius)}px`,
+                                        borderRadius: `${scaled.scaledPillRadius}px`,
                                         backgroundColor: isSelected ? tokens.primaryButtonColor : undefined,
-                                        color: isSelected ? "#FFFFFF" : undefined,
+                                        color: isSelected
+                                          ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                          : !isCurrentMonth
+                                          ? "#A3A3A3"
+                                          : tokens.textIconColor,
+                                        borderColor: isToday && !isSelected ? tokens.universalBorderColor : "transparent",
+                                        borderWidth: isToday && !isSelected ? `${tokens.borderWidth}px` : "0",
+                                        transition: scaled.transitionStyle,
                                       }}
                                       className={`h-7 w-full flex items-center justify-center text-xs tabular-nums select-none transition-colors cursor-pointer ${
                                         isSelected
                                           ? "font-semibold shadow-xs"
                                           : !isCurrentMonth
-                                          ? "text-neutral-300 hover:bg-neutral-50 hover:text-neutral-500"
-                                          : isToday
-                                          ? "font-semibold text-neutral-900 border border-neutral-300 hover:bg-neutral-100"
-                                          : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                                          ? "opacity-50"
+                                          : "hover:bg-black/5"
                                       }`}
                                     >
                                       {d.day}
@@ -2748,7 +2824,10 @@ module.exports = {
                           )}
 
                           {/* Quick Action Footer */}
-                          <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs">
+                          <div
+                            style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                            className="pt-2 border-t flex items-center justify-between text-xs"
+                          >
                             <button
                               type="button"
                               onClick={() => {
@@ -2758,7 +2837,8 @@ module.exports = {
                                 setIsYearPickerOpen(false);
                                 setIsCalendarOpen(false);
                               }}
-                              className="text-neutral-600 hover:text-neutral-900 font-medium px-2 py-1 rounded hover:bg-neutral-100 transition-colors cursor-pointer"
+                              style={{ borderRadius: `${scaled.scaledInnerRadius}px`, color: tokens.textIconColor }}
+                              className="font-medium px-2 py-1 hover:bg-black/5 transition-colors cursor-pointer"
                             >
                               Today (Nov 6)
                             </button>
@@ -2768,7 +2848,8 @@ module.exports = {
                                 setIsCalendarOpen(false);
                                 setIsYearPickerOpen(false);
                               }}
-                              className="text-neutral-400 hover:text-neutral-700 font-medium px-2 py-1 rounded hover:bg-neutral-100 transition-colors cursor-pointer"
+                              style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                              className="text-neutral-400 hover:text-neutral-700 font-medium px-2 py-1 hover:bg-black/5 transition-colors cursor-pointer"
                             >
                               Close
                             </button>
@@ -2782,7 +2863,7 @@ module.exports = {
                 {/* ── 7. DATE RANGE PICKER ── */}
                 <div id="mol-date-picker" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Date range picker
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2791,7 +2872,7 @@ module.exports = {
                   </div>
 
                   <div ref={datePickerRef} className="relative space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
                       Query period
                     </label>
                     <button
@@ -2863,12 +2944,15 @@ module.exports = {
                                     setIsDatePickerOpen(false);
                                   }}
                                   style={{
-                                    borderRadius: `${scaled.scaledOptionRadius}px`,
+                                    borderRadius: `${scaled.scaledPillRadius}px`,
                                     fontSize: `${scaled.sublabelFontSize}px`,
                                     padding: "6px 8px",
+                                    transition: scaled.transitionStyle,
                                   }}
                                   className={`font-medium cursor-pointer text-center select-none relative transition-colors ${
-                                    isSelected ? "text-white font-semibold" : "text-neutral-600 hover:text-black hover:bg-neutral-100"
+                                    isSelected
+                                      ? "text-white font-semibold"
+                                      : "hover:opacity-80 hover:bg-black/5"
                                   }`}
                                 >
                                   {isSelected && (
@@ -2876,13 +2960,22 @@ module.exports = {
                                       layoutId="activeDatePresetPill"
                                       transition={scaled.motionConfig.pillTransition}
                                       style={{
-                                        borderRadius: `${scaled.scaledOptionRadius}px`,
+                                        borderRadius: `${scaled.scaledPillRadius}px`,
                                         backgroundColor: tokens.primaryButtonColor,
                                       }}
                                       className="absolute inset-0 shadow-xs"
                                     />
                                   )}
-                                  <span className="relative z-10">{p.label}</span>
+                                  <span
+                                    style={{
+                                      color: isSelected
+                                        ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                        : tokens.textIconColor,
+                                    }}
+                                    className="relative z-10"
+                                  >
+                                    {p.label}
+                                  </span>
                                 </button>
                               );
                             })}
@@ -2896,7 +2989,7 @@ module.exports = {
                 {/* ── 7. SEGMENTED CONTROL ── */}
                 <div id="mol-segmented" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Segmented control
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2905,7 +2998,9 @@ module.exports = {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label style={{ fontSize: `${scaled.labelFontSize}px` }} className="block font-medium text-neutral-700">Billing cadence</label>
+                    <label style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="block font-medium">
+                      Billing cadence
+                    </label>
                     <div
                       style={{
                         borderRadius: `${scaled.scaledRadius}px`,
@@ -2931,26 +3026,34 @@ module.exports = {
                             whileTap={{ scale: scaled.motionConfig.tapScale }}
                             onClick={() => setSegmentValue(key)}
                             style={{
-                              borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
+                              borderRadius: `${scaled.scaledPillRadius}px`,
                               fontSize: `${scaled.sublabelFontSize}px`,
                               padding: `${Math.round(5 * scaled.scale)}px ${Math.round(12 * scaled.scale)}px`,
+                              transition: scaled.transitionStyle,
                             }}
-                            className={`font-medium cursor-pointer relative transition-colors select-none ${
-                              isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900"
-                            }`}
+                            className="font-medium cursor-pointer relative transition-colors select-none"
                           >
                             {isSelected && (
                               <motion.div
                                 layoutId="activeSegmentPill"
                                 transition={scaled.motionConfig.pillTransition}
                                 style={{
-                                  borderRadius: tokens.cornerRadius === 999 ? "9999px" : `${scaled.scaledInnerRadius}px`,
+                                  borderRadius: `${scaled.scaledPillRadius}px`,
                                   backgroundColor: tokens.primaryButtonColor,
                                 }}
                                 className="absolute inset-0 shadow-sm"
                               />
                             )}
-                            <span className="relative z-10">{label}</span>
+                            <span
+                              style={{
+                                color: isSelected
+                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  : tokens.textIconColor,
+                              }}
+                              className="relative z-10"
+                            >
+                              {label}
+                            </span>
                           </motion.button>
                         );
                       })}
@@ -2961,7 +3064,7 @@ module.exports = {
                 {/* ── 8. BREADCRUMBS ── */}
                 <div id="mol-breadcrumbs" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Breadcrumbs
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -2972,7 +3075,8 @@ module.exports = {
                   <nav className="flex items-center gap-1.5 flex-wrap text-xs pt-1 select-none">
                     <button
                       type="button"
-                      className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer"
+                      style={{ color: tokens.textIconColor }}
+                      className="hover:opacity-80 transition-colors font-medium cursor-pointer"
                     >
                       Infrastructure
                     </button>
@@ -2982,8 +3086,14 @@ module.exports = {
                       <button
                         type="button"
                         onClick={() => setIsBreadcrumbMenuOpen((prev) => !prev)}
-                        style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                        className="px-1.5 py-0.5 text-neutral-400 hover:text-neutral-900 hover:bg-neutral-100 transition-colors font-bold cursor-pointer"
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                        }}
+                        className="px-1.5 py-0.5 border font-bold cursor-pointer hover:opacity-80 transition-opacity"
                         title="Show intermediate routes"
                       >
                         ...
@@ -3009,8 +3119,8 @@ module.exports = {
                             <button
                               type="button"
                               onClick={() => setIsBreadcrumbMenuOpen(false)}
-                              style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
-                              className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center justify-between cursor-pointer"
+                              style={{ borderRadius: `${scaled.scaledOptionRadius}px`, color: tokens.textIconColor }}
+                              className="w-full text-left px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center justify-between cursor-pointer"
                             >
                               <span>US-East Clusters</span>
                               <ChevronRight className="w-3 h-3 text-neutral-400" />
@@ -3018,8 +3128,8 @@ module.exports = {
                             <button
                               type="button"
                               onClick={() => setIsBreadcrumbMenuOpen(false)}
-                              style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
-                              className="w-full text-left px-2.5 py-1.5 text-xs text-neutral-700 hover:bg-neutral-100 flex items-center justify-between cursor-pointer"
+                              style={{ borderRadius: `${scaled.scaledOptionRadius}px`, color: tokens.textIconColor }}
+                              className="w-full text-left px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center justify-between cursor-pointer"
                             >
                               <span>Production Cluster A</span>
                               <ChevronRight className="w-3 h-3 text-neutral-400" />
@@ -3032,18 +3142,21 @@ module.exports = {
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
                     <button
                       type="button"
-                      className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium cursor-pointer"
+                      style={{ color: tokens.textIconColor }}
+                      className="hover:opacity-80 transition-colors font-medium cursor-pointer"
                     >
                       Node-4
                     </button>
                     <ChevronRight className="w-3.5 h-3.5 text-neutral-300 shrink-0" strokeWidth={2} />
                     <span
                       style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderRadius: `${scaled.scaledPillRadius}px`,
                         backgroundColor: tokens.hoverBackplateTint,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
                         color: tokens.textIconColor,
                       }}
-                      className="px-2.5 py-1 font-semibold flex items-center gap-1.5"
+                      className="px-2.5 py-1 font-semibold flex items-center gap-1.5 border"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       <span>Telemetry</span>
@@ -3054,7 +3167,7 @@ module.exports = {
                 {/* ── 9. METRIC STAT ── */}
                 <div id="mol-stat-badge" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Metric stat
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -3069,17 +3182,19 @@ module.exports = {
                       </span>
                       <div className="flex items-baseline gap-2.5 pt-1">
                         <span
-                          style={{ fontSize: `${scaled.headingFontSize + 8}px` }}
-                          className="font-semibold text-neutral-900 tracking-tight tabular-nums"
+                          style={{ fontSize: `${scaled.headingFontSize + 8}px`, color: tokens.textIconColor }}
+                          className="font-semibold tracking-tight tabular-nums"
                         >
                           $148,200
                         </span>
                         <span
                           style={{
                             fontSize: `${scaled.sublabelFontSize}px`,
-                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
                           }}
-                          className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 font-medium inline-flex items-center gap-1 select-none tabular-nums"
+                          className="text-emerald-700 bg-emerald-50 border px-2 py-0.5 font-medium inline-flex items-center gap-1 select-none tabular-nums"
                         >
                           <TrendingUp className="w-3 h-3 text-emerald-600" strokeWidth={2.5} />
                           <span>+18.4%</span>
@@ -3097,7 +3212,7 @@ module.exports = {
                 <div id="mol-alert" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Alert banner
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -3106,8 +3221,13 @@ module.exports = {
                     </div>
 
                     <div
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="flex items-center gap-1 bg-neutral-100 p-0.5 border border-neutral-200"
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="flex items-center gap-1 p-0.5 border"
                     >
                       {(["info", "warning", "success", "critical"] as const).map((v) => {
                         const isSelected = alertVariant === v;
@@ -3119,8 +3239,8 @@ module.exports = {
                               setAlertVariant(v);
                               setIsAlertDismissed(false);
                             }}
-                            className={`px-2 py-0.5 text-[11px] capitalize font-medium cursor-pointer relative transition-colors ${
-                              isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900"
+                            className={`px-2.5 py-1 text-[11px] capitalize font-medium cursor-pointer relative transition-colors ${
+                              isSelected ? "font-semibold" : "opacity-70 hover:opacity-100"
                             }`}
                           >
                             {isSelected && (
@@ -3128,13 +3248,22 @@ module.exports = {
                                 layoutId="activeAlertVariant"
                                 transition={scaled.motionConfig.pillTransition}
                                 style={{
-                                  borderRadius: `${scaled.scaledInnerRadius}px`,
+                                  borderRadius: `${scaled.scaledPillRadius}px`,
                                   backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
                                 }}
                                 className="absolute inset-0 shadow-xs"
                               />
                             )}
-                            <span className="relative z-10">{v}</span>
+                            <span
+                              style={{
+                                color: isSelected
+                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  : tokens.textIconColor,
+                              }}
+                              className="relative z-10"
+                            >
+                              {v}
+                            </span>
                           </button>
                         );
                       })}
@@ -3206,13 +3335,19 @@ module.exports = {
                       </motion.div>
                     ) : (
                       <div
-                        style={{ borderRadius: `${scaled.scaledMenuRadius}px` }}
-                        className="p-3 bg-neutral-50 border border-neutral-200 text-center"
+                        style={{
+                          borderRadius: `${scaled.scaledMenuRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                        }}
+                        className="p-3 border text-center"
                       >
                         <button
                           type="button"
                           onClick={() => setIsAlertDismissed(false)}
-                          className="text-xs text-neutral-600 hover:text-neutral-900 font-semibold cursor-pointer"
+                          style={{ color: tokens.textIconColor }}
+                          className="text-xs font-semibold cursor-pointer hover:opacity-80"
                         >
                           Show dismissed alert again
                         </button>
@@ -3224,35 +3359,38 @@ module.exports = {
                 {/* ── 11. TOOLTIP POPOVER ── */}
                 <div id="mol-tooltip" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Tooltip popover
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                      Contextual hover overlay providing supplementary guidance on trigger elements.
+                      Contextual micro-popover providing supplementary assistance on hover.
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-4 pt-1">
-                    <div className="relative inline-flex items-center gap-1.5">
-                      <span style={{ fontSize: `${scaled.labelFontSize}px` }} className="font-medium text-neutral-700">
-                        p99 Replication Latency
-                      </span>
-                      <motion.button
+                  <div className="pt-2">
+                    <div className="relative inline-block">
+                      <button
                         type="button"
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: scaled.motionConfig.tapScale }}
                         onMouseEnter={() => setIsTooltipOpen(true)}
                         onMouseLeave={() => setIsTooltipOpen(false)}
-                        onClick={() => setIsTooltipOpen((prev) => !prev)}
+                        onFocus={() => setIsTooltipOpen(true)}
+                        onBlur={() => setIsTooltipOpen(false)}
                         style={{
-                          borderRadius: `${scaled.scaledInnerRadius}px`,
-                          backgroundColor: tokens.hoverBackplateTint,
+                          borderRadius: `${scaled.scaledRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: scaled.effectiveInputFill,
                           color: tokens.textIconColor,
+                          height: `${scaled.scaledHeight}px`,
+                          paddingLeft: `${scaled.scaledPaddingX}px`,
+                          paddingRight: `${scaled.scaledPaddingX}px`,
+                          transition: scaled.transitionStyle,
                         }}
-                        className="w-4 h-4 flex items-center justify-center text-[11px] font-bold cursor-pointer hover:bg-neutral-200 transition-colors"
+                        className="border font-medium flex items-center gap-2 cursor-pointer shadow-2xs select-none"
                       >
-                        ⓘ
-                      </motion.button>
+                        <Info className="w-4 h-4 text-neutral-400" />
+                        <span>Hover for metric formula</span>
+                      </button>
 
                       <AnimatePresence>
                         {isTooltipOpen && (
@@ -3283,7 +3421,7 @@ module.exports = {
             )}
 
             {/* ══════════════════════════════════════════════════════════
-                VIEW C: ENTERPRISE ORGANISMS (TIER 3 COMPOSITIONS)
+                VIEW C: ENTERPRISE ORGANISMS (DEEPLY BOUND TO STUDIO TOKENS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "organisms" && (
               <>
@@ -3291,7 +3429,7 @@ module.exports = {
                 <div id="org-data-table" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Interactive data table
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -3301,8 +3439,13 @@ module.exports = {
 
                     {/* Filter Pills */}
                     <div
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="inline-flex items-center gap-1 bg-neutral-100 p-0.5 border border-neutral-200 self-start sm:self-auto"
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="inline-flex items-center gap-1 p-0.5 border self-start sm:self-auto"
                     >
                       {(["all", "API Gateway", "Worker", "Cache"] as const).map((r) => {
                         const isSelected = orgTableRoleFilter === r;
@@ -3311,22 +3454,29 @@ module.exports = {
                             key={r}
                             type="button"
                             onClick={() => setOrgTableRoleFilter(r)}
-                            className={`px-2.5 py-1 text-[11px] capitalize cursor-pointer relative transition-colors ${
-                              isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900 font-medium"
-                            }`}
+                            className="px-2.5 py-1 text-[11px] capitalize cursor-pointer relative transition-colors font-medium"
                           >
                             {isSelected && (
                               <motion.div
                                 layoutId="activeOrgTableRolePill"
                                 transition={scaled.motionConfig.pillTransition}
                                 style={{
-                                  borderRadius: `${Math.max(2, scaled.scaledInnerRadius - 1)}px`,
+                                  borderRadius: `${scaled.scaledPillRadius}px`,
                                   backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
                                 }}
                                 className="absolute inset-0 shadow-xs"
                               />
                             )}
-                            <span className="relative z-10">{r === "all" ? "All Roles" : r}</span>
+                            <span
+                              style={{
+                                color: isSelected
+                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  : tokens.textIconColor,
+                              }}
+                              className="relative z-10"
+                            >
+                              {r === "all" ? "All Roles" : r}
+                            </span>
                           </button>
                         );
                       })}
@@ -3341,9 +3491,10 @@ module.exports = {
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                         backgroundColor: scaled.effectiveInputFill,
-                        height: `${Math.round(scaled.scaledHeight * 0.9)}px`,
+                        height: `${scaled.scaledHeight}px`,
                         paddingLeft: `${scaled.scaledPaddingX}px`,
                         paddingRight: `${scaled.scaledPaddingX}px`,
+                        transition: scaled.transitionStyle,
                       }}
                       className="flex-1 flex items-center gap-2 border"
                     >
@@ -3370,12 +3521,21 @@ module.exports = {
                       borderRadius: `${scaled.scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
+                      transition: scaled.transitionStyle,
                     }}
                     className="overflow-x-auto border"
                   >
                     <table className="w-full text-left text-xs border-collapse">
                       <thead>
-                        <tr className="bg-neutral-50/80 border-b border-neutral-200 text-neutral-600 font-semibold select-none">
+                        <tr
+                          style={{
+                            borderColor: tokens.universalBorderColor,
+                            borderBottomWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.hoverBackplateTint,
+                            color: tokens.textIconColor,
+                          }}
+                          className="border-b font-semibold select-none"
+                        >
                           <th className="p-3 w-10">
                             <button
                               type="button"
@@ -3387,10 +3547,11 @@ module.exports = {
                                 }
                               }}
                               style={{
-                                borderRadius: `${Math.max(3, scaled.scaledRadius * 0.3)}px`,
+                                borderRadius: `${scaled.scaledCheckboxRadius}px`,
                                 borderColor: orgTableSelected.length > 0 ? tokens.primaryButtonColor : tokens.universalBorderColor,
                                 borderWidth: `${tokens.borderWidth}px`,
-                                backgroundColor: orgTableSelected.length > 0 ? tokens.primaryButtonColor : "#FFFFFF",
+                                backgroundColor: orgTableSelected.length > 0 ? tokens.primaryButtonColor : tokens.universalFillColor,
+                                transition: scaled.transitionStyle,
                               }}
                               className="w-4 h-4 flex items-center justify-center cursor-pointer border transition-colors"
                               title="Toggle select all"
@@ -3412,7 +3573,7 @@ module.exports = {
                           <th className="p-3 text-right">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-neutral-100">
+                      <tbody>
                         {CLUSTER_NODES.filter((n) => {
                           const matchesRole = orgTableRoleFilter === "all" || n.role === orgTableRoleFilter;
                           const matchesSearch =
@@ -3425,9 +3586,14 @@ module.exports = {
                           return (
                             <tr
                               key={node.id}
-                              className={`transition-colors ${
-                                isSelected ? "bg-neutral-50/90" : "hover:bg-neutral-50/50"
-                              }`}
+                              style={{
+                                borderColor: tokens.universalBorderColor,
+                                borderBottomWidth: `${tokens.borderWidth}px`,
+                                height: `${scaled.scaledHeight}px`,
+                                backgroundColor: isSelected ? tokens.hoverBackplateTint : "transparent",
+                                transition: scaled.transitionStyle,
+                              }}
+                              className="border-b transition-colors hover:bg-black/5"
                             >
                               <td className="p-3">
                                 <button
@@ -3438,64 +3604,101 @@ module.exports = {
                                     );
                                   }}
                                   style={{
-                                    borderRadius: `${Math.max(3, scaled.scaledRadius * 0.3)}px`,
+                                    borderRadius: `${scaled.scaledCheckboxRadius}px`,
                                     borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
                                     borderWidth: `${tokens.borderWidth}px`,
-                                    backgroundColor: isSelected ? tokens.primaryButtonColor : "#FFFFFF",
+                                    backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
+                                    transition: scaled.transitionStyle,
                                   }}
                                   className="w-4 h-4 flex items-center justify-center cursor-pointer border transition-colors"
                                 >
                                   {isSelected && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                                 </button>
                               </td>
-                              <td className="p-3 font-medium text-neutral-900">
+                              <td className="p-3 font-medium">
                                 <div className="flex items-center gap-2">
                                   <Server className="w-3.5 h-3.5 text-neutral-400" />
-                                  <span className="tabular-nums font-semibold">{node.name}</span>
+                                  <span style={{ color: tokens.textIconColor }} className="tabular-nums font-semibold">
+                                    {node.name}
+                                  </span>
                                 </div>
                               </td>
-                              <td className="p-3 text-neutral-500 tabular-nums">
+                              <td style={{ color: tokens.textIconColor }} className="p-3 tabular-nums opacity-80">
                                 <div className="flex items-center gap-1.5">
                                   <Globe className="w-3 h-3 text-neutral-400" />
                                   <span>{node.region}</span>
                                 </div>
                               </td>
                               <td className="p-3">
-                                <span className="inline-block px-2 py-0.5 text-[10px] font-medium bg-neutral-100 text-neutral-700 rounded-md border border-neutral-200">
+                                <span
+                                  style={{
+                                    borderRadius: `${scaled.scaledPillRadius}px`,
+                                    borderColor: tokens.universalBorderColor,
+                                    borderWidth: `${tokens.borderWidth}px`,
+                                    backgroundColor: tokens.hoverBackplateTint,
+                                    color: tokens.textIconColor,
+                                  }}
+                                  className="inline-block px-2 py-0.5 text-[10px] font-medium border"
+                                >
                                   {node.role}
                                 </span>
                               </td>
                               <td className="p-3">
                                 {node.status === "healthy" && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-full">
+                                  <span
+                                    style={{
+                                      borderRadius: `${scaled.scaledPillRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 border"
+                                  >
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                     Healthy
                                   </span>
                                 )}
                                 {node.status === "degraded" && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-full">
+                                  <span
+                                    style={{
+                                      borderRadius: `${scaled.scaledPillRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-amber-700 bg-amber-50 border"
+                                  >
                                     <AlertTriangle className="w-2.5 h-2.5 text-amber-500" />
                                     Degraded
                                   </span>
                                 )}
                                 {node.status === "syncing" && (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-sky-700 bg-sky-50 border border-sky-200 rounded-full">
+                                  <span
+                                    style={{
+                                      borderRadius: `${scaled.scaledPillRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                    }}
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-sky-700 bg-sky-50 border"
+                                  >
                                     <RefreshCw className="w-2.5 h-2.5 text-sky-500 animate-spin" />
                                     Syncing
                                   </span>
                                 )}
                               </td>
-                              <td className="p-3 text-neutral-600 tabular-nums font-medium">
+                              <td style={{ color: tokens.textIconColor }} className="p-3 tabular-nums font-medium">
                                 {node.cpu} / {node.memory}
                               </td>
-                              <td className="p-3 text-neutral-500 tabular-nums font-mono">
+                              <td style={{ color: tokens.textIconColor }} className="p-3 tabular-nums opacity-80">
                                 {node.latency}
                               </td>
                               <td className="p-3 text-right relative">
                                 <button
                                   type="button"
                                   onClick={() => setOrgTableRowMenuOpen((curr) => (curr === node.id ? null : node.id))}
-                                  className="p-1 text-neutral-400 hover:text-neutral-900 rounded hover:bg-neutral-100 transition-colors cursor-pointer"
+                                  style={{
+                                    borderRadius: `${scaled.scaledInnerRadius}px`,
+                                    color: tokens.textIconColor,
+                                  }}
+                                  className="p-1 hover:bg-black/5 transition-colors cursor-pointer"
                                 >
                                   <MoreHorizontal className="w-4 h-4" />
                                 </button>
@@ -3523,7 +3726,11 @@ module.exports = {
                                           setIsDrawerOpen(true);
                                           setOrgTableRowMenuOpen(null);
                                         }}
-                                        className="w-full px-2.5 py-1.5 text-xs text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded flex items-center gap-2 cursor-pointer transition-colors"
+                                        style={{
+                                          borderRadius: `${scaled.scaledOptionRadius}px`,
+                                          color: tokens.textIconColor,
+                                        }}
+                                        className="w-full px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center gap-2 cursor-pointer transition-colors"
                                       >
                                         <Layers className="w-3.5 h-3.5 text-neutral-400" />
                                         <span>Inspect Node</span>
@@ -3534,7 +3741,11 @@ module.exports = {
                                           triggerToast(`Restarting node ${node.name}...`);
                                           setOrgTableRowMenuOpen(null);
                                         }}
-                                        className="w-full px-2.5 py-1.5 text-xs text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded flex items-center gap-2 cursor-pointer transition-colors"
+                                        style={{
+                                          borderRadius: `${scaled.scaledOptionRadius}px`,
+                                          color: tokens.textIconColor,
+                                        }}
+                                        className="w-full px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center gap-2 cursor-pointer transition-colors"
                                       >
                                         <RefreshCw className="w-3.5 h-3.5 text-neutral-400" />
                                         <span>Restart Node</span>
@@ -3545,19 +3756,29 @@ module.exports = {
                                           triggerToast(`Copied ${node.name} ID to clipboard`);
                                           setOrgTableRowMenuOpen(null);
                                         }}
-                                        className="w-full px-2.5 py-1.5 text-xs text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded flex items-center gap-2 cursor-pointer transition-colors"
+                                        style={{
+                                          borderRadius: `${scaled.scaledOptionRadius}px`,
+                                          color: tokens.textIconColor,
+                                        }}
+                                        className="w-full px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center gap-2 cursor-pointer transition-colors"
                                       >
                                         <Copy className="w-3.5 h-3.5 text-neutral-400" />
                                         <span>Copy ID</span>
                                       </button>
-                                      <div className="border-t border-neutral-100 my-1" />
+                                      <div
+                                        style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                                        className="my-1 border-t"
+                                      />
                                       <button
                                         type="button"
                                         onClick={() => {
                                           setIsConfirmModalOpen(true);
                                           setOrgTableRowMenuOpen(null);
                                         }}
-                                        className="w-full px-2.5 py-1.5 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded flex items-center gap-2 cursor-pointer transition-colors font-medium"
+                                        style={{
+                                          borderRadius: `${scaled.scaledOptionRadius}px`,
+                                        }}
+                                        className="w-full px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer transition-colors font-medium"
                                       >
                                         <Trash2 className="w-3.5 h-3.5 text-rose-500" />
                                         <span>Decommission</span>
@@ -3589,7 +3810,10 @@ module.exports = {
                         className="p-3 shadow-xl flex items-center justify-between gap-3 text-xs"
                       >
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold bg-white/20 px-2 py-0.5 rounded-full tabular-nums">
+                          <span
+                            style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
+                            className="font-semibold bg-white/20 px-2 py-0.5 tabular-nums"
+                          >
                             {orgTableSelected.length}
                           </span>
                           <span>cluster nodes selected</span>
@@ -3598,28 +3822,44 @@ module.exports = {
                           <button
                             type="button"
                             onClick={() => triggerToast(`Exported ${orgTableSelected.length} cluster nodes to CSV`)}
-                            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded font-medium transition-colors cursor-pointer"
+                            style={{
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              height: `${Math.round(scaled.scaledHeight * 0.75)}px`,
+                            }}
+                            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 font-medium transition-colors cursor-pointer flex items-center justify-center"
                           >
                             Export CSV
                           </button>
                           <button
                             type="button"
                             onClick={() => triggerToast(`Restarting ${orgTableSelected.length} selected nodes...`)}
-                            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 rounded font-medium transition-colors cursor-pointer"
+                            style={{
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              height: `${Math.round(scaled.scaledHeight * 0.75)}px`,
+                            }}
+                            className="px-2.5 py-1 bg-white/10 hover:bg-white/20 font-medium transition-colors cursor-pointer flex items-center justify-center"
                           >
                             Restart
                           </button>
                           <button
                             type="button"
                             onClick={() => setIsConfirmModalOpen(true)}
-                            className="px-2.5 py-1 bg-rose-500 hover:bg-rose-600 rounded font-medium transition-colors cursor-pointer text-white"
+                            style={{
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              height: `${Math.round(scaled.scaledHeight * 0.75)}px`,
+                            }}
+                            className="px-2.5 py-1 bg-rose-500 hover:bg-rose-600 font-medium transition-colors cursor-pointer text-white flex items-center justify-center"
                           >
                             Decommission
                           </button>
                           <button
                             type="button"
                             onClick={() => setOrgTableSelected([])}
-                            className="text-white/60 hover:text-white px-2 py-1 font-medium transition-colors cursor-pointer"
+                            style={{
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              height: `${Math.round(scaled.scaledHeight * 0.75)}px`,
+                            }}
+                            className="text-white/70 hover:text-white px-2 py-1 font-medium transition-colors cursor-pointer flex items-center justify-center"
                           >
                             Clear
                           </button>
@@ -3629,12 +3869,24 @@ module.exports = {
                   </AnimatePresence>
 
                   {/* Table Pagination Organism Footer */}
-                  <div className="flex items-center justify-between text-xs text-neutral-500 pt-2 border-t border-neutral-100">
-                    <span className="tabular-nums">Showing 1–5 of 12 cluster nodes</span>
+                  <div
+                    style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                    className="flex items-center justify-between text-xs text-neutral-500 pt-2 border-t"
+                  >
+                    <span style={{ color: tokens.textIconColor }} className="tabular-nums opacity-80">
+                      Showing 1–5 of 12 cluster nodes
+                    </span>
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
-                        className="px-2.5 py-1 border border-neutral-200 rounded text-neutral-400 cursor-not-allowed"
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          color: tokens.textIconColor,
+                          opacity: 0.5,
+                        }}
+                        className="px-2.5 py-1 border cursor-not-allowed"
                         disabled
                       >
                         Prev
@@ -3642,24 +3894,35 @@ module.exports = {
                       <button
                         type="button"
                         style={{
-                          backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
-                          color: "#FFFFFF",
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          backgroundColor: tokens.primaryButtonColor,
+                          color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
                         }}
-                        className="w-6 h-6 rounded flex items-center justify-center font-semibold text-xs shadow-xs"
+                        className="w-6 h-6 flex items-center justify-center font-semibold text-xs shadow-xs"
                       >
                         1
                       </button>
                       <button
                         type="button"
                         onClick={() => triggerToast("Paging to page 2")}
-                        className="w-6 h-6 rounded flex items-center justify-center font-medium text-xs text-neutral-600 hover:bg-neutral-100"
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          color: tokens.textIconColor,
+                        }}
+                        className="w-6 h-6 flex items-center justify-center font-medium text-xs hover:bg-black/5"
                       >
                         2
                       </button>
                       <button
                         type="button"
                         onClick={() => triggerToast("Paging to next page")}
-                        className="px-2.5 py-1 border border-neutral-200 rounded text-neutral-700 hover:bg-neutral-50 cursor-pointer font-medium"
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          color: tokens.textIconColor,
+                        }}
+                        className="px-2.5 py-1 border cursor-pointer font-medium hover:bg-black/5"
                       >
                         Next
                       </button>
@@ -3670,7 +3933,7 @@ module.exports = {
                 {/* ── 2. GLOBAL APPLICATION HEADER ORGANISM ── */}
                 <div id="org-global-header" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div>
-                    <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                       Global application header
                     </h2>
                     <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -3685,6 +3948,8 @@ module.exports = {
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
                       backgroundColor: scaled.effectiveInputFill,
+                      height: `${scaled.scaledHeight + 12}px`,
+                      transition: scaled.transitionStyle,
                     }}
                     className="p-3 border flex items-center justify-between gap-3 relative select-none"
                   >
@@ -3693,16 +3958,21 @@ module.exports = {
                       <div
                         style={{
                           backgroundColor: tokens.primaryButtonColor,
-                          borderRadius: `${Math.max(4, scaled.scaledRadius * 0.4)}px`,
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
                         }}
-                        className="w-7 h-7 flex items-center justify-center font-bold text-xs text-white shrink-0"
+                        className="w-7 h-7 flex items-center justify-center font-bold text-xs shrink-0"
                       >
                         ZL
                       </div>
                       <button
                         type="button"
                         onClick={() => setIsWorkspaceMenuOpen((prev) => !prev)}
-                        className="flex items-center gap-1.5 px-2 py-1 text-xs font-semibold text-neutral-900 hover:bg-black/5 rounded-md transition-colors cursor-pointer"
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          color: tokens.textIconColor,
+                        }}
+                        className="flex items-center gap-1.5 px-2 py-1 text-xs font-semibold hover:bg-black/5 transition-colors cursor-pointer"
                       >
                         <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                         <span className="truncate max-w-[130px] sm:max-w-[180px]">{activeWorkspace}</span>
@@ -3742,20 +4012,31 @@ module.exports = {
                                   setIsWorkspaceMenuOpen(false);
                                   triggerToast(`Switched workspace to ${ws}`);
                                 }}
-                                className="w-full px-2.5 py-1.5 text-xs text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded flex items-center justify-between cursor-pointer transition-colors"
+                                style={{
+                                  borderRadius: `${scaled.scaledOptionRadius}px`,
+                                  color: tokens.textIconColor,
+                                }}
+                                className="w-full px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center justify-between cursor-pointer transition-colors"
                               >
-                                <span className={activeWorkspace === ws ? "font-semibold text-neutral-900" : ""}>{ws}</span>
-                                {activeWorkspace === ws && <Check className="w-3.5 h-3.5 text-neutral-900" />}
+                                <span className={activeWorkspace === ws ? "font-semibold" : ""}>{ws}</span>
+                                {activeWorkspace === ws && <Check className="w-3.5 h-3.5" />}
                               </button>
                             ))}
-                            <div className="border-t border-neutral-100 my-1" />
+                            <div
+                              style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                              className="my-1 border-t"
+                            />
                             <button
                               type="button"
                               onClick={() => {
                                 setIsWorkspaceMenuOpen(false);
                                 triggerToast("Opening workspace creator modal...");
                               }}
-                              className="w-full px-2.5 py-1.5 text-xs text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 rounded flex items-center gap-1.5 cursor-pointer transition-colors"
+                              style={{
+                                borderRadius: `${scaled.scaledOptionRadius}px`,
+                                color: tokens.textIconColor,
+                              }}
+                              className="w-full px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center gap-1.5 cursor-pointer transition-colors"
                             >
                               <Plus className="w-3.5 h-3.5 text-neutral-400" />
                               <span>Create workspace</span>
@@ -3773,21 +4054,40 @@ module.exports = {
                         borderRadius: `${scaled.scaledRadius}px`,
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
+                        height: `${scaled.scaledHeight * 0.85}px`,
+                        transition: scaled.transitionStyle,
                       }}
-                      className="hidden md:flex items-center justify-between w-64 px-2.5 py-1.5 bg-white border text-xs text-neutral-400 hover:text-neutral-700 hover:border-neutral-300 transition-colors cursor-pointer shadow-2xs"
+                      className="hidden md:flex items-center justify-between w-64 px-2.5 py-1.5 border text-xs text-neutral-400 hover:text-neutral-700 transition-colors cursor-pointer shadow-2xs"
                     >
                       <div className="flex items-center gap-2">
                         <Search className="w-3.5 h-3.5 text-neutral-400" />
                         <span>Search commands...</span>
                       </div>
-                      <span className="font-mono text-[10px] bg-neutral-100 border border-neutral-200 px-1.5 py-0.5 rounded text-neutral-500">
+                      <span
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                        }}
+                        className="font-mono text-[10px] border px-1.5 py-0.5"
+                      >
                         ⌘K
                       </span>
                     </button>
 
                     {/* Right: Telemetry Pulse, Notifications, Profile */}
                     <div className="flex items-center gap-2">
-                      <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      <div
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                        }}
+                        className="hidden sm:flex items-center gap-1.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 border px-2 py-0.5"
+                      >
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         <span>All clusters 100%</span>
                       </div>
@@ -3797,7 +4097,11 @@ module.exports = {
                         <button
                           type="button"
                           onClick={() => setIsNotificationsOpen((prev) => !prev)}
-                          className="p-1.5 text-neutral-500 hover:text-neutral-900 hover:bg-black/5 rounded-md transition-colors relative cursor-pointer"
+                          style={{
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            color: tokens.textIconColor,
+                          }}
+                          className="p-1.5 hover:bg-black/5 transition-colors relative cursor-pointer"
                           aria-label="View notifications"
                         >
                           <Bell className="w-4 h-4" />
@@ -3822,25 +4126,48 @@ module.exports = {
                               }}
                               className="absolute right-0 mt-2 w-72 p-3 z-30 border text-left space-y-2.5"
                             >
-                              <div className="flex items-center justify-between pb-1.5 border-b border-neutral-100">
-                                <span className="font-semibold text-xs text-neutral-900">Notifications</span>
+                              <div
+                                style={{ borderColor: tokens.universalBorderColor, borderBottomWidth: `${tokens.borderWidth}px` }}
+                                className="flex items-center justify-between pb-1.5 border-b"
+                              >
+                                <span style={{ color: tokens.textIconColor }} className="font-semibold text-xs">
+                                  Notifications
+                                </span>
                                 <button
                                   type="button"
                                   onClick={() => {
                                     setUnreadNotifications(0);
                                     triggerToast("Marked all notifications as read");
                                   }}
-                                  className="text-[10px] text-neutral-400 hover:text-neutral-700 font-medium"
+                                  className="text-[10px] text-neutral-400 hover:text-neutral-700 font-medium cursor-pointer"
                                 >
                                   Mark all read
                                 </button>
                               </div>
                               <div className="space-y-1.5 text-xs">
-                                <div className="p-2 rounded bg-neutral-50 hover:bg-neutral-100 transition-colors">
-                                  <div className="font-medium text-neutral-800">Deployment v2.4.1 Live</div>
+                                <div
+                                  style={{
+                                    borderRadius: `${scaled.scaledOptionRadius}px`,
+                                    borderColor: tokens.universalBorderColor,
+                                    borderWidth: `${tokens.borderWidth}px`,
+                                    backgroundColor: tokens.hoverBackplateTint,
+                                  }}
+                                  className="p-2 border transition-colors"
+                                >
+                                  <div style={{ color: tokens.textIconColor }} className="font-medium">
+                                    Deployment v2.4.1 Live
+                                  </div>
                                   <div className="text-[11px] text-neutral-500">Production cluster updated cleanly.</div>
                                 </div>
-                                <div className="p-2 rounded bg-neutral-50 hover:bg-neutral-100 transition-colors">
+                                <div
+                                  style={{
+                                    borderRadius: `${scaled.scaledOptionRadius}px`,
+                                    borderColor: tokens.universalBorderColor,
+                                    borderWidth: `${tokens.borderWidth}px`,
+                                    backgroundColor: tokens.hoverBackplateTint,
+                                  }}
+                                  className="p-2 border transition-colors"
+                                >
                                   <div className="font-medium text-amber-700">High Memory on ap-south-cache</div>
                                   <div className="text-[11px] text-neutral-500">Utilization hit 89% threshold.</div>
                                 </div>
@@ -3855,8 +4182,12 @@ module.exports = {
                         <button
                           type="button"
                           onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-                          style={{ borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px` }}
-                          className="w-7 h-7 bg-neutral-900 text-white flex items-center justify-center font-bold text-[11px] cursor-pointer shadow-xs"
+                          style={{
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            backgroundColor: tokens.primaryButtonColor,
+                            color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                          }}
+                          className="w-7 h-7 flex items-center justify-center font-bold text-[11px] cursor-pointer shadow-xs"
                         >
                           SC
                         </button>
@@ -3877,8 +4208,13 @@ module.exports = {
                               }}
                               className="absolute right-0 mt-2 w-48 p-1 z-30 border text-left space-y-0.5"
                             >
-                              <div className="p-2 border-b border-neutral-100">
-                                <div className="font-semibold text-xs text-neutral-900">Sarah Connor</div>
+                              <div
+                                style={{ borderColor: tokens.universalBorderColor, borderBottomWidth: `${tokens.borderWidth}px` }}
+                                className="p-2 border-b"
+                              >
+                                <div style={{ color: tokens.textIconColor }} className="font-semibold text-xs">
+                                  Sarah Connor
+                                </div>
                                 <div className="text-[11px] text-neutral-400 truncate">sarah.connor@acme.inc</div>
                               </div>
                               <button
@@ -3887,7 +4223,8 @@ module.exports = {
                                   setIsProfileMenuOpen(false);
                                   triggerToast("Opening Account Settings...");
                                 }}
-                                className="w-full px-2.5 py-1.5 text-xs text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded flex items-center gap-2 cursor-pointer transition-colors"
+                                style={{ borderRadius: `${scaled.scaledOptionRadius}px`, color: tokens.textIconColor }}
+                                className="w-full px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center gap-2 cursor-pointer transition-colors"
                               >
                                 <Settings className="w-3.5 h-3.5 text-neutral-400" />
                                 <span>Settings</span>
@@ -3898,19 +4235,24 @@ module.exports = {
                                   setIsProfileMenuOpen(false);
                                   triggerToast("Opening API Keys...");
                                 }}
-                                className="w-full px-2.5 py-1.5 text-xs text-neutral-700 hover:text-neutral-900 hover:bg-neutral-50 rounded flex items-center gap-2 cursor-pointer transition-colors"
+                                style={{ borderRadius: `${scaled.scaledOptionRadius}px`, color: tokens.textIconColor }}
+                                className="w-full px-2.5 py-1.5 text-xs hover:bg-black/5 flex items-center gap-2 cursor-pointer transition-colors"
                               >
                                 <Key className="w-3.5 h-3.5 text-neutral-400" />
                                 <span>API Tokens</span>
                               </button>
-                              <div className="border-t border-neutral-100 my-1" />
+                              <div
+                                style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                                className="my-1 border-t"
+                              />
                               <button
                                 type="button"
                                 onClick={() => {
                                   setIsProfileMenuOpen(false);
                                   triggerToast("Signing out...");
                                 }}
-                                className="w-full px-2.5 py-1.5 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded flex items-center gap-2 cursor-pointer transition-colors font-medium"
+                                style={{ borderRadius: `${scaled.scaledOptionRadius}px` }}
+                                className="w-full px-2.5 py-1.5 text-xs text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer transition-colors font-medium"
                               >
                                 <LogOut className="w-3.5 h-3.5 text-rose-500" />
                                 <span>Sign out</span>
@@ -3927,7 +4269,7 @@ module.exports = {
                 <div id="org-navigation-sidebar" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Collapsible navigation sidebar
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -3939,17 +4281,31 @@ module.exports = {
                       type="button"
                       onClick={() => setIsSidebarCollapsed((prev) => !prev)}
                       style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
+                        color: tokens.textIconColor,
+                        height: `${scaled.scaledHeight * 0.8}px`,
                         fontSize: `${scaled.sublabelFontSize}px`,
+                        transition: scaled.transitionStyle,
                       }}
-                      className="px-2.5 py-1 border border-neutral-200 bg-white hover:bg-neutral-50 font-medium text-neutral-700 shadow-2xs transition-colors cursor-pointer"
+                      className="px-2.5 py-1 border font-medium shadow-2xs cursor-pointer hover:opacity-80"
                     >
                       {isSidebarCollapsed ? "Expand (240px)" : "Collapse (72px)"}
                     </button>
                   </div>
 
                   {/* Sidebar Simulation Frame */}
-                  <div className="bg-neutral-100/60 p-4 rounded-xl border border-neutral-200/80 flex items-start justify-start">
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledCardRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                    }}
+                    className="p-4 border flex items-start justify-start"
+                  >
                     <motion.div
                       animate={{ width: isSidebarCollapsed ? 72 : 240 }}
                       transition={scaled.motionConfig.spring}
@@ -3967,14 +4323,15 @@ module.exports = {
                           <div
                             style={{
                               backgroundColor: tokens.primaryButtonColor,
-                              borderRadius: `${Math.max(4, scaled.scaledRadius * 0.4)}px`,
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
                             }}
-                            className="w-6 h-6 rounded flex items-center justify-center font-bold text-xs text-white shrink-0"
+                            className="w-6 h-6 flex items-center justify-center font-bold text-xs shrink-0"
                           >
                             ZL
                           </div>
                           {!isSidebarCollapsed && (
-                            <span className="font-semibold text-xs tracking-tight text-neutral-900 truncate">
+                            <span style={{ color: tokens.textIconColor }} className="font-semibold text-xs tracking-tight truncate">
                               Platform Engine
                             </span>
                           )}
@@ -3999,30 +4356,39 @@ module.exports = {
                                 onClick={() => setActiveSidebarRoute(item.id)}
                                 title={isSidebarCollapsed ? item.label : undefined}
                                 style={{
-                                  borderRadius: `${scaled.scaledOptionRadius}px`,
+                                  borderRadius: `${scaled.scaledPillRadius}px`,
+                                  height: `${Math.round(scaled.scaledHeight * 0.85)}px`,
                                 }}
-                                className={`w-full py-1.5 px-2.5 text-xs font-medium flex items-center justify-between cursor-pointer relative transition-colors ${
-                                  isSelected ? "text-white font-semibold" : "text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50"
-                                }`}
+                                className="w-full px-2.5 text-xs font-medium flex items-center justify-between cursor-pointer relative transition-colors"
                               >
                                 {isSelected && (
                                   <motion.div
                                     layoutId="activeOrgNavHighlight"
                                     transition={scaled.motionConfig.pillTransition}
                                     style={{
-                                      borderRadius: `${scaled.scaledOptionRadius}px`,
+                                      borderRadius: `${scaled.scaledPillRadius}px`,
                                       backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
                                     }}
                                     className="absolute inset-0 shadow-xs"
                                   />
                                 )}
-                                <div className="flex items-center gap-2.5 relative z-10 truncate">
+                                <div
+                                  style={{
+                                    color: isSelected
+                                      ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                      : tokens.textIconColor,
+                                  }}
+                                  className="flex items-center gap-2.5 relative z-10 truncate"
+                                >
                                   <IconComponent className="w-4 h-4 shrink-0" strokeWidth={1.8} />
                                   {!isSidebarCollapsed && <span className="truncate">{item.label}</span>}
                                 </div>
                                 {!isSidebarCollapsed && item.badge && (
                                   <span
-                                    className={`relative z-10 text-[10px] px-1.5 py-0.2 rounded-full tabular-nums font-semibold ${
+                                    style={{
+                                      borderRadius: `${scaled.scaledPillRadius}px`,
+                                    }}
+                                    className={`relative z-10 text-[10px] px-1.5 py-0.2 tabular-nums font-semibold ${
                                       isSelected ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-600"
                                     }`}
                                   >
@@ -4036,25 +4402,48 @@ module.exports = {
                       </div>
 
                       {/* Bottom Telemetry Gauge */}
-                      <div className="pt-3 border-t border-neutral-100">
+                      <div
+                        style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                        className="pt-3 border-t"
+                      >
                         {!isSidebarCollapsed ? (
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between text-[11px] text-neutral-500">
                               <span>Memory Quota</span>
-                              <span className="font-semibold text-neutral-800 tabular-nums">74%</span>
+                              <span style={{ color: tokens.textIconColor }} className="font-semibold tabular-nums">
+                                74%
+                              </span>
                             </div>
-                            <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
+                            <div
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                backgroundColor: tokens.hoverBackplateTint,
+                              }}
+                              className="w-full h-1.5 overflow-hidden"
+                            >
                               <div
-                                style={{ backgroundColor: tokens.primaryButtonColor }}
-                                className="h-full w-[74%] rounded-full"
+                                style={{
+                                  backgroundColor: tokens.primaryButtonColor,
+                                  borderRadius: `${scaled.scaledRadius}px`,
+                                }}
+                                className="h-full w-[74%]"
                               />
                             </div>
                           </div>
                         ) : (
-                          <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
+                          <div
+                            style={{
+                              borderRadius: `${scaled.scaledRadius}px`,
+                              backgroundColor: tokens.hoverBackplateTint,
+                            }}
+                            className="w-full h-1.5 overflow-hidden"
+                          >
                             <div
-                              style={{ backgroundColor: tokens.primaryButtonColor }}
-                              className="h-full w-[74%] rounded-full"
+                              style={{
+                                backgroundColor: tokens.primaryButtonColor,
+                                borderRadius: `${scaled.scaledRadius}px`,
+                              }}
+                              className="h-full w-[74%]"
                             />
                           </div>
                         )}
@@ -4067,7 +4456,7 @@ module.exports = {
                 <div id="org-command-palette" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Command palette (Cmd + K)
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -4079,18 +4468,31 @@ module.exports = {
                       type="button"
                       onClick={() => setIsCmdPaletteOpen(true)}
                       style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
-                        color: "#FFFFFF",
+                        color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                        height: `${scaled.scaledHeight}px`,
+                        fontSize: `${scaled.ctaFontSize}px`,
+                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        transition: scaled.transitionStyle,
                       }}
-                      className="px-3 py-1.5 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
+                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
                     >
                       <Command className="w-3.5 h-3.5" />
                       <span>Open Palette (⌘K)</span>
                     </button>
                   </div>
 
-                  <p className="text-xs text-neutral-400 bg-neutral-50 p-2.5 rounded-lg border border-neutral-100">
+                  <p
+                    style={{
+                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                      color: tokens.textIconColor,
+                    }}
+                    className="text-xs p-2.5 border"
+                  >
                     💡 Tip: You can press <kbd className="font-mono bg-white px-1.5 py-0.5 rounded border border-neutral-200 text-neutral-800">⌘K</kbd> (or <kbd className="font-mono bg-white px-1.5 py-0.5 rounded border border-neutral-200 text-neutral-800">Ctrl+K</kbd>) anywhere on this page to trigger the modal.
                   </p>
 
@@ -4104,7 +4506,7 @@ module.exports = {
                           exit={{ opacity: 0, scale: 0.95, y: -10 }}
                           transition={scaled.motionConfig.spring}
                           style={{
-                            borderRadius: `${scaled.scaledMenuRadius}px`,
+                            borderRadius: `${scaled.scaledCardRadius}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
@@ -4113,7 +4515,10 @@ module.exports = {
                           className="w-full max-w-xl border overflow-hidden shadow-2xl select-none"
                         >
                           {/* Search Header */}
-                          <div className="p-3 border-b border-neutral-100 flex items-center gap-2.5">
+                          <div
+                            style={{ borderColor: tokens.universalBorderColor, borderBottomWidth: `${tokens.borderWidth}px` }}
+                            className="p-3 border-b flex items-center gap-2.5"
+                          >
                             <Search className="w-4 h-4 text-neutral-400 shrink-0" />
                             <input
                               autoFocus
@@ -4124,7 +4529,8 @@ module.exports = {
                                 setCmdPaletteQuery(e.target.value);
                                 setCmdPaletteSelectedIdx(0);
                               }}
-                              className="w-full bg-transparent outline-none text-xs font-medium text-neutral-900 placeholder:text-neutral-400"
+                              style={{ color: tokens.textIconColor }}
+                              className="w-full bg-transparent outline-none text-xs font-medium placeholder:text-neutral-400"
                             />
                             {cmdPaletteQuery && (
                               <button
@@ -4138,7 +4544,14 @@ module.exports = {
                             <button
                               type="button"
                               onClick={() => setIsCmdPaletteOpen(false)}
-                              className="font-mono text-[10px] bg-neutral-100 text-neutral-500 px-1.5 py-0.5 rounded border border-neutral-200 cursor-pointer"
+                              style={{
+                                borderRadius: `${scaled.scaledInnerRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: tokens.hoverBackplateTint,
+                                color: tokens.textIconColor,
+                              }}
+                              className="font-mono text-[10px] px-1.5 py-0.5 border cursor-pointer"
                             >
                               esc
                             </button>
@@ -4167,20 +4580,27 @@ module.exports = {
                                     backgroundColor: isSelected
                                       ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor)
                                       : "transparent",
-                                    color: isSelected ? "#FFFFFF" : undefined,
+                                    color: isSelected ? "#FFFFFF" : tokens.textIconColor,
+                                    height: `${scaled.scaledHeight * 0.85}px`,
+                                    transition: scaled.transitionStyle,
                                   }}
-                                  className={`w-full px-3 py-2 text-xs flex items-center justify-between cursor-pointer transition-colors ${
+                                  className={`w-full px-3 text-xs flex items-center justify-between cursor-pointer transition-colors ${
                                     isSelected
                                       ? "font-semibold shadow-xs"
-                                      : "text-neutral-700 hover:bg-neutral-50"
+                                      : "hover:bg-black/5"
                                   }`}
                                 >
                                   <div className="flex items-center gap-2.5">
                                     <IconComponent className="w-3.5 h-3.5" strokeWidth={1.8} />
                                     <span>{item.title}</span>
                                     <span
-                                      className={`text-[10px] px-1.5 py-0.5 rounded ${
-                                        isSelected ? "bg-white/20 text-white/90" : "bg-neutral-100 text-neutral-400"
+                                      style={{
+                                        borderRadius: `${scaled.scaledPillRadius}px`,
+                                        borderColor: tokens.universalBorderColor,
+                                        borderWidth: `${tokens.borderWidth}px`,
+                                      }}
+                                      className={`text-[10px] px-1.5 py-0.5 border ${
+                                        isSelected ? "bg-white/20 text-white/90 border-transparent" : "bg-black/5 text-neutral-500"
                                       }`}
                                     >
                                       {item.category}
@@ -4199,19 +4619,59 @@ module.exports = {
                           </div>
 
                           {/* Keyboard Navigation Footer */}
-                          <div className="p-2 border-t border-neutral-100 bg-neutral-50/50 flex items-center justify-between text-[11px] text-neutral-400">
+                          <div
+                            style={{
+                              borderColor: tokens.universalBorderColor,
+                              borderTopWidth: `${tokens.borderWidth}px`,
+                              backgroundColor: tokens.hoverBackplateTint,
+                            }}
+                            className="p-2 border-t flex items-center justify-between text-[11px] text-neutral-400"
+                          >
                             <div className="flex items-center gap-3">
                               <span>
-                                <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-neutral-200 text-neutral-700 mr-1">↑↓</kbd>
+                                <kbd
+                                  style={{
+                                    borderRadius: `${scaled.scaledInnerRadius}px`,
+                                    borderColor: tokens.universalBorderColor,
+                                    borderWidth: `${tokens.borderWidth}px`,
+                                    backgroundColor: tokens.universalFillColor,
+                                    color: tokens.textIconColor,
+                                  }}
+                                  className="font-mono px-1 py-0.5 border mr-1"
+                                >
+                                  ↑↓
+                                </kbd>
                                 navigate
                               </span>
                               <span>
-                                <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-neutral-200 text-neutral-700 mr-1">↵</kbd>
+                                <kbd
+                                  style={{
+                                    borderRadius: `${scaled.scaledInnerRadius}px`,
+                                    borderColor: tokens.universalBorderColor,
+                                    borderWidth: `${tokens.borderWidth}px`,
+                                    backgroundColor: tokens.universalFillColor,
+                                    color: tokens.textIconColor,
+                                  }}
+                                  className="font-mono px-1 py-0.5 border mr-1"
+                                >
+                                  ↵
+                                </kbd>
                                 select
                               </span>
                             </div>
                             <span>
-                              <kbd className="font-mono bg-white px-1 py-0.5 rounded border border-neutral-200 text-neutral-700 mr-1">esc</kbd>
+                              <kbd
+                                style={{
+                                  borderRadius: `${scaled.scaledInnerRadius}px`,
+                                  borderColor: tokens.universalBorderColor,
+                                  borderWidth: `${tokens.borderWidth}px`,
+                                  backgroundColor: tokens.universalFillColor,
+                                  color: tokens.textIconColor,
+                                }}
+                                className="font-mono px-1 py-0.5 border mr-1"
+                              >
+                                esc
+                              </kbd>
                               dismiss
                             </span>
                           </div>
@@ -4225,7 +4685,7 @@ module.exports = {
                 <div id="org-filter-builder" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Compound filter &amp; query builder
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -4237,11 +4697,15 @@ module.exports = {
                       type="button"
                       onClick={() => triggerToast("Saved active filter view to workspace")}
                       style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
-                        color: "#FFFFFF",
+                        color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                        height: `${scaled.scaledHeight}px`,
+                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        fontSize: `${scaled.ctaFontSize}px`,
+                        transition: scaled.transitionStyle,
                       }}
-                      className="px-3 py-1.5 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
+                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
                     >
                       <Filter className="w-3.5 h-3.5" />
                       <span>Save View</span>
@@ -4257,31 +4721,65 @@ module.exports = {
                           borderRadius: `${scaled.scaledRadius}px`,
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: scaled.effectiveInputFill,
+                          transition: scaled.transitionStyle,
                         }}
-                        className="p-2.5 bg-neutral-50/50 border flex flex-wrap items-center gap-2 text-xs"
+                        className="p-2.5 border flex flex-wrap items-center gap-2 text-xs"
                       >
                         {index > 0 && (
                           <button
                             type="button"
                             onClick={() => setFilterLogic((l) => (l === "AND" ? "OR" : "AND"))}
-                            className="font-bold text-[10px] px-2 py-1 rounded bg-neutral-200 text-neutral-800 hover:bg-neutral-300 transition-colors cursor-pointer select-none"
+                            style={{
+                              borderRadius: `${scaled.scaledPillRadius}px`,
+                              backgroundColor: tokens.hoverBackplateTint,
+                              color: tokens.textIconColor,
+                            }}
+                            className="font-bold text-[10px] px-2 py-1 cursor-pointer select-none hover:opacity-80 transition-opacity"
                           >
                             {filterLogic}
                           </button>
                         )}
 
                         <span className="text-neutral-400 font-medium">Field:</span>
-                        <span className="font-semibold text-neutral-800 bg-white px-2 py-1 rounded border border-neutral-200">
+                        <span
+                          style={{
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            color: tokens.textIconColor,
+                          }}
+                          className="font-semibold px-2 py-1 border"
+                        >
                           {cond.field}
                         </span>
 
                         <span className="text-neutral-400 font-medium">Operator:</span>
-                        <span className="font-mono text-neutral-800 bg-white px-2 py-1 rounded border border-neutral-200">
+                        <span
+                          style={{
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            color: tokens.textIconColor,
+                          }}
+                          className="font-mono px-2 py-1 border"
+                        >
                           {cond.operator}
                         </span>
 
                         <span className="text-neutral-400 font-medium">Value:</span>
-                        <span className="font-semibold text-neutral-800 bg-white px-2 py-1 rounded border border-neutral-200">
+                        <span
+                          style={{
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.universalFillColor,
+                            color: tokens.textIconColor,
+                          }}
+                          className="font-semibold px-2 py-1 border"
+                        >
                           &quot;{cond.value}&quot;
                         </span>
 
@@ -4311,7 +4809,16 @@ module.exports = {
                         ]);
                         triggerToast("Added latency filter rule");
                       }}
-                      className="px-2.5 py-1 text-xs font-medium text-neutral-700 bg-white border border-neutral-200 rounded-md hover:bg-neutral-50 flex items-center gap-1 cursor-pointer transition-colors shadow-2xs"
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
+                        color: tokens.textIconColor,
+                        height: `${scaled.scaledHeight * 0.8}px`,
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="px-2.5 py-1 text-xs font-medium border flex items-center gap-1 cursor-pointer hover:opacity-80 shadow-2xs"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Add filter rule</span>
@@ -4327,7 +4834,15 @@ module.exports = {
                           ]);
                           triggerToast("Applied preset: Degraded Only");
                         }}
-                        className="px-2 py-0.5 text-[11px] bg-neutral-100 hover:bg-neutral-200 rounded text-neutral-700 cursor-pointer font-medium"
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                          transition: scaled.transitionStyle,
+                        }}
+                        className="px-2 py-0.5 text-[11px] border cursor-pointer font-medium hover:opacity-80"
                       >
                         Degraded Only
                       </button>
@@ -4337,7 +4852,15 @@ module.exports = {
                           setFilterConditions(INITIAL_FILTER_CONDITIONS);
                           triggerToast("Reset to production filters");
                         }}
-                        className="px-2 py-0.5 text-[11px] bg-neutral-100 hover:bg-neutral-200 rounded text-neutral-700 cursor-pointer font-medium"
+                        style={{
+                          borderRadius: `${scaled.scaledPillRadius}px`,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                          backgroundColor: tokens.hoverBackplateTint,
+                          color: tokens.textIconColor,
+                          transition: scaled.transitionStyle,
+                        }}
+                        className="px-2 py-0.5 text-[11px] border cursor-pointer font-medium hover:opacity-80"
                       >
                         Reset Defaults
                       </button>
@@ -4349,7 +4872,7 @@ module.exports = {
                 <div id="org-metric-card" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Metric telemetry chart card
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -4359,8 +4882,13 @@ module.exports = {
 
                     {/* Time Horizon Segmented Switcher */}
                     <div
-                      style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                      className="flex items-center gap-1 bg-neutral-100 p-0.5 border border-neutral-200"
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="flex items-center gap-1 p-0.5 border"
                     >
                       {(["24h", "7d", "30d"] as const).map((h) => {
                         const isSelected = chartHorizon === h;
@@ -4369,22 +4897,29 @@ module.exports = {
                             key={h}
                             type="button"
                             onClick={() => setChartHorizon(h)}
-                            className={`px-2.5 py-1 text-[11px] cursor-pointer relative transition-colors ${
-                              isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900 font-medium"
-                            }`}
+                            className="px-2.5 py-1 text-[11px] cursor-pointer relative transition-colors font-medium"
                           >
                             {isSelected && (
                               <motion.div
                                 layoutId="activeChartHorizonPill"
                                 transition={scaled.motionConfig.pillTransition}
                                 style={{
-                                  borderRadius: `${Math.max(2, scaled.scaledInnerRadius - 1)}px`,
+                                  borderRadius: `${scaled.scaledPillRadius}px`,
                                   backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
                                 }}
                                 className="absolute inset-0 shadow-xs"
                               />
                             )}
-                            <span className="relative z-10">{h}</span>
+                            <span
+                              style={{
+                                color: isSelected
+                                  ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                  : tokens.textIconColor,
+                              }}
+                              className="relative z-10"
+                            >
+                              {h}
+                            </span>
                           </button>
                         );
                       })}
@@ -4394,12 +4929,22 @@ module.exports = {
                   {/* Primary KPI Row */}
                   <div className="flex items-baseline justify-between pt-1">
                     <div>
-                      <div className="text-2xl font-bold text-neutral-900 tabular-nums tracking-tight">
+                      <div
+                        style={{ fontSize: `${scaled.headingFontSize + 8}px`, color: tokens.textIconColor }}
+                        className="font-bold tabular-nums tracking-tight"
+                      >
                         2,842,109
                       </div>
                       <div className="text-xs text-neutral-500">Total API Gateway Calls ({chartHorizon})</div>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full tabular-nums">
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledPillRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                      }}
+                      className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border px-2.5 py-1 tabular-nums"
+                    >
                       <TrendingUp className="w-3.5 h-3.5" />
                       <span>+18.4%</span>
                     </div>
@@ -4411,8 +4956,10 @@ module.exports = {
                       borderRadius: `${scaled.scaledRadius}px`,
                       borderColor: tokens.universalBorderColor,
                       borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: scaled.effectiveInputFill,
+                      transition: scaled.transitionStyle,
                     }}
-                    className="p-3 bg-neutral-50/50 border relative overflow-hidden"
+                    className="p-3 border relative overflow-hidden"
                   >
                     <svg viewBox="0 0 500 120" className="w-full h-28 overflow-visible">
                       <defs>
@@ -4447,7 +4994,8 @@ module.exports = {
                             cx={cx}
                             cy={cy}
                             r={hoveredChartPoint?.time === pt.time ? 5 : 3}
-                            className="cursor-pointer transition-all fill-white stroke-neutral-900"
+                            className="cursor-pointer transition-all fill-white"
+                            stroke={tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor}
                             strokeWidth={hoveredChartPoint?.time === pt.time ? "3" : "2"}
                             onMouseEnter={() => setHoveredChartPoint(pt)}
                             onMouseLeave={() => setHoveredChartPoint(null)}
@@ -4458,7 +5006,12 @@ module.exports = {
 
                     {/* Tooltip Overlay */}
                     {hoveredChartPoint && (
-                      <div className="absolute top-2 right-3 bg-neutral-900 text-white text-[11px] px-2 py-1 rounded shadow-md font-mono tabular-nums">
+                      <div
+                        style={{
+                          borderRadius: `${scaled.scaledInnerRadius}px`,
+                        }}
+                        className="absolute top-2 right-3 bg-neutral-900 text-white text-[11px] px-2 py-1 shadow-md font-mono tabular-nums"
+                      >
                         {hoveredChartPoint.time} → {hoveredChartPoint.value} req/s
                       </div>
                     )}
@@ -4472,16 +5025,43 @@ module.exports = {
                   </div>
 
                   {/* Footnote Telemetry Breakdown */}
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs pt-1 border-t border-neutral-100">
-                    <div className="p-1.5 rounded bg-neutral-50">
+                  <div
+                    style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                    className="grid grid-cols-3 gap-2 text-center text-xs pt-2 border-t"
+                  >
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="p-1.5 border"
+                    >
                       <div className="text-[10px] text-neutral-400 font-medium">p95 Latency</div>
-                      <div className="font-semibold text-neutral-800 tabular-nums">42ms</div>
+                      <div style={{ color: tokens.textIconColor }} className="font-semibold tabular-nums">42ms</div>
                     </div>
-                    <div className="p-1.5 rounded bg-neutral-50">
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="p-1.5 border"
+                    >
                       <div className="text-[10px] text-neutral-400 font-medium">p99 Latency</div>
-                      <div className="font-semibold text-neutral-800 tabular-nums">118ms</div>
+                      <div style={{ color: tokens.textIconColor }} className="font-semibold tabular-nums">118ms</div>
                     </div>
-                    <div className="p-1.5 rounded bg-neutral-50">
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.hoverBackplateTint,
+                      }}
+                      className="p-1.5 border"
+                    >
                       <div className="text-[10px] text-neutral-400 font-medium">Error Rate</div>
                       <div className="font-semibold text-emerald-600 tabular-nums">0.01%</div>
                     </div>
@@ -4492,7 +5072,7 @@ module.exports = {
                 <div id="org-detail-drawer" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Slide-over detail drawer
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -4504,11 +5084,15 @@ module.exports = {
                       type="button"
                       onClick={() => setIsDrawerOpen(true)}
                       style={{
-                        borderRadius: `${scaled.scaledInnerRadius}px`,
+                        borderRadius: `${scaled.scaledRadius}px`,
                         backgroundColor: tokens.primaryButtonColor,
-                        color: "#FFFFFF",
+                        color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                        height: `${scaled.scaledHeight}px`,
+                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        fontSize: `${scaled.ctaFontSize}px`,
+                        transition: scaled.transitionStyle,
                       }}
-                      className="px-3 py-1.5 text-xs font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
+                      className="font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer hover:opacity-90 transition-opacity"
                     >
                       <Layers className="w-3.5 h-3.5" />
                       <span>Inspect Node (Drawer)</span>
@@ -4526,16 +5110,30 @@ module.exports = {
                           transition={scaled.motionConfig.spring}
                           style={{
                             borderColor: tokens.universalBorderColor,
+                            borderWidth: 0,
+                            borderLeftWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
                           }}
                           className="w-full max-w-[440px] h-full border-l shadow-2xl flex flex-col justify-between select-none"
                         >
                           {/* Drawer Header */}
-                          <div className="p-4 border-b border-neutral-100 flex items-center justify-between">
+                          <div
+                            style={{ borderColor: tokens.universalBorderColor, borderBottomWidth: `${tokens.borderWidth}px` }}
+                            className="p-4 border-b flex items-center justify-between"
+                          >
                             <div className="flex items-center gap-2">
                               <Server className="w-4 h-4 text-neutral-400" />
-                              <span className="font-semibold text-sm text-neutral-900">us-east-prod-01</span>
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 rounded-full border border-emerald-200">
+                              <span style={{ color: tokens.textIconColor }} className="font-semibold text-sm">
+                                us-east-prod-01
+                              </span>
+                              <span
+                                style={{
+                                  borderRadius: `${scaled.scaledPillRadius}px`,
+                                  borderColor: tokens.universalBorderColor,
+                                  borderWidth: `${tokens.borderWidth}px`,
+                                }}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-50 border"
+                              >
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 Active
                               </span>
@@ -4543,17 +5141,26 @@ module.exports = {
                             <button
                               type="button"
                               onClick={() => setIsDrawerOpen(false)}
-                              className="p-1.5 text-neutral-400 hover:text-neutral-900 rounded-md hover:bg-neutral-100 transition-colors cursor-pointer"
+                              style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
+                              className="p-1.5 text-neutral-400 hover:text-neutral-900 hover:bg-black/5 transition-colors cursor-pointer"
                             >
                               <X className="w-4 h-4" />
                             </button>
                           </div>
 
                           {/* Tab Navigation */}
-                          <div className="p-3 border-b border-neutral-100">
+                          <div
+                            style={{ borderColor: tokens.universalBorderColor, borderBottomWidth: `${tokens.borderWidth}px` }}
+                            className="p-3 border-b"
+                          >
                             <div
-                              style={{ borderRadius: `${scaled.scaledInnerRadius}px` }}
-                              className="flex items-center gap-1 bg-neutral-100 p-0.5 rounded-lg border border-neutral-200 text-xs"
+                              style={{
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: tokens.hoverBackplateTint,
+                              }}
+                              className="flex items-center gap-1 p-0.5 border text-xs"
                             >
                               {(["overview", "config", "logs"] as const).map((t) => {
                                 const isSelected = drawerActiveTab === t;
@@ -4562,22 +5169,29 @@ module.exports = {
                                     key={t}
                                     type="button"
                                     onClick={() => setDrawerActiveTab(t)}
-                                    className={`flex-1 py-1 text-center capitalize cursor-pointer relative transition-colors ${
-                                      isSelected ? "text-white font-semibold" : "text-neutral-500 hover:text-neutral-900 font-medium"
-                                    }`}
+                                    className="flex-1 py-1 text-center capitalize cursor-pointer relative transition-colors font-medium"
                                   >
                                     {isSelected && (
                                       <motion.div
                                         layoutId="activeDrawerTab"
                                         transition={scaled.motionConfig.pillTransition}
                                         style={{
-                                          borderRadius: `${Math.max(2, scaled.scaledInnerRadius - 1)}px`,
+                                          borderRadius: `${scaled.scaledPillRadius}px`,
                                           backgroundColor: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : tokens.primaryButtonColor,
                                         }}
                                         className="absolute inset-0 shadow-xs"
                                       />
                                     )}
-                                    <span className="relative z-10">{t}</span>
+                                    <span
+                                      style={{
+                                        color: isSelected
+                                          ? (tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF")
+                                          : tokens.textIconColor,
+                                      }}
+                                      className="relative z-10"
+                                    >
+                                      {t}
+                                    </span>
                                   </button>
                                 );
                               })}
@@ -4589,38 +5203,75 @@ module.exports = {
                             {drawerActiveTab === "overview" && (
                               <div className="space-y-4">
                                 <div className="grid grid-cols-3 gap-2 text-center">
-                                  <div className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-100">
+                                  <div
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                      backgroundColor: tokens.hoverBackplateTint,
+                                    }}
+                                    className="p-2.5 border"
+                                  >
                                     <div className="text-[10px] text-neutral-400">CPU Usage</div>
-                                    <div className="font-bold text-neutral-900 tabular-nums">24%</div>
+                                    <div style={{ color: tokens.textIconColor }} className="font-bold tabular-nums">24%</div>
                                   </div>
-                                  <div className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-100">
+                                  <div
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                      backgroundColor: tokens.hoverBackplateTint,
+                                    }}
+                                    className="p-2.5 border"
+                                  >
                                     <div className="text-[10px] text-neutral-400">Memory</div>
-                                    <div className="font-bold text-neutral-900 tabular-nums">4.2 GB</div>
+                                    <div style={{ color: tokens.textIconColor }} className="font-bold tabular-nums">4.2 GB</div>
                                   </div>
-                                  <div className="p-2.5 rounded-lg bg-neutral-50 border border-neutral-100">
+                                  <div
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                      backgroundColor: tokens.hoverBackplateTint,
+                                    }}
+                                    className="p-2.5 border"
+                                  >
                                     <div className="text-[10px] text-neutral-400">Uptime</div>
                                     <div className="font-bold text-emerald-600 tabular-nums">99.98%</div>
                                   </div>
                                 </div>
 
                                 <div className="space-y-2 pt-2">
-                                  <div className="font-semibold text-neutral-900 text-xs">Node Metadata</div>
-                                  <div className="space-y-1.5 text-xs divide-y divide-neutral-100">
+                                  <div style={{ color: tokens.textIconColor }} className="font-semibold text-xs">
+                                    Node Metadata
+                                  </div>
+                                  <div
+                                    style={{ borderColor: tokens.universalBorderColor }}
+                                    className="space-y-1.5 text-xs divide-y divide-neutral-100"
+                                  >
                                     <div className="flex justify-between py-1.5">
                                       <span className="text-neutral-500">Instance ID</span>
-                                      <span className="font-mono text-neutral-800">i-0a8f9c1182bc</span>
+                                      <span style={{ color: tokens.textIconColor }} className="font-mono">
+                                        i-0a8f9c1182bc
+                                      </span>
                                     </div>
                                     <div className="flex justify-between py-1.5">
                                       <span className="text-neutral-500">Public IP</span>
-                                      <span className="font-mono text-neutral-800">54.218.42.109</span>
+                                      <span style={{ color: tokens.textIconColor }} className="font-mono">
+                                        54.218.42.109
+                                      </span>
                                     </div>
                                     <div className="flex justify-between py-1.5">
                                       <span className="text-neutral-500">Availability Zone</span>
-                                      <span className="font-medium text-neutral-800">us-east-1a</span>
+                                      <span style={{ color: tokens.textIconColor }} className="font-medium">
+                                        us-east-1a
+                                      </span>
                                     </div>
                                     <div className="flex justify-between py-1.5">
                                       <span className="text-neutral-500">Kubernetes Version</span>
-                                      <span className="font-mono text-neutral-800">v1.30.2-eks</span>
+                                      <span style={{ color: tokens.textIconColor }} className="font-mono">
+                                        v1.30.2-eks
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
@@ -4629,8 +5280,17 @@ module.exports = {
 
                             {drawerActiveTab === "config" && (
                               <div className="space-y-3">
-                                <div className="font-semibold text-neutral-900">Routing Configuration</div>
-                                <div className="p-3 bg-neutral-900 text-neutral-100 font-mono text-[11px] rounded-lg space-y-1 overflow-x-auto">
+                                <div style={{ color: tokens.textIconColor }} className="font-semibold">
+                                  Routing Configuration
+                                </div>
+                                <div
+                                  style={{
+                                    borderRadius: `${scaled.scaledInnerRadius}px`,
+                                    borderColor: tokens.universalBorderColor,
+                                    borderWidth: `${tokens.borderWidth}px`,
+                                  }}
+                                  className="p-3 bg-neutral-900 text-neutral-100 font-mono text-[11px] space-y-1 overflow-x-auto border"
+                                >
                                   <div>max_connections: 50000</div>
                                   <div>keepalive_timeout: 65s</div>
                                   <div>tls_protocols: [TLSv1.2, TLSv1.3]</div>
@@ -4640,12 +5300,32 @@ module.exports = {
 
                             {drawerActiveTab === "logs" && (
                               <div className="space-y-2">
-                                <div className="font-semibold text-neutral-900">Recent Audit Events</div>
+                                <div style={{ color: tokens.textIconColor }} className="font-semibold">
+                                  Recent Audit Events
+                                </div>
                                 <div className="space-y-1 font-mono text-[11px]">
-                                  <div className="p-2 bg-neutral-50 rounded text-neutral-600">
+                                  <div
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                      backgroundColor: tokens.hoverBackplateTint,
+                                      color: tokens.textIconColor,
+                                    }}
+                                    className="p-2 border"
+                                  >
                                     [16:42:01] Ingress healthcheck 200 OK
                                   </div>
-                                  <div className="p-2 bg-neutral-50 rounded text-neutral-600">
+                                  <div
+                                    style={{
+                                      borderRadius: `${scaled.scaledInnerRadius}px`,
+                                      borderColor: tokens.universalBorderColor,
+                                      borderWidth: `${tokens.borderWidth}px`,
+                                      backgroundColor: tokens.hoverBackplateTint,
+                                      color: tokens.textIconColor,
+                                    }}
+                                    className="p-2 border"
+                                  >
                                     [16:38:12] Auto-scaled replicas to 4
                                   </div>
                                 </div>
@@ -4654,14 +5334,28 @@ module.exports = {
                           </div>
 
                           {/* Drawer Sticky Footer */}
-                          <div className="p-4 border-t border-neutral-100 flex items-center justify-between gap-2">
+                          <div
+                            style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                            className="p-4 border-t flex items-center justify-between gap-2"
+                          >
                             <button
                               type="button"
                               onClick={() => {
                                 setIsDrawerOpen(false);
                                 triggerToast("Restarting cluster node...");
                               }}
-                              className="px-3 py-1.5 border border-neutral-200 rounded text-xs font-medium text-neutral-700 hover:bg-neutral-50 cursor-pointer"
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: tokens.universalFillColor,
+                                color: tokens.textIconColor,
+                                height: `${scaled.scaledHeight}px`,
+                                padding: `0 ${scaled.scaledPaddingX}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                transition: scaled.transitionStyle,
+                              }}
+                              className="border font-medium hover:bg-black/5 cursor-pointer"
                             >
                               Restart
                             </button>
@@ -4672,11 +5366,15 @@ module.exports = {
                                 triggerToast("Saved node configuration changes");
                               }}
                               style={{
-                                borderRadius: `${scaled.scaledInnerRadius}px`,
+                                borderRadius: `${scaled.scaledRadius}px`,
                                 backgroundColor: tokens.primaryButtonColor,
-                                color: "#FFFFFF",
+                                color: tokens.primaryButtonColor === "#FFFFFF" ? "#111111" : "#FFFFFF",
+                                height: `${scaled.scaledHeight}px`,
+                                padding: `0 ${scaled.scaledPaddingX}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                transition: scaled.transitionStyle,
                               }}
-                              className="px-4 py-1.5 text-xs font-semibold shadow-xs cursor-pointer hover:opacity-90 transition-opacity"
+                              className="font-semibold shadow-xs cursor-pointer hover:opacity-90 transition-opacity"
                             >
                               Save Config
                             </button>
@@ -4691,7 +5389,7 @@ module.exports = {
                 <div id="org-confirmation-modal" style={cardStyle} className="p-5 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 style={{ fontSize: `${scaled.headingFontSize}px` }} className="font-semibold text-neutral-900">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                         Destructive confirmation modal
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
@@ -4705,7 +5403,14 @@ module.exports = {
                         setConfirmInputText("");
                         setIsConfirmModalOpen(true);
                       }}
-                      className="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold rounded-md shadow-2xs cursor-pointer transition-colors"
+                      style={{
+                        borderRadius: `${scaled.scaledRadius}px`,
+                        height: `${scaled.scaledHeight}px`,
+                        padding: `0 ${scaled.scaledPaddingX}px`,
+                        fontSize: `${scaled.ctaFontSize}px`,
+                        transition: scaled.transitionStyle,
+                      }}
+                      className="bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-semibold shadow-2xs cursor-pointer transition-colors"
                     >
                       Trigger Modal
                     </button>
@@ -4721,7 +5426,7 @@ module.exports = {
                           exit={{ opacity: 0, scale: 0.95 }}
                           transition={scaled.motionConfig.spring}
                           style={{
-                            borderRadius: `${scaled.scaledMenuRadius}px`,
+                            borderRadius: `${scaled.scaledCardRadius}px`,
                             borderColor: tokens.universalBorderColor,
                             borderWidth: `${tokens.borderWidth}px`,
                             backgroundColor: tokens.universalFillColor,
@@ -4729,20 +5434,27 @@ module.exports = {
                           className="w-full max-w-md p-6 border shadow-2xl space-y-4 select-none"
                         >
                           <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 shrink-0">
+                            <div
+                              style={{
+                                borderRadius: `${scaled.scaledPillRadius}px`,
+                              }}
+                              className="w-10 h-10 bg-rose-100 flex items-center justify-center text-rose-600 shrink-0"
+                            >
                               <AlertTriangle className="w-5 h-5" />
                             </div>
                             <div className="space-y-1">
-                              <h3 className="font-semibold text-base text-neutral-900">Decommission Cluster Node</h3>
+                              <h3 style={{ color: tokens.textIconColor }} className="font-semibold text-base">
+                                Decommission Cluster Node
+                              </h3>
                               <p className="text-xs text-neutral-500 leading-relaxed">
-                                Are you sure you want to terminate <strong className="text-neutral-900">us-east-prod-01</strong>? Running workloads will experience traffic interruption.
+                                Are you sure you want to terminate <strong style={{ color: tokens.textIconColor }}>us-east-prod-01</strong>? Running workloads will experience traffic interruption.
                               </p>
                             </div>
                           </div>
 
                           <div className="space-y-1.5 pt-1">
-                            <label className="block text-xs font-medium text-neutral-700">
-                              Type <span className="font-mono font-bold text-neutral-900 select-all">us-east-prod-01</span> to confirm:
+                            <label style={{ color: tokens.textIconColor }} className="block text-xs font-medium">
+                              Type <span className="font-mono font-bold select-all">us-east-prod-01</span> to confirm:
                             </label>
                             <input
                               autoFocus
@@ -4750,18 +5462,43 @@ module.exports = {
                               value={confirmInputText}
                               onChange={(e) => setConfirmInputText(e.target.value)}
                               placeholder="us-east-prod-01"
-                              className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-xs font-mono outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-colors"
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: scaled.effectiveInputFill,
+                                color: tokens.textIconColor,
+                                height: `${scaled.scaledHeight}px`,
+                                padding: `0 ${scaled.scaledPaddingX}px`,
+                                fontSize: `${scaled.scaledFontSize}px`,
+                                transition: scaled.transitionStyle,
+                              }}
+                              className="w-full border font-mono outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500"
                             />
                           </div>
 
-                          <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-100">
+                          <div
+                            style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
+                            className="flex items-center justify-end gap-2 pt-2 border-t"
+                          >
                             <button
                               type="button"
                               onClick={() => {
                                 setIsConfirmModalOpen(false);
                                 setConfirmInputText("");
                               }}
-                              className="px-3 py-1.5 border border-neutral-200 rounded-md text-xs font-medium text-neutral-700 hover:bg-neutral-50 cursor-pointer transition-colors"
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                backgroundColor: tokens.universalFillColor,
+                                color: tokens.textIconColor,
+                                height: `${scaled.scaledHeight}px`,
+                                padding: `0 ${scaled.scaledPaddingX}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                transition: scaled.transitionStyle,
+                              }}
+                              className="border font-medium hover:bg-black/5 cursor-pointer"
                             >
                               Cancel
                             </button>
@@ -4773,7 +5510,14 @@ module.exports = {
                                 setConfirmInputText("");
                                 triggerToast("Successfully decommissioned node us-east-prod-01");
                               }}
-                              className={`px-3 py-1.5 rounded-md text-xs font-semibold text-white transition-all ${
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                height: `${scaled.scaledHeight}px`,
+                                padding: `0 ${scaled.scaledPaddingX}px`,
+                                fontSize: `${scaled.ctaFontSize}px`,
+                                transition: scaled.transitionStyle,
+                              }}
+                              className={`font-semibold text-white transition-all ${
                                 confirmInputText === "us-east-prod-01"
                                   ? "bg-rose-600 hover:bg-rose-700 cursor-pointer shadow-xs"
                                   : "bg-neutral-300 cursor-not-allowed opacity-60"
@@ -4788,13 +5532,7 @@ module.exports = {
                   </AnimatePresence>
                 </div>
               </>
-            )}
-
-
-          </div>
-        </main>
-
-        {/* ══════════════════════════════════════════════════════════
+            )}\n\n          </div>\n        </main>\n\n        {/* ══════════════════════════════════════════════════════════
             COLUMN 3: RIGHT SIDEBAR (DARK MODE "VISUAL STUDIO" DOCK)
            ══════════════════════════════════════════════════════════ */}
         <aside className="w-72 border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 hidden xl:flex flex-col justify-between select-none sticky top-0 h-screen overflow-y-auto">
