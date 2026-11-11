@@ -15,7 +15,25 @@ export interface NodeRecord {
   latency: string;
 }
 
-export interface DataTableProps {
+export interface DataTableColumn<T> {
+  key: string;
+  header: React.ReactNode;
+  align?: "left" | "right" | "center";
+  render?: (row: T) => React.ReactNode;
+  width?: string;
+}
+
+export interface DataTableProps<T = NodeRecord> {
+  columns?: DataTableColumn<T>[];
+  rows?: T[];
+  rowKey?: (row: T, index: number) => string;
+  selectable?: boolean;
+  selectedRowKeys?: string[];
+  onSelectionChange?: (keys: string[]) => void;
+  showToolbar?: boolean;
+  searchPlaceholder?: string;
+  searchAccessor?: (row: T) => string;
+  footerAction?: React.ReactNode;
   nodes?: NodeRecord[];
   onSelectNode?: (nodeId: string) => void;
   editable?: boolean;
@@ -31,16 +49,27 @@ const DEFAULT_NODES: NodeRecord[] = [
   { id: "node-5", name: "sa-east-sync-01", region: "sa-east-1", role: "Data Sync", status: "syncing", cpuMemory: "45% / 6.8 GB", latency: "64ms" },
 ];
 
-export function DataTable({
+export function DataTable<T = NodeRecord>({
+  columns,
+  rows,
+  rowKey,
+  selectable = true,
+  selectedRowKeys,
+  onSelectionChange,
+  showToolbar = false,
+  searchPlaceholder = "Filter rows...",
+  searchAccessor,
+  footerAction,
   nodes = DEFAULT_NODES,
   onSelectNode,
   editable = false,
   onUpdateNode,
   className = "",
-}: DataTableProps) {
+}: DataTableProps<T>) {
   const { tokens, scaled } = useZeroLight();
   const [localNodes, setLocalNodes] = useState<NodeRecord[]>(nodes);
   const [selectedIds, setSelectedIds] = useState<string[]>(["node-1"]);
+  const [genericSelectedIds, setGenericSelectedIds] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [editingCell, setEditingCell] = useState<{ id: string; field: "name" | "region" | "latency" } | null>(null);
@@ -49,6 +78,177 @@ export function DataTable({
   useEffect(() => {
     setLocalNodes(nodes);
   }, [nodes]);
+
+  // Generic typed DataTable mode when `columns` and `rows` are supplied
+  if (columns && rows) {
+    const getKey = (row: T, idx: number) =>
+      rowKey
+        ? rowKey(row, idx)
+        : String((row as Record<string, unknown>)?.id ?? idx);
+
+    const activeSelected = selectedRowKeys ?? genericSelectedIds;
+    const setActiveSelected = (next: string[]) => {
+      if (onSelectionChange) onSelectionChange(next);
+      else setGenericSelectedIds(next);
+    };
+
+    const filteredRows = !search
+      ? rows
+      : rows.filter((row) => {
+          const text = searchAccessor
+            ? searchAccessor(row)
+            : Object.values(row as Record<string, unknown>)
+                .filter((v) => typeof v === "string" || typeof v === "number")
+                .join(" ");
+          return text.toLowerCase().includes(search.toLowerCase());
+        });
+
+    const allRowIds = filteredRows.map(getKey);
+    const allSelected =
+      allRowIds.length > 0 && allRowIds.every((id) => activeSelected.includes(id));
+
+    return (
+      <div className={`space-y-3 w-full ${className}`}>
+        {showToolbar && (
+          <div
+            style={{
+              borderRadius: `${scaled.scaledRadius}px`,
+              borderColor: tokens.universalBorderColor,
+              borderWidth: `${tokens.borderWidth}px`,
+              backgroundColor: scaled.effectiveInputFill,
+              height: `${scaled.scaledHeight}px`,
+            }}
+            className="flex items-center gap-2 border px-3"
+          >
+            <Search className="w-4 h-4 text-neutral-400 shrink-0" />
+            <input
+              type="text"
+              placeholder={searchPlaceholder}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}
+              className="w-full bg-transparent outline-none font-medium placeholder:text-neutral-400"
+            />
+            {search && (
+              <button type="button" onClick={() => setSearch("")} className="text-neutral-400 hover:text-neutral-700">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+        )}
+
+        <div
+          style={{
+            borderRadius: `${scaled.scaledRadius}px`,
+            borderColor: tokens.universalBorderColor,
+            borderWidth: `${tokens.borderWidth}px`,
+            backgroundColor: tokens.universalFillColor,
+          }}
+          className="overflow-x-auto border"
+        >
+          <table className="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr
+                style={{
+                  borderColor: tokens.universalBorderColor,
+                  borderBottomWidth: `${tokens.borderWidth}px`,
+                  backgroundColor: tokens.hoverBackplateTint,
+                }}
+                className="text-neutral-500 font-semibold border-b uppercase tracking-wider text-[10px]"
+              >
+                {selectable && (
+                  <th className="p-3.5 w-10 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setActiveSelected(allSelected ? [] : allRowIds)}
+                      style={{
+                        borderRadius: `${scaled.scaledCheckboxRadius}px`,
+                        borderColor: activeSelected.length > 0 ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: activeSelected.length > 0 ? tokens.primaryButtonColor : tokens.universalFillColor,
+                      }}
+                      className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto"
+                    >
+                      {allSelected && (
+                        <Check className="w-3 h-3" color={scaled.primaryActionTextColor} strokeWidth={3} />
+                      )}
+                    </button>
+                  </th>
+                )}
+                {columns.map((col) => (
+                  <th
+                    key={col.key}
+                    style={col.width ? { width: col.width } : undefined}
+                    className={`p-3.5 whitespace-nowrap ${
+                      col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"
+                    }`}
+                  >
+                    {col.header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-neutral-100">
+              {filteredRows.map((row, idx) => {
+                const id = getKey(row, idx);
+                const isSelected = activeSelected.includes(id);
+                return (
+                  <tr
+                    key={id}
+                    style={{
+                      backgroundColor: isSelected ? tokens.hoverBackplateTint : "transparent",
+                      transition: scaled.transitionStyle,
+                    }}
+                    className="transition-colors"
+                  >
+                    {selectable && (
+                      <td className="p-3.5 text-center whitespace-nowrap">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActiveSelected(
+                              isSelected
+                                ? activeSelected.filter((item) => item !== id)
+                                : [...activeSelected, id]
+                            )
+                          }
+                          style={{
+                            borderRadius: `${scaled.scaledCheckboxRadius}px`,
+                            borderColor: isSelected ? tokens.primaryButtonColor : tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: isSelected ? tokens.primaryButtonColor : tokens.universalFillColor,
+                          }}
+                          className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto"
+                        >
+                          {isSelected && (
+                            <Check className="w-3 h-3" color={scaled.primaryActionTextColor} strokeWidth={3} />
+                          )}
+                        </button>
+                      </td>
+                    )}
+                    {columns.map((col) => (
+                      <td
+                        key={col.key}
+                        style={{ color: tokens.textIconColor }}
+                        className={`p-3.5 whitespace-nowrap ${
+                          col.align === "right" ? "text-right" : col.align === "center" ? "text-center" : "text-left"
+                        }`}
+                      >
+                        {col.render
+                          ? col.render(row)
+                          : String((row as Record<string, unknown>)?.[col.key] ?? "")}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        {footerAction && <div className="pt-1">{footerAction}</div>}
+      </div>
+    );
+  }
 
   const activeNodes = onUpdateNode ? nodes : localNodes;
 

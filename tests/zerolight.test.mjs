@@ -85,7 +85,21 @@ test("Universal Corner Radius Pill (999px) bounds cards while making pills 9999p
 // -----------------------------------------------------------------
 console.log("\n2. Motion Physics Engine Configurations:");
 
-const studioContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8");
+function readStudioBundle() {
+  const parts = [fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8")];
+  const studioDir = path.join(rootDir, "src/components/zerolight/studio");
+  if (fs.existsSync(studioDir)) {
+    for (const entry of fs.readdirSync(studioDir).sort()) {
+      const fullPath = path.join(studioDir, entry);
+      if (fs.statSync(fullPath).isFile() && (entry.endsWith(".ts") || entry.endsWith(".tsx"))) {
+        parts.push(fs.readFileSync(fullPath, "utf8"));
+      }
+    }
+  }
+  return parts.join("\n");
+}
+
+const studioContent = readStudioBundle();
 
 test("Motion Physics: Damped spring has stiffness 400 and damping 28", () => {
   assert.ok(typesContent.includes("stiffness: 400, damping: 28"));
@@ -822,6 +836,31 @@ test("Component Registry: public/registry/index.json and item manifests exist an
   assert.strictEqual(buttonItem.name, "button");
   assert.ok(buttonItem.files?.[0]?.content?.includes("export function Button"), "button.json should embed Button TSX source");
   assert.ok(studioContent.includes('{ key: "registry", label: "Component TSX" }'), "Studio Export modal should include Component TSX registry tab");
+});
+
+// ============================================================================
+// TEST SUITE 18: Modular Studio Split & Generic DataTable<T>
+// ============================================================================
+console.log("\n--- Test Suite 18: Modular Architecture & Generic DataTable ---");
+
+test("Studio Modular Architecture: Visual Studio inspector, export modal, and Tier 4/5 showcases live in studio/", () => {
+  for (const mod of [
+    "src/components/zerolight/studio/studio-export.ts",
+    "src/components/zerolight/studio/studio-inspector.tsx",
+    "src/components/zerolight/studio/export-registry-modal.tsx",
+    "src/components/zerolight/studio/templates-showcase.tsx",
+    "src/components/zerolight/studio/pages-showcase.tsx",
+  ]) {
+    assert.ok(fs.existsSync(path.join(rootDir, mod)), `Expected modular studio file: ${mod}`);
+  }
+});
+
+test("Generic DataTable<T>: Supports typed columns and rows alongside Cluster nodes compatibility", () => {
+  const dtContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/data-table.tsx"), "utf8");
+  assert.ok(dtContent.includes("export interface DataTableColumn<T>"), "Should export DataTableColumn<T>");
+  assert.ok(dtContent.includes("export function DataTable<T = NodeRecord>"), "DataTable should accept generic row type T");
+  assert.ok(dtContent.includes("if (columns && rows)"), "DataTable should support generic columns + rows mode");
+  assert.ok(dtContent.includes("footerAction"), "DataTable should support optional footerAction slot");
 });
 
 console.log("\n==================================================");
