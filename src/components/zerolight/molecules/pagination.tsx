@@ -108,10 +108,10 @@ export function Pagination({
             <AnimatePresence>
               {isPageSizeOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -4, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -4, scale: 0.96 }}
-                  transition={{ duration: 0.12 }}
+                  initial={scaled.motionConfig.popover.initial}
+                  animate={scaled.motionConfig.popover.animate}
+                  exit={scaled.motionConfig.popover.exit}
+                  transition={scaled.motionConfig.popover.transition}
                   style={{
                     borderRadius: `${scaled.scaledMenuRadius === 0 ? 0 : 8}px`,
                     borderColor: tokens.universalBorderColor,

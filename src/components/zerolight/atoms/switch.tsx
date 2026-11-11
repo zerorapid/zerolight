@@ -48,12 +48,14 @@ export function Switch({
         </div>
       )}
 
-      <button
+      <motion.button
         id={id}
         type="button"
         role="switch"
         aria-checked={checked}
         disabled={disabled}
+        whileTap={{ scale: disabled ? 1 : scaled.motionConfig.tapScale }}
+        transition={scaled.motionConfig.transition}
         onClick={() => !disabled && onChange(!checked)}
         style={{
           borderRadius: `${scaled.scaledPillRadius}px`,
@@ -64,18 +66,18 @@ export function Switch({
           height: "24px",
           transition: scaled.transitionStyle,
         }}
-        className="relative p-0.5 border cursor-pointer shrink-0 transition-colors shadow-2xs"
+        className="relative p-0.5 border cursor-pointer shrink-0 shadow-2xs"
       >
         <motion.div
           animate={{ x: checked ? 20 : 0 }}
-          transition={scaled.motionConfig.spring}
+          transition={scaled.motionConfig.transition}
           style={{
             borderRadius: `${scaled.scaledPillRadius}px`,
             backgroundColor: "#FFFFFF",
           }}
           className="w-4 h-4 shadow-sm"
         />
-      </button>
+      </motion.button>
     </label>
   );
 }

@@ -76,14 +76,17 @@ export function Accordion({
                   </span>
                 )}
               </div>
-              <ChevronDown
-                size={scaled.iconSmSize || 16}
-                strokeWidth={tokens.iconStrokeWidth || 1.75}
-                color={tokens.iconColor || tokens.textIconColor}
-                className={`transition-transform duration-200 shrink-0 ${
-                  isOpen ? "rotate-180" : ""
-                }`}
-              />
+              <motion.span
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={scaled.motionConfig.transition}
+                className="inline-flex shrink-0"
+              >
+                <ChevronDown
+                  size={scaled.iconSmSize || 16}
+                  strokeWidth={tokens.iconStrokeWidth || 1.75}
+                  color={tokens.iconColor || tokens.textIconColor}
+                />
+              </motion.span>
             </button>
 
             <AnimatePresence initial={false}>
@@ -93,7 +96,7 @@ export function Accordion({
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={scaled.motionConfig.spring}
+                  transition={scaled.motionConfig.transition}
                   className="overflow-hidden"
                 >
                   <div

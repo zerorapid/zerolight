@@ -6,7 +6,7 @@ import { Avatar } from "../atoms/avatar";
 import { TypingIndicator } from "../atoms/typing-indicator";
 import { ChatBubble, ChatBubbleProps } from "../molecules/chat-bubble";
 import { ChatInput } from "../molecules/chat-input";
-import { Phone, Video, Search, MoreHorizontal, Sparkles } from "lucide-react";
+import { Phone, Video, Search, MoreHorizontal } from "lucide-react";
 
 export interface ChatConversationProps {
   initialMessages?: Omit<ChatBubbleProps, "onReact" | "onReply" | "onCopy">[];

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useZeroLight } from "../context";
-import { Server, Globe, Search, X, Check, MoreHorizontal } from "lucide-react";
+import { Server, Globe, Search, X, Check, MoreHorizontal, Pencil } from "lucide-react";
 import { Badge } from "../atoms/badge";
 
 export interface NodeRecord {
@@ -18,6 +18,8 @@ export interface NodeRecord {
 export interface DataTableProps {
   nodes?: NodeRecord[];
   onSelectNode?: (nodeId: string) => void;
+  editable?: boolean;
+  onUpdateNode?: (nodeId: string, patch: Partial<NodeRecord>) => void;
   className?: string;
 }
 
@@ -32,14 +34,41 @@ const DEFAULT_NODES: NodeRecord[] = [
 export function DataTable({
   nodes = DEFAULT_NODES,
   onSelectNode,
+  editable = false,
+  onUpdateNode,
   className = "",
 }: DataTableProps) {
   const { tokens, scaled } = useZeroLight();
+  const [localNodes, setLocalNodes] = useState<NodeRecord[]>(nodes);
   const [selectedIds, setSelectedIds] = useState<string[]>(["node-1"]);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [editingCell, setEditingCell] = useState<{ id: string; field: "name" | "region" | "latency" } | null>(null);
+  const [editDraft, setEditDraft] = useState("");
 
-  const filtered = nodes.filter((node) => {
+  useEffect(() => {
+    setLocalNodes(nodes);
+  }, [nodes]);
+
+  const activeNodes = onUpdateNode ? nodes : localNodes;
+
+  const commitEdit = () => {
+    if (!editingCell) return;
+    const trimmed = editDraft.trim();
+    if (trimmed) {
+      const patch = { [editingCell.field]: trimmed } as Partial<NodeRecord>;
+      if (onUpdateNode) {
+        onUpdateNode(editingCell.id, patch);
+      } else {
+        setLocalNodes((prev) =>
+          prev.map((n) => (n.id === editingCell.id ? { ...n, ...patch } : n))
+        );
+      }
+    }
+    setEditingCell(null);
+  };
+
+  const filtered = activeNodes.filter((node) => {
     const matchesRole = roleFilter === "all" || node.role === roleFilter;
     const matchesSearch =
       !search ||
@@ -49,16 +78,70 @@ export function DataTable({
   });
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === nodes.length) {
+    if (selectedIds.length === activeNodes.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(nodes.map((n) => n.id));
+      setSelectedIds(activeNodes.map((n) => n.id));
     }
   };
 
   const toggleSelectRow = (id: string) => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const renderEditableCell = (
+    node: NodeRecord,
+    field: "name" | "region" | "latency",
+    displayClassName: string
+  ) => {
+    const isEditing = editingCell?.id === node.id && editingCell?.field === field;
+    if (isEditing) {
+      return (
+        <input
+          type="text"
+          autoFocus
+          value={editDraft}
+          onChange={(e) => setEditDraft(e.target.value)}
+          onBlur={commitEdit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") commitEdit();
+            if (e.key === "Escape") setEditingCell(null);
+          }}
+          style={{
+            borderRadius: `${scaled.scaledInnerRadius}px`,
+            borderColor: tokens.primaryButtonColor,
+            color: tokens.textIconColor,
+          }}
+          className="px-2 py-0.5 text-xs bg-white border outline-none font-medium w-32 shadow-2xs"
+        />
+      );
+    }
+
+    if (!editable) {
+      return (
+        <span style={{ color: field === "name" ? tokens.textIconColor : undefined }} className={displayClassName}>
+          {node[field]}
+        </span>
+      );
+    }
+
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          setEditingCell({ id: node.id, field });
+          setEditDraft(node[field]);
+        }}
+        title="Click to edit inline"
+        className="group/cell inline-flex items-center gap-1.5 text-left cursor-text hover:bg-neutral-100/80 px-1.5 py-0.5 -mx-1.5 rounded transition-colors"
+      >
+        <span style={{ color: field === "name" ? tokens.textIconColor : undefined }} className={displayClassName}>
+          {node[field]}
+        </span>
+        <Pencil className="w-2.5 h-2.5 text-neutral-400 opacity-0 group-hover/cell:opacity-100 transition-opacity shrink-0" />
+      </button>
     );
   };
 
@@ -157,7 +240,7 @@ export function DataTable({
                   }}
                   className="w-4 h-4 flex items-center justify-center cursor-pointer border mx-auto"
                 >
-                  {selectedIds.length === nodes.length && <Check className="w-3 h-3" color={scaled.primaryActionTextColor} strokeWidth={3} />}
+                  {selectedIds.length === activeNodes.length && <Check className="w-3 h-3" color={scaled.primaryActionTextColor} strokeWidth={3} />}
                 </button>
               </th>
               <th className="p-3.5 whitespace-nowrap">Node / Cluster</th>
@@ -199,15 +282,13 @@ export function DataTable({
                   <td className="p-3.5 font-medium whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <Server className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
-                      <span style={{ color: tokens.textIconColor }} className="font-semibold tabular-nums">
-                        {node.name}
-                      </span>
+                      {renderEditableCell(node, "name", "font-semibold tabular-nums")}
                     </div>
                   </td>
                   <td className="p-3.5 text-neutral-500 whitespace-nowrap">
                     <div className="flex items-center gap-1.5">
                       <Globe className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
-                      <span>{node.region}</span>
+                      {renderEditableCell(node, "region", "font-medium")}
                     </div>
                   </td>
                   <td className="p-3.5 whitespace-nowrap">
@@ -233,7 +314,7 @@ export function DataTable({
                     {node.cpuMemory}
                   </td>
                   <td className="p-3.5 text-neutral-700 font-medium tabular-nums whitespace-nowrap">
-                    {node.latency}
+                    {renderEditableCell(node, "latency", "font-medium tabular-nums")}
                   </td>
                   <td className="p-3.5 text-right whitespace-nowrap">
                     <button

@@ -43,7 +43,9 @@ export function ZeroLightProvider({
 
   return (
     <ZeroLightContext.Provider value={value}>
-      {children}
+      <div dir={scaled.direction} className="contents">
+        {children}
+      </div>
     </ZeroLightContext.Provider>
   );
 }

@@ -19,7 +19,7 @@ export function Breadcrumbs({ items, className = "" }: BreadcrumbsProps) {
   const { tokens, scaled } = useZeroLight();
 
   return (
-    <nav aria-label="Breadcrumb" className={`flex items-center gap-1.5 select-none ${className}`}>
+    <nav aria-label="Breadcrumb" className={`flex items-center gap-1.5 select-none overflow-x-auto whitespace-nowrap scrollbar-none ${className}`}>
       {items.map((item, idx) => {
         const isLast = idx === items.length - 1;
         return (
@@ -28,18 +28,20 @@ export function Breadcrumbs({ items, className = "" }: BreadcrumbsProps) {
             {item.href && !isLast ? (
               <Link
                 href={item.href}
+                title={item.label}
                 style={{ fontSize: `${scaled.sublabelFontSize}px` }}
-                className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium whitespace-nowrap"
+                className="text-neutral-500 hover:text-neutral-900 transition-colors font-medium truncate max-w-[140px]"
               >
                 {item.label}
               </Link>
             ) : (
               <span
+                title={item.label}
                 style={{
                   fontSize: `${scaled.sublabelFontSize}px`,
                   color: isLast ? tokens.textIconColor : undefined,
                 }}
-                className={`font-semibold whitespace-nowrap ${isLast ? "" : "text-neutral-500"}`}
+                className={`font-semibold truncate max-w-[180px] ${isLast ? "" : "text-neutral-500"}`}
                 aria-current={isLast ? "page" : undefined}
               >
                 {item.label}

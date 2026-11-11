@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useZeroLight } from "../context";
-import { ShieldCheck, ArrowRight, User, Terminal } from "lucide-react";
+import { ShieldCheck, Terminal } from "lucide-react";
 import { Badge } from "../atoms/badge";
 import { Avatar } from "../atoms/avatar";
 

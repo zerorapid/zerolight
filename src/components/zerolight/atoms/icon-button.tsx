@@ -84,8 +84,9 @@ export function IconButton({
       type="button"
       aria-label={ariaLabel}
       disabled={disabled}
-      whileTap={{ scale: disabled ? 1 : 0.92 }}
-      transition={scaled.motionConfig.spring}
+      whileHover={{ scale: disabled ? 1 : scaled.motionConfig.hoverScale }}
+      whileTap={{ scale: disabled ? 1 : scaled.motionConfig.tapScale }}
+      transition={scaled.motionConfig.transition}
       style={{
         width: `${dimension}px`,
         height: `${dimension}px`,
@@ -95,7 +96,7 @@ export function IconButton({
         ...getVariantStyles(),
         ...style,
       }}
-      className={`inline-flex items-center justify-center shrink-0 cursor-pointer hover:opacity-80 border transition-colors transform-gpu ${
+      className={`inline-flex items-center justify-center shrink-0 cursor-pointer hover:opacity-80 border transition-colors transform-gpu focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1 ${
         disabled ? "opacity-40 cursor-not-allowed" : ""
       } ${className}`}
       {...props}

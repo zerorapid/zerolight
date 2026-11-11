@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useId } from "react";
 import { useZeroLight } from "../context";
 import { motion } from "framer-motion";
 
@@ -24,6 +24,7 @@ export function SegmentedControl<T extends string = string>({
   className = "",
 }: SegmentedControlProps<T>) {
   const { tokens, scaled } = useZeroLight();
+  const controlId = useId();
 
   return (
     <div
@@ -33,26 +34,38 @@ export function SegmentedControl<T extends string = string>({
         borderWidth: `${tokens.borderWidth}px`,
         backgroundColor: tokens.hoverBackplateTint,
       }}
-      className={`inline-flex items-center gap-1 p-0.5 border select-none whitespace-nowrap shrink-0 ${className}`}
+      className={`inline-flex items-center gap-1 p-0.5 border select-none whitespace-nowrap shrink-0 max-w-full overflow-x-auto scrollbar-none ${className}`}
     >
       {options.map((opt) => {
         const isSelected = value === opt.key;
         return (
-          <button
+          <motion.button
             key={opt.key}
             type="button"
             onClick={() => onChange(opt.key)}
+            whileTap={{ scale: scaled.motionConfig.tapScale }}
+            transition={scaled.motionConfig.transition}
             style={{
               borderRadius: `${scaled.scaledPillRadius}px`,
-              transition: "background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
-              backgroundColor: isSelected ? tokens.primaryButtonColor : "transparent",
+              transition: scaled.transitionStyle,
               color: isSelected ? scaled.primaryActionTextColor : tokens.textIconColor,
             }}
             className={`px-3.5 py-1.5 text-xs font-semibold cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
-              isSelected ? "shadow-xs" : "hover:text-neutral-900"
+              isSelected ? "" : "hover:text-neutral-900"
             }`}
           >
-            <span className="whitespace-nowrap">{opt.label}</span>
+            {isSelected && (
+              <motion.span
+                layoutId={`segment-pill-${controlId}`}
+                transition={scaled.motionConfig.pillTransition}
+                style={{
+                  borderRadius: `${scaled.scaledPillRadius}px`,
+                  backgroundColor: tokens.primaryButtonColor,
+                }}
+                className="absolute inset-0 shadow-xs z-0"
+              />
+            )}
+            <span className="relative z-10 whitespace-nowrap">{opt.label}</span>
             {opt.count !== undefined && (
               <span
                 style={{
@@ -62,12 +75,12 @@ export function SegmentedControl<T extends string = string>({
                     : "#E4E4E7",
                   color: isSelected ? scaled.primaryActionTextColor : "#71717A",
                 }}
-                className="text-[10px] px-1.5 py-0.2 font-bold tabular-nums whitespace-nowrap shrink-0"
+                className="relative z-10 text-[10px] px-1.5 py-0.2 font-bold tabular-nums whitespace-nowrap shrink-0"
               >
                 {opt.count}
               </span>
             )}
-          </button>
+          </motion.button>
         );
       })}
     </div>

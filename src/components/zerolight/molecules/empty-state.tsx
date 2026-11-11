@@ -51,10 +51,14 @@ export function EmptyState({
       </div>
 
       <div className="space-y-1 max-w-sm">
-        <h4 style={{ color: tokens.textIconColor }} className="text-sm font-semibold">
+        <h4 style={{ color: tokens.textIconColor }} className="text-sm font-semibold [text-wrap:balance]">
           {title}
         </h4>
-        <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+        <p
+          title={description}
+          style={{ fontSize: `${scaled.sublabelFontSize}px` }}
+          className="text-neutral-500 leading-relaxed line-clamp-3"
+        >
           {description}
         </p>
       </div>

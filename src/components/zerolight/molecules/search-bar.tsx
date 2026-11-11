@@ -3,7 +3,6 @@
 import React, { useRef } from "react";
 import { useZeroLight } from "../context";
 import { Search, X } from "lucide-react";
-import { Kbd } from "../atoms/kbd";
 
 export interface SearchBarProps {
   value: string;

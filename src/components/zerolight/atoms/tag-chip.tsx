@@ -23,9 +23,9 @@ export function TagChip({ label, onRemove, className = "" }: TagChipProps) {
         borderWidth: `${tokens.borderWidth}px`,
         transition: scaled.transitionStyle,
       }}
-      className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border shadow-2xs whitespace-nowrap shrink-0 ${className}`}
+      className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border shadow-2xs whitespace-nowrap shrink-0 max-w-[160px] ${className}`}
     >
-      <span className="whitespace-nowrap">{label}</span>
+      <span title={label} className="truncate">{label}</span>
       {onRemove && (
         <button
           type="button"

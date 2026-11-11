@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "ZeroLight | SaaS Atom Studio",
   description: "Minimalist atomic UI components for rapid SaaS engineering.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useZeroLight } from "../context";
+import { motion } from "framer-motion";
 
 export interface ProgressBarProps {
   value: number;
@@ -45,12 +46,13 @@ export function ProgressBar({
         }}
         className="h-2 w-full overflow-hidden p-0.5 border"
       >
-        <div
+        <motion.div
+          initial={false}
+          animate={{ width: `${percentage}%` }}
+          transition={scaled.motionConfig.transition}
           style={{
-            width: `${percentage}%`,
             borderRadius: `${scaled.scaledPillRadius}px`,
             backgroundColor: tokens.primaryButtonColor,
-            transition: "width 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
           className="h-full"
         />

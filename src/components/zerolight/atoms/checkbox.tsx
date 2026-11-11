@@ -3,6 +3,7 @@
 import React from "react";
 import { useZeroLight } from "../context";
 import { Check, Minus } from "lucide-react";
+import { motion } from "framer-motion";
 
 export interface CheckboxProps {
   checked?: boolean;
@@ -34,12 +35,15 @@ export function Checkbox({
         disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
       }`}
     >
-      <button
+      <motion.button
         id={id}
         type="button"
         role="checkbox"
         aria-checked={indeterminate ? "mixed" : checked}
         disabled={disabled}
+        whileHover={{ scale: disabled ? 1 : scaled.motionConfig.hoverScale }}
+        whileTap={{ scale: disabled ? 1 : scaled.motionConfig.tapScale }}
+        transition={scaled.motionConfig.transition}
         onClick={() => !disabled && onChange?.(!checked)}
         style={{
           borderRadius: `${scaled.scaledCheckboxRadius}px`,
@@ -48,23 +52,39 @@ export function Checkbox({
           backgroundColor: isCheckedOrIndeterminate ? tokens.primaryButtonColor : tokens.universalFillColor,
           transition: scaled.transitionStyle,
         }}
-        className="w-4 h-4 flex items-center justify-center border mt-0.5 shrink-0 shadow-2xs transition-colors"
+        className="w-4 h-4 flex items-center justify-center border mt-0.5 shrink-0 shadow-2xs transform-gpu"
       >
         {checked && !indeterminate && (
-          <Check
-            size={12}
-            strokeWidth={tokens.iconStrokeWidth || 2.5}
-            color={scaled.primaryActionTextColor}
-          />
+          <motion.span
+            key="checked"
+            initial={{ scale: 0.4, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={scaled.motionConfig.transition}
+            className="flex items-center justify-center"
+          >
+            <Check
+              size={12}
+              strokeWidth={tokens.iconStrokeWidth || 2.5}
+              color={scaled.primaryActionTextColor}
+            />
+          </motion.span>
         )}
         {indeterminate && (
-          <Minus
-            size={12}
-            strokeWidth={tokens.iconStrokeWidth || 2.5}
-            color={scaled.primaryActionTextColor}
-          />
+          <motion.span
+            key="indeterminate"
+            initial={{ scale: 0.4, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={scaled.motionConfig.transition}
+            className="flex items-center justify-center"
+          >
+            <Minus
+              size={12}
+              strokeWidth={tokens.iconStrokeWidth || 2.5}
+              color={scaled.primaryActionTextColor}
+            />
+          </motion.span>
         )}
-      </button>
+      </motion.button>
 
       {(label || description) && (
         <div className="space-y-0.5">

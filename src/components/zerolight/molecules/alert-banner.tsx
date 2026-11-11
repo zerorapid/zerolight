@@ -79,11 +79,15 @@ export function AlertBanner({
       {cfg.icon}
 
       <div className="flex-1 space-y-0.5">
-        <h4 style={{ color: cfg.titleColor }} className="text-xs font-semibold leading-snug">
+        <h4 style={{ color: cfg.titleColor }} className="text-xs font-semibold leading-snug [text-wrap:balance]">
           {title}
         </h4>
         {description && (
-          <p style={{ color: cfg.descColor, fontSize: `${scaled.sublabelFontSize}px` }} className="leading-relaxed">
+          <p
+            title={description}
+            style={{ color: cfg.descColor, fontSize: `${scaled.sublabelFontSize}px` }}
+            className="leading-relaxed line-clamp-2"
+          >
             {description}
           </p>
         )}

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useZeroLight } from "../context";
-import { Folder, FolderOpen, FileText, ChevronRight, HardDrive, Download, MoreHorizontal } from "lucide-react";
+import { Folder, FolderOpen, FileText, ChevronRight, HardDrive, MoreHorizontal } from "lucide-react";
 
 export interface TreeNode {
   id: string;

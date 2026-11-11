@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect, useId } from "react";
+import { createPortal } from "react-dom";
 import { useZeroLight } from "../context";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, X, Trash2 } from "lucide-react";
@@ -27,17 +28,116 @@ export function ConfirmationModal({
 }: ConfirmationModalProps) {
   const { tokens, scaled } = useZeroLight();
   const [inputText, setInputText] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const previousActiveElement = useRef<HTMLElement | null>(null);
+  const titleId = useId();
+  const descId = useId();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Body Scroll Lock with Layout Shift Compensation (CLS = 0)
+  useEffect(() => {
+    if (!isOpen) {
+      setInputText("");
+      return;
+    }
+
+    previousActiveElement.current = document.activeElement as HTMLElement;
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const originalOverflow = document.body.style.overflow;
+    const originalPaddingRight = document.body.style.paddingRight;
+
+    document.body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    // Auto-focus input on open
+    const timer = setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = originalOverflow;
+      document.body.style.paddingRight = originalPaddingRight;
+      if (previousActiveElement.current) {
+        previousActiveElement.current.focus();
+      }
+    };
+  }, [isOpen]);
+
+  // Focus Trap & Escape Key Listener
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (e.key === "Tab" && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+
+        if (!focusableElements.length) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   const isVerified = inputText.trim() === verificationPhrase;
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+        <div
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          aria-describedby={descId}
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              onClose();
+            }
+          }}
+        >
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            ref={modalRef}
+            initial={{ opacity: 0, scale: scaled.motionConfig.popover.initial.scale, y: scaled.motionConfig.distance }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: scaled.motionConfig.popover.exit.scale, y: scaled.motionConfig.distance }}
             transition={scaled.motionConfig.modalTransition}
             style={{
               borderRadius: `${scaled.scaledCardRadius}px`,
@@ -57,7 +157,11 @@ export function ConfirmationModal({
                   />
                 </div>
                 <div>
-                  <h3 style={{ color: tokens.textIconColor }} className="font-semibold text-sm">
+                  <h3
+                    id={titleId}
+                    style={{ color: tokens.textIconColor }}
+                    className="font-semibold text-sm [text-wrap:balance]"
+                  >
                     {title}
                   </h3>
                   <p className="text-xs text-rose-600 font-medium">Irreversible destructive action</p>
@@ -77,7 +181,12 @@ export function ConfirmationModal({
               </button>
             </div>
 
-            <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-600 leading-relaxed">
+            <p
+              id={descId}
+              title={description}
+              style={{ fontSize: `${scaled.sublabelFontSize}px` }}
+              className="text-neutral-600 leading-relaxed line-clamp-3"
+            >
               {description}
             </p>
 
@@ -90,6 +199,7 @@ export function ConfirmationModal({
                 Type <strong className="text-neutral-900 font-bold">{verificationPhrase}</strong> to confirm:
               </label>
               <input
+                ref={inputRef}
                 id="confirm-phrase-input"
                 type="text"
                 value={inputText}
@@ -134,6 +244,7 @@ export function ConfirmationModal({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

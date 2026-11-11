@@ -111,8 +111,9 @@ export function Button({
     <motion.button
       type={type}
       disabled={isDisabled}
+      whileHover={{ scale: isDisabled ? 1 : scaled.motionConfig.hoverScale }}
       whileTap={{ scale: isDisabled ? 1 : scaled.motionConfig.tapScale }}
-      transition={scaled.motionConfig.spring}
+      transition={scaled.motionConfig.transition}
       style={{
         borderRadius: `${scaled.scaledRadius}px`,
         borderWidth: `${variant === "ghost" ? 0 : Math.max(1, tokens.borderWidth)}px`,
@@ -124,7 +125,7 @@ export function Button({
         ...getVariantStyles(),
         ...style,
       }}
-      className={`inline-flex items-center justify-center gap-2 font-semibold shadow-xs select-none whitespace-nowrap shrink-0 transition-opacity transform-gpu ${
+      className={`inline-flex items-center justify-center gap-2 font-semibold shadow-xs select-none whitespace-nowrap shrink-0 transition-opacity transform-gpu focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1 ${
         isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-90"
       } ${className}`}
       {...props}
