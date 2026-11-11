@@ -18,3 +18,5 @@ export * from "./message-status";
 export * from "./payment-card";
 export * from "./currency-pill";
 export * from "./radio-group";
+export * from "./copy-trigger";
+export * from "./trend-delta";

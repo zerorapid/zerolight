@@ -863,6 +863,53 @@ test("Generic DataTable<T>: Supports typed columns and rows alongside Cluster no
   assert.ok(dtContent.includes("footerAction"), "DataTable should support optional footerAction slot");
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TEST SUITE 19: Component Upgrades & /donations Route
+// ─────────────────────────────────────────────────────────────────────────────
+console.log("\n=== Suite 19: Component Upgrades & /donations Route ===");
+
+test("Upgraded AppShell supports grouped navSections, left-bar active indicator, nested children, and sidebarWidgets", () => {
+  const shellContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/app-shell.tsx"), "utf8");
+  assert.ok(shellContent.includes("export interface NavSection"), "Should export NavSection");
+  assert.ok(shellContent.includes("navSections"), "Should accept navSections prop");
+  assert.ok(shellContent.includes("activeIndicator"), "Should support activeIndicator variant");
+  assert.ok(shellContent.includes("sidebarWidgets"), "Should support sidebarWidgets slot");
+  assert.ok(shellContent.includes("external?: boolean"), "Should support external link indicator");
+});
+
+test("Upgraded StatCard and AreaChart support horizontal KPI layout, minorDecimal, linear curve, and KPI header", () => {
+  const statContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/stat-card.tsx"), "utf8");
+  assert.ok(statContent.includes('layout?: "vertical" | "horizontal"'), "StatCard should support horizontal layout");
+  assert.ok(statContent.includes("minorDecimal"), "StatCard should support minorDecimal styling");
+  assert.ok(statContent.includes("deltaPill"), "StatCard should support deltaPill variant");
+
+  const chartContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/area-chart.tsx"), "utf8");
+  assert.ok(chartContent.includes('curve?: "smooth" | "linear"'), "AreaChart should support linear curve");
+  assert.ok(chartContent.includes("showArea"), "AreaChart should support disabling area gradient fill");
+  assert.ok(chartContent.includes("kpiHeader"), "AreaChart should support kpiHeader slot");
+  assert.ok(chartContent.includes("yAxisFormatter"), "AreaChart should support yAxisFormatter");
+});
+
+test("Upgraded Badge, Select, CopyTrigger, and TrendDelta support dotless categorical tags, inline pills, and token awareness", () => {
+  const badgeContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/badge.tsx"), "utf8");
+  assert.ok(badgeContent.includes("showDot"), "Badge should support showDot toggle");
+  assert.ok(badgeContent.includes('"lime"') && badgeContent.includes('"lilac"') && badgeContent.includes('"indigo"'), "Badge should include categorical variants");
+
+  const selectContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/select.tsx"), "utf8");
+  assert.ok(selectContent.includes("inline?: boolean"), "Select should support inline pill mode");
+
+  const copyContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/copy-trigger.tsx"), "utf8");
+  assert.ok(copyContent.includes("useZeroLight"), "CopyTrigger should adapt to ZeroLight polarity");
+
+  const trendContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/trend-delta.tsx"), "utf8");
+  assert.ok(trendContent.includes("useZeroLight"), "TrendDelta should adapt to ZeroLight polarity");
+});
+
+test("DonationsView and /donations Next.js route exist", () => {
+  assert.ok(fs.existsSync(path.join(rootDir, "src/components/zerolight/views/donations-view.tsx")), "DonationsView file should exist");
+  assert.ok(fs.existsSync(path.join(rootDir, "src/app/donations/page.tsx")), "/donations Next.js page route should exist");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

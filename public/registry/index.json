@@ -1,14 +1,14 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 97,
+  "totalCount": 98,
   "tiers": {
     "core": 3,
     "atoms": 37,
     "molecules": 35,
     "organisms": 11,
     "templates": 5,
-    "views": 6
+    "views": 7
   },
   "items": [
     {
@@ -117,7 +117,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 61,
+      "lines": 88,
       "registryUrl": "/registry/badge.json"
     },
     {
@@ -170,8 +170,10 @@
       "tier": "atoms",
       "targetPath": "src/components/zerolight/atoms/copy-trigger.tsx",
       "dependencies": [],
-      "registryDependencies": [],
-      "lines": 109,
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 127,
       "registryUrl": "/registry/copy-trigger.json"
     },
     {
@@ -491,8 +493,10 @@
       "tier": "atoms",
       "targetPath": "src/components/zerolight/atoms/trend-delta.tsx",
       "dependencies": [],
-      "registryDependencies": [],
-      "lines": 65,
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 75,
       "registryUrl": "/registry/trend-delta.json"
     },
     {
@@ -564,7 +568,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 422,
+      "lines": 455,
       "registryUrl": "/registry/area-chart.json"
     },
     {
@@ -932,7 +936,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 147,
+      "lines": 159,
       "registryUrl": "/registry/select.json"
     },
     {
@@ -978,7 +982,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 105,
+      "lines": 212,
       "registryUrl": "/registry/stat-card.json"
     },
     {
@@ -1072,7 +1076,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 237,
+      "lines": 366,
       "registryUrl": "/registry/app-shell.json"
     },
     {
@@ -1364,6 +1368,22 @@
       ],
       "lines": 334,
       "registryUrl": "/registry/dev-console-view.json"
+    },
+    {
+      "name": "donations-view",
+      "title": "Donations View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/donations-view.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 525,
+      "registryUrl": "/registry/donations-view.json"
     },
     {
       "name": "finexy-view",

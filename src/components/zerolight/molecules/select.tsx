@@ -18,6 +18,8 @@ export interface SelectProps {
   label?: string;
   placeholder?: string;
   id?: string;
+  size?: "md" | "sm";
+  inline?: boolean;
   className?: string;
 }
 
@@ -28,6 +30,8 @@ export function Select({
   label,
   placeholder = "Select an option...",
   id,
+  size = "md",
+  inline = false,
   className = "",
 }: SelectProps) {
   const { tokens, scaled } = useZeroLight();
@@ -46,8 +50,16 @@ export function Select({
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
+  const isCompact = size === "sm" || inline;
+  const triggerHeight = isCompact
+    ? Math.max(28, Math.round(scaled.scaledHeight * 0.72))
+    : scaled.scaledHeight;
+
   return (
-    <div ref={containerRef} className={`space-y-1.5 relative w-full ${className}`}>
+    <div
+      ref={containerRef}
+      className={`space-y-1.5 relative ${inline ? "inline-block w-auto" : "w-full"} ${className}`}
+    >
       {label && (
         <label
           htmlFor={id}
@@ -63,20 +75,20 @@ export function Select({
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         style={{
-          borderRadius: `${scaled.scaledRadius}px`,
+          borderRadius: `${isCompact ? scaled.scaledPillRadius : scaled.scaledRadius}px`,
           borderColor: tokens.universalBorderColor,
           borderWidth: `${tokens.borderWidth}px`,
-          backgroundColor: scaled.effectiveInputFill,
-          height: `${scaled.scaledHeight}px`,
-          paddingLeft: `${scaled.scaledPaddingX}px`,
-          paddingRight: `${scaled.scaledPaddingX}px`,
+          backgroundColor: isCompact ? tokens.universalFillColor : scaled.effectiveInputFill,
+          height: `${triggerHeight}px`,
+          paddingLeft: `${isCompact ? 12 : scaled.scaledPaddingX}px`,
+          paddingRight: `${isCompact ? 10 : scaled.scaledPaddingX}px`,
           transition: scaled.transitionStyle,
         }}
-        className="w-full flex items-center justify-between border cursor-pointer select-none text-left"
+        className={`${inline ? "inline-flex gap-2" : "w-full flex justify-between"} items-center border cursor-pointer select-none text-left`}
       >
         <span
           style={{
-            fontSize: `${scaled.scaledFontSize}px`,
+            fontSize: `${isCompact ? Math.max(11, scaled.sublabelFontSize) : scaled.scaledFontSize}px`,
             color: selectedOpt ? tokens.textIconColor : "#A1A1AA",
           }}
           className="font-medium truncate"
@@ -84,7 +96,7 @@ export function Select({
           {selectedOpt ? selectedOpt.label : placeholder}
         </span>
         <ChevronDown
-          size={scaled.iconSmSize || 16}
+          size={isCompact ? 13 : scaled.iconSmSize || 16}
           strokeWidth={tokens.iconStrokeWidth || 1.75}
           color={tokens.iconColor || tokens.textIconColor}
           className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -105,7 +117,7 @@ export function Select({
               backgroundColor: tokens.universalFillColor,
               top: `calc(100% + ${tokens.menuOffsetGap}px)`,
             }}
-            className="absolute left-0 right-0 z-50 p-1 border shadow-xl max-h-60 overflow-y-auto space-y-0.5"
+            className={`absolute left-0 ${inline ? "min-w-[160px]" : "right-0"} z-50 p-1 border shadow-xl max-h-60 overflow-y-auto space-y-0.5`}
           >
             {options.map((opt) => {
               const isSelected = opt.value === value;

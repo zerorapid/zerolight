@@ -14,12 +14,18 @@ export interface AreaChartProps {
   data: AreaDataPoint[];
   title?: string;
   subtitle?: string;
+  headerMeta?: React.ReactNode;
+  kpiHeader?: React.ReactNode;
+  curve?: "smooth" | "linear";
+  showArea?: boolean;
+  showLegend?: boolean;
   height?: number;
   primaryColor?: string;
   secondaryColor?: string;
   primaryLabel?: string;
   secondaryLabel?: string;
   valueFormatter?: (val: number) => string;
+  yAxisFormatter?: (val: number) => string;
   showGrid?: boolean;
   className?: string;
 }
@@ -28,12 +34,18 @@ export function AreaChart({
   data,
   title,
   subtitle,
+  headerMeta,
+  kpiHeader,
+  curve = "smooth",
+  showArea = true,
+  showLegend = true,
   height = 220,
   primaryColor,
   secondaryColor = "#64748B",
   primaryLabel = "Primary Metric",
   secondaryLabel = "Comparison",
   valueFormatter = (val) => `$${val.toLocaleString()}`,
+  yAxisFormatter,
   showGrid = true,
   className = "",
 }: AreaChartProps) {
@@ -101,6 +113,9 @@ export function AreaChart({
   const createSmoothPath = (pts: { x: number; y: number }[]) => {
     return pts.reduce((acc, pt, idx) => {
       if (idx === 0) return `M ${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+      if (curve === "linear") {
+        return `${acc} L ${pt.x.toFixed(1)},${pt.y.toFixed(1)}`;
+      }
       const prev = pts[idx - 1];
       const cp1x = prev.x + (pt.x - prev.x) / 2;
       const cp1y = prev.y;
@@ -157,42 +172,56 @@ export function AreaChart({
       className={`p-5 border shadow-2xs flex flex-col justify-between select-none relative ${className}`}
     >
       {/* Header & Legend */}
-      {(title || hasSecondary) && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <div className="min-w-0">
-            {title && (
-              <h3 className="text-sm font-bold text-neutral-900 tracking-tight truncate">
-                {title}
-              </h3>
-            )}
-            {subtitle && (
-              <p className="text-xs text-neutral-500 mt-0.5 line-clamp-1">{subtitle}</p>
-            )}
-          </div>
-          <div className="flex items-center gap-3 text-xs font-semibold text-neutral-600 whitespace-nowrap shrink-0">
-            <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
-              <span
-                style={{
-                  backgroundColor: color1,
-                  borderRadius: tokens.cornerRadius === 0 ? "0px" : tokens.cornerRadius === 999 ? "9999px" : "3px",
-                }}
-                className="w-2.5 h-2.5 inline-block shrink-0"
-              />
-              <span className="whitespace-nowrap">{primaryLabel}</span>
-            </div>
-            {hasSecondary && (
-              <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
-                <span
-                  style={{
-                    backgroundColor: color2,
-                    borderRadius: tokens.cornerRadius === 0 ? "0px" : tokens.cornerRadius === 999 ? "9999px" : "3px",
-                  }}
-                  className="w-2.5 h-2.5 inline-block shrink-0"
-                />
-                <span className="whitespace-nowrap">{secondaryLabel}</span>
+      {(title || hasSecondary || headerMeta || kpiHeader) && (
+        <div className="space-y-3 mb-4">
+          {(title || headerMeta || (showLegend && (hasSecondary || !kpiHeader))) && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="min-w-0">
+                {title && (
+                  <h3
+                    style={{ color: tokens.textIconColor }}
+                    className="text-sm font-semibold tracking-tight truncate"
+                  >
+                    {title}
+                  </h3>
+                )}
+                {subtitle && (
+                  <p className="text-xs text-neutral-500 mt-0.5 line-clamp-1">{subtitle}</p>
+                )}
               </div>
-            )}
-          </div>
+              {headerMeta ? (
+                <div className="text-xs font-medium text-neutral-500 shrink-0">{headerMeta}</div>
+              ) : (
+                showLegend && (
+                  <div className="flex items-center gap-3 text-xs font-semibold text-neutral-600 whitespace-nowrap shrink-0">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
+                      <span
+                        style={{
+                          backgroundColor: color1,
+                          borderRadius: tokens.cornerRadius === 0 ? "0px" : tokens.cornerRadius === 999 ? "9999px" : "3px",
+                        }}
+                        className="w-2.5 h-2.5 inline-block shrink-0"
+                      />
+                      <span className="whitespace-nowrap">{primaryLabel}</span>
+                    </div>
+                    {hasSecondary && (
+                      <div className="flex items-center gap-1.5 whitespace-nowrap shrink-0">
+                        <span
+                          style={{
+                            backgroundColor: color2,
+                            borderRadius: tokens.cornerRadius === 0 ? "0px" : tokens.cornerRadius === 999 ? "9999px" : "3px",
+                          }}
+                          className="w-2.5 h-2.5 inline-block shrink-0"
+                        />
+                        <span className="whitespace-nowrap">{secondaryLabel}</span>
+                      </div>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+          )}
+          {kpiHeader && <div>{kpiHeader}</div>}
         </div>
       )}
 
@@ -241,7 +270,7 @@ export function AreaChart({
                   fontWeight="600"
                   className="tabular-nums font-sans"
                 >
-                  {valueFormatter(Math.round(tick.val))}
+                  {yAxisFormatter ? yAxisFormatter(Math.round(tick.val)) : valueFormatter(Math.round(tick.val))}
                 </text>
               </g>
             ))}
@@ -249,13 +278,15 @@ export function AreaChart({
           {/* Secondary Series with Motion Transition */}
           {hasSecondary && (
             <>
-              <motion.path
-                d={areaPath2}
-                fill={`url(#${secondaryGradientId})`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={scaled.motionConfig.spring}
-              />
+              {showArea && (
+                <motion.path
+                  d={areaPath2}
+                  fill={`url(#${secondaryGradientId})`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={scaled.motionConfig.spring}
+                />
+              )}
               <motion.path
                 d={linePath2}
                 fill="none"
@@ -271,13 +302,15 @@ export function AreaChart({
           )}
 
           {/* Primary Series Area & Line with Reactive Stroke & Motion */}
-          <motion.path
-            d={areaPath1}
-            fill={`url(#${gradientId})`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={scaled.motionConfig.spring}
-          />
+          {showArea && (
+            <motion.path
+              d={areaPath1}
+              fill={`url(#${gradientId})`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={scaled.motionConfig.spring}
+            />
+          )}
           <motion.path
             d={linePath1}
             fill="none"

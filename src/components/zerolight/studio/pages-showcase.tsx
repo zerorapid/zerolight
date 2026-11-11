@@ -6,6 +6,7 @@ import {
   CreditCard,
   DollarSign,
   ExternalLink,
+  Gift,
   Globe,
   GraduationCap,
   Settings,
@@ -17,6 +18,7 @@ import {
   AiAssistantView,
   BillingView,
   DevConsoleView,
+  DonationsInner,
   FinexyDashboardInner,
   SchoolAttendanceInner,
   SettingsView,
@@ -28,7 +30,8 @@ export type StudioPageTab =
   | "ai-assistant"
   | "settings"
   | "finexy"
-  | "school-attendance";
+  | "school-attendance"
+  | "donations";
 
 export interface PagesShowcaseProps {
   activePageTab: StudioPageTab;
@@ -56,7 +59,7 @@ export function PagesShowcase({
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                           Atomic Tier 5: Enterprise SaaS Pages
                         </h2>
-                        <Badge variant="healthy">6 Full Screens</Badge>
+                        <Badge variant="healthy">7 Full Screens</Badge>
                       </div>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed max-w-2xl">
                         Production domain applications rendered live with active design tokens. Tweak any Visual Studio slider or color on the right to see the screen transform instantly.
@@ -92,6 +95,7 @@ export function PagesShowcase({
                       { id: "settings", label: "Org Settings", icon: <Settings className="w-3.5 h-3.5" /> },
                       { id: "finexy", label: "Finexy FinTech", icon: <DollarSign className="w-3.5 h-3.5" /> },
                       { id: "school-attendance", label: "School Attendance", icon: <GraduationCap className="w-3.5 h-3.5" /> },
+                      { id: "donations", label: "Donations Hub", icon: <Gift className="w-3.5 h-3.5" /> },
                     ].map((pg) => {
                       const isSelected = activePageTab === pg.id;
                       return (
@@ -125,6 +129,7 @@ export function PagesShowcase({
                   {activePageTab === "settings" && <SettingsView />}
                   {activePageTab === "finexy" && <FinexyDashboardInner />}
                   {activePageTab === "school-attendance" && <SchoolAttendanceInner />}
+                  {activePageTab === "donations" && <DonationsInner />}
                 </div>
               </div>
   );

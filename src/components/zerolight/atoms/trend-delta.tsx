@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useZeroLight } from "../context";
 
 export interface TrendDeltaProps {
   value: number;
@@ -10,6 +11,7 @@ export interface TrendDeltaProps {
   format?: (val: number) => string;
   size?: "xs" | "sm" | "md";
   showArrow?: boolean;
+  showSign?: boolean;
   className?: string;
 }
 
@@ -21,8 +23,10 @@ export function TrendDelta({
   format,
   size = "xs",
   showArrow = true,
+  showSign = true,
   className = "",
 }: TrendDeltaProps) {
+  const { scaled } = useZeroLight();
   const isZero = value === 0;
   const isPositive = value > 0;
 
@@ -31,21 +35,27 @@ export function TrendDelta({
   const isUnfavorable = isInverse ? value > 0 : value < 0;
 
   const sizeClasses = {
-    xs: "text-[10px] px-1.5 py-0.25 tracking-tight gap-1",
-    sm: "text-xs px-2 py-0.5 tracking-tight gap-1",
-    md: "text-sm px-2.5 py-1 tracking-normal gap-1.5 font-medium",
+    xs: "text-[10px] px-1.5 py-0.5 tracking-tight gap-1 font-semibold",
+    sm: "text-xs px-2 py-0.5 tracking-tight gap-1 font-semibold",
+    md: "text-sm px-2.5 py-1 tracking-normal gap-1.5 font-semibold",
   }[size];
 
-  let colorClasses = "bg-neutral-900 text-neutral-400 border-neutral-800";
+  let colorClasses = scaled.isDarkSurface
+    ? "bg-neutral-900 text-neutral-400 border-neutral-800"
+    : "bg-neutral-100 text-neutral-600 border-neutral-200";
   if (!isZero) {
     if (isFavorable) {
-      colorClasses = "bg-emerald-950/60 text-emerald-400 border-emerald-800/60";
+      colorClasses = scaled.isDarkSurface
+        ? "bg-emerald-950/60 text-emerald-400 border-emerald-800/60"
+        : "bg-emerald-50 text-emerald-700 border-emerald-200";
     } else if (isUnfavorable) {
-      colorClasses = "bg-rose-950/60 text-rose-400 border-rose-800/60";
+      colorClasses = scaled.isDarkSurface
+        ? "bg-rose-950/60 text-rose-400 border-rose-800/60"
+        : "bg-rose-50 text-rose-700 border-rose-200";
     }
   }
 
-  const sign = isPositive ? "+" : "";
+  const sign = showSign && isPositive ? "+" : "";
   const formattedVal = format ? format(value) : `${sign}${prefix}${value}${unit}`;
 
   return (
