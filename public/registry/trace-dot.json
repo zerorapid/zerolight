@@ -1,0 +1,15 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "trace-dot",
+  "title": "Trace Dot",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/trace-dot.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport type TraceDotStatus = \"active\" | \"settled\" | \"staged\" | \"failed\";\n\nexport interface TraceDotProps {\n  status?: TraceDotStatus;\n  className?: string;\n  ariaLabel?: string;\n}\n\nexport function TraceDot({\n  status = \"active\",\n  className = \"\",\n  ariaLabel,\n}: TraceDotProps) {\n  const getStatusAriaLabel = () => {\n    switch (status) {\n      case \"active\":\n        return \"Status: Active / In-Progress\";\n      case \"settled\":\n        return \"Status: Settled / Committed\";\n      case \"staged\":\n        return \"Status: Staged / Pending\";\n      case \"failed\":\n        return \"Status: Failed / Fault\";\n    }\n  };\n\n  return (\n    <span\n      role=\"status\"\n      aria-label={ariaLabel || getStatusAriaLabel()}\n      className={`relative inline-flex items-center justify-center flex-shrink-0 w-2.5 h-2.5 ${className}`}\n    >\n      {status === \"active\" && (\n        <>\n          <span className=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75\" />\n          <span className=\"relative inline-flex rounded-full h-2 w-2 bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]\" />\n        </>\n      )}\n\n      {status === \"settled\" && (\n        <>\n          <span className=\"absolute inline-flex h-full w-full rounded-full bg-emerald-500/30\" />\n          <span className=\"relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.7)]\" />\n        </>\n      )}\n\n      {status === \"staged\" && (\n        <span className=\"relative inline-flex rounded-full h-2 w-2 bg-neutral-600 ring-1 ring-neutral-700/60\" />\n      )}\n\n      {status === \"failed\" && (\n        <>\n          <span className=\"absolute inline-flex h-full w-full rounded-full bg-rose-500/40\" />\n          <span className=\"relative inline-flex rounded-full h-2 w-2 bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.8)]\" />\n        </>\n      )}\n    </span>\n  );\n}\n"
+    }
+  ]
+}

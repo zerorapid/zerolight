@@ -1,0 +1,15 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "kbd-shortcut",
+  "title": "Kbd Shortcut",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/kbd-shortcut.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport interface KbdShortcutProps {\n  keys?: string[];\n  shortcut?: string;\n  size?: \"xs\" | \"sm\";\n  className?: string;\n}\n\nexport function KbdShortcut({\n  keys,\n  shortcut,\n  size = \"xs\",\n  className = \"\",\n}: KbdShortcutProps) {\n  const parsedKeys = keys || (shortcut ? shortcut.split(\"+\") : [\"⌘\", \"K\"]);\n\n  const sizeClasses = {\n    xs: \"text-[10px] px-1 py-0.5 min-w-[16px]\",\n    sm: \"text-xs px-1.5 py-0.5 min-w-[20px]\",\n  }[size];\n\n  return (\n    <span className={`inline-flex items-center gap-1 font-sans ${className}`}>\n      {parsedKeys.map((key, idx) => (\n        <kbd\n          key={idx}\n          className={`inline-flex items-center justify-center rounded bg-neutral-900 border border-neutral-750 text-neutral-300 font-semibold shadow-[inset_0_-1px_0_rgba(255,255,255,0.08)] leading-none select-none ${sizeClasses}`}\n        >\n          {key.trim()}\n        </kbd>\n      ))}\n    </span>\n  );\n}\n"
+    }
+  ]
+}

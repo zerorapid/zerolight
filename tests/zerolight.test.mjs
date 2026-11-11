@@ -85,6 +85,8 @@ test("Universal Corner Radius Pill (999px) bounds cards while making pills 9999p
 // -----------------------------------------------------------------
 console.log("\n2. Motion Physics Engine Configurations:");
 
+const studioContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8");
+
 test("Motion Physics: Damped spring has stiffness 400 and damping 28", () => {
   assert.ok(typesContent.includes("stiffness: 400, damping: 28"));
   assert.ok(typesContent.includes("drawerTransition: { type: \"spring\", stiffness: 380, damping: 30 }"));
@@ -93,6 +95,31 @@ test("Motion Physics: Damped spring has stiffness 400 and damping 28", () => {
 
 test("Motion Physics: Elastic spring has stiffness 460 and damping 20", () => {
   assert.ok(typesContent.includes("stiffness: 460, damping: 20"));
+});
+
+test("Motion Physics: Snappy spring has stiffness 520 and damping 32", () => {
+  assert.ok(typesContent.includes("520"));
+  assert.ok(typesContent.includes("32"));
+  assert.ok(typesContent.includes('physics: "snappy"'));
+});
+
+test("Motion Physics: Gentle spring has stiffness 280 and damping 30", () => {
+  assert.ok(typesContent.includes("280"));
+  assert.ok(typesContent.includes("30"));
+  assert.ok(typesContent.includes('physics: "gentle"'));
+});
+
+test("Motion Physics: Instant preset provides zero-latency reduced motion", () => {
+  assert.ok(typesContent.includes('physics: "instant"'));
+  assert.ok(typesContent.includes("Zero latency"));
+});
+
+test("Visual Studio Dock: Renders comprehensive Motion Physics Engine controls", () => {
+  assert.ok(studioContent.includes("Motion Physics Engine"));
+  assert.ok(studioContent.includes("motionSpeedMultiplier"));
+  assert.ok(studioContent.includes("motionStiffness"));
+  assert.ok(studioContent.includes("motionDamping"));
+  assert.ok(studioContent.includes("Live Motion Sandbox"));
 });
 
 test("Hardware Acceleration: Components use transform-gpu", () => {
@@ -121,7 +148,8 @@ const atomsExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight
 const expectedAtoms = [
   "button", "icon-button", "input", "checkbox", "switch",
   "slider", "progress-bar", "badge", "tag-chip", "kbd", "avatar",
-  "skeleton", "separator", "spinner", "typing-indicator", "message-status"
+  "skeleton", "separator", "spinner", "typing-indicator", "message-status",
+  "payment-card", "currency-pill", "radio-group"
 ];
 
 expectedAtoms.forEach((atom) => {
@@ -136,7 +164,10 @@ const expectedMolecules = [
   "form-field", "input-group", "search-bar", "select", "tag-input",
   "calendar", "segmented-control", "breadcrumbs", "stat-card", "alert-banner", "tooltip",
   "pagination", "empty-state", "accordion", "file-upload", "stepper",
-  "chat-bubble", "chat-input"
+  "chat-bubble", "chat-input", "profit-loss-chart", "sparkline", "area-chart",
+  "bar-chart", "horizontal-bar-chart", "donut-chart", "gauge-chart",
+  "heatmap-matrix", "funnel-chart", "dropdown-menu", "date-range-picker",
+  "split-button", "conjoined-field", "form", "transfer", "tree-select", "cascader"
 ];
 
 expectedMolecules.forEach((mol) => {
@@ -149,7 +180,7 @@ expectedMolecules.forEach((mol) => {
 const organismsExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
 const expectedOrganisms = [
   "data-table", "confirmation-modal", "detail-drawer", "command-palette", "filter-builder",
-  "audit-log", "quota-matrix", "tree-view", "chat-conversation"
+  "audit-log", "quota-matrix", "tree-view", "chat-conversation", "toast", "app-shell"
 ];
 
 expectedOrganisms.forEach((org) => {
@@ -163,8 +194,6 @@ expectedOrganisms.forEach((org) => {
 // Test Suite 4: Studio Header & Clean Full-Width Layout
 // -----------------------------------------------------------------
 console.log("\n4. Studio Layout, Focus & Component Showcase Integrity:");
-
-const studioContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8");
 
 test("Studio outer layout is h-screen overflow-hidden (zero competing window scrollbars)", () => {
   assert.ok(studioContent.includes('h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200 overflow-hidden'));
@@ -235,6 +264,15 @@ test("Visual Studio Dock: Renders comprehensive Iconography & Vector controls", 
   assert.ok(studioContent.includes("iconStrokeWidth: s"));
   assert.ok(studioContent.includes("iconFill: key"));
   assert.ok(studioContent.includes("iconColor: e.target.value"));
+});
+
+test("Visual Studio Dock: Renders Live Data Visualization & Palette Customization", () => {
+  assert.ok(studioContent.includes("Data Visualization"), "Must render Data Visualization panel in dock");
+  assert.ok(studioContent.includes("chartPalette"), "Must allow selecting chart palette presets");
+  assert.ok(studioContent.includes("chartPrimaryColor"), "Must allow customizing chart primary color");
+  assert.ok(studioContent.includes("chartStrokeWidth"), "Must allow customizing chart stroke width");
+  assert.ok(studioContent.includes("chartFillOpacity"), "Must allow customizing gradient fill opacity");
+  assert.ok(studioContent.includes("chartGridStyle"), "Must allow customizing chart grid lines");
 });
 
 // -----------------------------------------------------------------
@@ -322,6 +360,468 @@ test("Semantic close icons (X) used across CommandPalette, Modal, and Drawer", (
   assert.ok(confirmModalContent.includes("Close modal"));
   assert.ok(detailDrawerContent.includes("Close drawer"));
   assert.ok(confirmModalContent.includes("Trash2"));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 9: Copywriting, Word Limits & Anti-Crowded Dashboards
+// -----------------------------------------------------------------
+console.log("\n9. Copywriting, Word Limits & Anti-Crowded Dashboard Invariants:");
+
+const designRulesContent = fs.readFileSync(path.join(rootDir, "DESIGN_RULES.md"), "utf8");
+const schoolAttendanceContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/views/school-attendance-view.tsx"), "utf8");
+
+test("DESIGN_RULES.md: Formulates Word Limits, Truncation & Line-Clamp Contracts", () => {
+  assert.ok(designRulesContent.includes("Max Words"), "Must define Max Words matrix");
+  assert.ok(designRulesContent.includes("Single-Line Truncation Contract (`truncate`)"));
+  assert.ok(designRulesContent.includes("2-Line Clamping Contract (`line-clamp-2`)"));
+  assert.ok(designRulesContent.includes("Widow & Orphan Elimination"));
+  assert.ok(designRulesContent.includes("Zero Layout Shift (CLS = 0) on Numeric Updates"));
+});
+
+test("Anti-Crowding Law: Max 4 StatCards, 1 Primary Action, 3-Zone Layout", () => {
+  assert.ok(designRulesContent.includes("The 3-Zone Visual Hierarchy"));
+  assert.ok(designRulesContent.includes("Maximum 4 Metric Cards"));
+  assert.ok(designRulesContent.includes("Exactly ONE Primary Action Button"));
+  assert.ok(designRulesContent.includes("Progressive Disclosure via Slide-Over Drawers"));
+});
+
+test("School Attendance Dashboard: Adheres to Anti-Crowding and Text Hygiene", () => {
+  // Stat cards max 4
+  const statCardMatches = schoolAttendanceContent.match(/<StatCard/g) || [];
+  assert.ok(statCardMatches.length <= 4, `Must not exceed 4 StatCards, found: ${statCardMatches.length}`);
+  
+  // Tabular nums for all telemetry
+  assert.ok(schoolAttendanceContent.includes("tabular-nums"), "Must use tabular-nums for numeric stability");
+  
+  // Progressive disclosure via drawer & modal
+  assert.ok(schoolAttendanceContent.includes("<Pagination"), "Must use pagination to avoid endless scrolling");
+  assert.ok(schoolAttendanceContent.includes("activeStudent"), "Must use slide-over drawer for row details");
+  assert.ok(schoolAttendanceContent.includes("isSubmitModalOpen"), "Must use modal for submission");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 10: FinTech SaaS Suite & Finexy Dashboard
+// -----------------------------------------------------------------
+console.log("\n10. FinTech SaaS Atoms, Molecules & Finexy Dashboard:");
+
+const paymentCardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/payment-card.tsx"), "utf8");
+const currencyPillContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/currency-pill.tsx"), "utf8");
+const profitLossChartContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/profit-loss-chart.tsx"), "utf8");
+const finexyPageContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/views/finexy-view.tsx"), "utf8");
+
+test("PaymentCard Atom: Contactless, Chip, Masked Number & Brand Support", () => {
+  assert.ok(paymentCardContent.includes("export function PaymentCard"), "Must export PaymentCard component");
+  assert.ok(paymentCardContent.includes("Wifi"), "Must render contactless vector icon");
+  assert.ok(paymentCardContent.includes("mastercard"), "Must support mastercard brand");
+  assert.ok(paymentCardContent.includes("visa"), "Must support visa brand");
+  assert.ok(paymentCardContent.includes("Card Number"), "Must have card number label");
+});
+
+test("CurrencyPill Atom: Flag, Balance, Monthly Limit & Status", () => {
+  assert.ok(currencyPillContent.includes("export function CurrencyPill"), "Must export CurrencyPill component");
+  assert.ok(currencyPillContent.includes("currencyCode"), "Must display currencyCode");
+  assert.ok(currencyPillContent.includes("balance"), "Must display balance");
+  assert.ok(currencyPillContent.includes("monthlyLimit"), "Must display monthlyLimit");
+  assert.ok(currencyPillContent.includes("Active"), "Must display status indicator");
+});
+
+test("ProfitLossChart Molecule: Dual-Series Stacked Bars with Tooltips", () => {
+  assert.ok(profitLossChartContent.includes("export function ProfitLossChart"), "Must export ProfitLossChart component");
+  assert.ok(profitLossChartContent.includes("profitColor"), "Must accept profitColor");
+  assert.ok(profitLossChartContent.includes("lossColor"), "Must accept lossColor");
+  assert.ok(profitLossChartContent.includes("hoveredIndex"), "Must provide interactive hover state");
+});
+
+test("Finexy SaaS Dashboard: 3-Zone Architecture & FinTech Invariants", () => {
+  assert.ok(finexyPageContent.includes("Good morning, Oripio"), "Must render Oripio hero greeting");
+  assert.ok(finexyPageContent.includes("$689,372.00"), "Must render exact $689,372.00 balance");
+  assert.ok(finexyPageContent.includes("PaymentCard"), "Must render virtual payment cards");
+  assert.ok(finexyPageContent.includes("CurrencyPill"), "Must render international wallet pills");
+  assert.ok(finexyPageContent.includes("ProfitLossChart"), "Must render stacked profit & loss chart");
+  assert.ok(finexyPageContent.includes("Recent Activities"), "Must render interactive transaction ledger");
+  assert.ok(finexyPageContent.includes("DetailDrawer"), "Must support progressive disclosure drawer on row click");
+  assert.ok(finexyPageContent.includes("isTransferModalOpen"), "Must support transfer modal flow");
+  assert.ok(finexyPageContent.includes("tabular-nums"), "Must strictly enforce tabular numerals on all amounts");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 11: Enterprise Data Visualization Family (7+ Chart Molecules)
+// -----------------------------------------------------------------
+console.log("\n11. Enterprise Data Visualization Family (7+ Chart Molecules):");
+
+const sparklineContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/sparkline.tsx"), "utf8");
+const areaChartContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/area-chart.tsx"), "utf8");
+const barChartContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/bar-chart.tsx"), "utf8");
+const horizBarChartContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/horizontal-bar-chart.tsx"), "utf8");
+const donutChartContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/donut-chart.tsx"), "utf8");
+const gaugeChartContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/gauge-chart.tsx"), "utf8");
+const heatmapContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/heatmap-matrix.tsx"), "utf8");
+const funnelContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/funnel-chart.tsx"), "utf8");
+
+test("Data Viz 1: Sparkline - Ultra compact SVG trendline with min/max support", () => {
+  assert.ok(sparklineContent.includes("export function Sparkline"));
+  assert.ok(sparklineContent.includes("linearGradient"));
+  assert.ok(sparklineContent.includes("strokeLinecap"));
+  assert.ok(sparklineContent.includes("transition={scaled.motionConfig.spring}"));
+});
+
+test("Data Viz 2: AreaChart - Cubic bezier curve with scrubbing crosshair, reactive stroke & spring motion", () => {
+  assert.ok(areaChartContent.includes("export function AreaChart"));
+  assert.ok(areaChartContent.includes("createSmoothPath"));
+  assert.ok(areaChartContent.includes("tabular-nums"));
+  assert.ok(areaChartContent.includes("hoverIndex"));
+  assert.ok(areaChartContent.includes("effectiveStrokeWidth"));
+  assert.ok(areaChartContent.includes("transition={scaled.motionConfig.spring}"));
+  assert.ok(areaChartContent.includes("tokens.cornerRadius === 0"));
+});
+
+test("Data Viz 3: BarChart - Grouped and stacked columns with dynamic corner radius & spring motion", () => {
+  assert.ok(barChartContent.includes("export function BarChart"));
+  assert.ok(barChartContent.includes("mode === \"stacked\""));
+  assert.ok(barChartContent.includes("borderTopLeftRadius"));
+  assert.ok(barChartContent.includes("barRadius"));
+  assert.ok(barChartContent.includes("tokens.cornerRadius === 0"));
+  assert.ok(barChartContent.includes("transition={scaled.motionConfig.spring}"));
+});
+
+test("Data Viz 4: HorizontalBarChart - Ranked progress bars with value formatting & spring motion", () => {
+  assert.ok(horizBarChartContent.includes("export function HorizontalBarChart"));
+  assert.ok(horizBarChartContent.includes("showRank"));
+  assert.ok(horizBarChartContent.includes("tabular-nums"));
+  assert.ok(horizBarChartContent.includes("transition={scaled.motionConfig.spring}"));
+});
+
+test("Data Viz 5: DonutChart - SVG radial slices with geometric cuts & spring motion", () => {
+  assert.ok(donutChartContent.includes("export function DonutChart"));
+  assert.ok(donutChartContent.includes("strokeDasharray"));
+  assert.ok(donutChartContent.includes("displayCenterValue"));
+  assert.ok(donutChartContent.includes("scaled.chartColors"));
+  assert.ok(donutChartContent.includes("motion.circle"));
+  assert.ok(donutChartContent.includes("transition={scaled.motionConfig.spring}"));
+  assert.ok(donutChartContent.includes("tokens.cornerRadius === 0 ? \"butt\" : \"round\""));
+});
+
+test("Data Viz 6: GaugeChart - Semicircle radial dial with threshold status zones & polarity", () => {
+  assert.ok(gaugeChartContent.includes("export function GaugeChart"));
+  assert.ok(gaugeChartContent.includes("arcLength"));
+  assert.ok(gaugeChartContent.includes("clampedVal"));
+  assert.ok(gaugeChartContent.includes("higher-is-better"));
+  assert.ok(gaugeChartContent.includes("transition={scaled.motionConfig.spring}"));
+  assert.ok(gaugeChartContent.includes("tokens.cornerRadius === 0 ? \"butt\" : \"round\""));
+});
+
+test("Data Viz 7: HeatmapMatrix - Multi-tier activity matrix with interactive cell tooltip & cell radius", () => {
+  assert.ok(heatmapContent.includes("export function HeatmapMatrix"));
+  assert.ok(heatmapContent.includes("cellRadius"));
+  assert.ok(heatmapContent.includes("tokens.cornerRadius === 0"));
+  assert.ok(heatmapContent.includes("transition={scaled.motionConfig.spring}"));
+  assert.ok(heatmapContent.includes("getCellColor"));
+  assert.ok(heatmapContent.includes("hoveredCell"));
+});
+
+test("Data Viz 8: FunnelChart - Stage-by-stage drop-off conversion funnel", () => {
+  assert.ok(funnelContent.includes("export function FunnelChart"));
+  assert.ok(funnelContent.includes("pctOfInitial"));
+  assert.ok(funnelContent.includes("stepConversion"));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 12: Enterprise SaaS Foundations (Toasts, Shell, Action Menu & Radio)
+// -----------------------------------------------------------------
+console.log("\n12. Enterprise SaaS Foundations (Toasts, Shell, Action Menu & Radio):");
+
+const radioGroupContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/radio-group.tsx"), "utf8");
+const dropdownMenuContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/dropdown-menu.tsx"), "utf8");
+const toastContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/toast.tsx"), "utf8");
+const dateRangeContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/date-range-picker.tsx"), "utf8");
+const appShellContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/app-shell.tsx"), "utf8");
+
+test("RadioGroup Atom: Mutually exclusive selection with card & standard mode", () => {
+  assert.ok(radioGroupContent.includes("export function RadioGroup"));
+  assert.ok(radioGroupContent.includes("role=\"radiogroup\""));
+  assert.ok(radioGroupContent.includes("cardMode"));
+});
+
+test("DropdownMenu Molecule: Floating action menu with click-outside and keydown", () => {
+  assert.ok(dropdownMenuContent.includes("export function DropdownMenu"));
+  assert.ok(dropdownMenuContent.includes("handleClickOutside"));
+  assert.ok(dropdownMenuContent.includes("handleKeyDown"));
+});
+
+test("Toast & ToastProvider Organism: Stacking physics, auto-dismiss and useToast", () => {
+  assert.ok(toastContent.includes("export function ToastProvider"));
+  assert.ok(toastContent.includes("export function useToast"));
+  assert.ok(toastContent.includes("dismiss"));
+});
+
+test("DateRangePicker Molecule: Quick preset ranges and custom dual date display", () => {
+  assert.ok(dateRangeContent.includes("export function DateRangePicker"));
+  assert.ok(dateRangeContent.includes("DEFAULT_PRESETS"));
+  assert.ok(dateRangeContent.includes("tabular-nums"));
+});
+
+test("AppShell Organism: Collapsible sidebar rail and responsive mobile drawer", () => {
+  assert.ok(appShellContent.includes("export function AppShell"));
+  assert.ok(appShellContent.includes("isCollapsed"));
+  assert.ok(appShellContent.includes("isMobileOpen"));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 13: Templates & Enterprise SaaS Pages Suite (Atomic Tiers 4 & 5)
+// -----------------------------------------------------------------
+console.log("\n13. Templates & Enterprise SaaS Pages Suite (Atomic Tiers 4 & 5):");
+
+const templatesExport = fs.readFileSync(path.join(rootDir, "src/components/zerolight/templates/index.ts"), "utf8");
+const expectedTemplates = [
+  "dashboard-template", "console-table-template", "settings-form-template",
+  "analytics-report-template", "chat-workspace-template"
+];
+
+expectedTemplates.forEach((tpl) => {
+  test(`Template Export: ${tpl}.tsx exists and is exported`, () => {
+    assert.ok(fs.existsSync(path.join(rootDir, `src/components/zerolight/templates/${tpl}.tsx`)));
+    assert.ok(templatesExport.includes(`export * from "./${tpl}";`));
+  });
+});
+
+const expectedPages = [
+  "dev-console", "billing", "ai-assistant", "settings", "finexy", "school-attendance"
+];
+
+expectedPages.forEach((pageRoute) => {
+  test(`Enterprise SaaS Page: src/app/${pageRoute}/page.tsx exists`, () => {
+    assert.ok(fs.existsSync(path.join(rootDir, `src/app/${pageRoute}/page.tsx`)));
+  });
+});
+
+const dashboardTplContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/templates/dashboard-template.tsx"), "utf8");
+test("DashboardTemplate: 3-Zone Architecture with max 4-metric grid & exactly 1 primary action slot", () => {
+  assert.ok(dashboardTplContent.includes("ZONE 1: HERO SESSION BAR & HIGH-SIGNAL TELEMETRY"));
+  assert.ok(dashboardTplContent.includes("ZONE 2: UNIFIED CORE WORKSPACE"));
+  assert.ok(dashboardTplContent.includes("ZONE 3: PROGRESSIVE DISCLOSURE"));
+  assert.ok(dashboardTplContent.includes("primaryAction?: React.ReactNode;"));
+});
+
+const settingsTplContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/templates/settings-form-template.tsx"), "utf8");
+test("SettingsFormTemplate: Multi-tab navigation & sticky unsaved changes bar", () => {
+  assert.ok(settingsTplContent.includes("SettingsTabItem"));
+  assert.ok(settingsTplContent.includes("isDirty"));
+  assert.ok(settingsTplContent.includes("ZONE 3: FLOATING STICKY UNSAVED CHANGES BAR"));
+});
+
+const chatTplContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/templates/chat-workspace-template.tsx"), "utf8");
+test("ChatWorkspaceTemplate: 3-Pane AI Copilot workspace with session rail & inspector panel", () => {
+  assert.ok(chatTplContent.includes("PANE 1: SESSIONS & THREADS SIDEBAR"));
+  assert.ok(chatTplContent.includes("PANE 2: ACTIVE CONVERSATION STREAM & PINNED INPUT"));
+  assert.ok(chatTplContent.includes("PANE 3: CONTEXT & METADATA INSPECTOR"));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 14: Shadcn Parity Architecture (Portals, Focus Traps & ARIA)
+// -----------------------------------------------------------------
+console.log("\n14. Shadcn Competitive Parity Architecture:");
+
+const tooltipContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/tooltip.tsx"), "utf8");
+test("Floating Engine: Tooltip renders via createPortal to prevent overflow clipping", () => {
+  assert.ok(tooltipContent.includes("createPortal"));
+  assert.ok(tooltipContent.includes('role="tooltip"'));
+  assert.ok(tooltipContent.includes("aria-describedby"));
+  assert.ok(tooltipContent.includes("getBoundingClientRect"));
+});
+
+const dropdownContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/dropdown-menu.tsx"), "utf8");
+test("Floating Engine: DropdownMenu renders via createPortal with ARIA menu state machine", () => {
+  assert.ok(dropdownContent.includes("createPortal"));
+  assert.ok(dropdownContent.includes('role="menu"'));
+  assert.ok(dropdownContent.includes('role="menuitem"'));
+  assert.ok(dropdownContent.includes("typeaheadBuffer"));
+  assert.ok(dropdownContent.includes("handleKeyDown"));
+});
+
+const modalContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/confirmation-modal.tsx"), "utf8");
+test("Overlay Architecture: ConfirmationModal has focus trapping and CLS-free scroll lock", () => {
+  assert.ok(modalContent.includes("createPortal"));
+  assert.ok(modalContent.includes('role="alertdialog"'));
+  assert.ok(modalContent.includes("scrollbarWidth"));
+  assert.ok(modalContent.includes("document.body.style.overflow = \"hidden\""));
+  assert.ok(modalContent.includes("e.key === \"Tab\""));
+  assert.ok(modalContent.includes("previousActiveElement"));
+});
+
+const drawerContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/detail-drawer.tsx"), "utf8");
+test("Overlay Architecture: DetailDrawer has focus trapping and CLS-free scroll lock", () => {
+  assert.ok(drawerContent.includes("createPortal"));
+  assert.ok(drawerContent.includes('role="dialog"'));
+  assert.ok(drawerContent.includes("scrollbarWidth"));
+  assert.ok(drawerContent.includes("document.body.style.overflow = \"hidden\""));
+  assert.ok(drawerContent.includes("e.key === \"Tab\""));
+  assert.ok(drawerContent.includes("previousActiveElement"));
+});
+
+const formContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/form.tsx"), "utf8");
+test("Composable Form Family: Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage", () => {
+  assert.ok(formContent.includes("FormItemContext"));
+  assert.ok(formContent.includes("useFormField"));
+  assert.ok(formContent.includes("export function Form("));
+  assert.ok(formContent.includes("export function FormItem("));
+  assert.ok(formContent.includes("export function FormLabel("));
+  assert.ok(formContent.includes("export function FormControl("));
+  assert.ok(formContent.includes("export function FormDescription("));
+  assert.ok(formContent.includes("export function FormMessage("));
+  assert.ok(formContent.includes("aria-describedby"));
+  assert.ok(formContent.includes("aria-invalid"));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 15: Global Enterprise Parity & RTL Layout Engine
+// -----------------------------------------------------------------
+console.log("\n15. Global Enterprise Parity Suite:");
+
+const transferContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/transfer.tsx"), "utf8");
+test("Enterprise Transfer Molecule: Dual-list shuttle with indeterminate master toggle & search", () => {
+  assert.ok(transferContent.includes("indeterminate={isIndeterminate}"));
+  assert.ok(transferContent.includes("moveToTarget"));
+  assert.ok(transferContent.includes("moveToSource"));
+  assert.ok(transferContent.includes("scaled.motionConfig.spring"));
+});
+
+const treeSelectContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/tree-select.tsx"), "utf8");
+test("Enterprise TreeSelect Molecule: Portaled hierarchy with indeterminate branch math & smart tag folding", () => {
+  assert.ok(treeSelectContent.includes("createPortal"));
+  assert.ok(treeSelectContent.includes('role="tree"'));
+  assert.ok(treeSelectContent.includes('role="treeitem"'));
+  assert.ok(treeSelectContent.includes("indeterminate={isIndeterminate}"));
+  assert.ok(treeSelectContent.includes("maxTagCount"));
+});
+
+const cascaderContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/cascader.tsx"), "utf8");
+test("Enterprise Cascader Molecule: Portaled Miller columns drill-down picker", () => {
+  assert.ok(cascaderContent.includes("createPortal"));
+  assert.ok(cascaderContent.includes("activePath"));
+  assert.ok(cascaderContent.includes("columns.map"));
+});
+
+const dataTableContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/data-table.tsx"), "utf8");
+test("Enterprise DataTable Organism: Inline spreadsheet cell editing support", () => {
+  assert.ok(dataTableContent.includes("editable"));
+  assert.ok(dataTableContent.includes("onUpdateNode"));
+  assert.ok(dataTableContent.includes("renderEditableCell"));
+});
+
+const contextContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/context.tsx"), "utf8");
+test("Bi-Directional RTL/LTR Engine: Token, Context & Drawer mirroring", () => {
+  assert.ok(typesContent.includes('direction?: "ltr" | "rtl"'));
+  assert.ok(typesContent.includes("isRtl: boolean"));
+  assert.ok(contextContent.includes("dir={scaled.direction}"));
+  assert.ok(drawerContent.includes("scaled.isRtl"));
+});
+
+// -----------------------------------------------------------------
+// Test Suite 16: Visual Studio Token Binding Integrity (Zero Ghost Settings)
+// -----------------------------------------------------------------
+console.log("\n16. Visual Studio Token Binding Integrity:");
+
+test("Motion Physics Engine: DEFAULT_TOKENS does not lock preset springs and applies overrides uniformly", () => {
+  const defaultTokensBlock = typesContent.slice(
+    typesContent.indexOf("export const DEFAULT_TOKENS"),
+    typesContent.indexOf("export interface MotionConfig")
+  );
+  assert.ok(!defaultTokensBlock.includes("motionStiffness:"), "DEFAULT_TOKENS must leave motionStiffness undefined");
+  assert.ok(!defaultTokensBlock.includes("motionDamping:"), "DEFAULT_TOKENS must leave motionDamping undefined");
+  assert.ok(!defaultTokensBlock.includes("motionMass:"), "DEFAULT_TOKENS must leave motionMass undefined");
+  assert.ok(!defaultTokensBlock.includes("tapScale:"), "DEFAULT_TOKENS must leave tapScale undefined");
+  assert.ok(typesContent.includes("const base = resolveBaseConfig()"));
+  assert.ok(typesContent.includes("tokens.motionStiffness !== undefined"));
+  assert.ok(typesContent.includes("tokens.motionDamping !== undefined"));
+  assert.ok(typesContent.includes("tokens.motionSpeedMultiplier"));
+});
+
+test("Menu Offset Gap: DropdownMenu, SplitButton, and Tooltip consume tokens.menuOffsetGap", () => {
+  const dropdownMenuContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/dropdown-menu.tsx"), "utf8");
+  const splitButtonContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/split-button.tsx"), "utf8");
+  const tooltipContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/tooltip.tsx"), "utf8");
+  assert.ok(dropdownMenuContent.includes("tokens.menuOffsetGap"), "DropdownMenu should read tokens.menuOffsetGap");
+  assert.ok(splitButtonContent.includes("tokens.menuOffsetGap"), "SplitButton should read tokens.menuOffsetGap");
+  assert.ok(tooltipContent.includes("tokens.menuOffsetGap"), "Tooltip should read tokens.menuOffsetGap");
+});
+
+test("Token Export Completeness: CSS and JSON exports include RTL, motion, and data-viz tokens", () => {
+  assert.ok(studioContent.includes("--zl-direction:"));
+  assert.ok(studioContent.includes("--zl-motion-physics:"));
+  assert.ok(studioContent.includes("--zl-motion-speed:"));
+  assert.ok(studioContent.includes("--zl-chart-primary:"));
+  assert.ok(studioContent.includes("chartPalette: t.chartPalette"));
+  assert.ok(studioContent.includes("chartGridStyle: t.chartGridStyle"));
+  assert.ok(studioContent.includes("direction: t.direction"));
+});
+
+test("Visual Studio Left-Side Draggable Resizer: Supports smooth pointer scaling, keyboard steps, and double-click reset", () => {
+  assert.ok(studioContent.includes("startStudioResize"), "Studio should implement startStudioResize pointer handler");
+  assert.ok(studioContent.includes('aria-label="Resize Visual Studio panel"'), "Left resizer should expose accessible separator");
+  assert.ok(studioContent.includes("STUDIO_MIN_WIDTH"), "Left resizer should enforce minimum dock width");
+  assert.ok(studioContent.includes("STUDIO_MAX_WIDTH"), "Left resizer should enforce maximum dock width");
+  assert.ok(studioContent.includes("width: `${studioWidth}px`"), "Desktop aside should bind dynamic studioWidth");
+  assert.ok(studioContent.includes("cursor-col-resize"), "Left resizer should display col-resize cursor");
+});
+
+test("Motion Engine Propagation: CSS never overrides Framer Motion transforms and atoms/molecules bind active motionConfig", () => {
+  assert.ok(!typesContent.includes("return `all ${dur("), "getTransitionStyle must not emit 'all' CSS transition that conflicts with Framer Motion transforms");
+  assert.ok(typesContent.includes("motionDistance?: number"), "ZeroLightTokens should expose motionDistance");
+  assert.ok(typesContent.includes("hoverScale?: number"), "ZeroLightTokens should expose hoverScale");
+  assert.ok(studioContent.includes("Spring Mass (Inertia)"), "Motion Physics Engine should expose Spring Mass slider");
+  assert.ok(studioContent.includes("Entrance Slide Distance"), "Motion Physics Engine should expose Entrance Slide Distance slider");
+  assert.ok(studioContent.includes("Tactile Hover Lift"), "Motion Physics Engine should expose Tactile Hover Lift controls");
+
+  const segContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/segmented-control.tsx"), "utf8");
+  const cbContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/checkbox.tsx"), "utf8");
+  const radioContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/radio-group.tsx"), "utf8");
+  const progContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/progress-bar.tsx"), "utf8");
+  const ttContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/tooltip.tsx"), "utf8");
+  const iconBtnContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/icon-button.tsx"), "utf8");
+
+  assert.ok(segContent.includes("scaled.motionConfig.pillTransition"), "SegmentedControl should glide pill with motionConfig.pillTransition");
+  assert.ok(cbContent.includes("scaled.motionConfig.transition"), "Checkbox should animate checkmark with motionConfig.transition");
+  assert.ok(radioContent.includes("scaled.motionConfig.transition"), "RadioGroup should animate selection with motionConfig.transition");
+  assert.ok(progContent.includes("scaled.motionConfig.transition"), "ProgressBar should animate progress bar with motionConfig.transition");
+  assert.ok(ttContent.includes("scaled.motionConfig.popover.transition"), "Tooltip should animate with motionConfig.popover.transition");
+  assert.ok(iconBtnContent.includes("scaled.motionConfig.tapScale"), "IconButton should read dynamic motionConfig.tapScale");
+});
+
+// ============================================================================
+// TEST SUITE 17: Theme Polarity Presets, Persistence & Component Registry
+// ============================================================================
+console.log("\n--- Test Suite 17: Theme Polarity, Persistence & Registry ---");
+
+test("Theme Polarity Presets: Light, Dark, Slate, and Contrast presets exist with accessible surface detection", () => {
+  assert.ok(typesContent.includes("export const THEME_PRESETS"), "types.ts should export THEME_PRESETS");
+  assert.ok(typesContent.includes("isDarkSurface: boolean"), "ScaledTokens should declare isDarkSurface");
+  assert.ok(typesContent.includes('light: {'), "THEME_PRESETS should include light preset");
+  assert.ok(typesContent.includes('dark: {'), "THEME_PRESETS should include dark preset");
+  assert.ok(typesContent.includes('slate: {'), "THEME_PRESETS should include slate preset");
+  assert.ok(typesContent.includes('contrast: {'), "THEME_PRESETS should include contrast preset");
+  assert.ok(studioContent.includes('data-testid={`theme-preset-${presetKey}`}'), "Visual Studio should expose Theme Polarity buttons");
+});
+
+test("Persistence: Visual Studio saves and restores tokens & studioWidth via SSR-safe localStorage", () => {
+  assert.ok(studioContent.includes('TOKENS_STORAGE_KEY = "zerolight.tokens.v1"'), "Should persist tokens under versioned localStorage key");
+  assert.ok(studioContent.includes('STUDIO_WIDTH_STORAGE_KEY = "zerolight.studioWidth.v1"'), "Should persist studioWidth under versioned localStorage key");
+  assert.ok(studioContent.includes("window.localStorage.removeItem(TOKENS_STORAGE_KEY)"), "Reset should clear saved tokens from localStorage");
+  assert.ok(studioContent.includes("window.localStorage.removeItem(STUDIO_WIDTH_STORAGE_KEY)"), "Reset should clear saved studioWidth from localStorage");
+});
+
+test("Component Registry: public/registry/index.json and item manifests exist and stay consistent", () => {
+  const registryIndexPath = path.join(rootDir, "public/registry/index.json");
+  assert.ok(fs.existsSync(registryIndexPath), "public/registry/index.json should exist");
+  const registryIndex = JSON.parse(fs.readFileSync(registryIndexPath, "utf8"));
+  assert.ok(registryIndex.totalCount >= 80, `Expected >= 80 registry components, got ${registryIndex.totalCount}`);
+  assert.ok(Array.isArray(registryIndex.items), "registry index should expose items array");
+
+  const buttonItemPath = path.join(rootDir, "public/registry/button.json");
+  assert.ok(fs.existsSync(buttonItemPath), "public/registry/button.json should exist");
+  const buttonItem = JSON.parse(fs.readFileSync(buttonItemPath, "utf8"));
+  assert.strictEqual(buttonItem.name, "button");
+  assert.ok(buttonItem.files?.[0]?.content?.includes("export function Button"), "button.json should embed Button TSX source");
+  assert.ok(studioContent.includes('{ key: "registry", label: "Component TSX" }'), "Studio Export modal should include Component TSX registry tab");
 });
 
 console.log("\n==================================================");

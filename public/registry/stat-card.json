@@ -1,0 +1,19 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "stat-card",
+  "title": "Stat Card",
+  "type": "registry:ui",
+  "tier": "molecules",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/stat-card.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { TrendingUp, TrendingDown } from \"lucide-react\";\n\nexport interface StatCardProps {\n  label: string;\n  value: string | number;\n  delta?: string;\n  trend?: \"up\" | \"down\" | \"neutral\";\n  comparisonText?: string;\n  icon?: React.ReactNode;\n  badge?: React.ReactNode;\n  sparkline?: React.ReactNode;\n  className?: string;\n}\n\nexport function StatCard({\n  label,\n  value,\n  delta,\n  trend = \"up\",\n  comparisonText = \"vs last month\",\n  icon,\n  badge,\n  sparkline,\n  className = \"\",\n}: StatCardProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <div\n      style={{\n        borderRadius: `${scaled.scaledCardRadius}px`,\n        backgroundColor: tokens.universalFillColor,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${tokens.borderWidth}px`,\n        boxShadow: scaled.cardShadow,\n        transition: scaled.transitionStyle,\n      }}\n      className={`p-5 border space-y-2 select-none min-h-[110px] flex flex-col justify-between ${className}`}\n    >\n      <div className=\"flex items-start justify-between gap-3\">\n        <div className=\"min-w-0 flex-1\">\n          <div className=\"flex items-center gap-2 truncate\">\n            <span\n              title={label}\n              className=\"text-xs font-semibold uppercase tracking-wider text-neutral-400 truncate\"\n            >\n              {label}\n            </span>\n            {badge && <div className=\"shrink-0\">{badge}</div>}\n          </div>\n\n          <div\n            title={String(value)}\n            style={{\n              fontSize: `${Math.round(24 * scaled.scale)}px`,\n              color: tokens.textIconColor,\n            }}\n            className=\"font-bold tabular-nums tracking-tight truncate pt-0.5\"\n          >\n            {value}\n          </div>\n        </div>\n        {icon && (\n          <div\n            style={{\n              borderRadius: `${scaled.scaledRadius}px`,\n              backgroundColor: tokens.hoverBackplateTint,\n              color: tokens.iconColor || tokens.textIconColor,\n            }}\n            className=\"p-2 shrink-0 flex items-center justify-center\"\n          >\n            {icon}\n          </div>\n        )}\n      </div>\n\n      <div className=\"flex items-center justify-between gap-3 pt-1\">\n        {delta && (\n          <div className=\"flex items-center gap-1.5 text-xs truncate\">\n            <span\n              className={`inline-flex items-center gap-1 font-semibold shrink-0 ${\n                trend === \"up\" ? \"text-emerald-600\" : trend === \"down\" ? \"text-rose-600\" : \"text-neutral-500\"\n              }`}\n            >\n              {trend === \"up\" && <TrendingUp className=\"w-3.5 h-3.5 shrink-0\" />}\n              {trend === \"down\" && <TrendingDown className=\"w-3.5 h-3.5 shrink-0\" />}\n              <span className=\"tabular-nums\">{delta}</span>\n            </span>\n            {comparisonText && (\n              <span title={comparisonText} className=\"text-neutral-400 font-medium truncate\">\n                {comparisonText}\n              </span>\n            )}\n          </div>\n        )}\n        {sparkline && <div className=\"shrink-0 ml-auto\">{sparkline}</div>}\n      </div>\n    </div>\n  );\n}\n"
+    }
+  ]
+}

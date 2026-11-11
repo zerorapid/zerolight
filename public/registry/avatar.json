@@ -1,0 +1,17 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "avatar",
+  "title": "Avatar",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/avatar.tsx",
+      "content": "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport type AvatarSize = \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\";\nexport type AvatarStatus = \"online\" | \"idle\" | \"offline\" | \"busy\";\n\nexport interface AvatarProps {\n  initials?: string;\n  src?: string;\n  alt?: string;\n  size?: AvatarSize;\n  status?: AvatarStatus;\n  className?: string;\n}\n\nconst SIZE_CONFIG: Record<\n  AvatarSize,\n  { dimension: number; fontSize: number; statusSize: number }\n> = {\n  xs: { dimension: 24, fontSize: 10, statusSize: 7 },\n  sm: { dimension: 32, fontSize: 11, statusSize: 8 },\n  md: { dimension: 40, fontSize: 13, statusSize: 10 },\n  lg: { dimension: 48, fontSize: 15, statusSize: 12 },\n  xl: { dimension: 64, fontSize: 20, statusSize: 14 },\n};\n\nexport function Avatar({\n  initials = \"ZL\",\n  src,\n  alt = \"User Avatar\",\n  size = \"md\",\n  status,\n  className = \"\",\n}: AvatarProps) {\n  const { tokens, scaled } = useZeroLight();\n  const [imageError, setImageError] = useState(false);\n\n  const { dimension, fontSize, statusSize } = SIZE_CONFIG[size] || SIZE_CONFIG.md;\n\n  const statusColors: Record<AvatarStatus, string> = {\n    online: \"#10B981\",\n    idle: \"#F59E0B\",\n    offline: \"#9CA3AF\",\n    busy: \"#EF4444\",\n  };\n\n  const borderRadius =\n    scaled.scaledRadius === 0\n      ? 0\n      : tokens.cornerRadius === 999\n      ? 9999\n      : Math.max(4, Math.round(tokens.cornerRadius * tokens.scaleMultiplier * (dimension / 40)));\n\n  return (\n    <div className={`relative inline-block shrink-0 ${className}`}>\n      <div\n        style={{\n          width: `${dimension}px`,\n          height: `${dimension}px`,\n          borderRadius: `${borderRadius}px`,\n          backgroundColor: tokens.primaryButtonColor,\n          color: scaled.primaryActionTextColor,\n          fontSize: `${fontSize}px`,\n          borderWidth: `${Math.max(1, tokens.borderWidth)}px`,\n          borderColor: tokens.universalBorderColor,\n        }}\n        className=\"flex items-center justify-center font-bold overflow-hidden shadow-2xs select-none transition-all\"\n      >\n        {src && !imageError ? (\n          <img\n            src={src}\n            alt={alt}\n            onError={() => setImageError(true)}\n            className=\"w-full h-full object-cover\"\n          />\n        ) : (\n          <span>{initials}</span>\n        )}\n      </div>\n\n      {status && (\n        <span\n          style={{\n            width: `${statusSize}px`,\n            height: `${statusSize}px`,\n            backgroundColor: statusColors[status],\n            borderColor: tokens.universalFillColor || \"#FFFFFF\",\n            borderRadius: `${scaled.scaledRadius === 0 ? 0 : 9999}px`,\n          }}\n          className=\"absolute bottom-0 right-0 border-2 shadow-xs ring-1 ring-black/5\"\n          title={`Status: ${status}`}\n        />\n      )}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

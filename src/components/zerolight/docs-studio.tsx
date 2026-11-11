@@ -18,6 +18,7 @@ import {
   SlidersHorizontal,
   Settings,
   AlertCircle,
+  GraduationCap,
   Eye,
   Key,
   Clock,
@@ -72,6 +73,9 @@ import {
   MessageSquare,
   Send,
   CheckCheck,
+  CreditCard,
+  Bot,
+  GripVertical,
 } from "lucide-react";
 import {
   ZeroLightTokens,
@@ -82,8 +86,37 @@ import {
   MotionPhysicsPreset,
   IconStrokePreset,
   IconFillPreset,
+  ChartPalettePreset,
+  ChartGridPreset,
+  ChartStrokePreset,
+  ThemePresetId,
+  THEME_PRESETS,
   computeScaledTokens,
 } from "./types";
+
+const TOKENS_STORAGE_KEY = "zerolight.tokens.v1";
+const STUDIO_WIDTH_STORAGE_KEY = "zerolight.studioWidth.v1";
+
+interface RegistryIndexItem {
+  name: string;
+  title: string;
+  type: string;
+  tier: "core" | "atoms" | "molecules" | "organisms" | "templates" | "views";
+  targetPath: string;
+  dependencies: string[];
+  registryDependencies: string[];
+  lines: number;
+  registryUrl: string;
+}
+
+interface RegistryItemDetail {
+  name: string;
+  title: string;
+  tier: string;
+  dependencies: string[];
+  registryDependencies: string[];
+  files: { path: string; content: string }[];
+}
 import { ZeroLightProvider } from "./context";
 import {
   Skeleton,
@@ -102,6 +135,7 @@ import {
   Badge,
   TagChip,
   Kbd,
+  RadioGroup,
 } from "./atoms";
 import {
   Pagination,
@@ -122,6 +156,28 @@ import {
   StatCard,
   AlertBanner,
   Tooltip,
+  Sparkline,
+  AreaChart,
+  BarChart,
+  HorizontalBarChart,
+  DonutChart,
+  GaugeChart,
+  HeatmapMatrix,
+  FunnelChart,
+  ProfitLossChart,
+  DropdownMenu,
+  DateRangePicker,
+  SplitButton,
+  ConjoinedField,
+  Form,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+  Transfer,
+  TreeSelect,
+  Cascader,
 } from "./molecules";
 import {
   DataTable,
@@ -133,7 +189,25 @@ import {
   QuotaMatrix,
   TreeView,
   ChatConversation,
+  ToastProvider,
+  useToast,
+  AppShell,
 } from "./organisms";
+import {
+  DashboardTemplate,
+  ConsoleTableTemplate,
+  SettingsFormTemplate,
+  AnalyticsReportTemplate,
+  ChatWorkspaceTemplate,
+} from "./templates";
+import {
+  DevConsoleView,
+  BillingView,
+  AiAssistantView,
+  SettingsView,
+  FinexyDashboardInner,
+  SchoolAttendanceInner,
+} from "./views";
 
 const ROLE_OPTIONS = [
   "Administrator",
@@ -240,10 +314,22 @@ const CHART_SPARKLINE_POINTS = [
   { time: "24:00", value: "142k", val: 142 },
 ];
 
-export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atoms" | "molecules" | "organisms" }) {
+export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atoms" | "molecules" | "organisms" | "templates" | "pages" }) {
   const [tokens, setTokens] = useState<ZeroLightTokens>(DEFAULT_TOKENS);
-  const [activeTier, setActiveTier] = useState<"atoms" | "molecules" | "organisms">(initialTier);
+  const [activeTier, setActiveTier] = useState<"atoms" | "molecules" | "organisms" | "templates" | "pages">(initialTier);
+  const [activeTemplateTab, setActiveTemplateTab] = useState<"dashboard" | "console" | "settings" | "analytics" | "chat">("dashboard");
+  const [activePageTab, setActivePageTab] = useState<"dev-console" | "billing" | "ai-assistant" | "settings" | "finexy" | "school-attendance">("dev-console");
   const [isMobileStudioOpen, setIsMobileStudioOpen] = useState<boolean>(false);
+  const [studioCategory, setStudioCategory] = useState<"all" | "motion" | "general" | "colors" | "geometry" | "icons" | "dataviz">("all");
+  const STUDIO_DEFAULT_WIDTH = 300;
+  const STUDIO_MIN_WIDTH = 260;
+  const STUDIO_MAX_WIDTH = 560;
+  const [studioWidth, setStudioWidth] = useState<number>(STUDIO_DEFAULT_WIDTH);
+  const [isResizingStudio, setIsResizingStudio] = useState<boolean>(false);
+  const resizeStartRef = useRef<{ startX: number; startWidth: number; maxAllowed: number } | null>(null);
+  const hasHydratedStorageRef = useRef<boolean>(false);
+  const [sandboxSlideActive, setSandboxSlideActive] = useState<boolean>(false);
+  const [sandboxReplayKey, setSandboxReplayKey] = useState<number>(0);
 
   // Form input interactive state
   const [textInput, setTextInput] = useState<string>("sarah.connor@acme.inc");
@@ -272,10 +358,16 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
   // Molecule: Input Group state
   const [apiKey, setApiKey] = useState<string>("zl_live_8f93e2b17a");
+  const [selectedPlan, setSelectedPlan] = useState<string>("pro");
   const [isApiKeyCopied, setIsApiKeyCopied] = useState<boolean>(false);
 
   // Molecule: Segmented Control state
   const [segmentValue, setSegmentValue] = useState<"monthly" | "quarterly" | "annual">("quarterly");
+
+  // Enterprise Suite states (Transfer, TreeSelect, Cascader)
+  const [transferTargetKeys, setTransferTargetKeys] = useState<string[]>(["perm-read", "perm-audit"]);
+  const [treeSelectValues, setTreeSelectValues] = useState<string[]>(["k8s-us-east", "rds-primary"]);
+  const [cascaderPath, setCascaderPath] = useState<string[]>(["us-east", "prod-01", "vpc-alpha"]);
 
   // Atom interactive states
   const [radioValue, setRadioValue] = useState<"standard" | "pro">("pro");
@@ -395,10 +487,99 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   // Notifications
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Token Export modal state
+  // Token Export & Shadcn-style Component Registry modal state
   const [isExportOpen, setIsExportOpen] = useState<boolean>(false);
-  const [exportFormat, setExportFormat] = useState<"tailwind" | "css" | "json">("tailwind");
+  const [exportFormat, setExportFormat] = useState<"tailwind" | "css" | "json" | "registry">("tailwind");
   const [isExportCopied, setIsExportCopied] = useState<boolean>(false);
+  const [registryItems, setRegistryItems] = useState<RegistryIndexItem[]>([]);
+  const [registryTier, setRegistryTier] = useState<"all" | "atoms" | "molecules" | "organisms" | "templates" | "views" | "core">("all");
+  const [registryQuery, setRegistryQuery] = useState<string>("");
+  const [selectedRegistryName, setSelectedRegistryName] = useState<string>("button");
+  const [selectedRegistryDetail, setSelectedRegistryDetail] = useState<RegistryItemDetail | null>(null);
+  const [isRegistryLoading, setIsRegistryLoading] = useState<boolean>(false);
+
+  // SSR-safe localStorage hydration & persistence for design tokens + studio dock width
+  useEffect(() => {
+    try {
+      const savedTokens = window.localStorage.getItem(TOKENS_STORAGE_KEY);
+      if (savedTokens) {
+        const parsed = JSON.parse(savedTokens) as Partial<ZeroLightTokens>;
+        if (parsed && typeof parsed === "object") {
+          setTokens((prev) => ({ ...prev, ...parsed }));
+        }
+      }
+      const savedWidth = window.localStorage.getItem(STUDIO_WIDTH_STORAGE_KEY);
+      if (savedWidth) {
+        const parsedWidth = Number(savedWidth);
+        if (!Number.isNaN(parsedWidth)) {
+          setStudioWidth(Math.min(STUDIO_MAX_WIDTH, Math.max(STUDIO_MIN_WIDTH, parsedWidth)));
+        }
+      }
+    } catch {
+      // Ignore storage read failures in restricted contexts
+    } finally {
+      hasHydratedStorageRef.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasHydratedStorageRef.current) return;
+    try {
+      window.localStorage.setItem(TOKENS_STORAGE_KEY, JSON.stringify(tokens));
+    } catch {
+      // Ignore quota/storage write errors
+    }
+  }, [tokens]);
+
+  useEffect(() => {
+    if (!hasHydratedStorageRef.current) return;
+    try {
+      window.localStorage.setItem(STUDIO_WIDTH_STORAGE_KEY, String(studioWidth));
+    } catch {
+      // Ignore quota/storage write errors
+    }
+  }, [studioWidth]);
+
+  // Lazy-load component registry index when viewing Component TSX tab
+  useEffect(() => {
+    if (!isExportOpen || exportFormat !== "registry" || registryItems.length > 0) return;
+    let cancelled = false;
+    setIsRegistryLoading(true);
+    fetch("/registry/index.json")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data?.items) {
+          setRegistryItems(data.items);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setIsRegistryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isExportOpen, exportFormat, registryItems.length]);
+
+  useEffect(() => {
+    if (!isExportOpen || exportFormat !== "registry" || !selectedRegistryName) return;
+    let cancelled = false;
+    setIsRegistryLoading(true);
+    fetch(`/registry/${selectedRegistryName}.json`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!cancelled && data) {
+          setSelectedRegistryDetail(data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setIsRegistryLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isExportOpen, exportFormat, selectedRegistryName]);
 
   const getExportSnippet = (format: "tailwind" | "css" | "json", t: ZeroLightTokens) => {
     if (format === "tailwind") {
@@ -448,11 +629,19 @@ module.exports = {
   --zl-icon-stroke: ${t.iconStrokeWidth}px;
   --zl-icon-fill: ${t.iconFill};
   --zl-icon-color: ${t.iconColor};
+  --zl-direction: ${t.direction};
+  --zl-motion-physics: ${t.motionPhysics};
+  --zl-motion-speed: ${t.motionSpeedMultiplier};
+  --zl-motion-mass: ${t.motionMass ?? "auto"};
+  --zl-motion-distance: ${t.motionDistance ?? "auto"};
+  --zl-hover-scale: ${t.hoverScale ?? "auto"};
+  --zl-chart-primary: ${t.chartPrimaryColor};
 }`;
     }
     return JSON.stringify(
       {
         scaleMultiplier: t.scaleMultiplier,
+        direction: t.direction,
         universalBorderColor: t.universalBorderColor,
         universalFillColor: t.universalFillColor,
         textIconColor: t.textIconColor,
@@ -464,10 +653,23 @@ module.exports = {
         menuOffsetGap: t.menuOffsetGap,
         fontSize: t.fontSize,
         motionPhysics: t.motionPhysics,
+        motionSpeedMultiplier: t.motionSpeedMultiplier,
+        motionStiffness: t.motionStiffness,
+        motionDamping: t.motionDamping,
+        motionMass: t.motionMass,
+        motionDistance: t.motionDistance,
+        tapScale: t.tapScale,
+        hoverScale: t.hoverScale,
         iconScaleMultiplier: t.iconScaleMultiplier,
         iconStrokeWidth: t.iconStrokeWidth,
         iconFill: t.iconFill,
         iconColor: t.iconColor,
+        chartPalette: t.chartPalette,
+        chartPrimaryColor: t.chartPrimaryColor,
+        chartSecondaryColor: t.chartSecondaryColor,
+        chartStrokeWidth: t.chartStrokeWidth,
+        chartFillOpacity: t.chartFillOpacity,
+        chartGridStyle: t.chartGridStyle,
       },
       null,
       2
@@ -513,6 +715,126 @@ module.exports = {
       if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
     };
   }, []);
+
+  // Visual Studio left-side drag-to-resize engine
+  useEffect(() => {
+    if (!isResizingStudio) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!resizeStartRef.current) return;
+      const { startX, startWidth, maxAllowed } = resizeStartRef.current;
+      const deltaX = startX - e.clientX;
+      const nextWidth = Math.min(maxAllowed, Math.max(STUDIO_MIN_WIDTH, Math.round(startWidth + deltaX)));
+      setStudioWidth(nextWidth);
+    };
+
+    const stopResizing = () => {
+      resizeStartRef.current = null;
+      setIsResizingStudio(false);
+    };
+
+    const prevCursor = document.body.style.cursor;
+    const prevUserSelect = document.body.style.userSelect;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", stopResizing);
+    window.addEventListener("pointercancel", stopResizing);
+
+    return () => {
+      document.body.style.cursor = prevCursor;
+      document.body.style.userSelect = prevUserSelect;
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", stopResizing);
+      window.removeEventListener("pointercancel", stopResizing);
+    };
+  }, [isResizingStudio]);
+
+  const startStudioResize = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>, maxCap = STUDIO_MAX_WIDTH) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const viewportCap =
+        typeof window !== "undefined"
+          ? Math.max(STUDIO_MIN_WIDTH, window.innerWidth >= 1280 ? window.innerWidth - 360 : window.innerWidth - 36)
+          : maxCap;
+      resizeStartRef.current = {
+        startX: e.clientX,
+        startWidth: studioWidth,
+        maxAllowed: Math.min(maxCap, viewportCap),
+      };
+      setIsResizingStudio(true);
+    },
+    [studioWidth]
+  );
+
+  const handleStudioResizeKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    const maxAllowed =
+      typeof window !== "undefined"
+        ? Math.min(STUDIO_MAX_WIDTH, Math.max(STUDIO_MIN_WIDTH, window.innerWidth - 360))
+        : STUDIO_MAX_WIDTH;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setStudioWidth((w) => Math.min(maxAllowed, w + 16));
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setStudioWidth((w) => Math.max(STUDIO_MIN_WIDTH, w - 16));
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      setStudioWidth(maxAllowed);
+    } else if (e.key === "End") {
+      e.preventDefault();
+      setStudioWidth(STUDIO_MIN_WIDTH);
+    } else if (e.key === "Enter" || e.key === "0") {
+      e.preventDefault();
+      setStudioWidth(STUDIO_DEFAULT_WIDTH);
+    }
+  }, []);
+
+  const renderLeftResizer = (maxCap = STUDIO_MAX_WIDTH) => (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize Visual Studio panel"
+      aria-valuemin={STUDIO_MIN_WIDTH}
+      aria-valuemax={maxCap}
+      aria-valuenow={studioWidth}
+      tabIndex={0}
+      title="Drag left or right to scale Visual Studio (Double-click to reset)"
+      onPointerDown={(e) => startStudioResize(e, maxCap)}
+      onDoubleClick={() => setStudioWidth(STUDIO_DEFAULT_WIDTH)}
+      onKeyDown={handleStudioResizeKeyDown}
+      className="group absolute inset-y-0 -left-2 w-4 z-30 cursor-col-resize touch-none flex items-center justify-center focus:outline-none"
+    >
+      {/* Active vertical highlight rail */}
+      <div
+        className={`w-[2px] h-full transition-colors duration-150 ${
+          isResizingStudio
+            ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.75)]"
+            : "bg-transparent group-hover:bg-emerald-400/70 group-focus-visible:bg-emerald-400"
+        }`}
+      />
+      {/* Tactile centered grip pill */}
+      <div
+        className={`absolute top-1/2 -translate-y-1/2 flex items-center justify-center w-4 h-10 rounded-full border shadow-lg transition-all duration-150 ${
+          isResizingStudio
+            ? "bg-emerald-500 border-emerald-300 text-black scale-105 opacity-100"
+            : "bg-[#18181B] border-[#3F3F46] text-neutral-400 opacity-80 group-hover:opacity-100 group-hover:border-emerald-400/70 group-hover:text-white group-focus-visible:opacity-100"
+        }`}
+      >
+        <GripVertical className="w-3 h-3" />
+      </div>
+      {/* Live width HUD while resizing or hovering */}
+      <span
+        className={`pointer-events-none absolute top-4 right-5 px-2 py-0.5 rounded bg-[#18181B] border border-[#3F3F46] text-[10px] font-semibold tabular-nums text-emerald-300 shadow-lg whitespace-nowrap transition-opacity duration-150 ${
+          isResizingStudio ? "opacity-100" : "opacity-0 group-hover:opacity-90"
+        }`}
+      >
+        {studioWidth}px
+      </span>
+    </div>
+  );
 
   // Outside click & Escape dismiss listeners with robust cleanup
   useEffect(() => {
@@ -589,7 +911,14 @@ module.exports = {
 
   const handleResetDefaults = () => {
     setTokens(DEFAULT_TOKENS);
-    triggerToast("Restored default tokens");
+    setStudioWidth(STUDIO_DEFAULT_WIDTH);
+    try {
+      window.localStorage.removeItem(TOKENS_STORAGE_KEY);
+      window.localStorage.removeItem(STUDIO_WIDTH_STORAGE_KEY);
+    } catch {
+      // Ignore storage clear errors
+    }
+    triggerToast("Restored default tokens & dock width");
   };
 
   const handleToggleTag = (t: string) => {
@@ -626,43 +955,80 @@ module.exports = {
 
   const renderStudioControls = () => (
     <>
+      <div className="space-y-4">
+        {/* Dark Mode Header with Reset */}
+        <div className="flex justify-between items-center pb-2 border-b border-[#27272A]">
+          <span className="text-xs font-semibold tracking-wide text-white">
+            Visual Studio
+          </span>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setIsExportOpen(true)}
+              className="px-2 py-0.5 rounded text-[11px] font-semibold bg-white text-black hover:bg-neutral-200 transition-colors flex items-center gap-1 cursor-pointer shadow-xs"
+            >
+              <Code2 className="w-3 h-3" />
+              <span>Export</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleResetDefaults}
+              className="text-xs text-neutral-400 hover:text-white transition-colors font-medium cursor-pointer"
+            >
+              Reset
+            </button>
+            {isMobileStudioOpen && (
+              <button
+                type="button"
+                onClick={() => setIsMobileStudioOpen(false)}
+                className="xl:hidden ml-1 p-1 rounded text-neutral-400 hover:text-white hover:bg-neutral-800 cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </div>
 
-          <div className="space-y-5">
-            {/* Dark Mode Header with Reset */}
-            <div className="flex justify-between items-center pb-2 border-b border-[#27272A]">
-              <span className="text-xs font-semibold tracking-wide text-white">
-                Visual Studio
+        {/* Category Segmented Switcher */}
+        <div className="grid grid-cols-4 gap-1 bg-[#18181B] p-1 rounded-lg border border-[#27272A]">
+          {[
+            { id: "all", label: "All" },
+            { id: "motion", label: "Motion" },
+            { id: "general", label: "General" },
+            { id: "colors", label: "Colors" },
+            { id: "geometry", label: "Geometry" },
+            { id: "icons", label: "Icons" },
+            { id: "dataviz", label: "Data Viz" },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setStudioCategory(cat.id as any)}
+              className={`py-1 text-[11px] font-medium rounded transition-all text-center cursor-pointer ${
+                studioCategory === cat.id
+                  ? "bg-white text-black font-semibold shadow-xs"
+                  : "text-neutral-400 hover:text-white hover:bg-[#27272A]"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── 1. General & Scale ── */}
+        {(studioCategory === "all" || studioCategory === "general") && (
+          <div className="space-y-3 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+            <div className="flex items-center justify-between pb-1 border-b border-[#27272A]/70">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                General &amp; Scale
               </span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setIsExportOpen(true)}
-                  className="px-2 py-0.5 rounded text-[11px] font-semibold bg-white text-black hover:bg-neutral-200 transition-colors flex items-center gap-1 cursor-pointer shadow-xs"
-                >
-                  <Code2 className="w-3 h-3" />
-                  <span>Export</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleResetDefaults}
-                  className="text-xs text-neutral-400 hover:text-white transition-colors font-medium cursor-pointer"
-                >
-                  Reset
-                </button>
-                {isMobileStudioOpen && (
-                  <button
-                    type="button"
-                    onClick={() => setIsMobileStudioOpen(false)}
-                    className="xl:hidden ml-1 p-1 rounded text-neutral-400 hover:text-white hover:bg-neutral-800 cursor-pointer"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
+              <span className="text-[10px] text-neutral-500 tabular-nums">
+                {tokens.scaleMultiplier.toFixed(2)}x
+              </span>
             </div>
 
             {/* Dark Mode Scale Multiplier Controller */}
-            <div className="space-y-2 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-neutral-300">
                   Scale multiplier
@@ -707,430 +1073,149 @@ module.exports = {
               </div>
             </div>
 
-            {/* Dark Mode Colors Section */}
-            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Colors
+            {/* Typography Section */}
+            <div className="space-y-1 text-xs pt-2 border-t border-[#27272A]/70">
+              <div className="flex justify-between">
+                <span className="text-neutral-300">Base font scale</span>
+                <span className="text-neutral-400 font-medium">{tokens.fontSize}px</span>
               </div>
-
-              {/* Universal Border Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Border</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalBorderColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.universalBorderColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.universalBorderColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, universalBorderColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Universal Fill Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Surface</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalFillColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.universalFillColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.universalFillColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, universalFillColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Text & Icon Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Text &amp; icons</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.textIconColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.textIconColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.textIconColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, textIconColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Primary Action Color */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Primary action</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.primaryButtonColor.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.primaryButtonColor }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.primaryButtonColor}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, primaryButtonColor: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Hover Backplate Tint */}
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-300">Hover tint</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-neutral-400 font-medium">{tokens.hoverBackplateTint.toUpperCase()}</span>
-                  <label className="relative cursor-pointer">
-                    <span
-                      style={{ backgroundColor: tokens.hoverBackplateTint }}
-                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                    />
-                    <input
-                      type="color"
-                      value={tokens.hoverBackplateTint}
-                      onChange={(e) => setTokens((prev) => ({ ...prev, hoverBackplateTint: e.target.value }))}
-                      className="sr-only"
-                    />
-                  </label>
-                </div>
+              <input
+                type="range"
+                min="12"
+                max="18"
+                step="1"
+                value={tokens.fontSize}
+                onChange={(e) => setTokens((prev) => ({ ...prev, fontSize: Number(e.target.value) }))}
+                className="w-full cursor-pointer accent-white"
+              />
+              <div className="flex justify-between text-[10px] text-neutral-500 pt-0.5">
+                <span>12px Compact</span>
+                <span>14px Standard</span>
+                <span>18px Roomy</span>
               </div>
             </div>
 
-            {/* Dark Mode Geometry Section */}
-            <div className="space-y-2.5 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Geometry
-              </div>
-
-              {/* Border Width Slider */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-300">Border width</span>
-                  {tokens.borderWidth === 0 ? (
-                    <span className="text-[10px] text-amber-400 font-medium bg-amber-950/60 border border-amber-800/60 px-1.5 py-0.5 rounded">
-                      0px • Luminance Mode
-                    </span>
-                  ) : (
-                    <span className="text-neutral-400 font-medium">{tokens.borderWidth}px</span>
-                  )}
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="5"
-                  step="1"
-                  value={tokens.borderWidth}
-                  onChange={(e) => setTokens((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))}
-                  className="w-full cursor-pointer accent-white"
-                />
-                {tokens.borderWidth === 0 && (
-                  <p className="text-[10px] text-neutral-500 pt-0.5">
-                    Compensatory luminance fill & atmospheric elevation active to prevent edge bleed.
-                  </p>
-                )}
-              </div>
-
-              {/* Corner Radius */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Corner radius</span>
-                  <span className="text-neutral-400 font-medium">
-                    {tokens.cornerRadius === 999 ? "Pill" : `${tokens.cornerRadius}px`}
-                  </span>
-                </div>
-                <div className="grid grid-cols-5 gap-1">
-                  {([0, 8, 16, 24, 999] as CornerRadiusPreset[]).map((r) => (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, cornerRadius: r }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.cornerRadius === r
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {r === 0 ? "0px" : r === 999 ? "Pill" : `${r}px`}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Height Density */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Height density</span>
-                  <span className="text-neutral-400 font-medium">{tokens.heightDensity}px</span>
-                </div>
-                <div className="grid grid-cols-5 gap-1">
-                  {([36, 40, 44, 48, 52] as HeightDensityPreset[]).map((h) => (
-                    <button
-                      key={h}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, heightDensity: h }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.heightDensity === h
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {h}px
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Menu Offset */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Menu offset</span>
-                  <span className="text-neutral-400 font-medium">{tokens.menuOffsetGap}px</span>
-                </div>
-                <div className="grid grid-cols-4 gap-1">
-                  {([4, 8, 10, 14] as MenuOffsetPreset[]).map((g) => (
-                    <button
-                      key={g}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, menuOffsetGap: g }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.menuOffsetGap === g
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {g}px
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Dark Mode Typography Section (Universally Calibrating) */}
-            <div className="space-y-2 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Universal Typography
-              </div>
-
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-neutral-300">Base font scale</span>
-                  <span className="text-neutral-400 font-medium">{tokens.fontSize}px</span>
-                </div>
-                <input
-                  type="range"
-                  min="12"
-                  max="18"
-                  step="1"
-                  value={tokens.fontSize}
-                  onChange={(e) => setTokens((prev) => ({ ...prev, fontSize: Number(e.target.value) }))}
-                  className="w-full cursor-pointer accent-white"
-                />
-                <div className="flex justify-between text-[10px] text-neutral-500 pt-0.5">
-                  <span>12px Compact</span>
-                  <span>14px Standard</span>
-                  <span>18px Roomy</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Dark Mode Iconography & Vector Tuning */}
-            <div className="space-y-3 pt-2 border-t border-[#27272A]">
+            {/* Bi-Directional RTL / LTR Engine */}
+            <div className="space-y-1.5 pt-2 border-t border-[#27272A]/70">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-neutral-400">
-                  Iconography &amp; Vectors
-                </span>
-                <span className="text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-1.5 py-0.5 rounded font-sans">
-                  {tokens.iconScaleMultiplier.toFixed(2)}x • {tokens.iconStrokeWidth}px
-                </span>
+                <span className="text-xs font-medium text-neutral-400">Layout Direction</span>
+                <span className="text-[10px] text-neutral-500 uppercase">{tokens.direction || "ltr"}</span>
               </div>
-
-              {/* Icon Scale Multiplier */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-300">Icon scale</span>
-                  <span className="text-neutral-400 font-medium">
-                    {tokens.iconScaleMultiplier.toFixed(2)}x ({scaled.iconSize}px)
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0.75"
-                  max="1.50"
-                  step="0.05"
-                  value={tokens.iconScaleMultiplier}
-                  onChange={(e) =>
-                    setTokens((prev) => ({ ...prev, iconScaleMultiplier: Number(e.target.value) }))
-                  }
-                  className="w-full cursor-pointer accent-white"
-                />
-                <div className="grid grid-cols-4 gap-1 pt-0.5">
-                  {[
-                    { label: "0.85x", val: 0.85 },
-                    { label: "1.00x", val: 1.0 },
-                    { label: "1.20x", val: 1.2 },
-                    { label: "1.40x", val: 1.4 },
-                  ].map(({ label, val }) => (
-                    <button
-                      key={label}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, iconScaleMultiplier: val }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        Math.abs(tokens.iconScaleMultiplier - val) < 0.02
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Icon Stroke Width */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-300">Stroke width</span>
-                  <span className="text-neutral-400 font-medium">{tokens.iconStrokeWidth}px</span>
-                </div>
-                <div className="grid grid-cols-5 gap-1">
-                  {([1.25, 1.5, 2.0, 2.5, 3.0] as IconStrokePreset[]).map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, iconStrokeWidth: s }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.iconStrokeWidth === s
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {s}px
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Icon Fill */}
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between items-center">
-                  <span className="text-neutral-300">Fill style</span>
-                  <span className="text-neutral-400 font-medium capitalize">{tokens.iconFill}</span>
-                </div>
-                <div className="grid grid-cols-3 gap-1">
-                  {(
-                    [
-                      { key: "none", label: "None" },
-                      { key: "subtle", label: "Subtle Tint" },
-                      { key: "currentColor", label: "Solid" },
-                    ] as { key: IconFillPreset; label: string }[]
-                  ).map(({ key, label }) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setTokens((prev) => ({ ...prev, iconFill: key }))}
-                      className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
-                        tokens.iconFill === key
-                          ? "bg-white text-black border-white font-semibold shadow-sm"
-                          : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Icon Color */}
-              <div className="space-y-1 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-neutral-300">Icon color</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] text-neutral-400 font-sans font-medium">
-                      {tokens.iconColor.toUpperCase()}
-                    </span>
-                    <label className="relative cursor-pointer">
-                      <span
-                        style={{ backgroundColor: tokens.iconColor }}
-                        className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
-                      />
-                      <input
-                        type="color"
-                        value={tokens.iconColor}
-                        onChange={(e) => setTokens((prev) => ({ ...prev, iconColor: e.target.value }))}
-                        className="sr-only"
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                {/* Quick Swatches */}
-                <div className="flex items-center justify-between gap-1 pt-1">
-                  {[
-                    { label: "Muted", color: "#71717A" },
-                    { label: "Deep", color: "#18181B" },
-                    { label: "Brand", color: tokens.primaryButtonColor },
-                    { label: "Indigo", color: "#6366F1" },
-                    { label: "Emerald", color: "#10B981" },
-                    { label: "Amber", color: "#F59E0B" },
-                    { label: "Rose", color: "#EF4444" },
-                  ].map(({ label, color }) => (
-                    <button
-                      key={label}
-                      type="button"
-                      title={label}
-                      onClick={() => setTokens((prev) => ({ ...prev, iconColor: color }))}
-                      style={{ backgroundColor: color }}
-                      className={`w-6 h-6 rounded-md border transition-all cursor-pointer ${
-                        tokens.iconColor.toLowerCase() === color.toLowerCase()
-                          ? "ring-2 ring-white ring-offset-1 ring-offset-[#121214] scale-110"
-                          : "border-white/20 hover:scale-105 opacity-80 hover:opacity-100"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Dark Mode Motion Section */}
-            <div className="space-y-2 pt-2 border-t border-[#27272A]">
-              <div className="text-xs font-medium text-neutral-400">
-                Motion
-              </div>
-
-              <div className="grid grid-cols-3 gap-1">
+              <div className="grid grid-cols-2 gap-1">
                 {(
                   [
-                    { key: "linear", label: "Linear" },
-                    { key: "damped", label: "Damped" },
-                    { key: "elastic", label: "Elastic" },
-                  ] as { key: MotionPhysicsPreset; label: string }[]
+                    { key: "ltr", label: "LTR (Left-to-Right)" },
+                    { key: "rtl", label: "RTL (Right-to-Left)" },
+                  ] as const
                 ).map(({ key, label }) => (
                   <button
                     key={key}
                     type="button"
-                    onClick={() => setTokens((prev) => ({ ...prev, motionPhysics: key }))}
-                    className={`py-1.5 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                    onClick={() => setTokens((prev) => ({ ...prev, direction: key }))}
+                    className={`py-1.5 px-2 rounded text-[11px] font-medium border transition-colors cursor-pointer ${
+                      (tokens.direction || "ltr") === key
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── 2. Motion Physics & Animation Engine ── */}
+        {(studioCategory === "all" || studioCategory === "motion") && (
+          <div className="space-y-3 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+            <div className="flex items-center justify-between pb-1 border-b border-[#27272A]/70">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                Motion Physics Engine
+              </span>
+              <span className="text-[10px] text-emerald-400 font-semibold tabular-nums">
+                {tokens.motionPhysics} • {tokens.motionSpeedMultiplier ?? 1.0}x
+              </span>
+            </div>
+
+            {/* Presets Grid */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-neutral-300 font-medium">Physics Profiles</span>
+                <span className="text-[10px] text-neutral-500 font-sans">6 Presets</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {(
+                  [
+                    { key: "instant", label: "Instant", badge: "0ms" },
+                    { key: "snappy", label: "Snappy", badge: "120ms" },
+                    { key: "damped", label: "Damped", badge: "200ms" },
+                    { key: "gentle", label: "Gentle", badge: "320ms" },
+                    { key: "elastic", label: "Elastic", badge: "360ms" },
+                    { key: "linear", label: "Linear", badge: "150ms" },
+                  ] as { key: MotionPhysicsPreset; label: string; badge: string }[]
+                ).map(({ key, label, badge }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() =>
+                      setTokens((prev) => ({
+                        ...prev,
+                        motionPhysics: key,
+                        motionStiffness: undefined,
+                        motionDamping: undefined,
+                        motionMass: undefined,
+                        motionDistance: undefined,
+                        tapScale: undefined,
+                        hoverScale: undefined,
+                      }))
+                    }
+                    className={`py-1.5 px-2 rounded text-xs border transition-colors cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                       tokens.motionPhysics === key
                         ? "bg-white text-black border-white font-semibold shadow-sm"
-                        : "bg-[#18181B] text-neutral-300 border-[#27272A] hover:border-neutral-500"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    <span>{label}</span>
+                    <span
+                      className={`text-[9px] tabular-nums ${
+                        tokens.motionPhysics === key ? "text-neutral-600" : "text-neutral-500"
+                      }`}
+                    >
+                      {badge}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="text-[11px] text-neutral-400 leading-snug pt-0.5">
+                {scaled.motionConfig.description}
+              </p>
+            </div>
+
+            {/* Speed Multiplier / Time Dilation */}
+            <div className="space-y-1 text-xs pt-2 border-t border-[#27272A]/70">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Animation Speed / Time Dilation</span>
+                <span className="text-neutral-400 font-medium tabular-nums">
+                  {tokens.motionSpeedMultiplier ?? 1.0}x
+                </span>
+              </div>
+              <div className="grid grid-cols-5 gap-1">
+                {[
+                  { label: "0.25x", val: 0.25 },
+                  { label: "0.5x", val: 0.5 },
+                  { label: "1.0x", val: 1.0 },
+                  { label: "1.5x", val: 1.5 },
+                  { label: "2.0x", val: 2.0 },
+                ].map(({ label, val }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, motionSpeedMultiplier: val }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      (tokens.motionSpeedMultiplier ?? 1.0) === val
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
                     }`}
                   >
                     {label}
@@ -1139,37 +1224,935 @@ module.exports = {
               </div>
             </div>
 
-            {/* 1-Click Export Tokens CTA */}
-            <div className="pt-2 border-t border-[#27272A]">
+            {/* Spring Stiffness, Damping, Mass & Distance */}
+            <div className="space-y-2.5 text-xs pt-2 border-t border-[#27272A]/70">
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Spring Stiffness (Tension)</span>
+                  <span className="text-neutral-400 font-medium tabular-nums">
+                    {scaled.motionConfig.spring.stiffness}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="150"
+                  max="700"
+                  step="10"
+                  value={Math.min(700, scaled.motionConfig.spring.stiffness)}
+                  onChange={(e) => setTokens((prev) => ({ ...prev, motionStiffness: Number(e.target.value) }))}
+                  className="w-full accent-white bg-[#27272A] rounded h-1 cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Spring Damping (Friction)</span>
+                  <span className="text-neutral-400 font-medium tabular-nums">
+                    {scaled.motionConfig.spring.damping}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="10"
+                  max="55"
+                  step="1"
+                  value={Math.min(55, scaled.motionConfig.spring.damping)}
+                  onChange={(e) => setTokens((prev) => ({ ...prev, motionDamping: Number(e.target.value) }))}
+                  className="w-full accent-white bg-[#27272A] rounded h-1 cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Spring Mass (Inertia)</span>
+                  <span className="text-neutral-400 font-medium tabular-nums">
+                    {(scaled.motionConfig.spring.mass ?? 0.9).toFixed(1)}kg
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0.4"
+                  max="2.5"
+                  step="0.1"
+                  value={scaled.motionConfig.spring.mass ?? 0.9}
+                  onChange={(e) => setTokens((prev) => ({ ...prev, motionMass: Number(e.target.value) }))}
+                  className="w-full accent-white bg-[#27272A] rounded h-1 cursor-pointer"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex justify-between items-center">
+                  <span className="text-neutral-300">Entrance Slide Distance</span>
+                  <span className="text-neutral-400 font-medium tabular-nums">
+                    {scaled.motionConfig.distance}px
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="24"
+                  step="2"
+                  value={scaled.motionConfig.distance}
+                  onChange={(e) => setTokens((prev) => ({ ...prev, motionDistance: Number(e.target.value) }))}
+                  className="w-full accent-white bg-[#27272A] rounded h-1 cursor-pointer"
+                />
+              </div>
+            </div>
+
+            {/* Hover Lift Scale */}
+            <div className="space-y-1 text-xs pt-2 border-t border-[#27272A]/70">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Tactile Hover Lift</span>
+                <span className="text-neutral-400 font-medium tabular-nums">
+                  {scaled.motionConfig.hoverScale.toFixed(2)}x
+                </span>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                {[
+                  { label: "1.00x", val: 1.0, sub: "Flat" },
+                  { label: "1.01x", val: 1.01, sub: "Subtle" },
+                  { label: "1.02x", val: 1.02, sub: "Crisp" },
+                  { label: "1.04x", val: 1.04, sub: "Pop" },
+                ].map(({ label, val, sub }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, hoverScale: val }))}
+                    className={`py-1 rounded text-xs border transition-colors cursor-pointer flex flex-col items-center ${
+                      scaled.motionConfig.hoverScale === val
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    <span>{label}</span>
+                    <span className="text-[9px] opacity-70">{sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Haptic Tap Compression Scale */}
+            <div className="space-y-1 text-xs pt-2 border-t border-[#27272A]/70">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Tactile Tap Compression</span>
+                <span className="text-neutral-400 font-medium tabular-nums">
+                  {Math.round(scaled.motionConfig.tapScale * 100)}%
+                </span>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                {[
+                  { label: "100%", val: 1.0, sub: "Rigid" },
+                  { label: "98%", val: 0.98, sub: "Subtle" },
+                  { label: "95%", val: 0.95, sub: "Tactile" },
+                  { label: "90%", val: 0.90, sub: "Deep" },
+                ].map(({ label, val, sub }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, tapScale: val }))}
+                    className={`py-1 rounded text-xs border transition-colors cursor-pointer flex flex-col items-center ${
+                      scaled.motionConfig.tapScale === val
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    <span>{label}</span>
+                    <span className="text-[9px] opacity-70">{sub}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Interactive Live Motion Oscilloscope & Sandbox */}
+            <div className="p-3 rounded-lg bg-[#27272A]/70 border border-[#3F3F46] space-y-2.5">
+              <div className="flex items-center justify-between text-[11px] text-neutral-300 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                  Live Motion Sandbox
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSandboxReplayKey((k) => k + 1)}
+                  className="text-[10px] text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer flex items-center gap-1"
+                >
+                  <RefreshCw className="w-2.5 h-2.5" />
+                  <span>Replay</span>
+                </button>
+              </div>
+
+              {/* Dynamic Physics Response Waveform (reflects stiffness, damping, mass, speed & preset) */}
+              <div className="h-11 w-full bg-[#18181B] rounded border border-[#3F3F46]/70 flex items-center justify-center overflow-hidden px-2 relative">
+                <svg className="w-full h-9 overflow-visible" viewBox="0 0 200 40">
+                  <line x1="8" y1="20" x2="192" y2="20" stroke="#3F3F46" strokeWidth="1" strokeDasharray="3 3" />
+                  {(() => {
+                    if (tokens.motionPhysics === "instant") {
+                      return (
+                        <path
+                          d="M 8 34 L 24 34 L 24 10 L 192 10"
+                          fill="none"
+                          stroke="#10B981"
+                          strokeWidth="2"
+                          strokeLinecap="square"
+                        />
+                      );
+                    }
+                    if (tokens.motionPhysics === "linear" && tokens.motionStiffness === undefined && tokens.motionDamping === undefined) {
+                      const riseEnd = Math.max(24, Math.min(180, Math.round(90 / (tokens.motionSpeedMultiplier ?? 1))));
+                      return (
+                        <path
+                          d={`M 8 34 L ${riseEnd} 10 L 192 10`}
+                          fill="none"
+                          stroke="#10B981"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      );
+                    }
+                    const k = scaled.motionConfig.spring.stiffness;
+                    const c = scaled.motionConfig.spring.damping;
+                    const m = scaled.motionConfig.spring.mass ?? 0.9;
+                    const omega = Math.sqrt(k / m) * 0.35;
+                    const zeta = c / (2 * Math.sqrt(k * m));
+                    const points: string[] = [];
+                    for (let i = 0; i <= 46; i++) {
+                      const t = (i / 46) * 2.2;
+                      const x = 8 + (i / 46) * 184;
+                      const env = Math.exp(-zeta * omega * t * 1.4);
+                      const disp =
+                        zeta < 1
+                          ? env * Math.cos(omega * Math.sqrt(Math.max(0.05, 1 - zeta * zeta)) * t * 2.4)
+                          : env * (1 + omega * t);
+                      const y = Math.max(3, Math.min(37, 14 + disp * 20));
+                      points.push(`${i === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`);
+                    }
+                    return (
+                      <path
+                        d={points.join(" ")}
+                        fill="none"
+                        stroke="#10B981"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                      />
+                    );
+                  })()}
+                </svg>
+              </div>
+
+              {/* Interactive Spring Pill Glide Test */}
               <button
                 type="button"
-                onClick={() => setIsExportOpen(true)}
-                className="w-full py-2.5 px-3 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-colors select-none"
+                onClick={() => setSandboxSlideActive((v) => !v)}
+                className="w-full p-1 rounded-lg bg-[#18181B] border border-[#3F3F46] flex items-center justify-between relative cursor-pointer"
               >
-                <Code2 className="w-3.5 h-3.5" />
-                <span>Export Theme Tokens</span>
+                <div className="flex-1 py-1 text-[10px] font-semibold text-center relative z-10 text-neutral-300">
+                  State A
+                </div>
+                <div className="flex-1 py-1 text-[10px] font-semibold text-center relative z-10 text-neutral-300">
+                  State B
+                </div>
+                <motion.div
+                  animate={{ x: sandboxSlideActive ? "100%" : "0%" }}
+                  transition={scaled.motionConfig.pillTransition}
+                  className="absolute left-1 top-1 bottom-1 w-[calc(50%-4px)] rounded bg-emerald-500/25 border border-emerald-400/70"
+                />
               </button>
+
+              {/* Entrance Distance & Replay Box */}
+              <motion.div
+                key={sandboxReplayKey}
+                initial={{
+                  opacity: tokens.motionPhysics === "instant" ? 1 : 0,
+                  y: scaled.motionConfig.distance,
+                  scale: scaled.motionConfig.popover.initial.scale,
+                }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={scaled.motionConfig.transition}
+                className="px-2.5 py-1.5 rounded bg-[#18181B] border border-[#3F3F46]/80 flex items-center justify-between text-[10px] text-neutral-300"
+              >
+                <span>Slide Travel Preview ({scaled.motionConfig.distance}px)</span>
+                <span className="text-emerald-400 font-semibold tabular-nums">
+                  {Math.round((scaled.motionConfig.spring.mass ?? 0.9) * 10) / 10}kg
+                </span>
+              </motion.div>
+
+              {/* Live Interactive Physics Controls */}
+              <div className="flex items-center gap-2 pt-0.5">
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: scaled.motionConfig.hoverScale }}
+                  whileTap={{ scale: scaled.motionConfig.tapScale }}
+                  transition={scaled.motionConfig.transition}
+                  onClick={() => triggerToast(`Spring pulse triggered (${tokens.motionPhysics} • ${tokens.motionSpeedMultiplier ?? 1}x)`)}
+                  className="flex-1 py-1.5 px-2 rounded text-xs font-semibold bg-white text-black hover:bg-neutral-200 cursor-pointer shadow-xs text-center transform-gpu"
+                >
+                  Test Tap &amp; Hover
+                </motion.button>
+                <button
+                  type="button"
+                  onClick={() => setIsDrawerOpen(true)}
+                  className="py-1.5 px-2.5 rounded text-xs font-medium border border-[#3F3F46] text-neutral-300 hover:text-white hover:border-neutral-400 cursor-pointer text-center"
+                >
+                  Test Drawer
+                </button>
+              </div>
             </div>
           </div>
+        )}
 
-          <div className="pt-4 border-t border-[#27272A] flex items-center justify-between text-xs text-neutral-500">
-            <span>Visual Studio Engine</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+        {/* ── 2. Colors ── */}
+        {(studioCategory === "all" || studioCategory === "colors") && (
+          <div className="space-y-2.5 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+            <div className="flex items-center justify-between pb-1 border-b border-[#27272A]/70">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                Colors &amp; Theme Polarity
+              </span>
+              <span className="text-[10px] text-neutral-500 tabular-nums">5 Tokens</span>
+            </div>
+
+            {/* 1-Click Theme Polarity Presets */}
+            <div className="space-y-1.5 pb-2 border-b border-[#27272A]/60">
+              <span className="text-[11px] text-neutral-400">Theme Polarity</span>
+              <div className="grid grid-cols-2 gap-1.5">
+                {(Object.keys(THEME_PRESETS) as ThemePresetId[]).map((presetKey) => {
+                  const preset = THEME_PRESETS[presetKey];
+                  const isActive =
+                    tokens.universalFillColor.toLowerCase() === (preset.tokens.universalFillColor || "").toLowerCase() &&
+                    tokens.primaryButtonColor.toLowerCase() === (preset.tokens.primaryButtonColor || "").toLowerCase() &&
+                    tokens.universalBorderColor.toLowerCase() === (preset.tokens.universalBorderColor || "").toLowerCase();
+                  return (
+                    <button
+                      key={presetKey}
+                      type="button"
+                      data-testid={`theme-preset-${presetKey}`}
+                      onClick={() => {
+                        handleUpdateTokens(preset.tokens);
+                        triggerToast(`Theme preset: ${preset.label}`);
+                      }}
+                      className={`px-2 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-2 transition-all cursor-pointer ${
+                        isActive
+                          ? "bg-white text-black border-white font-semibold shadow-sm"
+                          : "bg-[#222226] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                      }`}
+                    >
+                      <span
+                        style={{ backgroundColor: preset.swatchBg, borderColor: preset.swatchAccent }}
+                        className="w-3.5 h-3.5 rounded-full border-2 shrink-0 flex items-center justify-center"
+                      >
+                        <span
+                          style={{ backgroundColor: preset.swatchAccent }}
+                          className="w-1.5 h-1.5 rounded-full"
+                        />
+                      </span>
+                      <span className="truncate">{preset.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Universal Border Color */}
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-neutral-300">Border</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalBorderColor.toUpperCase()}</span>
+                <label className="relative cursor-pointer">
+                  <span
+                    style={{ backgroundColor: tokens.universalBorderColor }}
+                    className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                  />
+                  <input
+                    type="color"
+                    value={tokens.universalBorderColor}
+                    onChange={(e) => setTokens((prev) => ({ ...prev, universalBorderColor: e.target.value }))}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Universal Fill Color */}
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-neutral-300">Surface</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-neutral-400 font-medium">{tokens.universalFillColor.toUpperCase()}</span>
+                <label className="relative cursor-pointer">
+                  <span
+                    style={{ backgroundColor: tokens.universalFillColor }}
+                    className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                  />
+                  <input
+                    type="color"
+                    value={tokens.universalFillColor}
+                    onChange={(e) => setTokens((prev) => ({ ...prev, universalFillColor: e.target.value }))}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Text & Icon Color */}
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-neutral-300">Text &amp; icons</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-neutral-400 font-medium">{tokens.textIconColor.toUpperCase()}</span>
+                <label className="relative cursor-pointer">
+                  <span
+                    style={{ backgroundColor: tokens.textIconColor }}
+                    className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                  />
+                  <input
+                    type="color"
+                    value={tokens.textIconColor}
+                    onChange={(e) => setTokens((prev) => ({ ...prev, textIconColor: e.target.value }))}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Primary Action Color */}
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-neutral-300">Primary action</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-neutral-400 font-medium">{tokens.primaryButtonColor.toUpperCase()}</span>
+                <label className="relative cursor-pointer">
+                  <span
+                    style={{ backgroundColor: tokens.primaryButtonColor }}
+                    className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                  />
+                  <input
+                    type="color"
+                    value={tokens.primaryButtonColor}
+                    onChange={(e) => setTokens((prev) => ({ ...prev, primaryButtonColor: e.target.value }))}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Hover Backplate Tint */}
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-neutral-300">Hover tint</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] text-neutral-400 font-medium">{tokens.hoverBackplateTint.toUpperCase()}</span>
+                <label className="relative cursor-pointer">
+                  <span
+                    style={{ backgroundColor: tokens.hoverBackplateTint }}
+                    className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                  />
+                  <input
+                    type="color"
+                    value={tokens.hoverBackplateTint}
+                    onChange={(e) => setTokens((prev) => ({ ...prev, hoverBackplateTint: e.target.value }))}
+                    className="sr-only"
+                  />
+                </label>
+              </div>
+            </div>
           </div>
-        
+        )}
+
+        {/* ── 3. Geometry ── */}
+        {(studioCategory === "all" || studioCategory === "geometry") && (
+          <div className="space-y-3 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+            <div className="flex items-center justify-between pb-1 border-b border-[#27272A]/70">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                Geometry
+              </span>
+              <span className="text-[10px] text-neutral-500 tabular-nums">
+                {tokens.borderWidth}px • {tokens.cornerRadius === 999 ? "Pill" : `${tokens.cornerRadius}px`}
+              </span>
+            </div>
+
+            {/* Border Width Slider */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Border width</span>
+                {tokens.borderWidth === 0 ? (
+                  <span className="text-[10px] text-amber-400 font-medium bg-amber-950/60 border border-amber-800/60 px-1.5 py-0.5 rounded">
+                    0px • Luminance Mode
+                  </span>
+                ) : (
+                  <span className="text-neutral-400 font-medium">{tokens.borderWidth}px</span>
+                )}
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="5"
+                step="1"
+                value={tokens.borderWidth}
+                onChange={(e) => setTokens((prev) => ({ ...prev, borderWidth: Number(e.target.value) }))}
+                className="w-full cursor-pointer accent-white"
+              />
+              {tokens.borderWidth === 0 && (
+                <p className="text-[10px] text-neutral-500 pt-0.5">
+                  Compensatory luminance fill & atmospheric elevation active to prevent edge bleed.
+                </p>
+              )}
+            </div>
+
+            {/* Corner Radius */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-neutral-300">Corner radius</span>
+                <span className="text-neutral-400 font-medium">
+                  {tokens.cornerRadius === 999 ? "Pill" : `${tokens.cornerRadius}px`}
+                </span>
+              </div>
+              <div className="grid grid-cols-5 gap-1">
+                {([0, 8, 16, 24, 999] as CornerRadiusPreset[]).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, cornerRadius: r }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.cornerRadius === r
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {r === 0 ? "0px" : r === 999 ? "Pill" : `${r}px`}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Height Density */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-neutral-300">Height density</span>
+                <span className="text-neutral-400 font-medium">{tokens.heightDensity}px</span>
+              </div>
+              <div className="grid grid-cols-5 gap-1">
+                {([36, 40, 44, 48, 52] as HeightDensityPreset[]).map((h) => (
+                  <button
+                    key={h}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, heightDensity: h }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.heightDensity === h
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {h}px
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Menu Offset */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-neutral-300">Menu offset</span>
+                <span className="text-neutral-400 font-medium">{tokens.menuOffsetGap}px</span>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                {([4, 8, 10, 14] as MenuOffsetPreset[]).map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, menuOffsetGap: g }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.menuOffsetGap === g
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {g}px
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── 4. Iconography & Vectors ── */}
+        {(studioCategory === "all" || studioCategory === "icons") && (
+          <div className="space-y-3 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+            <div className="flex items-center justify-between pb-1 border-b border-[#27272A]/70">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                Iconography &amp; Vectors
+              </span>
+              <span className="text-[10px] text-emerald-400 tabular-nums">
+                {tokens.iconScaleMultiplier.toFixed(2)}x • {tokens.iconStrokeWidth}px
+              </span>
+            </div>
+
+            {/* Icon Scale Multiplier */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Icon scale</span>
+                <span className="text-neutral-400 font-medium">
+                  {tokens.iconScaleMultiplier.toFixed(2)}x ({scaled.iconSize}px)
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0.75"
+                max="1.50"
+                step="0.05"
+                value={tokens.iconScaleMultiplier}
+                onChange={(e) =>
+                  setTokens((prev) => ({ ...prev, iconScaleMultiplier: Number(e.target.value) }))
+                }
+                className="w-full cursor-pointer accent-white"
+              />
+              <div className="grid grid-cols-4 gap-1 pt-0.5">
+                {[
+                  { label: "0.85x", val: 0.85 },
+                  { label: "1.00x", val: 1.0 },
+                  { label: "1.20x", val: 1.2 },
+                  { label: "1.40x", val: 1.4 },
+                ].map(({ label, val }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, iconScaleMultiplier: val }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      Math.abs(tokens.iconScaleMultiplier - val) < 0.02
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Icon Stroke Width */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Stroke width</span>
+                <span className="text-neutral-400 font-medium">{tokens.iconStrokeWidth}px</span>
+              </div>
+              <div className="grid grid-cols-5 gap-1">
+                {([1.25, 1.5, 2.0, 2.5, 3.0] as IconStrokePreset[]).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, iconStrokeWidth: s }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.iconStrokeWidth === s
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {s}px
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Icon Fill */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Fill style</span>
+                <span className="text-neutral-400 font-medium capitalize">{tokens.iconFill}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {(
+                  [
+                    { key: "none", label: "None" },
+                    { key: "subtle", label: "Subtle Tint" },
+                    { key: "currentColor", label: "Solid" },
+                  ] as { key: IconFillPreset; label: string }[]
+                ).map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, iconFill: key }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.iconFill === key
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Icon Color */}
+            <div className="space-y-1 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-neutral-300">Icon color</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-neutral-400 font-sans font-medium">
+                    {tokens.iconColor.toUpperCase()}
+                  </span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: tokens.iconColor }}
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                    />
+                    <input
+                      type="color"
+                      value={tokens.iconColor}
+                      onChange={(e) => setTokens((prev) => ({ ...prev, iconColor: e.target.value }))}
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Quick Swatches */}
+              <div className="flex items-center justify-between gap-1 pt-1">
+                {[
+                  { label: "Muted", color: "#71717A" },
+                  { label: "Deep", color: "#18181B" },
+                  { label: "Brand", color: tokens.primaryButtonColor },
+                  { label: "Indigo", color: "#6366F1" },
+                  { label: "Emerald", color: "#10B981" },
+                  { label: "Amber", color: "#F59E0B" },
+                  { label: "Rose", color: "#EF4444" },
+                ].map(({ label, color }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    title={label}
+                    onClick={() => setTokens((prev) => ({ ...prev, iconColor: color }))}
+                    style={{ backgroundColor: color }}
+                    className={`w-6 h-6 rounded-md border transition-all cursor-pointer ${
+                      tokens.iconColor.toLowerCase() === color.toLowerCase()
+                        ? "ring-2 ring-white ring-offset-1 ring-offset-[#121214] scale-110"
+                        : "border-white/20 hover:scale-105 opacity-80 hover:opacity-100"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── 5. Data Visualization ── */}
+        {(studioCategory === "all" || studioCategory === "dataviz") && (
+          <div className="space-y-3 p-3 rounded-xl bg-[#18181B] border border-[#27272A]">
+            <div className="flex items-center justify-between pb-1 border-b border-[#27272A]/70">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400">
+                Data Visualization
+              </span>
+              <span className="text-[10px] text-emerald-400 tabular-nums capitalize">
+                {tokens.chartPalette} • {tokens.chartStrokeWidth || 2.5}px
+              </span>
+            </div>
+
+            {/* Chart Theme Palette Presets */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Palette preset</span>
+                <span className="text-neutral-400 font-medium capitalize">{tokens.chartPalette}</span>
+              </div>
+              <div className="grid grid-cols-5 gap-1">
+                {(
+                  [
+                    { key: "emerald", label: "Emerald", color: "#10B981" },
+                    { key: "violet", label: "Violet", color: "#6366F1" },
+                    { key: "sky", label: "Sky", color: "#0284C7" },
+                    { key: "amber", label: "Amber", color: "#F59E0B" },
+                    { key: "monochrome", label: "Mono", color: "#18181B" },
+                  ] as { key: ChartPalettePreset; label: string; color: string }[]
+                ).map(({ key, label, color }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() =>
+                      setTokens((prev) => ({
+                        ...prev,
+                        chartPalette: key,
+                        chartPrimaryColor: color,
+                      }))
+                    }
+                    className={`py-1 rounded text-[11px] font-medium border transition-colors cursor-pointer flex flex-col items-center gap-1 ${
+                      tokens.chartPalette === key
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    <span
+                      style={{ backgroundColor: color }}
+                      className="w-2 h-2 rounded-full inline-block"
+                    />
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Primary Chart Accent Color */}
+            <div className="space-y-1 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-neutral-300">Accent color</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] text-neutral-400 font-sans font-medium">
+                    {(tokens.chartPrimaryColor || "#10B981").toUpperCase()}
+                  </span>
+                  <label className="relative cursor-pointer">
+                    <span
+                      style={{ backgroundColor: tokens.chartPrimaryColor || "#10B981" }}
+                      className="w-5 h-5 rounded border border-white/20 shadow-sm block transition-transform hover:scale-105"
+                    />
+                    <input
+                      type="color"
+                      value={tokens.chartPrimaryColor || "#10B981"}
+                      onChange={(e) =>
+                        setTokens((prev) => ({ ...prev, chartPrimaryColor: e.target.value }))
+                      }
+                      className="sr-only"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Quick Swatches */}
+              <div className="flex items-center justify-between gap-1 pt-1">
+                {[
+                  { label: "Emerald", color: "#10B981" },
+                  { label: "Lime", color: "#84CC16" },
+                  { label: "Violet", color: "#8B5CF6" },
+                  { label: "Sky", color: "#0EA5E9" },
+                  { label: "Amber", color: "#F59E0B" },
+                  { label: "Rose", color: "#F43F5E" },
+                  { label: "Dark", color: "#18181B" },
+                ].map(({ label, color }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    title={label}
+                    onClick={() =>
+                      setTokens((prev) => ({ ...prev, chartPrimaryColor: color }))
+                    }
+                    style={{ backgroundColor: color }}
+                    className={`w-6 h-6 rounded-md border transition-all cursor-pointer ${
+                      (tokens.chartPrimaryColor || "#10B981").toLowerCase() === color.toLowerCase()
+                        ? "ring-2 ring-white ring-offset-1 ring-offset-[#121214] scale-110"
+                        : "border-white/20 hover:scale-105 opacity-80 hover:opacity-100"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Chart Stroke Width */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Stroke width</span>
+                <span className="text-neutral-400 font-medium">{tokens.chartStrokeWidth || 2.5}px</span>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                {([1.5, 2.0, 2.5, 3.0] as ChartStrokePreset[]).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, chartStrokeWidth: s }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.chartStrokeWidth === s
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {s}px
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Chart Fill Opacity */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Gradient fill opacity</span>
+                <span className="text-neutral-400 font-medium">
+                  {Math.round((tokens.chartFillOpacity ?? 0.25) * 100)}%
+                </span>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                {[
+                  { label: "15%", val: 0.15 },
+                  { label: "25%", val: 0.25 },
+                  { label: "40%", val: 0.4 },
+                  { label: "60%", val: 0.6 },
+                ].map(({ label, val }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, chartFillOpacity: val }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      Math.abs((tokens.chartFillOpacity ?? 0.25) - val) < 0.05
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Grid Lines Style */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="text-neutral-300">Grid lines</span>
+                <span className="text-neutral-400 font-medium capitalize">{tokens.chartGridStyle}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1">
+                {(
+                  [
+                    { key: "dotted", label: "Dotted" },
+                    { key: "solid", label: "Solid" },
+                    { key: "none", label: "Hidden" },
+                  ] as { key: ChartGridPreset; label: string }[]
+                ).map(({ key, label }) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setTokens((prev) => ({ ...prev, chartGridStyle: key }))}
+                    className={`py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
+                      tokens.chartGridStyle === key
+                        ? "bg-white text-black border-white font-semibold shadow-sm"
+                        : "bg-[#27272A] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 1-Click Export Tokens CTA */}
+        <div className="pt-2 border-t border-[#27272A]">
+          <button
+            type="button"
+            onClick={() => setIsExportOpen(true)}
+            className="w-full py-2.5 px-3 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-colors select-none"
+          >
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Export Theme Tokens</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="pt-4 border-t border-[#27272A] flex items-center justify-between text-xs text-neutral-500">
+        <span>Visual Studio Engine</span>
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+      </div>
     </>
   );
   return (
     <ZeroLightProvider tokens={tokens} updateTokens={handleUpdateTokens}>
-      <div className="h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200 overflow-hidden">
+      <div dir="ltr" className="h-screen bg-[#F8F9FA] text-[#111111] flex flex-col font-sans selection:bg-neutral-200 overflow-hidden">
       {/* Toast Notification with Framer Motion spring enter/exit */}
       <AnimatePresence>
         {toastMessage && (
           <motion.div
-            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            initial={{ opacity: 0, y: -Math.max(8, scaled.motionConfig.distance * 2), scale: scaled.motionConfig.popover.initial.scale }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -16, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            exit={{ opacity: 0, y: -Math.max(8, scaled.motionConfig.distance * 2), scale: scaled.motionConfig.popover.exit.scale }}
+            transition={scaled.motionConfig.transition}
             style={{
               borderRadius: `${scaled.scaledRadius === 0 ? 0 : Math.max(6, scaled.scaledRadius)}px`,
             }}
@@ -1182,7 +2165,14 @@ module.exports = {
       </AnimatePresence>
 
       {/* ── Top Header Bar with Spacious Tier Switcher & Quick Meta ── */}
-      <header className="shrink-0 sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EBEBEB] px-6 py-3 flex items-center justify-between select-none shadow-2xs">
+      <header
+        style={{
+          backgroundColor: scaled.isDarkSurface ? "rgba(18, 18, 21, 0.95)" : "rgba(255, 255, 255, 0.95)",
+          borderColor: tokens.universalBorderColor,
+          transition: "background-color 0.2s ease, border-color 0.2s ease",
+        }}
+        className="shrink-0 sticky top-0 z-40 backdrop-blur-md border-b px-4 sm:px-6 py-3 flex items-center justify-between gap-3 select-none shadow-2xs overflow-x-auto scrollbar-none"
+      >
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2.5">
             <div
@@ -1196,7 +2186,7 @@ module.exports = {
               ZL
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="font-semibold text-sm tracking-tight text-[#111111]">
+              <span style={{ color: tokens.textIconColor }} className="font-semibold text-sm tracking-tight">
                 ZeroLight
               </span>
               <span className="text-[11px] font-medium text-neutral-400 hidden sm:inline-block">
@@ -1214,13 +2204,15 @@ module.exports = {
             borderWidth: `${tokens.borderWidth}px`,
             backgroundColor: tokens.hoverBackplateTint,
           }}
-          className="inline-flex items-center gap-1.5 p-1 border shadow-xs"
+          className="inline-flex items-center gap-1.5 p-1 border shadow-xs overflow-x-auto whitespace-nowrap scrollbar-none"
         >
           {(
             [
               { key: "atoms", label: "Atoms", count: "20" },
               { key: "molecules", label: "Molecules", count: "18" },
               { key: "organisms", label: "Organisms", count: "13" },
+              { key: "templates", label: "Templates", count: "5" },
+              { key: "pages", label: "Pages", count: "6" },
             ] as const
           ).map(({ key, label, count }) => {
             const isSelected = activeTier === key;
@@ -1264,29 +2256,8 @@ module.exports = {
           })}
         </div>
 
-        {/* Right meta: Scale, PoC links & Export Tokens */}
+        {/* Right meta: Scale & Export Tokens */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden md:flex items-center gap-1.5 mr-1">
-            <Link
-              href="/saas-dashboard"
-              className="px-2.5 py-1 text-xs font-medium text-neutral-700 hover:text-neutral-900 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors flex items-center gap-1"
-            >
-              <Sparkles className="w-3 h-3 text-amber-500" />
-              <span>PulseHire SaaS</span>
-            </Link>
-            <Link
-              href="/fresher-profile"
-              className="px-2.5 py-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-            >
-              Fresher Bio
-            </Link>
-            <Link
-              href="/example-form"
-              className="px-2.5 py-1 text-xs font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition-colors"
-            >
-              Settings
-            </Link>
-          </div>
           <span
             style={{
               fontSize: `${scaled.sublabelFontSize}px`,
@@ -1300,7 +2271,28 @@ module.exports = {
           </span>
           <button
             type="button"
-            onClick={() => setIsExportOpen(true)}
+            onClick={() => {
+              setExportFormat("registry");
+              setIsExportOpen(true);
+            }}
+            style={{
+              borderRadius: `${scaled.scaledPillRadius}px`,
+              borderColor: tokens.universalBorderColor,
+              borderWidth: `${Math.max(1, tokens.borderWidth)}px`,
+              color: tokens.textIconColor,
+              backgroundColor: tokens.universalFillColor,
+            }}
+            className="px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs whitespace-nowrap"
+          >
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Component TSX</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setExportFormat((prev) => (prev === "registry" ? "tailwind" : prev));
+              setIsExportOpen(true);
+            }}
             style={{
               borderRadius: `${scaled.scaledPillRadius}px`,
             }}
@@ -1317,8 +2309,17 @@ module.exports = {
         {/* ══════════════════════════════════════════════════════════
             CENTER STAGE (EXPANDED DEDICATED SHOWCASE)
            ══════════════════════════════════════════════════════════ */}
-        <main ref={mainRef} className="flex-1 p-6 sm:p-10 flex flex-col items-center justify-start h-full overflow-y-auto">
-          <div className={`w-full ${activeTier === "organisms" ? "max-w-5xl" : "max-w-4xl"} space-y-8 pb-32`}>
+        <main
+          ref={mainRef}
+          dir={scaled.direction}
+          style={{
+            backgroundColor: scaled.isDarkSurface ? "#09090B" : "#F8F9FA",
+            color: tokens.textIconColor,
+            transition: "background-color 0.2s ease, color 0.2s ease",
+          }}
+          className="flex-1 min-w-0 p-6 sm:p-10 flex flex-col items-center justify-start h-full overflow-y-auto"
+        >
+          <div className={`w-full ${activeTier === "templates" || activeTier === "pages" ? "max-w-7xl" : activeTier === "organisms" ? "max-w-5xl" : "max-w-4xl"} space-y-8 pb-32`}>
             
             {/* ══════════════════════════════════════════════════════════
                 VIEW A: PURE ATOMS (UNIVERSAL TOKEN CONTROL)
@@ -1407,6 +2408,78 @@ module.exports = {
                         </div>
                       </div>
                       <span className="text-[11px] text-neutral-500 font-medium">{scaled.scaledFontSize}px • Tabular Numerals</span>
+                    </div>
+
+                    {/* Live Copywriting & Overflow Invariants */}
+                    <div className="pt-4 border-t border-neutral-100 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="font-semibold text-neutral-800">
+                          Copywriting, Overflow &amp; Anti-Crowding Invariants
+                        </span>
+                        <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                          DESIGN_RULES.md Enforced
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        {/* 1. Truncate + Title */}
+                        <div
+                          style={{
+                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.hoverBackplateTint,
+                          }}
+                          className="p-3 border space-y-1"
+                        >
+                          <span className="text-[10px] uppercase font-bold text-neutral-400 block">Single-Line Truncation</span>
+                          <p
+                            title="us-east-1-production-cluster-quantum-cache-ingress-gateway-node-0492"
+                            className="font-semibold text-xs truncate"
+                            style={{ color: tokens.textIconColor }}
+                          >
+                            us-east-1-production-cluster-quantum-cache-ingress-gateway-node-0492
+                          </p>
+                          <span className="text-[10px] text-neutral-500 block">Hover to preview full string</span>
+                        </div>
+
+                        {/* 2. 2-Line Clamping */}
+                        <div
+                          style={{
+                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.hoverBackplateTint,
+                          }}
+                          className="p-3 border space-y-1"
+                        >
+                          <span className="text-[10px] uppercase font-bold text-neutral-400 block">2-Line Clamping</span>
+                          <p
+                            title="Automated cluster health telemetry detects memory utilization exceeding nominal 85% threshold. Rolling restart initiated."
+                            className="text-xs text-neutral-600 line-clamp-2 leading-relaxed"
+                          >
+                            Automated cluster health telemetry detects memory utilization exceeding nominal 85% threshold. Rolling restart initiated across all pods.
+                          </p>
+                          <span className="text-[10px] text-neutral-500 block">Clamps at line 2 with ellipsis</span>
+                        </div>
+
+                        {/* 3. Balanced Headings */}
+                        <div
+                          style={{
+                            borderRadius: `${scaled.scaledRadius}px`,
+                            borderColor: tokens.universalBorderColor,
+                            borderWidth: `${tokens.borderWidth}px`,
+                            backgroundColor: tokens.hoverBackplateTint,
+                          }}
+                          className="p-3 border space-y-1"
+                        >
+                          <span className="text-[10px] uppercase font-bold text-neutral-400 block">Widow Prevention</span>
+                          <h5 className="font-semibold text-xs text-neutral-900 [text-wrap:balance] leading-snug">
+                            Enterprise Telemetry Multi-Cloud Fleet Monitor
+                          </h5>
+                          <span className="text-[10px] text-neutral-500 block">text-wrap: balance active</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2414,10 +3487,51 @@ module.exports = {
                     </div>
                   </div>
                 </div>
+
+                {/* ── 18. RADIO GROUP ATOM ── */}
+                <div id="atom-radio-group" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="space-y-1">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                      <CircleDot size={scaled.iconSmSize || 16} strokeWidth={tokens.iconStrokeWidth || 1.75} color={tokens.iconColor || tokens.textIconColor} />
+                      <span>Radio group atom</span>
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                      Mutually exclusive options with standard inline or interactive card selection modes.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-3">Card Selection Mode</div>
+                      <RadioGroup
+                        value={selectedPlan}
+                        onChange={setSelectedPlan}
+                        cardMode
+                        options={[
+                          { value: "starter", label: "Starter Plan", description: "Up to 5 team seats with standard telemetry", badge: "$29/mo" },
+                          { value: "pro", label: "Professional Plan", description: "Unlimited seats, dedicated compute and priority audit log", badge: "Recommended" },
+                          { value: "enterprise", label: "Enterprise Custom", description: "Self-hosted VPC with bespoke SLA guarantees", badge: "Contact" },
+                        ]}
+                      />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-neutral-400 uppercase tracking-wider mb-3">Standard Inline Mode</div>
+                      <RadioGroup
+                        value={selectedPlan}
+                        onChange={setSelectedPlan}
+                        options={[
+                          { value: "starter", label: "Monthly billing cycle" },
+                          { value: "pro", label: "Annual billing cycle (Save 20%)" },
+                          { value: "enterprise", label: "Multi-year reserved instance" },
+                        ]}
+                      />
+                    </div>
+                  </div>
+                </div>
               </>
             )}
 
-                        {/* ══════════════════════════════════════════════════════════
+{/* ══════════════════════════════════════════════════════════
                 VIEW B: MOLECULES (DEEPLY BOUND TO UNIVERSAL STUDIO TOKENS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "molecules" && (
@@ -3324,10 +4438,536 @@ module.exports = {
                     />
                   </div>
                 </div>
+
+                {/* ── 19. ENTERPRISE DATA VISUALIZATION SUITE ── */}
+                <div id="mol-dataviz" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <BarChart2
+                          size={scaled.iconSmSize || 16}
+                          strokeWidth={tokens.iconStrokeWidth || 1.75}
+                          color={tokens.iconColor || tokens.textIconColor}
+                          className="shrink-0"
+                        />
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                          Enterprise Data Visualization Family
+                        </h2>
+                        <Badge variant="healthy">8 Chart Molecules</Badge>
+                      </div>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed max-w-2xl">
+                        Zero-dependency SVG chart suite natively bound to ZeroLight tokens. Instant CLS=0 layout stability with tabular-nums typography, interactive mouse scrubbers, and dynamic corner radii.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Row 1: AreaChart (Curved with Tooltip) & BarChart (Grouped/Stacked) */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <AreaChart
+                      title="API Request Throughput"
+                      subtitle="Interactive cubic-bezier spline with scrub crosshair"
+                      data={[
+                        { label: "Mon", value: 1420, secondaryValue: 1100 },
+                        { label: "Tue", value: 2100, secondaryValue: 1650 },
+                        { label: "Wed", value: 1850, secondaryValue: 1720 },
+                        { label: "Thu", value: 2980, secondaryValue: 2100 },
+                        { label: "Fri", value: 3420, secondaryValue: 2600 },
+                        { label: "Sat", value: 2780, secondaryValue: 2200 },
+                        { label: "Sun", value: 3890, secondaryValue: 2900 },
+                      ]}
+                      primaryLabel="This Week"
+                      secondaryLabel="Last Week"
+                      valueFormatter={(v) => `${v.toLocaleString()} req/s`}
+                    />
+
+                    <BarChart
+                      title="Quarterly Infrastructure Cost"
+                      subtitle="Grouped columns with token-bound rounded caps"
+                      data={[
+                        { label: "Jan", value: 45000, secondaryValue: 28000 },
+                        { label: "Feb", value: 52000, secondaryValue: 34000 },
+                        { label: "Mar", value: 68000, secondaryValue: 41000 },
+                        { label: "Apr", value: 74000, secondaryValue: 49000 },
+                        { label: "May", value: 89000, secondaryValue: 62000 },
+                        { label: "Jun", value: 95000, secondaryValue: 71000 },
+                      ]}
+                      primaryLabel="Cloud Compute"
+                      secondaryLabel="Object Storage"
+                      valueFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                    />
+                  </div>
+
+                  {/* Row 2: DonutChart, GaugeChart, and Sparkline Showcase */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <DonutChart
+                      title="Resource Allocation"
+                      subtitle="Interactive SVG radial ring with KPI center"
+                      data={[
+                        { id: "d-1", label: "Production API", value: 45, color: scaled.chartColors[0] },
+                        { id: "d-2", label: "PostgreSQL DB", value: 25, color: scaled.chartColors[1] },
+                        { id: "d-3", label: "Redis Cluster", value: 18, color: scaled.chartColors[2] },
+                        { id: "d-4", label: "Edge CDN", value: 12, color: scaled.chartColors[3] },
+                      ]}
+                      centerLabel="Total Load"
+                      centerValue="100%"
+                    />
+
+                    <GaugeChart
+                      title="Service Level Objective (SLO)"
+                      subtitle="Semicircle radial gauge with safety threshold"
+                      value={99}
+                      unit="%"
+                      statusText="Within Spec"
+                      healthyThreshold={95}
+                      criticalThreshold={90}
+                      mode="higher-is-better"
+                    />
+
+                    <div
+                      style={{
+                        borderRadius: `${scaled.scaledCardRadius}px`,
+                        borderColor: tokens.universalBorderColor,
+                        borderWidth: `${tokens.borderWidth}px`,
+                        backgroundColor: tokens.universalFillColor,
+                      }}
+                      className="p-5 border shadow-2xs flex flex-col justify-between"
+                    >
+                      <div>
+                        <h3 className="text-sm font-bold text-neutral-900 tracking-tight">
+                          Mini Sparkline Trends
+                        </h3>
+                        <p className="text-xs text-neutral-500 mt-0.5">
+                          Drop into StatCards and tables
+                        </p>
+                      </div>
+
+                      <div className="space-y-4 my-auto py-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-xs text-neutral-500">Latency</div>
+                            <div className="text-sm font-bold tabular-nums">18.4 ms</div>
+                          </div>
+                          <Sparkline
+                            data={[32, 28, 25, 22, 19, 18, 17, 18]}
+                            width={110}
+                            height={32}
+                            color={scaled.chartPrimaryColor}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between border-t border-neutral-100 pt-2">
+                          <div>
+                            <div className="text-xs text-neutral-500">Error Rate</div>
+                            <div className="text-sm font-bold tabular-nums text-rose-600">0.02%</div>
+                          </div>
+                          <Sparkline
+                            data={[4, 6, 8, 14, 18, 12, 5, 2]}
+                            width={110}
+                            height={32}
+                            color="#EF4444"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 3: HorizontalBarChart, HeatmapMatrix & FunnelChart */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <HorizontalBarChart
+                      title="Latency by Endpoint"
+                      subtitle="Ranked horizontal comparison bars"
+                      data={[
+                        { id: "h-1", label: "/api/v2/auth", value: 18420, secondaryLabel: "18ms" },
+                        { id: "h-2", label: "/api/v2/transactions", value: 14100, secondaryLabel: "24ms" },
+                        { id: "h-3", label: "/api/v2/users", value: 9800, secondaryLabel: "38ms" },
+                        { id: "h-4", label: "/api/v2/webhooks", value: 4200, secondaryLabel: "54ms" },
+                      ]}
+                      valueFormatter={(v) => `${(v / 1000).toFixed(1)}k req`}
+                    />
+
+                    <HeatmapMatrix
+                      title="Commit & Deployment Matrix"
+                      subtitle="Activity intensity over time"
+                      data={[
+                        { x: "W1", y: "Mon", value: 12 }, { x: "W2", y: "Mon", value: 24 }, { x: "W3", y: "Mon", value: 8 },
+                        { x: "W1", y: "Wed", value: 45 }, { x: "W2", y: "Wed", value: 38 }, { x: "W3", y: "Wed", value: 19 },
+                        { x: "W1", y: "Fri", value: 54 }, { x: "W2", y: "Fri", value: 62 }, { x: "W3", y: "Fri", value: 41 },
+                        { x: "W1", y: "Sun", value: 6 },  { x: "W2", y: "Sun", value: 14 }, { x: "W3", y: "Sun", value: 3 },
+                      ]}
+                    />
+
+                    <FunnelChart
+                      title="Onboarding Conversion"
+                      subtitle="Stage-by-stage user drop-off"
+                      stages={[
+                        { id: "f-1", name: "1. Unique Visitors", count: 124500 },
+                        { id: "f-2", name: "2. Sign-ups", count: 48200 },
+                        { id: "f-3", name: "3. Workspace Setup", count: 26800 },
+                        { id: "f-4", name: "4. Paid Plan", count: 9400 },
+                      ]}
+                    />
+                  </div>
+                </div>
+
+                {/* ── 20. FLOATING ACTION DROPDOWN & DATE RANGE PICKER ── */}
+                <div id="mol-dropdown-menu" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="space-y-1">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                      <Sliders size={scaled.iconSmSize || 16} strokeWidth={tokens.iconStrokeWidth || 1.75} color={tokens.iconColor || tokens.textIconColor} />
+                      <span>Dropdown action menu & Date range picker</span>
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                      Floating keyboard-navigable action popovers with click-outside detection and analytics range presets.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-4">
+                    <DropdownMenu
+                      trigger={
+                        <Button variant="outline" size="md" iconRight={<ChevronDown className="w-3.5 h-3.5" />}>
+                          Table Row Actions
+                        </Button>
+                      }
+                      items={[
+                        { id: "edit", label: "Edit entity profile", icon: <Edit3 className="w-3.5 h-3.5" />, onClick: () => triggerToast("Edit entity clicked") },
+                        { id: "duplicate", label: "Duplicate workload", icon: <Copy className="w-3.5 h-3.5" />, onClick: () => triggerToast("Duplicate clicked") },
+                        { id: "export", label: "Export audit JSON", icon: <Download className="w-3.5 h-3.5" />, shortcut: "⌘E", onClick: () => triggerToast("Exporting JSON...") },
+                        { id: "delete", label: "Decommission node", icon: <Trash2 className="w-3.5 h-3.5" />, destructive: true, separator: true, onClick: () => triggerToast("Decommission triggered") },
+                      ]}
+                    />
+
+                    <DateRangePicker
+                      onChange={(range) => triggerToast(`Selected: ${range.startDate} – ${range.endDate}`)}
+                    />
+                  </div>
+                </div>
+
+                {/* ── 21. HYBRID & CONJOINED COMPOSITE VARIATIONS ── */}
+                <div id="mol-conjoined-composites" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-6">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Layers size={scaled.iconSmSize || 16} strokeWidth={tokens.iconStrokeWidth || 1.75} color={tokens.iconColor || tokens.textIconColor} />
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                        Hybrid & Conjoined Composites (Zero-Gap Fusion)
+                      </h2>
+                      <Badge variant="healthy">Adaptable Variations</Badge>
+                    </div>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed max-w-3xl">
+                      Demonstrates atomic composability where two or more design elements merge into new variations—from micro split buttons to conjoined inputs and metric-sparkline hybrids—without dead white spaces or double borders.
+                    </p>
+                  </div>
+
+                  {/* Variation A: Split Buttons */}
+                  <div className="space-y-2.5">
+                    <div className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                      Variation 1: Split Action Buttons (Button + Submenu Trigger)
+                    </div>
+                    <div className="flex flex-wrap items-center gap-4">
+                      <SplitButton
+                        label="Deploy Cluster"
+                        variant="primary"
+                        onClick={() => triggerToast("Deploying to production cluster...")}
+                        options={[
+                          { id: "stage", label: "Deploy to Staging", description: "Automated canary release", onClick: () => triggerToast("Staging deployment initiated") },
+                          { id: "dryrun", label: "Run Dry-Run Check", description: "Validate terraform manifests", onClick: () => triggerToast("Dry-run validation clean") },
+                          { id: "rollback", label: "Emergency Rollback", description: "Revert to last stable commit", onClick: () => triggerToast("Rollback checkpoint selected") },
+                        ]}
+                      />
+                      <SplitButton
+                        label="Export Report"
+                        variant="outline"
+                        onClick={() => triggerToast("Exporting default CSV...")}
+                        options={[
+                          { id: "csv", label: "Comma-Separated (CSV)", description: "Raw spreadsheet export", onClick: () => triggerToast("CSV export queued") },
+                          { id: "json", label: "Telemetry JSON", description: "Full audit data envelope", onClick: () => triggerToast("JSON export queued") },
+                          { id: "pdf", label: "Executive PDF Summary", description: "Formatted chart document", onClick: () => triggerToast("PDF rendering...") },
+                        ]}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Variation B: Conjoined Fields */}
+                  <div className="space-y-2.5">
+                    <div className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                      Variation 2: Conjoined Field (Dropdown Select + Numeric Input + Action Button)
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <ConjoinedField label="International Payment Wire">
+                        <select
+                          className="px-3 bg-neutral-100 text-neutral-700 font-semibold text-xs border-0 outline-none cursor-pointer h-full"
+                          defaultValue="USD"
+                        >
+                          <option value="USD">USD ($)</option>
+                          <option value="EUR">EUR (€)</option>
+                          <option value="GBP">GBP (£)</option>
+                        </select>
+                        <input
+                          type="text"
+                          defaultValue="2,450.00"
+                          className="flex-1 px-3.5 text-xs text-neutral-900 font-medium tabular-nums outline-none bg-transparent h-full"
+                          placeholder="0.00"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => triggerToast("Transfer dispatched")}
+                          style={{
+                            backgroundColor: tokens.primaryButtonColor,
+                            color: scaled.primaryActionTextColor,
+                          }}
+                          className="px-4 text-xs font-semibold h-full hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap"
+                        >
+                          Transfer Now
+                        </button>
+                      </ConjoinedField>
+
+                      <ConjoinedField label="Scoped Cluster Filter">
+                        <span className="px-3 bg-neutral-100 text-neutral-500 font-medium text-xs select-none flex items-center h-full">
+                          node://
+                        </span>
+                        <input
+                          type="text"
+                          defaultValue="us-east-01/ingress-gw"
+                          className="flex-1 px-3 text-xs text-neutral-900 font-medium outline-none bg-transparent h-full"
+                          placeholder="cluster/hostname"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => triggerToast("Filter applied")}
+                          className="px-3.5 text-xs font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer h-full"
+                        >
+                          Filter
+                        </button>
+                      </ConjoinedField>
+                    </div>
+                  </div>
+
+                  {/* Variation C: StatCard + Sparkline & Badge Hybrid */}
+                  <div className="space-y-2.5">
+                    <div className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                      Variation 3: Metric Fusion (StatCard + Sparkline + Live Badge)
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <StatCard
+                        label="REAL-TIME INGRESS"
+                        value="3,480 req/s"
+                        delta="+18.4%"
+                        trend="up"
+                        comparisonText="peak load"
+                        badge={<Badge variant="healthy">LIVE SLA</Badge>}
+                        sparkline={
+                          <Sparkline
+                            data={[14, 18, 22, 19, 28, 34, 42, 38, 48, 52]}
+                            color="#10B981"
+                            width={110}
+                            height={32}
+                            strokeWidth={2}
+                          />
+                        }
+                      />
+                      <StatCard
+                        label="AVERAGE LATENCY"
+                        value="14.2 ms"
+                        delta="-3.8 ms"
+                        trend="down"
+                        comparisonText="healthy spec"
+                        badge={<Badge variant="healthy">OPTIMIZED</Badge>}
+                        sparkline={
+                          <Sparkline
+                            data={[38, 34, 30, 28, 24, 22, 19, 16, 15, 14]}
+                            color="#3B82F6"
+                            width={110}
+                            height={32}
+                            strokeWidth={2}
+                          />
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  {/* Variation D: Composable Form Family (Shadcn-Grade Context & Validation) */}
+                  <div className="space-y-2.5">
+                    <div className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                      Variation 4: Composable Form Architecture (Context-Aware ARIA Binding)
+                    </div>
+                    <div className="p-4 rounded-xl border border-neutral-200 bg-neutral-50/50">
+                      <Form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          triggerToast("Configuration payload validated and saved");
+                        }}
+                        className="space-y-4 max-w-xl"
+                      >
+                        <FormItem name="cluster-alias">
+                          <FormLabel>Cluster Domain Alias</FormLabel>
+                          <FormControl>
+                            <input
+                              type="text"
+                              defaultValue="prod-ingress.zerolight.io"
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                borderColor: tokens.universalBorderColor,
+                                borderWidth: `${tokens.borderWidth}px`,
+                                height: `${scaled.scaledHeight}px`,
+                                fontSize: `${scaled.scaledFontSize}px`,
+                                color: tokens.textIconColor,
+                              }}
+                              className="w-full border px-3 bg-white outline-none font-medium focus:ring-2 focus:ring-neutral-400"
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Fully qualified domain name mapped to your edge proxy nodes.
+                          </FormDescription>
+                        </FormItem>
+
+                        <FormItem name="rate-limit" error="Rate limit threshold must not exceed 50,000 req/s on Standard tier">
+                          <FormLabel>Ingress Rate Limit (req/s)</FormLabel>
+                          <FormControl>
+                            <input
+                              type="text"
+                              defaultValue="75,000"
+                              style={{
+                                borderRadius: `${scaled.scaledRadius}px`,
+                                borderColor: "#E11D48",
+                                borderWidth: `${tokens.borderWidth}px`,
+                                height: `${scaled.scaledHeight}px`,
+                                fontSize: `${scaled.scaledFontSize}px`,
+                                color: tokens.textIconColor,
+                              }}
+                              className="w-full border px-3 bg-white outline-none font-medium focus:ring-2 focus:ring-rose-500/20"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+
+                        <div className="pt-1">
+                          <Button type="submit" variant="primary" size="sm">
+                            Validate & Update Schema
+                          </Button>
+                        </div>
+                      </Form>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── GLOBAL ENTERPRISE SELECTORS & SHUTTLE SUITE ── */}
+                <div id="mol-enterprise-selectors" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-6">
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                        Enterprise Hierarchy &amp; Batch Assignment Suite
+                      </h2>
+                      <Badge variant="healthy">Global Enterprise Parity</Badge>
+                    </div>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed max-w-3xl">
+                      Portaled hierarchical resource selectors (TreeSelect with indeterminate branch math, Miller-column Cascader) and a spring-animated dual-list Transfer shuttle box.
+                    </p>
+                  </div>
+
+                  {/* Row 1: TreeSelect + Cascader */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <TreeSelect
+                      label="Cloud Resource Hierarchy (TreeSelect)"
+                      value={treeSelectValues}
+                      onChange={setTreeSelectValues}
+                      maxTagCount={2}
+                      data={[
+                        {
+                          id: "aws-prod",
+                          label: "AWS Production Org",
+                          badge: "Root",
+                          children: [
+                            {
+                              id: "k8s-us-east",
+                              label: "EKS Cluster (us-east-1)",
+                              badge: "12 Nodes",
+                            },
+                            {
+                              id: "k8s-eu-west",
+                              label: "EKS Cluster (eu-west-1)",
+                              badge: "8 Nodes",
+                            },
+                          ],
+                        },
+                        {
+                          id: "data-tier",
+                          label: "Managed Databases",
+                          children: [
+                            { id: "rds-primary", label: "Aurora PostgreSQL Primary", badge: "Multi-AZ" },
+                            { id: "redis-cache", label: "ElastiCache Redis Cluster", badge: "6.2" },
+                          ],
+                        },
+                      ]}
+                    />
+
+                    <Cascader
+                      label="Region / Cluster / VPC Drill-Down (Cascader)"
+                      value={cascaderPath}
+                      onChange={(nextPath) => setCascaderPath(nextPath)}
+                      options={[
+                        {
+                          value: "us-east",
+                          label: "US East (N. Virginia)",
+                          children: [
+                            {
+                              value: "prod-01",
+                              label: "Cluster Prod-01",
+                              children: [
+                                { value: "vpc-alpha", label: "VPC Alpha (10.0.0.0/16)" },
+                                { value: "vpc-beta", label: "VPC Beta (10.1.0.0/16)" },
+                              ],
+                            },
+                            {
+                              value: "staging-01",
+                              label: "Cluster Staging-01",
+                              children: [
+                                { value: "vpc-stage", label: "VPC Staging" },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          value: "eu-central",
+                          label: "EU Central (Frankfurt)",
+                          children: [
+                            {
+                              value: "eu-prod",
+                              label: "Cluster EU-Prod",
+                              children: [
+                                { value: "vpc-gdpr", label: "VPC GDPR Strict" },
+                              ],
+                            },
+                          ],
+                        },
+                      ]}
+                    />
+                  </div>
+
+                  {/* Row 2: Dual-List Transfer Shuttle */}
+                  <div className="space-y-2 pt-2 border-t border-neutral-100">
+                    <div className="text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                      IAM Role &amp; Permission Shuttle (Transfer)
+                    </div>
+                    <Transfer
+                      titles={["Available Scopes", "Assigned Scopes"]}
+                      targetKeys={transferTargetKeys}
+                      onChange={(nextKeys, direction, moved) => {
+                        setTransferTargetKeys(nextKeys);
+                        triggerToast(`Moved ${moved.length} scope(s) ${direction === "right" ? "to Assigned" : "back to Available"}`);
+                      }}
+                      dataSource={[
+                        { id: "perm-read", label: "telemetry:read", description: "View real-time cluster metrics", badge: "Safe" },
+                        { id: "perm-audit", label: "audit:export", description: "Download immutable security logs", badge: "Compliance" },
+                        { id: "perm-deploy", label: "cluster:deploy", description: "Push container images to edge", badge: "Write" },
+                        { id: "perm-billing", label: "billing:manage", description: "Update payment cards & limits", badge: "Admin" },
+                        { id: "perm-iam", label: "iam:escalate", description: "Grant root privileges to SSO", badge: "Critical" },
+                        { id: "perm-kms", label: "kms:rotate", description: "Trigger envelope key rotation", badge: "Security" },
+                      ]}
+                    />
+                  </div>
+                </div>
               </>
             )}
 
-            {/* ══════════════════════════════════════════════════════════
+{/* ══════════════════════════════════════════════════════════
                 VIEW C: ENTERPRISE ORGANISMS (DEEPLY BOUND TO STUDIO TOKENS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "organisms" && (
@@ -3339,14 +4979,16 @@ module.exports = {
                       <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
                         <Server className="w-4 h-4 text-neutral-500 shrink-0" />
                         <span>Microservice nodes data table</span>
+                        <Badge variant="healthy">Inline Editable</Badge>
                       </h2>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
-                        Production node fleet grid with tri-state multi-select, role filter pills, and batch actions toolbar.
+                        Production node fleet grid with tri-state multi-select, role filter pills, and inline cell editing (click Name, Region, or Latency to edit).
                       </p>
                     </div>
                   </div>
 
                   <DataTable
+                    editable
                     onSelectNode={(_nodeId) => {
                       setIsDrawerOpen(true);
                     }}
@@ -4419,7 +6061,549 @@ module.exports = {
                     <ChatConversation />
                   </div>
                 </div>
+
+                {/* ── 14. ENTERPRISE APP SHELL & GLOBAL TOAST ORGANISM ── */}
+                <div id="org-app-shell" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-6">
+                  <div className="space-y-1">
+                    <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold flex items-center gap-2">
+                      <Layers size={scaled.iconSmSize || 16} strokeWidth={tokens.iconStrokeWidth || 1.75} color={tokens.iconColor || tokens.textIconColor} />
+                      <span>Enterprise AppShell & Global Toast Notification Suite</span>
+                    </h2>
+                    <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed">
+                      Standardized layout framework with responsive collapsible sidebar/rail, plus non-blocking stacked notifications with auto-dismiss timers.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-neutral-50 border border-neutral-200/80 space-y-4">
+                    <div className="text-xs font-bold text-neutral-700 uppercase tracking-wider">
+                      Interactive Notification Triggers
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => triggerToast("Success: Microservice node us-east-01 deployed successfully")}
+                      >
+                        Trigger Success Toast
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => triggerToast("Warning: Node memory threshold reached 88% capacity")}
+                      >
+                        Trigger Warning Toast
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => triggerToast("Error: Database replica sync timed out (504 Gateway Error)")}
+                      >
+                        Trigger Error Toast
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </>
+            )}
+
+            {/* ══════════════════════════════════════════════════════════
+                VIEW D: TEMPLATES (ATOMIC TIER 4 REUSABLE BLUEPRINTS)
+               ══════════════════════════════════════════════════════════ */}
+            {activeTier === "templates" && (
+              <div className="space-y-6">
+                {/* Header Banner & Template Sub-Switcher */}
+                <div style={cardStyle} className="p-6 shadow-xs space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Layers size={scaled.iconSmSize || 16} strokeWidth={tokens.iconStrokeWidth || 1.75} color={tokens.iconColor || tokens.textIconColor} />
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                          Atomic Tier 4: Reusable Layout Templates
+                        </h2>
+                        <Badge variant="healthy">5 Layout Blueprints</Badge>
+                      </div>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed max-w-2xl">
+                        Clean architectural skeletons combining organisms, molecules, and anti-crowding rules. Fully reactive to Visual Studio design tokens.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Template Selector Pill Tabs - Single Line, Never Wraps */}
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledPillRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                    }}
+                    className="flex items-center gap-1.5 p-1 border shadow-xs overflow-x-auto whitespace-nowrap scrollbar-none"
+                  >
+                    {[
+                      { id: "dashboard", label: "Dashboard", code: "DashboardTemplate", desc: "3-Zone Telemetry Cockpit" },
+                      { id: "console", label: "Console Table", code: "ConsoleTableTemplate", desc: "Fleet & Entity Console" },
+                      { id: "settings", label: "Settings Form", code: "SettingsFormTemplate", desc: "Multi-tab Form Hub" },
+                      { id: "analytics", label: "Analytics Report", code: "AnalyticsReportTemplate", desc: "DateRange KPI Report" },
+                      { id: "chat", label: "AI Workspace", code: "ChatWorkspaceTemplate", desc: "3-Pane AI Copilot" },
+                    ].map((tpl) => {
+                      const isSelected = activeTemplateTab === tpl.id;
+                      return (
+                        <button
+                          key={tpl.id}
+                          type="button"
+                          onClick={() => setActiveTemplateTab(tpl.id as any)}
+                          style={{
+                            backgroundColor: isSelected ? tokens.primaryButtonColor : "transparent",
+                            color: isSelected ? scaled.primaryActionTextColor : tokens.textIconColor,
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            transition: "all 0.2s ease",
+                          }}
+                          className={`px-4 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
+                            isSelected ? "shadow-xs" : "hover:text-neutral-900"
+                          }`}
+                        >
+                          <span>{tpl.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Active Template Context Bar */}
+                  <div className="flex items-center justify-between text-xs text-neutral-500 pt-0.5 px-1">
+                    <span className="text-[11px] font-semibold bg-neutral-100 text-neutral-700 px-2.5 py-0.5 rounded border border-neutral-200/60 tabular-nums">
+                      &lt;{[
+                        { id: "dashboard", code: "DashboardTemplate" },
+                        { id: "console", code: "ConsoleTableTemplate" },
+                        { id: "settings", code: "SettingsFormTemplate" },
+                        { id: "analytics", code: "AnalyticsReportTemplate" },
+                        { id: "chat", code: "ChatWorkspaceTemplate" },
+                      ].find(t => t.id === activeTemplateTab)?.code} /&gt;
+                    </span>
+                    <span className="text-neutral-500 text-xs hidden sm:inline">
+                      {[
+                        { id: "dashboard", desc: "3-Zone Telemetry Cockpit combining KPI deck, real-time splines, and orchestration event tables." },
+                        { id: "console", desc: "Fleet & entity management console with unified search, tab filters, and full-width data table." },
+                        { id: "settings", desc: "Enterprise preferences hub with multi-tab navigation and sticky unsaved changes bar." },
+                        { id: "analytics", desc: "DateRange KPI report with dynamic period filters, spline scrubbing crosshair, and multi-tier composite matrix." },
+                        { id: "chat", desc: "3-pane enterprise AI copilot with session history rail, active conversation thread, and inspector drawer." },
+                      ].find(t => t.id === activeTemplateTab)?.desc}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Template 1: DashboardTemplate */}
+                {activeTemplateTab === "dashboard" && (
+                  <div style={cardStyle} className="p-0 border shadow-sm overflow-hidden rounded-xl">
+                    <DashboardTemplate
+                      title="Executive Infrastructure Cockpit"
+                      subtitle="Live health index, error budget burns, throughput splines and cluster nodes."
+                      statusIndicator={
+                        <Badge variant="healthy">
+                          <span className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <span>Cluster Live • 99.98% SLA</span>
+                          </span>
+                        </Badge>
+                      }
+                      primaryAction={
+                        <Button variant="primary" size="sm" iconLeft={<Plus className="w-3.5 h-3.5" />} onClick={() => triggerToast("Provisioning cluster...")}>
+                          Deploy Cluster
+                        </Button>
+                      }
+                      secondaryActions={
+                        <Button variant="outline" size="sm" iconLeft={<RefreshCw className="w-3.5 h-3.5" />} onClick={() => triggerToast("Telemetry refreshed")}>
+                          Sync
+                        </Button>
+                      }
+                      metrics={
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                          <StatCard label="TOTAL WORKLOADS" value="1,248" delta="+12 today" trend="up" comparisonText="across 8 zones" />
+                          <StatCard label="P99 LATENCY" value="18.4 ms" delta="-4.2 ms" trend="down" comparisonText="vs 24h baseline" />
+                          <StatCard label="ERROR BUDGET" value="99.94%" delta="nominal" trend="neutral" comparisonText="0 incidents" />
+                          <StatCard label="ACTIVE NODES" value="84 / 96" delta="87.5% load" trend="up" comparisonText="12 reserve" />
+                        </div>
+                      }
+                      primaryWidget={
+                        <AreaChart
+                          title="Throughput Spline"
+                          subtitle="Interactive scrub curve"
+                          data={[
+                            { label: "00:00", value: 1400 },
+                            { label: "04:00", value: 1800 },
+                            { label: "08:00", value: 3200 },
+                            { label: "12:00", value: 4600 },
+                            { label: "16:00", value: 4100 },
+                            { label: "20:00", value: 2800 },
+                            { label: "24:00", value: 1900 },
+                          ]}
+                          valueFormatter={(v) => `${v.toLocaleString()} req/s`}
+                        />
+                      }
+                      secondaryWidget={
+                        <DonutChart
+                          title="Node Quota Split"
+                          subtitle="Resource consumption"
+                          data={[
+                            { id: "1", label: "Compute Pods", value: 55, color: scaled.chartColors[0] },
+                            { id: "2", label: "Postgres Storage", value: 30, color: scaled.chartColors[1] },
+                            { id: "3", label: "Edge Gateway", value: 15, color: scaled.chartColors[2] },
+                          ]}
+                        />
+                      }
+                      dataSection={
+                        <div style={cardStyle} className="p-4 border">
+                          <div className="flex items-center justify-between pb-3 border-b border-neutral-100">
+                            <span className="font-semibold text-sm text-neutral-900">Recent Orchestration Events</span>
+                            <Badge variant="neutral">Auto-reconciliation active</Badge>
+                          </div>
+                          <div className="divide-y divide-neutral-100 text-xs">
+                            {[
+                              { event: "Auto-scaled ingress-gateway replica set to 8 nodes", time: "2 mins ago", status: "Completed" },
+                              { event: "Rotated mutual TLS leaf certificate on us-east-01", time: "18 mins ago", status: "Verified" },
+                              { event: "Database read replica sync completed (0.4s lag)", time: "1 hour ago", status: "Healthy" },
+                            ].map((row, i) => (
+                              <div key={i} className="py-2.5 flex items-center justify-between">
+                                <span className="font-medium text-neutral-700">{row.event}</span>
+                                <div className="flex items-center gap-3">
+                                  <span className="text-neutral-400 tabular-nums">{row.time}</span>
+                                  <Badge variant="healthy">{row.status}</Badge>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      }
+                    />
+                  </div>
+                )}
+
+                {/* Template 2: ConsoleTableTemplate */}
+                {activeTemplateTab === "console" && (
+                  <div style={cardStyle} className="p-0 border shadow-sm overflow-hidden rounded-xl">
+                    <ConsoleTableTemplate
+                      breadcrumbs={
+                        <div className="flex items-center gap-2 text-xs text-neutral-500">
+                          <span>Infrastructure</span>
+                          <span>/</span>
+                          <span className="font-semibold text-neutral-900">Virtual Fleet</span>
+                        </div>
+                      }
+                      title="Compute Nodes Fleet"
+                      subtitle="Provisioned virtual machines, memory quotas, and active health checks."
+                      badge={<Badge variant="healthy">24 Nodes Active</Badge>}
+                      primaryAction={
+                        <Button variant="primary" size="sm" iconLeft={<Plus className="w-3.5 h-3.5" />} onClick={() => triggerToast("Provisioning node...")}>
+                          Add Node
+                        </Button>
+                      }
+                      secondaryActions={
+                        <Button variant="outline" size="sm" iconLeft={<Download className="w-3.5 h-3.5" />} onClick={() => triggerToast("Exporting CSV...")}>
+                          Export
+                        </Button>
+                      }
+                      toolbar={
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 w-full">
+                          <SearchBar placeholder="Search nodes by hostname or IP..." value="" onChange={() => {}} className="w-full sm:w-72" />
+                          <SegmentedControl
+                            options={[
+                              { key: "all", label: "All Nodes", count: 24 },
+                              { key: "us", label: "US Regions", count: 16 },
+                              { key: "eu", label: "EU Regions", count: 8 },
+                            ]}
+                            value="all"
+                            onChange={() => {}}
+                          />
+                        </div>
+                      }
+                      table={
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="border-b border-neutral-200/70 bg-neutral-50/50">
+                                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Hostname</th>
+                                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Region</th>
+                                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">CPU Load</th>
+                                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Status</th>
+                                <th className="text-right py-3 px-4 text-xs font-semibold text-neutral-500 uppercase">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-neutral-100">
+                              {[
+                                { host: "node-us-east-01.acme.net", region: "us-east-1", cpu: "28%", status: "healthy" as const },
+                                { host: "node-us-west-02.acme.net", region: "us-west-2", cpu: "64%", status: "healthy" as const },
+                                { host: "node-eu-west-01.acme.net", region: "eu-west-1", cpu: "14%", status: "healthy" as const },
+                                { host: "node-ap-south-01.acme.net", region: "ap-south-1", cpu: "89%", status: "warning" as const },
+                              ].map((node) => (
+                                <tr key={node.host} className="hover:bg-neutral-50 border-b border-neutral-100 last:border-0 text-xs">
+                                  <td className="py-3 px-4 font-semibold text-neutral-900">{node.host}</td>
+                                  <td className="py-3 px-4 text-neutral-500">{node.region}</td>
+                                  <td className="py-3 px-4 tabular-nums font-medium">{node.cpu}</td>
+                                  <td className="py-3 px-4">
+                                    <Badge variant={node.status === "healthy" ? "healthy" : "critical"}>
+                                      {node.status}
+                                    </Badge>
+                                  </td>
+                                  <td className="py-3 px-4 text-right">
+                                    <Button variant="ghost" size="sm" onClick={() => triggerToast(`Inspecting ${node.host}`)}>
+                                      Details →
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      }
+                    />
+                  </div>
+                )}
+
+                {/* Template 3: SettingsFormTemplate */}
+                {activeTemplateTab === "settings" && (
+                  <div style={cardStyle} className="p-0 border shadow-sm overflow-hidden rounded-xl">
+                    <SettingsFormTemplate
+                      title="Workspace Security & Access"
+                      subtitle="Manage team authentication, API rate limits, and compliance settings."
+                      tabs={[
+                        { id: "auth", label: "Authentication" },
+                        { id: "members", label: "Team Roles" },
+                        { id: "notifications", label: "Alerts" },
+                      ]}
+                      activeTabId="auth"
+                      onTabChange={(tab) => triggerToast(`Switched to ${tab} tab`)}
+                      isDirty={false}
+                      onSave={() => triggerToast("Changes saved")}
+                      onDiscard={() => triggerToast("Changes reverted")}
+                    >
+                      <div className="space-y-6">
+                        <div style={cardStyle} className="p-5 border space-y-4">
+                          <h3 className="text-sm font-bold text-neutral-900">Single Sign-On (SSO)</h3>
+                          <p className="text-xs text-neutral-500">Enforce SAML 2.0 or Okta identity provider authentication.</p>
+                          <div className="flex items-center justify-between pt-2">
+                            <div>
+                              <span className="text-xs font-semibold text-neutral-800 block">Require SAML SSO</span>
+                              <span className="text-[11px] text-neutral-400">Password login will be disabled for team members.</span>
+                            </div>
+                            <Switch checked={true} onChange={() => triggerToast("SSO toggle switched")} />
+                          </div>
+                        </div>
+
+                        <div style={cardStyle} className="p-5 border space-y-4">
+                          <h3 className="text-sm font-bold text-neutral-900">Two-Factor Authentication (2FA)</h3>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="text-xs font-semibold text-neutral-800 block">Enforce 2FA Organization-Wide</span>
+                              <span className="text-[11px] text-neutral-400">Members must enroll a TOTP authenticator app.</span>
+                            </div>
+                            <Switch checked={true} onChange={() => triggerToast("2FA toggle switched")} />
+                          </div>
+                        </div>
+                      </div>
+                    </SettingsFormTemplate>
+                  </div>
+                )}
+
+                {/* Template 4: AnalyticsReportTemplate */}
+                {activeTemplateTab === "analytics" && (
+                  <div style={cardStyle} className="p-0 border shadow-sm overflow-hidden rounded-xl">
+                    <AnalyticsReportTemplate
+                      title="Quarterly Infrastructure Telemetry"
+                      subtitle="Consolidated compute, storage and bandwidth report."
+                      dateRangeFilter={
+                        <DateRangePicker
+                          onChange={(range) => triggerToast(`Selected: ${range.startDate} – ${range.endDate}`)}
+                        />
+                      }
+                      exportAction={
+                        <Button variant="secondary" size="sm" onClick={() => triggerToast("Exporting Analytics PDF...")}>
+                          Export PDF
+                        </Button>
+                      }
+                      kpiCards={
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                          <StatCard label="GROSS INGRESS" value="1.42 TB" delta="+18%" trend="up" comparisonText="vs Q3" />
+                          <StatCard label="AVG RESPONSE" value="14.2 ms" delta="-2.1 ms" trend="down" comparisonText="healthy" />
+                          <StatCard label="PEAK CONCURRENCY" value="48.2k" delta="+34%" trend="up" comparisonText="record peak" />
+                          <StatCard label="CLOUD SPEND" value="$14,280" delta="-5.4%" trend="down" comparisonText="under budget" />
+                        </div>
+                      }
+                      heroChart={
+                        <AreaChart
+                          title="Traffic Distribution (Spline)"
+                          subtitle="Multi-zone ingress telemetry"
+                          data={[
+                            { label: "Week 1", value: 240, secondaryValue: 180 },
+                            { label: "Week 2", value: 380, secondaryValue: 260 },
+                            { label: "Week 3", value: 420, secondaryValue: 310 },
+                            { label: "Week 4", value: 560, secondaryValue: 390 },
+                          ]}
+                          primaryLabel="Q4 2026"
+                          secondaryLabel="Q3 2026"
+                          valueFormatter={(v) => `${v}k req`}
+                        />
+                      }
+                      compositeGrid={
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch w-full">
+                          <BarChart
+                            title="Resource Burn"
+                            subtitle="Compute vs Storage allocation"
+                            data={[
+                              { label: "Oct", value: 4200, secondaryValue: 2800 },
+                              { label: "Nov", value: 5100, secondaryValue: 3400 },
+                              { label: "Dec", value: 4800, secondaryValue: 3100 },
+                            ]}
+                            primaryLabel="Compute"
+                            secondaryLabel="Storage"
+                            valueFormatter={(v) => `$${v}`}
+                          />
+                          <DonutChart
+                            title="Global Cloud Ingress"
+                            subtitle="Traffic distribution by zone"
+                            data={[
+                              { id: "1", label: "US East (N. Virginia)", value: 48, color: scaled.chartColors[0] },
+                              { id: "2", label: "EU Central (Frankfurt)", value: 32, color: scaled.chartColors[1] },
+                              { id: "3", label: "AP South (Mumbai)", value: 20, color: scaled.chartColors[2] },
+                            ]}
+                          />
+                          <FunnelChart
+                            title="Deployment Verification"
+                            subtitle="Stage-by-stage automated pipeline"
+                            stages={[
+                              { id: "1", name: "Lint & Unit", count: 1240 },
+                              { id: "2", name: "E2E Integration", count: 1180 },
+                              { id: "3", name: "Security Audit", count: 1120 },
+                              { id: "4", name: "Production Canary", count: 1094 },
+                            ]}
+                          />
+                        </div>
+                      }
+                    />
+                  </div>
+                )}
+
+                {/* Template 5: ChatWorkspaceTemplate */}
+                {activeTemplateTab === "chat" && (
+                  <div style={cardStyle} className="p-0 border shadow-sm overflow-hidden rounded-xl">
+                    <ChatWorkspaceTemplate
+                      assistantTitle="ZeroLight AI Assistant"
+                      modelBadge={
+                        <Badge variant="healthy">
+                          <span className="flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                            <span>Claude 3.7 Sonnet</span>
+                          </span>
+                        </Badge>
+                      }
+                      sessions={[
+                        { id: "1", title: "Cluster Failure Analysis", timestamp: "10 mins ago", isActive: true },
+                        { id: "2", title: "API Gateway Rate Limit Rules", timestamp: "Yesterday", isActive: false },
+                        { id: "3", title: "Database Sharding Plan", timestamp: "Nov 6", isActive: false },
+                      ]}
+                      onSelectSession={(id) => triggerToast(`Switched to session ${id}`)}
+                      onNewSession={() => triggerToast("Created new conversation")}
+                      conversationStream={
+                        <ChatConversation
+                          peerName="ZeroLight Assistant"
+                          peerRole="DevOps AI Copilot"
+                        />
+                      }
+                      inputArea={
+                        <ChatInput
+                          placeholder="Ask the AI copilot about your architecture..."
+                          onSend={(msg) => triggerToast(`Dispatched: "${msg.slice(0, 30)}..."`)}
+                          onAttach={() => triggerToast("File dialog triggered")}
+                        />
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ══════════════════════════════════════════════════════════
+                VIEW E: ENTERPRISE PAGES (ATOMIC TIER 5 PRODUCTION SCREENS)
+               ══════════════════════════════════════════════════════════ */}
+            {activeTier === "pages" && (
+              <div className="space-y-6">
+                {/* Header Banner & Page Sub-Switcher */}
+                <div style={cardStyle} className="p-6 shadow-xs space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Globe size={scaled.iconSmSize || 16} strokeWidth={tokens.iconStrokeWidth || 1.75} color={tokens.iconColor || tokens.textIconColor} />
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
+                          Atomic Tier 5: Enterprise SaaS Pages
+                        </h2>
+                        <Badge variant="healthy">6 Full Screens</Badge>
+                      </div>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed max-w-2xl">
+                        Production domain applications rendered live with active design tokens. Tweak any Visual Studio slider or color on the right to see the screen transform instantly.
+                      </p>
+                    </div>
+
+                    {/* Open standalone button */}
+                    <a
+                      href={`/${activePageTab}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-neutral-900 text-white hover:bg-neutral-800 rounded-lg transition-colors shrink-0 shadow-2xs"
+                    >
+                      <span>Open Standalone Tab</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  {/* Page Selector Pill Tabs - Single Line, Never Wraps */}
+                  <div
+                    style={{
+                      borderRadius: `${scaled.scaledPillRadius}px`,
+                      borderColor: tokens.universalBorderColor,
+                      borderWidth: `${tokens.borderWidth}px`,
+                      backgroundColor: tokens.hoverBackplateTint,
+                    }}
+                    className="flex items-center gap-1.5 p-1 border shadow-xs overflow-x-auto whitespace-nowrap scrollbar-none"
+                  >
+                    {[
+                      { id: "dev-console", label: "Dev Console", icon: <Terminal className="w-3.5 h-3.5" /> },
+                      { id: "billing", label: "Billing Hub", icon: <CreditCard className="w-3.5 h-3.5" /> },
+                      { id: "ai-assistant", label: "AI Copilot", icon: <Bot className="w-3.5 h-3.5" /> },
+                      { id: "settings", label: "Org Settings", icon: <Settings className="w-3.5 h-3.5" /> },
+                      { id: "finexy", label: "Finexy FinTech", icon: <DollarSign className="w-3.5 h-3.5" /> },
+                      { id: "school-attendance", label: "School Attendance", icon: <GraduationCap className="w-3.5 h-3.5" /> },
+                    ].map((pg) => {
+                      const isSelected = activePageTab === pg.id;
+                      return (
+                        <button
+                          key={pg.id}
+                          type="button"
+                          onClick={() => setActivePageTab(pg.id as any)}
+                          style={{
+                            backgroundColor: isSelected ? tokens.primaryButtonColor : "transparent",
+                            color: isSelected ? scaled.primaryActionTextColor : tokens.textIconColor,
+                            borderRadius: `${scaled.scaledPillRadius}px`,
+                            transition: "all 0.2s ease",
+                          }}
+                          className={`px-3.5 py-2 text-xs font-semibold cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                            isSelected ? "shadow-xs" : "hover:text-neutral-900"
+                          }`}
+                        >
+                          {pg.icon}
+                          <span>{pg.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Render Selected Screen */}
+                <div style={cardStyle} className="p-0 border shadow-md overflow-hidden rounded-xl">
+                  {activePageTab === "dev-console" && <DevConsoleView />}
+                  {activePageTab === "billing" && <BillingView />}
+                  {activePageTab === "ai-assistant" && <AiAssistantView />}
+                  {activePageTab === "settings" && <SettingsView />}
+                  {activePageTab === "finexy" && <FinexyDashboardInner />}
+                  {activePageTab === "school-attendance" && <SchoolAttendanceInner />}
+                </div>
+              </div>
             )}
           </div>
         </main>
@@ -4427,9 +6611,15 @@ module.exports = {
         {/* ══════════════════════════════════════════════════════════
             COLUMN 3: RIGHT SIDEBAR (DARK MODE "VISUAL STUDIO" DOCK)
            ══════════════════════════════════════════════════════════ */}
-        <aside className="w-72 border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 hidden xl:flex flex-col justify-between select-none h-full overflow-y-auto shrink-0">
-          {renderStudioControls()}
-        </aside>
+        <div className="hidden xl:flex relative h-full shrink-0">
+          {renderLeftResizer(STUDIO_MAX_WIDTH)}
+          <aside
+            style={{ width: `${studioWidth}px` }}
+            className="border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 flex flex-col justify-between select-none h-full overflow-y-auto"
+          >
+            {renderStudioControls()}
+          </aside>
+        </div>
 
         {/* Floating trigger for viewports < 1280px */}
         <button
@@ -4451,16 +6641,20 @@ module.exports = {
               className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs xl:hidden flex justify-end"
               onClick={() => setIsMobileStudioOpen(false)}
             >
-              <motion.aside
+              <motion.div
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
-                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                transition={scaled.motionConfig.drawerTransition}
                 onClick={(e) => e.stopPropagation()}
-                className="w-80 max-w-[90vw] bg-[#121214] text-[#E4E4E7] p-5 h-full overflow-y-auto border-l border-[#27272A] flex flex-col justify-between select-none"
+                style={{ width: `${Math.min(studioWidth, 480)}px` }}
+                className="relative max-w-[92vw] h-full shrink-0 flex"
               >
-                {renderStudioControls()}
-              </motion.aside>
+                {renderLeftResizer(480)}
+                <aside className="w-full bg-[#121214] text-[#E4E4E7] p-5 h-full overflow-y-auto border-l border-[#27272A] flex flex-col justify-between select-none">
+                  {renderStudioControls()}
+                </aside>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -4483,7 +6677,7 @@ module.exports = {
                 exit={{ opacity: 0, scale: 0.95, y: 12 }}
                 transition={{ duration: 0.15 }}
                 onClick={(e) => e.stopPropagation()}
-                className="w-full max-w-xl bg-[#121214] border border-[#27272A] rounded-2xl shadow-2xl overflow-hidden text-neutral-100 space-y-0"
+                className={`w-full ${exportFormat === "registry" ? "max-w-4xl" : "max-w-xl"} bg-[#121214] border border-[#27272A] rounded-2xl shadow-2xl overflow-hidden text-neutral-100 space-y-0 transition-all`}
               >
                 {/* Modal Header */}
                 <div className="px-5 py-4 border-b border-[#27272A] flex items-center justify-between">
@@ -4492,8 +6686,14 @@ module.exports = {
                       <Code2 className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-white">Export Design Tokens</h3>
-                      <p className="text-xs text-neutral-400">Copy configured tokens directly to your SaaS project</p>
+                      <h3 className="text-sm font-semibold text-white">
+                        {exportFormat === "registry" ? "ZeroLight Component Registry" : "Export Design Tokens"}
+                      </h3>
+                      <p className="text-xs text-neutral-400">
+                        {exportFormat === "registry"
+                          ? "Browse & copy standalone Shadcn-style TSX source with resolved dependencies"
+                          : "Copy configured tokens directly to your SaaS project"}
+                      </p>
                     </div>
                   </div>
                   <button
@@ -4507,12 +6707,13 @@ module.exports = {
 
                 {/* Format Switcher Tabs & Copy Action */}
                 <div className="p-4 bg-[#18181B] border-b border-[#27272A] flex flex-wrap items-center justify-between gap-3">
-                  <div className="p-1 bg-[#121214] rounded-lg border border-[#27272A] flex items-center gap-1 text-xs">
+                  <div className="p-1 bg-[#121214] rounded-lg border border-[#27272A] flex flex-wrap items-center gap-1 text-xs">
                     {(
                       [
                         { key: "tailwind", label: "Tailwind CSS" },
                         { key: "css", label: "CSS Variables" },
                         { key: "json", label: "TypeScript / JSON" },
+                        { key: "registry", label: "Component TSX" },
                       ] as const
                     ).map(({ key, label }) => (
                       <button
@@ -4533,10 +6734,18 @@ module.exports = {
                   <button
                     type="button"
                     onClick={() => {
-                      const snippet = getExportSnippet(exportFormat, tokens);
+                      const snippet =
+                        exportFormat === "registry"
+                          ? selectedRegistryDetail?.files?.[0]?.content || ""
+                          : getExportSnippet(exportFormat, tokens);
+                      if (!snippet) return;
                       navigator.clipboard.writeText(snippet);
                       setIsExportCopied(true);
-                      triggerToast("Token configuration copied to clipboard");
+                      triggerToast(
+                        exportFormat === "registry"
+                          ? `Copied ${selectedRegistryName}.tsx to clipboard`
+                          : "Token configuration copied to clipboard"
+                      );
                       setTimeout(() => setIsExportCopied(false), 2000);
                     }}
                     className="px-3.5 py-1.5 rounded-lg bg-white text-black hover:bg-neutral-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs shrink-0 select-none"
@@ -4549,18 +6758,128 @@ module.exports = {
                     ) : (
                       <>
                         <Copy className="w-3.5 h-3.5" />
-                        <span>Copy Snippet</span>
+                        <span>{exportFormat === "registry" ? "Copy TSX" : "Copy Snippet"}</span>
                       </>
                     )}
                   </button>
                 </div>
 
-                {/* Code Preview Box */}
-                <div className="p-4 max-h-[380px] overflow-y-auto bg-[#0C0C0E]">
-                  <pre className="text-xs leading-relaxed text-neutral-300 font-sans tabular-nums whitespace-pre overflow-x-auto p-3.5 rounded-xl bg-[#141417] border border-[#232328]">
-                    {getExportSnippet(exportFormat, tokens)}
-                  </pre>
-                </div>
+                {/* Code Preview / Shadcn-Style Registry Explorer */}
+                {exportFormat === "registry" ? (
+                  <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] bg-[#0C0C0E] h-[440px]">
+                    {/* Left Registry Filter & Component List */}
+                    <div className="border-b md:border-b-0 md:border-r border-[#27272A] flex flex-col h-full overflow-hidden">
+                      <div className="p-3 space-y-2 border-b border-[#27272A]/80">
+                        <input
+                          type="text"
+                          value={registryQuery}
+                          onChange={(e) => setRegistryQuery(e.target.value)}
+                          placeholder="Search 97 components..."
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#18181B] border border-[#27272A] text-xs text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-neutral-400"
+                        />
+                        <div className="flex flex-wrap gap-1">
+                          {(
+                            [
+                              { key: "all", label: "All" },
+                              { key: "atoms", label: "Atoms" },
+                              { key: "molecules", label: "Molecules" },
+                              { key: "organisms", label: "Organisms" },
+                              { key: "templates", label: "Templates" },
+                              { key: "core", label: "Core" },
+                            ] as const
+                          ).map(({ key, label }) => (
+                            <button
+                              key={key}
+                              type="button"
+                              onClick={() => setRegistryTier(key)}
+                              className={`px-2 py-0.5 rounded text-[10px] font-medium cursor-pointer transition-colors ${
+                                registryTier === key
+                                  ? "bg-white text-black font-semibold"
+                                  : "bg-[#18181B] text-neutral-400 hover:text-neutral-200"
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                        {registryItems
+                          .filter((item) => {
+                            const matchesTier = registryTier === "all" || item.tier === registryTier;
+                            const q = registryQuery.trim().toLowerCase();
+                            const matchesQuery =
+                              !q ||
+                              item.name.toLowerCase().includes(q) ||
+                              item.title.toLowerCase().includes(q);
+                            return matchesTier && matchesQuery;
+                          })
+                          .map((item) => (
+                            <button
+                              key={item.name}
+                              type="button"
+                              onClick={() => setSelectedRegistryName(item.name)}
+                              className={`w-full text-left px-2.5 py-2 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-between gap-2 ${
+                                selectedRegistryName === item.name
+                                  ? "bg-white text-black font-semibold"
+                                  : "text-neutral-300 hover:bg-[#18181B]"
+                              }`}
+                            >
+                              <span className="truncate">{item.title}</span>
+                              <span
+                                className={`text-[10px] px-1.5 py-0.5 rounded tabular-nums shrink-0 ${
+                                  selectedRegistryName === item.name
+                                    ? "bg-black/10 text-black"
+                                    : "bg-[#1F1F23] text-neutral-400"
+                                }`}
+                              >
+                                {item.lines}L
+                              </span>
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+
+                    {/* Right Component Details & TSX Source */}
+                    <div className="flex flex-col h-full overflow-hidden">
+                      <div className="px-4 py-2.5 border-b border-[#27272A]/80 bg-[#141417] flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <div className="space-y-0.5">
+                          <div className="font-semibold text-white">
+                            {selectedRegistryDetail?.files?.[0]?.path || `src/components/zerolight/${selectedRegistryName}.tsx`}
+                          </div>
+                          <div className="text-[11px] text-neutral-400 tabular-nums">
+                            CLI: npm run registry:add -- {selectedRegistryName}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1">
+                          {(selectedRegistryDetail?.registryDependencies || []).map((dep) => (
+                            <button
+                              key={dep}
+                              type="button"
+                              onClick={() => setSelectedRegistryName(dep)}
+                              className="px-2 py-0.5 rounded bg-[#27272A] hover:bg-[#3F3F46] text-[10px] text-neutral-200 cursor-pointer"
+                            >
+                              +{dep}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex-1 overflow-y-auto p-4">
+                        <pre className="text-xs leading-relaxed text-neutral-300 font-sans tabular-nums whitespace-pre overflow-x-auto p-3.5 rounded-xl bg-[#141417] border border-[#232328]">
+                          {isRegistryLoading && !selectedRegistryDetail
+                            ? "Loading component source..."
+                            : selectedRegistryDetail?.files?.[0]?.content || "Select a component from the list"}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-4 max-h-[380px] overflow-y-auto bg-[#0C0C0E]">
+                    <pre className="text-xs leading-relaxed text-neutral-300 font-sans tabular-nums whitespace-pre overflow-x-auto p-3.5 rounded-xl bg-[#141417] border border-[#232328]">
+                      {getExportSnippet(exportFormat, tokens)}
+                    </pre>
+                  </div>
+                )}
 
                 {/* Modal Footer */}
                 <div className="px-5 py-3 border-t border-[#27272A] bg-[#141417] flex items-center justify-between text-xs text-neutral-400">

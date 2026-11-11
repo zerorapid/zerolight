@@ -1,0 +1,15 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "aperture-slider",
+  "title": "Aperture Slider",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/aperture-slider.tsx",
+      "content": "\"use client\";\n\nimport React, { useId } from \"react\";\n\nexport interface ApertureSliderProps {\n  min?: number;\n  max?: number;\n  step?: number;\n  value: number;\n  onChange: (val: number) => void;\n  disabled?: boolean;\n  label?: string;\n  unit?: string;\n  className?: string;\n  showLimits?: boolean;\n}\n\nexport function ApertureSlider({\n  min = 0,\n  max = 100,\n  step = 1,\n  value,\n  onChange,\n  disabled = false,\n  label,\n  unit = \"\",\n  className = \"\",\n  showLimits = true,\n}: ApertureSliderProps) {\n  const generatedId = useId();\n  const inputId = `slider-${generatedId}`;\n\n  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {\n    onChange(Number(e.target.value));\n  };\n\n  return (\n    <div className={`space-y-1.5 w-full font-sans ${className}`}>\n      {(label || unit) && (\n        <div className=\"flex items-center justify-between text-xs\">\n          {label && (\n            <label\n              htmlFor={inputId}\n              className=\"font-medium text-neutral-300 select-none flex items-center gap-2\"\n            >\n              {label}\n            </label>\n          )}\n\n          <div className=\"flex items-center gap-1 font-sans text-xs font-semibold tabular-nums text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded\">\n            <span>{value}</span>\n            {unit && <span className=\"text-[10px] text-emerald-500 font-normal\">{unit}</span>}\n          </div>\n        </div>\n      )}\n\n      <div className=\"relative flex items-center\">\n        <input\n          id={inputId}\n          type=\"range\"\n          min={min}\n          max={max}\n          step={step}\n          value={value}\n          disabled={disabled}\n          onChange={handleChange}\n          aria-label={label || \"Constraint Slider\"}\n          aria-valuemin={min}\n          aria-valuemax={max}\n          aria-valuenow={value}\n          aria-valuetext={`${value}${unit}`}\n          className=\"w-full h-1.5 bg-neutral-800 rounded-full appearance-none cursor-pointer accent-emerald-400 focus:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed transition-all\"\n        />\n      </div>\n\n      {showLimits && (\n        <div className=\"flex justify-between text-[10px] font-sans text-neutral-500 tabular-nums select-none px-0.5\">\n          <span>\n            {min}\n            {unit}\n          </span>\n          <span>\n            {max}\n            {unit}\n          </span>\n        </div>\n      )}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

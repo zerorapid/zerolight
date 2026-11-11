@@ -1,0 +1,19 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "zerolight-index",
+  "title": "Zerolight Index",
+  "type": "registry:lib",
+  "tier": "core",
+  "dependencies": [],
+  "registryDependencies": [
+    "context",
+    "docs-studio",
+    "types"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/index.ts",
+      "content": "export * from \"./types\";\nexport * from \"./context\";\nexport * from \"./atoms\";\nexport * from \"./molecules\";\nexport * from \"./organisms\";\nexport * from \"./templates\";\nexport { ZeroLightStudio } from \"./docs-studio\";\n"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "conjoined-field",
+  "title": "Conjoined Field",
+  "type": "registry:ui",
+  "tier": "molecules",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/conjoined-field.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface ConjoinedFieldProps {\n  children: React.ReactNode;\n  label?: string;\n  helperText?: string;\n  error?: string;\n  id?: string;\n  className?: string;\n}\n\n/**\n * ConjoinedField merges 2 or more design elements (Inputs, Buttons, Dropdowns, Badges)\n * into a single unified seamless control with flush zero-space boundaries and reactive tokens.\n */\nexport function ConjoinedField({\n  children,\n  label,\n  helperText,\n  error,\n  id,\n  className = \"\",\n}: ConjoinedFieldProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <div className={`space-y-1.5 w-full ${className}`}>\n      {label && (\n        <label\n          htmlFor={id}\n          style={{\n            fontSize: `${scaled.labelFontSize}px`,\n            color: tokens.textIconColor,\n          }}\n          className=\"block font-medium select-none\"\n        >\n          {label}\n        </label>\n      )}\n\n      {/* Unified Outer Container: Zero-gap flush boundary */}\n      <div\n        style={{\n          borderRadius: `${scaled.scaledRadius}px`,\n          borderColor: error ? \"#F43F5E\" : tokens.universalBorderColor,\n          borderWidth: `${tokens.borderWidth}px`,\n          backgroundColor: scaled.effectiveInputFill,\n          height: `${scaled.scaledHeight}px`,\n          transition: scaled.transitionStyle,\n        }}\n        className=\"flex items-center overflow-hidden border divide-x divide-neutral-200 focus-within:ring-2 focus-within:ring-neutral-900/15\"\n      >\n        {children}\n      </div>\n\n      {error ? (\n        <p className=\"text-xs text-rose-500 font-medium\">{error}</p>\n      ) : helperText ? (\n        <p className=\"text-xs text-neutral-400\">{helperText}</p>\n      ) : null}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node tests/zerolight.test.mjs"
+    "test": "node tests/zerolight.test.mjs",
+    "registry": "node scripts/build-registry.mjs",
+    "registry:add": "node scripts/add-component.mjs"
   },
   "dependencies": {
     "framer-motion": "^14.9.1",

@@ -1,0 +1,1419 @@
+{
+  "name": "zerolight",
+  "version": "0.1.0",
+  "totalCount": 97,
+  "tiers": {
+    "core": 3,
+    "atoms": 37,
+    "molecules": 35,
+    "organisms": 11,
+    "templates": 5,
+    "views": 6
+  },
+  "items": [
+    {
+      "name": "types",
+      "title": "Types",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/zerolight/types.ts",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 609,
+      "registryUrl": "/registry/types.json"
+    },
+    {
+      "name": "context",
+      "title": "Context",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/zerolight/context.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "types"
+      ],
+      "lines": 56,
+      "registryUrl": "/registry/context.json"
+    },
+    {
+      "name": "zerolight-index",
+      "title": "Zerolight Index",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/zerolight/index.ts",
+      "dependencies": [],
+      "registryDependencies": [
+        "context",
+        "docs-studio",
+        "types"
+      ],
+      "lines": 8,
+      "registryUrl": "/registry/zerolight-index.json"
+    },
+    {
+      "name": "aperture-action",
+      "title": "Aperture Action",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/aperture-action.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 50,
+      "registryUrl": "/registry/aperture-action.json"
+    },
+    {
+      "name": "aperture-slider",
+      "title": "Aperture Slider",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/aperture-slider.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 91,
+      "registryUrl": "/registry/aperture-slider.json"
+    },
+    {
+      "name": "aperture-switch",
+      "title": "Aperture Switch",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/aperture-switch.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 82,
+      "registryUrl": "/registry/aperture-switch.json"
+    },
+    {
+      "name": "audit-timestamp",
+      "title": "Audit Timestamp",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/audit-timestamp.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 85,
+      "registryUrl": "/registry/audit-timestamp.json"
+    },
+    {
+      "name": "avatar",
+      "title": "Avatar",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/avatar.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 99,
+      "registryUrl": "/registry/avatar.json"
+    },
+    {
+      "name": "badge",
+      "title": "Badge",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/badge.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 61,
+      "registryUrl": "/registry/badge.json"
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/button.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 147,
+      "registryUrl": "/registry/button.json"
+    },
+    {
+      "name": "capacity-meter",
+      "title": "Capacity Meter",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/capacity-meter.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 78,
+      "registryUrl": "/registry/capacity-meter.json"
+    },
+    {
+      "name": "checkbox",
+      "title": "Checkbox",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/checkbox.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 109,
+      "registryUrl": "/registry/checkbox.json"
+    },
+    {
+      "name": "copy-trigger",
+      "title": "Copy Trigger",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/copy-trigger.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 109,
+      "registryUrl": "/registry/copy-trigger.json"
+    },
+    {
+      "name": "currency-pill",
+      "title": "Currency Pill",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/currency-pill.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 82,
+      "registryUrl": "/registry/currency-pill.json"
+    },
+    {
+      "name": "entity-avatar",
+      "title": "Entity Avatar",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/entity-avatar.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 68,
+      "registryUrl": "/registry/entity-avatar.json"
+    },
+    {
+      "name": "icon-button",
+      "title": "Icon Button",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/icon-button.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 108,
+      "registryUrl": "/registry/icon-button.json"
+    },
+    {
+      "name": "icon",
+      "title": "Icon",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/icon.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 195,
+      "registryUrl": "/registry/icon.json"
+    },
+    {
+      "name": "input",
+      "title": "Input",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/input.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 77,
+      "registryUrl": "/registry/input.json"
+    },
+    {
+      "name": "kbd-shortcut",
+      "title": "Kbd Shortcut",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/kbd-shortcut.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 38,
+      "registryUrl": "/registry/kbd-shortcut.json"
+    },
+    {
+      "name": "kbd",
+      "title": "Kbd",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/kbd.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 30,
+      "registryUrl": "/registry/kbd.json"
+    },
+    {
+      "name": "key-badge",
+      "title": "Key Badge",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/key-badge.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 41,
+      "registryUrl": "/registry/key-badge.json"
+    },
+    {
+      "name": "message-status",
+      "title": "Message Status",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/message-status.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 72,
+      "registryUrl": "/registry/message-status.json"
+    },
+    {
+      "name": "micro-input",
+      "title": "Micro Input",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/micro-input.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 78,
+      "registryUrl": "/registry/micro-input.json"
+    },
+    {
+      "name": "mono-value",
+      "title": "Mono Value",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/mono-value.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 82,
+      "registryUrl": "/registry/mono-value.json"
+    },
+    {
+      "name": "payment-card",
+      "title": "Payment Card",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/payment-card.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 115,
+      "registryUrl": "/registry/payment-card.json"
+    },
+    {
+      "name": "progress-bar",
+      "title": "Progress Bar",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/progress-bar.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 63,
+      "registryUrl": "/registry/progress-bar.json"
+    },
+    {
+      "name": "radio-group",
+      "title": "Radio Group",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/radio-group.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 185,
+      "registryUrl": "/registry/radio-group.json"
+    },
+    {
+      "name": "segment-pill",
+      "title": "Segment Pill",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/segment-pill.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 40,
+      "registryUrl": "/registry/segment-pill.json"
+    },
+    {
+      "name": "separator",
+      "title": "Separator",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/separator.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 89,
+      "registryUrl": "/registry/separator.json"
+    },
+    {
+      "name": "skeleton-bar",
+      "title": "Skeleton Bar",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/skeleton-bar.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 33,
+      "registryUrl": "/registry/skeleton-bar.json"
+    },
+    {
+      "name": "skeleton",
+      "title": "Skeleton",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/skeleton.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 49,
+      "registryUrl": "/registry/skeleton.json"
+    },
+    {
+      "name": "slider",
+      "title": "Slider",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/slider.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 96,
+      "registryUrl": "/registry/slider.json"
+    },
+    {
+      "name": "spinner",
+      "title": "Spinner",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/spinner.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 61,
+      "registryUrl": "/registry/spinner.json"
+    },
+    {
+      "name": "status-pill",
+      "title": "Status Pill",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/status-pill.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 64,
+      "registryUrl": "/registry/status-pill.json"
+    },
+    {
+      "name": "switch",
+      "title": "Switch",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/switch.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 84,
+      "registryUrl": "/registry/switch.json"
+    },
+    {
+      "name": "tag-chip",
+      "title": "Tag Chip",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/tag-chip.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 47,
+      "registryUrl": "/registry/tag-chip.json"
+    },
+    {
+      "name": "trace-dot",
+      "title": "Trace Dot",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/trace-dot.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 64,
+      "registryUrl": "/registry/trace-dot.json"
+    },
+    {
+      "name": "trend-delta",
+      "title": "Trend Delta",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/trend-delta.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 65,
+      "registryUrl": "/registry/trend-delta.json"
+    },
+    {
+      "name": "typing-indicator",
+      "title": "Typing Indicator",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/typing-indicator.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 73,
+      "registryUrl": "/registry/typing-indicator.json"
+    },
+    {
+      "name": "typography",
+      "title": "Typography",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/typography.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 81,
+      "registryUrl": "/registry/typography.json"
+    },
+    {
+      "name": "accordion",
+      "title": "Accordion",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/accordion.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 117,
+      "registryUrl": "/registry/accordion.json"
+    },
+    {
+      "name": "alert-banner",
+      "title": "Alert Banner",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/alert-banner.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 111,
+      "registryUrl": "/registry/alert-banner.json"
+    },
+    {
+      "name": "area-chart",
+      "title": "Area Chart",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/area-chart.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 422,
+      "registryUrl": "/registry/area-chart.json"
+    },
+    {
+      "name": "bar-chart",
+      "title": "Bar Chart",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/bar-chart.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 269,
+      "registryUrl": "/registry/bar-chart.json"
+    },
+    {
+      "name": "breadcrumbs",
+      "title": "Breadcrumbs",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/breadcrumbs.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 56,
+      "registryUrl": "/registry/breadcrumbs.json"
+    },
+    {
+      "name": "calendar",
+      "title": "Calendar",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/calendar.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 111,
+      "registryUrl": "/registry/calendar.json"
+    },
+    {
+      "name": "cascader",
+      "title": "Cascader",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/cascader.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 324,
+      "registryUrl": "/registry/cascader.json"
+    },
+    {
+      "name": "chat-bubble",
+      "title": "Chat Bubble",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/chat-bubble.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "avatar",
+        "context",
+        "message-status"
+      ],
+      "lines": 253,
+      "registryUrl": "/registry/chat-bubble.json"
+    },
+    {
+      "name": "chat-input",
+      "title": "Chat Input",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/chat-input.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 168,
+      "registryUrl": "/registry/chat-input.json"
+    },
+    {
+      "name": "conjoined-field",
+      "title": "Conjoined Field",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/conjoined-field.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 67,
+      "registryUrl": "/registry/conjoined-field.json"
+    },
+    {
+      "name": "date-range-picker",
+      "title": "Date Range Picker",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/date-range-picker.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 144,
+      "registryUrl": "/registry/date-range-picker.json"
+    },
+    {
+      "name": "donut-chart",
+      "title": "Donut Chart",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/donut-chart.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 195,
+      "registryUrl": "/registry/donut-chart.json"
+    },
+    {
+      "name": "dropdown-menu",
+      "title": "Dropdown Menu",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/dropdown-menu.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 345,
+      "registryUrl": "/registry/dropdown-menu.json"
+    },
+    {
+      "name": "empty-state",
+      "title": "Empty State",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/empty-state.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "lines": 83,
+      "registryUrl": "/registry/empty-state.json"
+    },
+    {
+      "name": "file-upload",
+      "title": "File Upload",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/file-upload.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 144,
+      "registryUrl": "/registry/file-upload.json"
+    },
+    {
+      "name": "form-field",
+      "title": "Form Field",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/form-field.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "input"
+      ],
+      "lines": 70,
+      "registryUrl": "/registry/form-field.json"
+    },
+    {
+      "name": "form",
+      "title": "Form",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/form.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 199,
+      "registryUrl": "/registry/form.json"
+    },
+    {
+      "name": "funnel-chart",
+      "title": "Funnel Chart",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/funnel-chart.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 134,
+      "registryUrl": "/registry/funnel-chart.json"
+    },
+    {
+      "name": "gauge-chart",
+      "title": "Gauge Chart",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/gauge-chart.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 172,
+      "registryUrl": "/registry/gauge-chart.json"
+    },
+    {
+      "name": "heatmap-matrix",
+      "title": "Heatmap Matrix",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/heatmap-matrix.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 173,
+      "registryUrl": "/registry/heatmap-matrix.json"
+    },
+    {
+      "name": "horizontal-bar-chart",
+      "title": "Horizontal Bar Chart",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/horizontal-bar-chart.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 133,
+      "registryUrl": "/registry/horizontal-bar-chart.json"
+    },
+    {
+      "name": "input-group",
+      "title": "Input Group",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/input-group.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 130,
+      "registryUrl": "/registry/input-group.json"
+    },
+    {
+      "name": "pagination",
+      "title": "Pagination",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/pagination.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 253,
+      "registryUrl": "/registry/pagination.json"
+    },
+    {
+      "name": "profit-loss-chart",
+      "title": "Profit Loss Chart",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/profit-loss-chart.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 196,
+      "registryUrl": "/registry/profit-loss-chart.json"
+    },
+    {
+      "name": "search-bar",
+      "title": "Search Bar",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/search-bar.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 80,
+      "registryUrl": "/registry/search-bar.json"
+    },
+    {
+      "name": "segmented-control",
+      "title": "Segmented Control",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/segmented-control.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 89,
+      "registryUrl": "/registry/segmented-control.json"
+    },
+    {
+      "name": "select",
+      "title": "Select",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/select.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 147,
+      "registryUrl": "/registry/select.json"
+    },
+    {
+      "name": "sparkline",
+      "title": "Sparkline",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/sparkline.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 130,
+      "registryUrl": "/registry/sparkline.json"
+    },
+    {
+      "name": "split-button",
+      "title": "Split Button",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/split-button.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 352,
+      "registryUrl": "/registry/split-button.json"
+    },
+    {
+      "name": "stat-card",
+      "title": "Stat Card",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/stat-card.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 105,
+      "registryUrl": "/registry/stat-card.json"
+    },
+    {
+      "name": "stepper",
+      "title": "Stepper",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/stepper.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 94,
+      "registryUrl": "/registry/stepper.json"
+    },
+    {
+      "name": "tag-input",
+      "title": "Tag Input",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/tag-input.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context",
+        "tag-chip"
+      ],
+      "lines": 92,
+      "registryUrl": "/registry/tag-input.json"
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/tooltip.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 182,
+      "registryUrl": "/registry/tooltip.json"
+    },
+    {
+      "name": "transfer",
+      "title": "Transfer",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/transfer.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "checkbox",
+        "context"
+      ],
+      "lines": 319,
+      "registryUrl": "/registry/transfer.json"
+    },
+    {
+      "name": "tree-select",
+      "title": "Tree Select",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/tree-select.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "checkbox",
+        "context"
+      ],
+      "lines": 505,
+      "registryUrl": "/registry/tree-select.json"
+    },
+    {
+      "name": "app-shell",
+      "title": "App Shell",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/app-shell.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 237,
+      "registryUrl": "/registry/app-shell.json"
+    },
+    {
+      "name": "audit-log",
+      "title": "Audit Log",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/audit-log.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "avatar",
+        "badge",
+        "context"
+      ],
+      "lines": 153,
+      "registryUrl": "/registry/audit-log.json"
+    },
+    {
+      "name": "chat-conversation",
+      "title": "Chat Conversation",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/chat-conversation.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "avatar",
+        "chat-bubble",
+        "chat-input",
+        "context",
+        "typing-indicator"
+      ],
+      "lines": 277,
+      "registryUrl": "/registry/chat-conversation.json"
+    },
+    {
+      "name": "command-palette",
+      "title": "Command Palette",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/command-palette.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 211,
+      "registryUrl": "/registry/command-palette.json"
+    },
+    {
+      "name": "confirmation-modal",
+      "title": "Confirmation Modal",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/confirmation-modal.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "lines": 251,
+      "registryUrl": "/registry/confirmation-modal.json"
+    },
+    {
+      "name": "data-table",
+      "title": "Data Table",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/data-table.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context"
+      ],
+      "lines": 337,
+      "registryUrl": "/registry/data-table.json"
+    },
+    {
+      "name": "detail-drawer",
+      "title": "Detail Drawer",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/detail-drawer.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "lines": 292,
+      "registryUrl": "/registry/detail-drawer.json"
+    },
+    {
+      "name": "filter-builder",
+      "title": "Filter Builder",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/filter-builder.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "lines": 294,
+      "registryUrl": "/registry/filter-builder.json"
+    },
+    {
+      "name": "quota-matrix",
+      "title": "Quota Matrix",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/quota-matrix.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context",
+        "progress-bar"
+      ],
+      "lines": 113,
+      "registryUrl": "/registry/quota-matrix.json"
+    },
+    {
+      "name": "toast",
+      "title": "Toast",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/toast.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 174,
+      "registryUrl": "/registry/toast.json"
+    },
+    {
+      "name": "tree-view",
+      "title": "Tree View",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/tree-view.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 154,
+      "registryUrl": "/registry/tree-view.json"
+    },
+    {
+      "name": "analytics-report-template",
+      "title": "Analytics Report Template",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/analytics-report-template.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "app-shell",
+        "context"
+      ],
+      "lines": 147,
+      "registryUrl": "/registry/analytics-report-template.json"
+    },
+    {
+      "name": "chat-workspace-template",
+      "title": "Chat Workspace Template",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/chat-workspace-template.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "app-shell",
+        "context"
+      ],
+      "lines": 273,
+      "registryUrl": "/registry/chat-workspace-template.json"
+    },
+    {
+      "name": "console-table-template",
+      "title": "Console Table Template",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/console-table-template.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "app-shell",
+        "context"
+      ],
+      "lines": 149,
+      "registryUrl": "/registry/console-table-template.json"
+    },
+    {
+      "name": "dashboard-template",
+      "title": "Dashboard Template",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/dashboard-template.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "app-shell",
+        "context"
+      ],
+      "lines": 159,
+      "registryUrl": "/registry/dashboard-template.json"
+    },
+    {
+      "name": "settings-form-template",
+      "title": "Settings Form Template",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/settings-form-template.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "app-shell",
+        "context"
+      ],
+      "lines": 256,
+      "registryUrl": "/registry/settings-form-template.json"
+    },
+    {
+      "name": "ai-assistant-view",
+      "title": "Ai Assistant View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/ai-assistant-view.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 160,
+      "registryUrl": "/registry/ai-assistant-view.json"
+    },
+    {
+      "name": "billing-view",
+      "title": "Billing View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/billing-view.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 297,
+      "registryUrl": "/registry/billing-view.json"
+    },
+    {
+      "name": "dev-console-view",
+      "title": "Dev Console View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/dev-console-view.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 334,
+      "registryUrl": "/registry/dev-console-view.json"
+    },
+    {
+      "name": "finexy-view",
+      "title": "Finexy View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/finexy-view.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 1195,
+      "registryUrl": "/registry/finexy-view.json"
+    },
+    {
+      "name": "school-attendance-view",
+      "title": "School Attendance View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/school-attendance-view.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 1234,
+      "registryUrl": "/registry/school-attendance-view.json"
+    },
+    {
+      "name": "settings-view",
+      "title": "Settings View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/settings-view.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 222,
+      "registryUrl": "/registry/settings-view.json"
+    }
+  ]
+}

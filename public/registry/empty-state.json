@@ -1,0 +1,20 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "empty-state",
+  "title": "Empty State",
+  "type": "registry:ui",
+  "tier": "molecules",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "button",
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/empty-state.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { Inbox } from \"lucide-react\";\nimport { Button } from \"../atoms/button\";\n\nexport interface EmptyStateProps {\n  icon?: React.ReactNode;\n  title: string;\n  description: string;\n  actionText?: string;\n  onAction?: () => void;\n  secondaryActionText?: string;\n  onSecondaryAction?: () => void;\n  className?: string;\n}\n\nexport function EmptyState({\n  icon,\n  title,\n  description,\n  actionText,\n  onAction,\n  secondaryActionText,\n  onSecondaryAction,\n  className = \"\",\n}: EmptyStateProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <div\n      style={{\n        borderRadius: `${scaled.scaledCardRadius}px`,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${tokens.borderWidth}px`,\n        backgroundColor: tokens.universalFillColor,\n      }}\n      className={`p-8 text-center flex flex-col items-center justify-center space-y-4 border w-full max-w-md mx-auto select-none ${className}`}\n    >\n      <div\n        style={{\n          borderRadius: `${scaled.scaledPillRadius}px`,\n          backgroundColor: tokens.hoverBackplateTint,\n          borderColor: tokens.universalBorderColor,\n          borderWidth: `${tokens.borderWidth}px`,\n        }}\n        className=\"w-12 h-12 flex items-center justify-center text-neutral-400 border shadow-2xs\"\n      >\n        {icon || <Inbox className=\"w-6 h-6\" />}\n      </div>\n\n      <div className=\"space-y-1 max-w-sm\">\n        <h4 style={{ color: tokens.textIconColor }} className=\"text-sm font-semibold [text-wrap:balance]\">\n          {title}\n        </h4>\n        <p\n          title={description}\n          style={{ fontSize: `${scaled.sublabelFontSize}px` }}\n          className=\"text-neutral-500 leading-relaxed line-clamp-3\"\n        >\n          {description}\n        </p>\n      </div>\n\n      {(actionText || secondaryActionText) && (\n        <div className=\"flex flex-wrap items-center justify-center gap-2.5 pt-1\">\n          {actionText && (\n            <Button variant=\"primary\" size=\"sm\" onClick={onAction}>\n              {actionText}\n            </Button>\n          )}\n          {secondaryActionText && (\n            <Button variant=\"outline\" size=\"sm\" onClick={onSecondaryAction}>\n              {secondaryActionText}\n            </Button>\n          )}\n        </div>\n      )}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

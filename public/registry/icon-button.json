@@ -1,0 +1,19 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "icon-button",
+  "title": "Icon Button",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [
+    "framer-motion"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/icon-button.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { motion, HTMLMotionProps } from \"framer-motion\";\n\nexport interface IconButtonProps extends Omit<HTMLMotionProps<\"button\">, \"children\"> {\n  icon: React.ReactNode;\n  ariaLabel: string;\n  variant?: \"ghost\" | \"outline\" | \"solid\";\n  size?: \"sm\" | \"md\" | \"lg\";\n}\n\nexport function IconButton({\n  icon,\n  ariaLabel,\n  variant = \"ghost\",\n  size = \"md\",\n  className = \"\",\n  style,\n  disabled,\n  ...props\n}: IconButtonProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  const dimension = size === \"sm\" ? 28 : size === \"lg\" ? 44 : 36;\n  const baseIconSize = size === \"sm\" ? (scaled.iconSmSize || 14) : size === \"lg\" ? (scaled.iconLgSize || 20) : (scaled.iconSize || 16);\n\n  const iconColor = variant === \"solid\"\n    ? scaled.primaryActionTextColor\n    : (tokens.iconColor || tokens.textIconColor);\n\n  const renderIcon = (node: React.ReactNode) => {\n    if (!node || !React.isValidElement(node)) return node;\n    const existingProps = (node.props as Record<string, any>) || {};\n    const effectiveFill = existingProps.fill || (\n      tokens.iconFill === \"currentColor\"\n        ? iconColor\n        : tokens.iconFill === \"subtle\"\n        ? `${iconColor}25`\n        : \"none\"\n    );\n\n    return React.cloneElement(node as React.ReactElement<any>, {\n      size: existingProps.size || baseIconSize,\n      strokeWidth: existingProps.strokeWidth || tokens.iconStrokeWidth,\n      color: existingProps.color || iconColor,\n      fill: effectiveFill,\n      style: {\n        width: `${baseIconSize}px`,\n        height: `${baseIconSize}px`,\n        transition: scaled.transitionStyle,\n        ...(existingProps.style || {}),\n      },\n    });\n  };\n\n  const getVariantStyles = (): React.CSSProperties => {\n    switch (variant) {\n      case \"solid\":\n        return {\n          backgroundColor: tokens.primaryButtonColor,\n          color: scaled.primaryActionTextColor,\n          borderColor: tokens.primaryButtonColor,\n        };\n      case \"outline\":\n        return {\n          backgroundColor: tokens.universalFillColor,\n          color: tokens.textIconColor,\n          borderColor: tokens.universalBorderColor,\n        };\n      case \"ghost\":\n      default:\n        return {\n          backgroundColor: \"transparent\",\n          color: tokens.textIconColor,\n          borderColor: \"transparent\",\n        };\n    }\n  };\n\n  return (\n    <motion.button\n      type=\"button\"\n      aria-label={ariaLabel}\n      disabled={disabled}\n      whileHover={{ scale: disabled ? 1 : scaled.motionConfig.hoverScale }}\n      whileTap={{ scale: disabled ? 1 : scaled.motionConfig.tapScale }}\n      transition={scaled.motionConfig.transition}\n      style={{\n        width: `${dimension}px`,\n        height: `${dimension}px`,\n        borderRadius: `${scaled.scaledRadius}px`,\n        borderWidth: `${variant === \"ghost\" ? 0 : tokens.borderWidth}px`,\n        transition: scaled.transitionStyle,\n        ...getVariantStyles(),\n        ...style,\n      }}\n      className={`inline-flex items-center justify-center shrink-0 cursor-pointer hover:opacity-80 border transition-colors transform-gpu focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1 ${\n        disabled ? \"opacity-40 cursor-not-allowed\" : \"\"\n      } ${className}`}\n      {...props}\n    >\n      {renderIcon(icon)}\n    </motion.button>\n  );\n}\n"
+    }
+  ]
+}

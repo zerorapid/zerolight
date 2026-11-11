@@ -1,0 +1,20 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "form-field",
+  "title": "Form Field",
+  "type": "registry:ui",
+  "tier": "molecules",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "context",
+    "input"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/form-field.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { Input, InputProps } from \"../atoms/input\";\nimport { AlertCircle, CheckCircle2 } from \"lucide-react\";\n\nexport interface FormFieldProps extends InputProps {\n  label: string;\n  helperText?: string;\n  errorMessage?: string;\n  successMessage?: string;\n  id: string;\n}\n\nexport function FormField({\n  label,\n  helperText,\n  errorMessage,\n  successMessage,\n  id,\n  error,\n  ...inputProps\n}: FormFieldProps) {\n  const { tokens, scaled } = useZeroLight();\n  const isError = Boolean(error || errorMessage);\n\n  return (\n    <div className=\"space-y-1.5 w-full\">\n      <label\n        htmlFor={id}\n        style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }}\n        className=\"block font-medium\"\n      >\n        {label}\n      </label>\n\n      <Input id={id} error={isError} {...inputProps} />\n\n      {errorMessage && (\n        <div className=\"flex items-center gap-1.5 text-xs text-rose-600 font-medium pt-0.5\">\n          <AlertCircle\n            size={scaled.iconSmSize || 14}\n            strokeWidth={tokens.iconStrokeWidth || 1.75}\n            className=\"shrink-0\"\n          />\n          <span>{errorMessage}</span>\n        </div>\n      )}\n\n      {!errorMessage && successMessage && (\n        <div className=\"flex items-center gap-1.5 text-xs text-emerald-600 font-medium pt-0.5\">\n          <CheckCircle2\n            size={scaled.iconSmSize || 14}\n            strokeWidth={tokens.iconStrokeWidth || 1.75}\n            className=\"shrink-0\"\n          />\n          <span>{successMessage}</span>\n        </div>\n      )}\n\n      {!errorMessage && !successMessage && helperText && (\n        <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className=\"text-neutral-500\">\n          {helperText}\n        </p>\n      )}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

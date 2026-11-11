@@ -1,0 +1,18 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "tag-input",
+  "title": "Tag Input",
+  "type": "registry:ui",
+  "tier": "molecules",
+  "dependencies": [],
+  "registryDependencies": [
+    "context",
+    "tag-chip"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/tag-input.tsx",
+      "content": "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { TagChip } from \"../atoms/tag-chip\";\n\nexport interface TagInputProps {\n  tags: string[];\n  onChange: (tags: string[]) => void;\n  placeholder?: string;\n  maxTags?: number;\n  label?: string;\n  id?: string;\n}\n\nexport function TagInput({\n  tags,\n  onChange,\n  placeholder = \"Type tag and press Enter...\",\n  maxTags = 8,\n  label,\n  id,\n}: TagInputProps) {\n  const { tokens, scaled } = useZeroLight();\n  const [inputVal, setInputVal] = useState(\"\");\n\n  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {\n    if (e.key === \"Enter\" && inputVal.trim()) {\n      e.preventDefault();\n      const newTag = inputVal.trim();\n      if (!tags.includes(newTag) && tags.length < maxTags) {\n        onChange([...tags, newTag]);\n        setInputVal(\"\");\n      }\n    } else if (e.key === \"Backspace\" && !inputVal && tags.length > 0) {\n      onChange(tags.slice(0, -1));\n    }\n  };\n\n  const removeTag = (tagToRemove: string) => {\n    onChange(tags.filter((t) => t !== tagToRemove));\n  };\n\n  return (\n    <div className=\"space-y-1.5 w-full\">\n      {label && (\n        <div className=\"flex items-center justify-between text-xs\">\n          <label htmlFor={id} style={{ color: tokens.textIconColor }} className=\"font-medium\">\n            {label}\n          </label>\n          <span className=\"text-neutral-400 font-medium tabular-nums\">\n            {tags.length}/{maxTags}\n          </span>\n        </div>\n      )}\n\n      <div\n        style={{\n          borderRadius: `${scaled.scaledRadius}px`,\n          borderColor: tokens.universalBorderColor,\n          borderWidth: `${tokens.borderWidth}px`,\n          backgroundColor: scaled.effectiveInputFill,\n          minHeight: `${scaled.scaledHeight}px`,\n          padding: \"6px 10px\",\n          transition: scaled.transitionStyle,\n        }}\n        className=\"flex flex-wrap items-center gap-1.5 border w-full focus-within:ring-2 focus-within:ring-black/10 transition-colors\"\n      >\n        {tags.map((tag) => (\n          <TagChip key={tag} label={tag} onRemove={() => removeTag(tag)} />\n        ))}\n\n        {tags.length < maxTags && (\n          <input\n            id={id}\n            type=\"text\"\n            value={inputVal}\n            onChange={(e) => setInputVal(e.target.value)}\n            onKeyDown={handleKeyDown}\n            placeholder={tags.length === 0 ? placeholder : \"\"}\n            style={{\n              fontSize: `${scaled.sublabelFontSize}px`,\n              color: tokens.textIconColor,\n            }}\n            className=\"flex-1 min-w-[120px] bg-transparent outline-none font-medium placeholder:text-neutral-400 py-1\"\n          />\n        )}\n      </div>\n    </div>\n  );\n}\n"
+    }
+  ]
+}

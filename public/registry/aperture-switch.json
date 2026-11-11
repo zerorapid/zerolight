@@ -1,0 +1,15 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "aperture-switch",
+  "title": "Aperture Switch",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/aperture-switch.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport interface ApertureSwitchProps {\n  checked: boolean;\n  onChange: (checked: boolean) => void;\n  disabled?: boolean;\n  label?: string;\n  description?: string;\n  className?: string;\n  ariaLabel?: string;\n}\n\nexport function ApertureSwitch({\n  checked,\n  onChange,\n  disabled = false,\n  label,\n  description,\n  className = \"\",\n  ariaLabel,\n}: ApertureSwitchProps) {\n  const handleToggle = () => {\n    if (!disabled) {\n      onChange(!checked);\n    }\n  };\n\n  const handleKeyDown = (e: React.KeyboardEvent) => {\n    if (disabled) return;\n    if (e.key === \" \" || e.key === \"Enter\") {\n      e.preventDefault();\n      onChange(!checked);\n    }\n  };\n\n  return (\n    <div className={`inline-flex items-center gap-2.5 font-sans ${className}`}>\n      <button\n        type=\"button\"\n        role=\"switch\"\n        aria-checked={checked}\n        aria-label={ariaLabel || label || \"Aperture toggle switch\"}\n        disabled={disabled}\n        onClick={handleToggle}\n        onKeyDown={handleKeyDown}\n        className={`relative inline-flex h-[18px] w-8 flex-shrink-0 cursor-pointer rounded-full border transition-all duration-300 ease-spring-tactile focus:outline-none focus-visible:ring-1 focus-visible:ring-emerald-400 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transform-gpu will-change-transform ${\n          checked\n            ? \"bg-emerald-500 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.55),0_0_2px_rgba(16,185,129,0.9)] ring-1 ring-emerald-400/50\"\n            : \"bg-neutral-900 border-neutral-750 hover:border-neutral-600 shadow-inner\"\n        }`}\n      >\n        <span\n          className={`pointer-events-none inline-block h-3.5 w-3.5 transform-gpu rounded-full shadow-sm ring-0 transition-all duration-300 ease-spring-tactile will-change-transform mt-[1px] ${\n            checked\n              ? \"translate-x-[15px] bg-neutral-950 scale-105\"\n              : \"translate-x-[2px] bg-neutral-400 scale-95\"\n          }`}\n        />\n      </button>\n\n      {(label || description) && (\n        <div className=\"flex flex-col select-none text-left\" onClick={handleToggle}>\n          {label && (\n            <span\n              className={`text-xs font-medium cursor-pointer transition-colors ${\n                disabled ? \"text-neutral-500\" : checked ? \"text-neutral-100\" : \"text-neutral-300\"\n              }`}\n            >\n              {label}\n            </span>\n          )}\n          {description && (\n            <span className=\"text-[10px] text-neutral-500 cursor-pointer\">{description}</span>\n          )}\n        </div>\n      )}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

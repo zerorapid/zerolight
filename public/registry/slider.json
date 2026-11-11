@@ -1,0 +1,17 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "slider",
+  "title": "Slider",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/slider.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface SliderProps {\n  value: number;\n  onChange: (val: number) => void;\n  min?: number;\n  max?: number;\n  step?: number;\n  disabled?: boolean;\n  label?: string;\n  id?: string;\n}\n\nexport function Slider({\n  value,\n  onChange,\n  min = 0,\n  max = 100,\n  step = 1,\n  disabled = false,\n  label,\n  id,\n}: SliderProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  const percentage = ((value - min) / (max - min)) * 100;\n\n  return (\n    <div className=\"space-y-2 w-full\">\n      {(label || true) && (\n        <div className=\"flex items-center justify-between text-xs\">\n          {label && (\n            <label htmlFor={id} style={{ color: tokens.textIconColor }} className=\"font-medium\">\n              {label}\n            </label>\n          )}\n          <span style={{ color: tokens.textIconColor }} className=\"tabular-nums font-semibold ml-auto\">\n            {value}%\n          </span>\n        </div>\n      )}\n\n      <div className=\"relative flex items-center h-5 w-full select-none\">\n        {/* Track */}\n        <div\n          style={{\n            borderRadius: `${scaled.scaledPillRadius}px`,\n            backgroundColor: \"#E4E4E7\",\n          }}\n          className=\"h-1.5 w-full overflow-hidden\"\n        >\n          {/* Active fill */}\n          <div\n            style={{\n              width: `${percentage}%`,\n              backgroundColor: tokens.primaryButtonColor,\n              borderRadius: `${scaled.scaledPillRadius}px`,\n              transition: \"width 0.05s linear\",\n            }}\n            className=\"h-full\"\n          />\n        </div>\n\n        {/* Real native range input overlaid invisibly for full keyboard & accessibility support */}\n        <input\n          id={id}\n          type=\"range\"\n          min={min}\n          max={max}\n          step={step}\n          value={value}\n          disabled={disabled}\n          onChange={(e) => onChange(Number(e.target.value))}\n          className=\"absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed\"\n        />\n\n        {/* Visual Thumb */}\n        <div\n          style={{\n            left: `calc(${percentage}% - 8px)`,\n            borderRadius: `${scaled.scaledPillRadius}px`,\n            borderColor: tokens.primaryButtonColor,\n            borderWidth: \"2px\",\n            backgroundColor: \"#FFFFFF\",\n            boxShadow: \"0 1px 3px rgba(0,0,0,0.15)\",\n          }}\n          className=\"absolute w-4 h-4 pointer-events-none transition-transform\"\n        />\n      </div>\n    </div>\n  );\n}\n"
+    }
+  ]
+}

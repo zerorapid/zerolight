@@ -1,0 +1,17 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "kbd",
+  "title": "Kbd",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/kbd.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface KbdProps {\n  children: React.ReactNode;\n  className?: string;\n}\n\nexport function Kbd({ children, className = \"\" }: KbdProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <kbd\n      style={{\n        borderRadius: `${scaled.scaledInnerRadius === 0 ? 0 : 5}px`,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${tokens.borderWidth}px`,\n        backgroundColor: tokens.universalFillColor,\n        color: tokens.textIconColor,\n        boxShadow: \"0 1px 0 rgba(0,0,0,0.15)\",\n      }}\n      className={`inline-flex items-center justify-center px-1.5 py-0.5 text-[11px] font-semibold font-sans tracking-tight border whitespace-nowrap shrink-0 ${className}`}\n    >\n      {children}\n    </kbd>\n  );\n}\n"
+    }
+  ]
+}
