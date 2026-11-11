@@ -1,4 +1,4 @@
-import { ZeroLightTokens } from "../types";
+import { ZeroLightTokens, buildGoogleFontsUrl } from "../types";
 
 export const TOKENS_STORAGE_KEY = "zerolight.tokens.v1";
 export const STUDIO_WIDTH_STORAGE_KEY = "zerolight.studioWidth.v1";
@@ -28,11 +28,19 @@ export function getExportSnippet(
   format: "tailwind" | "css" | "json",
   t: ZeroLightTokens
 ): string {
+  const fontFamily = t.fontFamily || "Plus Jakarta Sans";
+  const headingFont = t.headingFontFamily || fontFamily;
+  const googleFontsUrl = buildGoogleFontsUrl([fontFamily, headingFont]);
+
   if (format === "tailwind") {
     return `// tailwind.config.js snippet
 module.exports = {
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"${fontFamily}"', 'system-ui', 'sans-serif'],
+        heading: ['"${headingFont}"', 'system-ui', 'sans-serif'],
+      },
       colors: {
         zl: {
           border: '${t.universalBorderColor}',
@@ -58,7 +66,16 @@ module.exports = {
   }
   if (format === "css") {
     return `/* ZeroLight Universal Design Tokens */
+@import url('${googleFontsUrl}');
+
 :root {
+  --zl-font-family: '${fontFamily}', system-ui, sans-serif;
+  --zl-heading-font: '${headingFont}', system-ui, sans-serif;
+  --zl-body-weight: ${t.bodyWeight ?? 400};
+  --zl-heading-weight: ${t.headingWeight ?? 700};
+  --zl-font-style: ${t.fontStyle ?? "normal"};
+  --zl-letter-spacing: ${t.letterSpacing === "tight" ? "-0.025em" : t.letterSpacing === "wide" ? "0.025em" : "0em"};
+  --zl-line-height: ${t.lineHeight === "compact" ? "1.35" : t.lineHeight === "relaxed" ? "1.65" : "1.5"};
   --zl-border-color: ${t.universalBorderColor};
   --zl-fill-color: ${t.universalFillColor};
   --zl-text-color: ${t.textIconColor};
@@ -88,6 +105,14 @@ module.exports = {
     {
       scaleMultiplier: t.scaleMultiplier,
       direction: t.direction,
+      fontFamily,
+      headingFontFamily: headingFont,
+      bodyWeight: t.bodyWeight ?? 400,
+      headingWeight: t.headingWeight ?? 700,
+      fontStyle: t.fontStyle ?? "normal",
+      letterSpacing: t.letterSpacing ?? "normal",
+      lineHeight: t.lineHeight ?? "normal",
+      tabularNums: t.tabularNums !== false,
       universalBorderColor: t.universalBorderColor,
       universalFillColor: t.universalFillColor,
       textIconColor: t.textIconColor,

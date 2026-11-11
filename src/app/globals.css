@@ -115,3 +115,37 @@ input[type="range"]::-moz-range-thumb {
   scrollbar-width: thin;
   scrollbar-color: #D4D4D8 transparent;
 }
+
+/* ZeroLight Dynamic Google Fonts & Typographic Style Scope */
+[data-zl-typography-scope="true"],
+[data-zl-typography-scope="true"] .font-sans {
+  font-family: var(--zl-font-family, "Plus Jakarta Sans", system-ui, sans-serif);
+}
+
+[data-zl-typography-scope="true"] {
+  font-weight: var(--zl-body-weight, 400);
+  font-style: var(--zl-font-style, normal);
+  letter-spacing: var(--zl-letter-spacing, 0em);
+  line-height: var(--zl-line-height, 1.5);
+  font-variant-numeric: var(--zl-font-variant-numeric, tabular-nums);
+}
+
+[data-zl-typography-scope="true"] h1,
+[data-zl-typography-scope="true"] h2,
+[data-zl-typography-scope="true"] h3,
+[data-zl-typography-scope="true"] h4 {
+  font-family: var(--zl-heading-font, var(--zl-font-family, "Plus Jakarta Sans", system-ui, sans-serif));
+  font-weight: var(--zl-heading-weight, 700);
+}
+
+/* Isolate Visual Studio dock chrome so inspector remains crisp & legible */
+[data-zl-studio-chrome="true"],
+[data-zl-studio-chrome="true"] .font-sans,
+[data-zl-studio-chrome="true"] h1,
+[data-zl-studio-chrome="true"] h2,
+[data-zl-studio-chrome="true"] h3,
+[data-zl-studio-chrome="true"] h4 {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  font-style: normal;
+  letter-spacing: normal;
+}

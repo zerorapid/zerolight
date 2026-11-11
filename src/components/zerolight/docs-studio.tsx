@@ -97,7 +97,7 @@ import {
   RegistryIndexItem,
   RegistryItemDetail,
 } from "./studio/studio-export";
-import { StudioInspector } from "./studio/studio-inspector";
+import { StudioCategory, StudioInspector } from "./studio/studio-inspector";
 import { ExportRegistryModal } from "./studio/export-registry-modal";
 import { TemplatesShowcase } from "./studio/templates-showcase";
 import { PagesShowcase } from "./studio/pages-showcase";
@@ -304,9 +304,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
   const [activeTemplateTab, setActiveTemplateTab] = useState<"dashboard" | "console" | "settings" | "analytics" | "chat">("dashboard");
   const [activePageTab, setActivePageTab] = useState<"dev-console" | "billing" | "ai-assistant" | "settings" | "finexy" | "school-attendance" | "donations">("dev-console");
   const [isMobileStudioOpen, setIsMobileStudioOpen] = useState<boolean>(false);
-  const [studioCategory, setStudioCategory] = useState<"all" | "motion" | "general" | "colors" | "geometry" | "icons" | "dataviz">("all");
-  const STUDIO_DEFAULT_WIDTH = 300;
-  const STUDIO_MIN_WIDTH = 260;
+  const [studioCategory, setStudioCategory] = useState<StudioCategory>("theme");
+  const STUDIO_DEFAULT_WIDTH = 340;
+  const STUDIO_MIN_WIDTH = 280;
   const STUDIO_MAX_WIDTH = 560;
   const [studioWidth, setStudioWidth] = useState<number>(STUDIO_DEFAULT_WIDTH);
   const [isResizingStudio, setIsResizingStudio] = useState<boolean>(false);
@@ -4860,8 +4860,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
         <div className="hidden xl:flex relative h-full shrink-0">
           {renderLeftResizer(STUDIO_MAX_WIDTH)}
           <aside
+            data-zl-studio-chrome="true"
             style={{ width: `${studioWidth}px` }}
-            className="border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] p-5 flex flex-col justify-between select-none h-full overflow-y-auto"
+            className="border-l border-[#27272A] bg-[#121214] text-[#E4E4E7] flex flex-col select-none h-full overflow-hidden"
           >
             <StudioInspector {...studioInspectorProps} />
           </aside>
@@ -4897,7 +4898,10 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 className="relative max-w-[92vw] h-full shrink-0 flex"
               >
                 {renderLeftResizer(480)}
-                <aside className="w-full bg-[#121214] text-[#E4E4E7] p-5 h-full overflow-y-auto border-l border-[#27272A] flex flex-col justify-between select-none">
+                <aside
+                  data-zl-studio-chrome="true"
+                  className="w-full bg-[#121214] text-[#E4E4E7] h-full overflow-hidden border-l border-[#27272A] flex flex-col select-none"
+                >
                   <StudioInspector {...studioInspectorProps} />
                 </aside>
               </motion.div>

@@ -910,6 +910,54 @@ test("DonationsView and /donations Next.js route exist", () => {
   assert.ok(fs.existsSync(path.join(rootDir, "src/app/donations/page.tsx")), "/donations Next.js page route should exist");
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TEST SUITE 20: Google Fonts Typography Engine & Studio Redesign
+// ─────────────────────────────────────────────────────────────────────────────
+console.log("\n=== Suite 20: Google Fonts Engine & Visual Studio Redesign ===");
+
+test("Google Fonts Catalog, Pairing Presets, and Dynamic URL Builder exist in types.ts", () => {
+  assert.ok(typesContent.includes("export const GOOGLE_FONT_CATALOG"), "types.ts should export GOOGLE_FONT_CATALOG");
+  assert.ok(typesContent.includes("export const FONT_PAIRING_PRESETS"), "types.ts should export FONT_PAIRING_PRESETS");
+  assert.ok(typesContent.includes("export function buildGoogleFontsUrl"), "types.ts should export buildGoogleFontsUrl");
+  assert.ok(typesContent.includes("Fraunces") && typesContent.includes("Inter"), "Catalog should include Sans & Serif options");
+  assert.ok(typesContent.includes("resolvedFontFamily") && typesContent.includes("resolvedHeadingFontFamily"), "ScaledTokens should compute resolved font stacks");
+});
+
+test("ZeroLightProvider injects dynamic Google Fonts stylesheet and exports typography CSS variables", () => {
+  const ctxContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/context.tsx"), "utf8");
+  assert.ok(ctxContent.includes("zerolight-google-fonts"), "Provider should manage link#zerolight-google-fonts");
+  assert.ok(ctxContent.includes("--zl-font-family"), "Provider should emit --zl-font-family CSS variable");
+  assert.ok(ctxContent.includes("--zl-heading-font"), "Provider should emit --zl-heading-font CSS variable");
+  assert.ok(ctxContent.includes("data-zl-typography-scope"), "Provider should scope typography attributes cleanly");
+
+  const cssContent = fs.readFileSync(path.join(rootDir, "src/app/globals.css"), "utf8");
+  assert.ok(cssContent.includes('[data-zl-typography-scope="true"]'), "globals.css should apply typography scope variables");
+  assert.ok(cssContent.includes('[data-zl-studio-chrome="true"]'), "globals.css should isolate Visual Studio chrome font");
+});
+
+test("Studio Export generates Google Fonts @import and Tailwind fontFamily tokens", () => {
+  const exportContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/studio/studio-export.ts"), "utf8");
+  assert.ok(exportContent.includes("buildGoogleFontsUrl"), "studio-export should embed Google Fonts @import url");
+  assert.ok(exportContent.includes("--zl-font-family"), "CSS snippet should include --zl-font-family");
+  assert.ok(exportContent.includes("headingFontFamily"), "JSON snippet should include headingFontFamily");
+});
+
+test("Visual Studio Redesign: Modular 5-tab architecture with sticky header/footer and panels", () => {
+  for (const mod of [
+    "src/components/zerolight/studio/studio-ui.tsx",
+    "src/components/zerolight/studio/panel-theme.tsx",
+    "src/components/zerolight/studio/panel-typography.tsx",
+    "src/components/zerolight/studio/panel-layout.tsx",
+    "src/components/zerolight/studio/panel-motion.tsx",
+    "src/components/zerolight/studio/panel-assets.tsx",
+  ]) {
+    assert.ok(fs.existsSync(path.join(rootDir, mod)), `Expected Visual Studio panel module: ${mod}`);
+  }
+  const inspectorContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/studio/studio-inspector.tsx"), "utf8");
+  assert.ok(inspectorContent.includes('id: "theme"') && inspectorContent.includes('id: "type"') && inspectorContent.includes('id: "motion"'), "StudioInspector should expose clean 5-tab navigation");
+  assert.ok(inspectorContent.includes("Copy CSS"), "StudioInspector should expose quick Copy CSS action in sticky footer");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

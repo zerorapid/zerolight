@@ -7,6 +7,128 @@ export type IconFillPreset = "none" | "currentColor" | "subtle";
 export type ChartPalettePreset = "emerald" | "violet" | "sky" | "amber" | "monochrome";
 export type ChartGridPreset = "dotted" | "solid" | "none";
 export type ChartStrokePreset = 1.5 | 2.0 | 2.5 | 3.0;
+export type FontStylePreset = "normal" | "italic";
+export type LetterSpacingPreset = "tight" | "normal" | "wide";
+export type LineHeightPreset = "compact" | "normal" | "relaxed";
+export type FontWeightPreset = 300 | 400 | 500 | 600 | 700 | 800;
+
+export interface GoogleFontOption {
+  family: string;
+  category: "Sans" | "Editorial Serif" | "Display";
+  fallback: string;
+  weights: number[];
+  note: string;
+}
+
+export const GOOGLE_FONT_CATALOG: GoogleFontOption[] = [
+  { family: "Plus Jakarta Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Balanced modern SaaS default" },
+  { family: "Inter", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Crisp neutral UI standard" },
+  { family: "DM Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Friendly geometric clarity" },
+  { family: "Manrope", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Semi-condensed technical sans" },
+  { family: "Outfit", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Clean geometric precision" },
+  { family: "Instrument Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [400, 500, 600, 700], note: "Sharp editorial product sans" },
+  { family: "Space Grotesk", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Expressive tech headline & UI" },
+  { family: "Work Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "High-legibility screen sans" },
+  { family: "Sora", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Contemporary fintech grotesk" },
+  { family: "Poppins", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Warm circular geometric" },
+  { family: "Rubik", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Soft rounded corner geometry" },
+  { family: "Public Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Civic & enterprise clarity" },
+  { family: "Fraunces", category: "Editorial Serif", fallback: "Georgia, serif", weights: [400, 500, 600, 700, 800], note: "Soft expressive display serif" },
+  { family: "Lora", category: "Editorial Serif", fallback: "Georgia, serif", weights: [400, 500, 600, 700], note: "Contemporary calligraphic serif" },
+  { family: "Playfair Display", category: "Editorial Serif", fallback: "Georgia, serif", weights: [400, 500, 600, 700, 800], note: "High-contrast luxury headings" },
+  { family: "Newsreader", category: "Editorial Serif", fallback: "Georgia, serif", weights: [300, 400, 500, 600, 700], note: "Refined long-form reading serif" },
+  { family: "DM Serif Display", category: "Editorial Serif", fallback: "Georgia, serif", weights: [400], note: "Punchy editorial serif display" },
+  { family: "Bricolage Grotesque", category: "Display", fallback: "system-ui, sans-serif", weights: [400, 500, 600, 700, 800], note: "Distinctive warm character" },
+  { family: "Syne", category: "Display", fallback: "system-ui, sans-serif", weights: [400, 500, 600, 700, 800], note: "Bold artistic wide grotesk" },
+];
+
+export interface FontPairingPreset {
+  id: string;
+  label: string;
+  description: string;
+  fontFamily: string;
+  headingFontFamily: string;
+  bodyWeight: FontWeightPreset;
+  headingWeight: FontWeightPreset;
+  letterSpacing: LetterSpacingPreset;
+}
+
+export const FONT_PAIRING_PRESETS: FontPairingPreset[] = [
+  {
+    id: "fintech-crisp",
+    label: "Fintech Crisp",
+    description: "Plus Jakarta Sans",
+    fontFamily: "Plus Jakarta Sans",
+    headingFontFamily: "Plus Jakarta Sans",
+    bodyWeight: 400,
+    headingWeight: 700,
+    letterSpacing: "normal",
+  },
+  {
+    id: "saas-clean",
+    label: "SaaS Clean",
+    description: "Inter UI Tight",
+    fontFamily: "Inter",
+    headingFontFamily: "Inter",
+    bodyWeight: 400,
+    headingWeight: 700,
+    letterSpacing: "tight",
+  },
+  {
+    id: "editorial-serif",
+    label: "Editorial",
+    description: "Fraunces + DM Sans",
+    fontFamily: "DM Sans",
+    headingFontFamily: "Fraunces",
+    bodyWeight: 400,
+    headingWeight: 600,
+    letterSpacing: "normal",
+  },
+  {
+    id: "geometric-tech",
+    label: "Tech Grotesk",
+    description: "Space Grotesk + Work",
+    fontFamily: "Work Sans",
+    headingFontFamily: "Space Grotesk",
+    bodyWeight: 400,
+    headingWeight: 700,
+    letterSpacing: "tight",
+  },
+  {
+    id: "studio-display",
+    label: "Expressive",
+    description: "Bricolage + Manrope",
+    fontFamily: "Manrope",
+    headingFontFamily: "Bricolage Grotesque",
+    bodyWeight: 400,
+    headingWeight: 700,
+    letterSpacing: "normal",
+  },
+];
+
+export function buildGoogleFontsUrl(families: string[]): string {
+  const unique = Array.from(
+    new Set(
+      families
+        .map((f) => f.trim())
+        .filter((f) => f.length > 0 && f !== "inherit" && f !== "system-ui")
+    )
+  );
+  if (unique.length === 0) return "";
+  const queryParts = unique.map((family) => {
+    const match = GOOGLE_FONT_CATALOG.find(
+      (item) => item.family.toLowerCase() === family.toLowerCase()
+    );
+    const weights = match ? match.weights : [300, 400, 500, 600, 700, 800];
+    const encoded = encodeURIComponent(match ? match.family : family).replace(/%20/g, "+");
+    const axisValues = [
+      ...weights.map((w) => `0,${w}`),
+      ...weights.map((w) => `1,${w}`),
+    ].join(";");
+    return `family=${encoded}:ital,wght@${axisValues}`;
+  });
+  return `https://fonts.googleapis.com/css2?${queryParts.join("&")}&display=swap`;
+}
 
 export interface ZeroLightTokens {
   scaleMultiplier: number;
@@ -43,6 +165,15 @@ export interface ZeroLightTokens {
   chartGridStyle?: ChartGridPreset;
   // Layout Direction (Bi-Directional RTL/LTR Engine)
   direction?: "ltr" | "rtl";
+  // Google Fonts & Typography Style Engine
+  fontFamily?: string;
+  headingFontFamily?: string;
+  bodyWeight?: FontWeightPreset;
+  headingWeight?: FontWeightPreset;
+  fontStyle?: FontStylePreset;
+  letterSpacing?: LetterSpacingPreset;
+  lineHeight?: LineHeightPreset;
+  tabularNums?: boolean;
 }
 
 export const DEFAULT_TOKENS: ZeroLightTokens = {
@@ -72,6 +203,15 @@ export const DEFAULT_TOKENS: ZeroLightTokens = {
   chartFillOpacity: 0.25,
   chartGridStyle: "dotted",
   direction: "ltr",
+  // Typography defaults
+  fontFamily: "Plus Jakarta Sans",
+  headingFontFamily: "Plus Jakarta Sans",
+  bodyWeight: 400,
+  headingWeight: 700,
+  fontStyle: "normal",
+  letterSpacing: "normal",
+  lineHeight: "normal",
+  tabularNums: true,
 };
 
 export type ThemePresetId = "light" | "dark" | "slate" | "contrast";
@@ -220,6 +360,16 @@ export interface ScaledTokens {
   direction: "ltr" | "rtl";
   isRtl: boolean;
   isDarkSurface: boolean;
+  // Resolved Typography Variables
+  resolvedFontFamily: string;
+  resolvedHeadingFontFamily: string;
+  googleFontsUrl: string;
+  bodyWeight: FontWeightPreset;
+  headingWeight: FontWeightPreset;
+  fontStyle: FontStylePreset;
+  letterSpacingCss: string;
+  lineHeightCss: string;
+  fontVariantNumeric: string;
 }
 
 export function getContrastColor(hexColor: string): string {
@@ -604,5 +754,43 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     direction: tokens.direction || "ltr",
     isRtl: tokens.direction === "rtl",
     isDarkSurface: getContrastColor(tokens.universalFillColor) === "#FFFFFF",
+    resolvedFontFamily: (() => {
+      const fam = (tokens.fontFamily || "Plus Jakarta Sans").trim();
+      const catalog = GOOGLE_FONT_CATALOG.find(
+        (item) => item.family.toLowerCase() === fam.toLowerCase()
+      );
+      const fallback = catalog ? catalog.fallback : "system-ui, sans-serif";
+      return `"${fam}", ${fallback}`;
+    })(),
+    resolvedHeadingFontFamily: (() => {
+      const bodyFam = (tokens.fontFamily || "Plus Jakarta Sans").trim();
+      const headFam = (tokens.headingFontFamily || bodyFam).trim();
+      const eff = headFam === "inherit" || !headFam ? bodyFam : headFam;
+      const catalog = GOOGLE_FONT_CATALOG.find(
+        (item) => item.family.toLowerCase() === eff.toLowerCase()
+      );
+      const fallback = catalog ? catalog.fallback : "system-ui, sans-serif";
+      return `"${eff}", ${fallback}`;
+    })(),
+    googleFontsUrl: buildGoogleFontsUrl([
+      tokens.fontFamily || "Plus Jakarta Sans",
+      tokens.headingFontFamily || tokens.fontFamily || "Plus Jakarta Sans",
+    ]),
+    bodyWeight: tokens.bodyWeight ?? 400,
+    headingWeight: tokens.headingWeight ?? 700,
+    fontStyle: tokens.fontStyle ?? "normal",
+    letterSpacingCss:
+      tokens.letterSpacing === "tight"
+        ? "-0.025em"
+        : tokens.letterSpacing === "wide"
+        ? "0.025em"
+        : "0em",
+    lineHeightCss:
+      tokens.lineHeight === "compact"
+        ? "1.35"
+        : tokens.lineHeight === "relaxed"
+        ? "1.65"
+        : "1.5",
+    fontVariantNumeric: tokens.tabularNums !== false ? "tabular-nums" : "normal",
   };
 }
