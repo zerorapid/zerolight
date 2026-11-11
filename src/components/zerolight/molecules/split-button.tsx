@@ -321,17 +321,19 @@ export function SplitButton({
                         }}
                         style={{
                           borderRadius: `${scaled.scaledOptionRadius}px`,
+                          backgroundColor: isHighlighted ? tokens.hoverBackplateTint : undefined,
+                          color: tokens.textIconColor,
                         }}
                         className={`w-full flex items-center justify-between gap-3 px-3 py-2 text-xs font-medium transition-colors cursor-pointer text-left ${
                           isHighlighted
-                            ? "bg-neutral-100 text-neutral-900 font-semibold"
-                            : "text-neutral-700 hover:bg-neutral-100/80 hover:text-neutral-900"
+                            ? "font-semibold"
+                            : "opacity-85 hover:opacity-100"
                         }`}
                       >
                         <div className="flex items-center gap-2 truncate">
                           {opt.icon && <span className="text-neutral-400 shrink-0">{opt.icon}</span>}
                           <div className="truncate">
-                            <div className="font-semibold text-neutral-800">{opt.label}</div>
+                            <div style={{ color: tokens.textIconColor }} className="font-semibold">{opt.label}</div>
                             {opt.description && (
                               <div className="text-[10px] text-neutral-400 truncate">{opt.description}</div>
                             )}

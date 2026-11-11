@@ -304,6 +304,8 @@ export function DropdownMenu({
                         }}
                         style={{
                           borderRadius: `${Math.max(4, scaled.scaledRadius - 4)}px`,
+                          backgroundColor: isHighlighted && !item.destructive ? tokens.hoverBackplateTint : undefined,
+                          color: item.destructive ? undefined : tokens.textIconColor,
                         }}
                         className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs text-left transition-colors cursor-pointer outline-none ${
                           item.disabled
@@ -313,8 +315,8 @@ export function DropdownMenu({
                               ? "bg-rose-50 text-rose-600 font-semibold"
                               : "text-rose-600"
                             : isHighlighted
-                            ? "bg-neutral-100 text-neutral-900 font-semibold"
-                            : "text-neutral-700 hover:bg-neutral-100 hover:text-neutral-900"
+                            ? "font-semibold"
+                            : "opacity-85 hover:opacity-100"
                         }`}
                       >
                         <div className="flex items-center gap-2 truncate">

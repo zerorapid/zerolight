@@ -196,7 +196,7 @@ export function ConfirmationModal({
                 style={{ fontSize: `${scaled.sublabelFontSize}px` }}
                 className="font-medium text-neutral-500 block"
               >
-                Type <strong className="text-neutral-900 font-bold">{verificationPhrase}</strong> to confirm:
+                Type <strong style={{ color: tokens.textIconColor }} className="font-bold">{verificationPhrase}</strong> to confirm:
               </label>
               <input
                 ref={inputRef}

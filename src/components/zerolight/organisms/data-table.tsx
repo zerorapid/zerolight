@@ -215,8 +215,9 @@ export function DataTable({
           borderRadius: `${scaled.scaledRadius}px`,
           borderColor: tokens.universalBorderColor,
           borderWidth: `${tokens.borderWidth}px`,
+          backgroundColor: tokens.universalFillColor,
         }}
-        className="overflow-x-auto border bg-white"
+        className="overflow-x-auto border"
       >
         <table className="w-full text-left text-xs border-collapse min-w-[860px]">
           <thead>

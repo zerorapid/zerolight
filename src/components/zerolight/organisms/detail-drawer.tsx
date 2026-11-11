@@ -194,8 +194,13 @@ export function DetailDrawer({
                       key={t}
                       type="button"
                       onClick={() => setActiveTab(t)}
+                      style={
+                        activeTab === t
+                          ? { color: tokens.textIconColor, borderColor: tokens.primaryButtonColor }
+                          : undefined
+                      }
                       className={`pb-2.5 capitalize cursor-pointer transition-colors relative ${
-                        activeTab === t ? "text-neutral-900 border-b-2 border-neutral-900" : "hover:text-neutral-700"
+                        activeTab === t ? "border-b-2" : "opacity-75 hover:opacity-100"
                       }`}
                     >
                       {t}
@@ -234,11 +239,25 @@ export function DetailDrawer({
                   <div className="space-y-1.5">
                     <span className="text-neutral-500 font-medium block">Allocated Resources</span>
                     <div className="grid grid-cols-2 gap-2">
-                      <div className="p-2.5 rounded-lg border border-neutral-200 bg-neutral-50">
+                      <div
+                        style={{
+                          backgroundColor: tokens.hoverBackplateTint,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                        }}
+                        className="p-2.5 rounded-lg border"
+                      >
                         <div className="text-[10px] text-neutral-400 uppercase font-bold">Memory</div>
                         <div className="text-sm font-bold tabular-nums">4.2 / 8.0 GB</div>
                       </div>
-                      <div className="p-2.5 rounded-lg border border-neutral-200 bg-neutral-50">
+                      <div
+                        style={{
+                          backgroundColor: tokens.hoverBackplateTint,
+                          borderColor: tokens.universalBorderColor,
+                          borderWidth: `${tokens.borderWidth}px`,
+                        }}
+                        className="p-2.5 rounded-lg border"
+                      >
                         <div className="text-[10px] text-neutral-400 uppercase font-bold">CPU Usage</div>
                         <div className="text-sm font-bold tabular-nums">24% Load</div>
                       </div>
@@ -251,15 +270,23 @@ export function DetailDrawer({
             {/* Drawer Footer */}
             {footer ? (
               <div
-                style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
-                className="p-4 border-t flex items-center bg-neutral-50/50"
+                style={{
+                  borderColor: tokens.universalBorderColor,
+                  borderTopWidth: `${tokens.borderWidth}px`,
+                  backgroundColor: tokens.hoverBackplateTint,
+                }}
+                className="p-4 border-t flex items-center"
               >
                 {footer}
               </div>
             ) : (
               <div
-                style={{ borderColor: tokens.universalBorderColor, borderTopWidth: `${tokens.borderWidth}px` }}
-                className="p-4 border-t flex items-center justify-end gap-2 bg-neutral-50/50"
+                style={{
+                  borderColor: tokens.universalBorderColor,
+                  borderTopWidth: `${tokens.borderWidth}px`,
+                  backgroundColor: tokens.hoverBackplateTint,
+                }}
+                className="p-4 border-t flex items-center justify-end gap-2"
               >
                 <Button
                   variant="outline"

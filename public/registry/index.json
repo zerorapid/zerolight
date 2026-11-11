@@ -32,7 +32,7 @@
       "registryDependencies": [
         "types"
       ],
-      "lines": 56,
+      "lines": 68,
       "registryUrl": "/registry/context.json"
     },
     {
@@ -718,7 +718,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 345,
+      "lines": 347,
       "registryUrl": "/registry/dropdown-menu.json"
     },
     {
@@ -963,7 +963,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 352,
+      "lines": 354,
       "registryUrl": "/registry/split-button.json"
     },
     {
@@ -1157,7 +1157,7 @@
         "badge",
         "context"
       ],
-      "lines": 337,
+      "lines": 338,
       "registryUrl": "/registry/data-table.json"
     },
     {
@@ -1174,7 +1174,7 @@
         "button",
         "context"
       ],
-      "lines": 292,
+      "lines": 319,
       "registryUrl": "/registry/detail-drawer.json"
     },
     {

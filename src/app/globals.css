@@ -78,6 +78,39 @@ input[type="range"]::-moz-range-thumb {
 ::-webkit-scrollbar-thumb:hover {
   background: #A1A1AA;
 }
+
+/* ZeroLight Scoped Polarity Adaptation (no !important so inline token styles always win) */
+[data-zl-polarity="dark"] .text-neutral-900,
+[data-zl-polarity="dark"] .text-neutral-800,
+[data-zl-polarity="dark"] .text-\[\#111111\] {
+  color: var(--zl-text, #FAFAFA);
+}
+[data-zl-polarity="dark"] .text-neutral-700 {
+  color: #E4E4E7;
+}
+[data-zl-polarity="dark"] .text-neutral-600 {
+  color: #D4D4D8;
+}
+[data-zl-polarity="dark"] .text-neutral-500 {
+  color: #A1A1AA;
+}
+[data-zl-polarity="dark"] .bg-white {
+  background-color: var(--zl-surface, #141418);
+}
+[data-zl-polarity="dark"] .bg-neutral-50,
+[data-zl-polarity="dark"] .bg-neutral-50\/50,
+[data-zl-polarity="dark"] .bg-neutral-50\/60,
+[data-zl-polarity="dark"] .bg-neutral-100 {
+  background-color: var(--zl-hover, #27272A);
+}
+[data-zl-polarity="dark"] .border-neutral-200,
+[data-zl-polarity="dark"] .border-neutral-100 {
+  border-color: var(--zl-border, #27272A);
+}
+[data-zl-polarity="dark"] .divide-neutral-100 > :not([hidden]) ~ :not([hidden]),
+[data-zl-polarity="dark"] .divide-neutral-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--zl-border, #27272A);
+}
 * {
   scrollbar-width: thin;
   scrollbar-color: #D4D4D8 transparent;

@@ -43,7 +43,19 @@ export function ZeroLightProvider({
 
   return (
     <ZeroLightContext.Provider value={value}>
-      <div dir={scaled.direction} className="contents">
+      <div
+        dir={scaled.direction}
+        data-zl-polarity={scaled.isDarkSurface ? "dark" : "light"}
+        style={
+          {
+            "--zl-text": tokens.textIconColor,
+            "--zl-surface": tokens.universalFillColor,
+            "--zl-border": tokens.universalBorderColor,
+            "--zl-hover": tokens.hoverBackplateTint,
+          } as React.CSSProperties
+        }
+        className="contents"
+      >
         {children}
       </div>
     </ZeroLightContext.Provider>
