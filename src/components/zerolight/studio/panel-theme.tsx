@@ -2,7 +2,7 @@
 
 import React from "react";
 import { THEME_PRESETS, ThemePresetId, ZeroLightTokens } from "../types";
-import { StudioColorRow, StudioSectionCard } from "./studio-ui";
+import { StudioAccordion, StudioColorRow, StudioSectionCard } from "./studio-ui";
 
 export interface PanelThemeProps {
   tokens: ZeroLightTokens;
@@ -103,8 +103,11 @@ export function PanelTheme({
         </div>
       </StudioSectionCard>
 
-      <StudioSectionCard title="Surface & semantic tokens">
-        <div className="space-y-0.5">
+      <StudioAccordion
+        title="Surface & semantic tokens"
+        summary={`${tokens.universalFillColor} • ${tokens.universalBorderColor}`}
+      >
+        <div className="space-y-0.5 pt-1">
           <StudioColorRow
             label="Surface fill"
             value={tokens.universalFillColor}
@@ -131,7 +134,7 @@ export function PanelTheme({
             onChange={(hex) => setTokens((prev) => ({ ...prev, hoverBackplateTint: hex }))}
           />
         </div>
-      </StudioSectionCard>
+      </StudioAccordion>
     </div>
   );
 }

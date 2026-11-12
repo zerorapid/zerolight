@@ -162,6 +162,7 @@ import {
   Transfer,
   TreeSelect,
   Cascader,
+  WorldMap,
 } from "./molecules";
 import {
   DataTable,
@@ -176,6 +177,7 @@ import {
   ToastProvider,
   useToast,
   AppShell,
+  GeoBreakdown,
 } from "./organisms";
 import {
   DashboardTemplate,
@@ -928,8 +930,8 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
           {(
             [
               { key: "atoms", label: "Atoms", count: "20" },
-              { key: "molecules", label: "Molecules", count: "18" },
-              { key: "organisms", label: "Organisms", count: "13" },
+              { key: "molecules", label: "Molecules", count: "19" },
+              { key: "organisms", label: "Organisms", count: "14" },
               { key: "templates", label: "Templates", count: "5" },
               { key: "pages", label: "Pages", count: "6" },
             ] as const
@@ -3683,6 +3685,42 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     />
                   </div>
                 </div>
+
+                {/* ── 19. WORLD MAP & GEO TELEMETRY ── */}
+                <div id="mol-world-map" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: tokens.universalBorderColor }}>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight">World Map & Geo-Visualization</h2>
+                      <p className="text-xs opacity-60 mt-0.5">
+                        Zero-API-key SVG choropleth heatmap, edge pins, flow arcs, and continent zoom presets.
+                      </p>
+                    </div>
+                    <Badge variant="neutral">molecules/world-map</Badge>
+                  </div>
+                  <WorldMap
+                    data={[
+                      { id: "US", value: 48200, formattedValue: "$48.2K", delta: "+14.2%" },
+                      { id: "GB", value: 24100, formattedValue: "$24.1K", delta: "+9.4%" },
+                      { id: "DE", value: 18900, formattedValue: "$18.9K", delta: "+6.8%" },
+                      { id: "IN", value: 15400, formattedValue: "$15.4K", delta: "+22.1%" },
+                      { id: "SG", value: 10200, formattedValue: "$10.2K", delta: "+11.5%" },
+                      { id: "JP", value: 9400, formattedValue: "$9.4K", delta: "+5.3%" },
+                      { id: "BR", value: 7800, formattedValue: "$7.8K", delta: "+8.9%" },
+                      { id: "AU", value: 6400, formattedValue: "$6.4K", delta: "-1.8%" },
+                    ]}
+                    markers={[
+                      { id: "iad", countryId: "US", label: "us-east-1", status: "active" },
+                      { id: "lhr", countryId: "GB", label: "eu-west-2", status: "active" },
+                      { id: "sin", countryId: "SG", label: "ap-southeast-1", status: "active" },
+                      { id: "bom", countryId: "IN", label: "ap-south-1", status: "warning" },
+                    ]}
+                    arcs={[
+                      { from: "US", to: "GB" },
+                      { from: "GB", to: "IN" },
+                      { from: "IN", to: "SG" },
+                    ]}
+                  />
+                </div>
               </>
             )}
 
@@ -4821,6 +4859,20 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       </Button>
                     </div>
                   </div>
+                </div>
+
+                {/* ── 14. GEO BREAKDOWN ORGANISM ── */}
+                <div id="org-geo-breakdown" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: tokens.universalBorderColor }}>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight">Geo Breakdown Block</h2>
+                      <p className="text-xs opacity-60 mt-0.5">
+                        SaaS regional analytics pairing interactive WorldMap with ranked country telemetry.
+                      </p>
+                    </div>
+                    <Badge variant="neutral">organisms/geo-breakdown</Badge>
+                  </div>
+                  <GeoBreakdown />
                 </div>
               </>
             )}

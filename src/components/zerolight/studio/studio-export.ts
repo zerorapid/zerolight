@@ -93,6 +93,7 @@ module.exports = {
   --zl-icon-fill: ${t.iconFill};
   --zl-icon-color: ${t.iconColor};
   --zl-direction: ${t.direction};
+  --zl-elevation: ${t.elevation};
   --zl-motion-physics: ${t.motionPhysics};
   --zl-motion-speed: ${t.motionSpeedMultiplier};
   --zl-motion-mass: ${t.motionMass ?? "auto"};
@@ -105,6 +106,7 @@ module.exports = {
     {
       scaleMultiplier: t.scaleMultiplier,
       direction: t.direction,
+      elevation: t.elevation,
       fontFamily,
       headingFontFamily: headingFont,
       bodyWeight: t.bodyWeight ?? 400,

@@ -993,6 +993,44 @@ test("Missing Organism & Block Primitives exist and are exported from organisms/
   assert.ok(modalContent.includes("createPortal") && modalContent.includes("export const Dialog = Modal"), "Modal should use createPortal and alias Dialog");
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TEST SUITE 22: Studio Hierarchy, Elevation/Secondary Chart Tokens & World Maps
+// ─────────────────────────────────────────────────────────────────────────────
+console.log("\n=== Suite 22: Studio Hierarchy, Elevation & World Maps ===");
+
+test("Elevation token & chartSecondaryColor are wired into types, export, and Studio panels", () => {
+  const typesContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/types.ts"), "utf8");
+  assert.ok(typesContent.includes('export type ElevationPreset = "flat" | "soft" | "elevated"'), "types.ts should define ElevationPreset");
+  assert.ok(typesContent.includes("elevationPreset"), "computeScaledTokens should compute cardShadow from elevationPreset");
+
+  const layoutPanel = fs.readFileSync(path.join(rootDir, "src/components/zerolight/studio/panel-layout.tsx"), "utf8");
+  assert.ok(layoutPanel.includes("elevation-${id}") && layoutPanel.includes("Elevated"), "panel-layout should expose Elevation controls");
+
+  const assetsPanel = fs.readFileSync(path.join(rootDir, "src/components/zerolight/studio/panel-assets.tsx"), "utf8");
+  assert.ok(assetsPanel.includes("chartSecondaryColor") && assetsPanel.includes("chart-secondary-color"), "panel-assets should expose chartSecondaryColor picker");
+  assert.ok(assetsPanel.includes('"Emerald"') && assetsPanel.includes('"Violet"'), "panel-assets should render full readable palette names");
+
+  const exportContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/studio/studio-export.ts"), "utf8");
+  assert.ok(exportContent.includes("--zl-elevation"), "studio-export should emit --zl-elevation");
+});
+
+test("WorldMap molecule and GeoBreakdown organism exist, export, and are showcased", () => {
+  const molIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/index.ts"), "utf8");
+  const orgIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  assert.ok(molIdx.includes('export * from "./world-map";'), "molecules/index.ts should export world-map");
+  assert.ok(orgIdx.includes('export * from "./geo-breakdown";'), "organisms/index.ts should export geo-breakdown");
+
+  const worldMapContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/world-map.tsx"), "utf8");
+  assert.ok(worldMapContent.includes("WORLD_COUNTRIES") && worldMapContent.includes("REGION_VIEWBOXES"), "WorldMap should include country polygons and region viewboxes");
+  assert.ok(!worldMapContent.includes("font-mono"), "WorldMap must not use font-mono");
+
+  const geoContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/geo-breakdown.tsx"), "utf8");
+  assert.ok(geoContent.includes("WorldMap") && geoContent.includes("ProgressBar") && geoContent.includes("TrendDelta"), "GeoBreakdown should compose WorldMap, ProgressBar, and TrendDelta");
+
+  const studioDoc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8");
+  assert.ok(studioDoc.includes("<WorldMap") && studioDoc.includes("<GeoBreakdown"), "docs-studio.tsx should showcase WorldMap and GeoBreakdown");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

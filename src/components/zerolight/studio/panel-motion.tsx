@@ -96,7 +96,7 @@ export function PanelMotion({
                 key={label}
                 type="button"
                 onClick={() => setTokens((prev) => ({ ...prev, motionSpeedMultiplier: val }))}
-                className={`py-1 rounded-md text-[11px] transition-colors cursor-pointer ${
+                className={`py-1 rounded-md text-[10px] tabular-nums transition-colors cursor-pointer ${
                   (tokens.motionSpeedMultiplier ?? 1.0) === val
                     ? "bg-white/[0.14] text-white font-medium"
                     : "text-zinc-400 hover:text-zinc-200"
@@ -106,147 +106,6 @@ export function PanelMotion({
               </button>
             ))}
           </div>
-        </div>
-      </StudioSectionCard>
-
-      {/* Quiet Live Motion Sandbox */}
-      <StudioSectionCard title="Live Motion Sandbox">
-        <div className="flex items-center justify-between text-[11px] text-zinc-400 -mt-1">
-          <span className="flex items-center gap-1.5">
-            <Activity className="w-3 h-3 text-emerald-400" />
-            Response curve
-          </span>
-          <button
-            type="button"
-            onClick={() => setSandboxReplayKey((k) => k + 1)}
-            className="text-[10px] text-emerald-400 hover:text-emerald-300 cursor-pointer flex items-center gap-1"
-          >
-            <RefreshCw className="w-2.5 h-2.5" />
-            <span>Replay</span>
-          </button>
-        </div>
-
-        <div className="h-10 w-full bg-white/[0.03] rounded-lg border border-white/[0.06] flex items-center justify-center overflow-hidden px-2">
-          <svg className="w-full h-8 overflow-visible" viewBox="0 0 200 40">
-            <line x1="8" y1="20" x2="192" y2="20" stroke="#27272A" strokeWidth="1" strokeDasharray="3 3" />
-            {(() => {
-              if (tokens.motionPhysics === "instant") {
-                return (
-                  <path
-                    d="M 8 34 L 24 34 L 24 10 L 192 10"
-                    fill="none"
-                    stroke="#10B981"
-                    strokeWidth="2"
-                    strokeLinecap="square"
-                  />
-                );
-              }
-              if (
-                tokens.motionPhysics === "linear" &&
-                tokens.motionStiffness === undefined &&
-                tokens.motionDamping === undefined
-              ) {
-                const riseEnd = Math.max(
-                  24,
-                  Math.min(180, Math.round(90 / (tokens.motionSpeedMultiplier ?? 1)))
-                );
-                return (
-                  <path
-                    d={`M 8 34 L ${riseEnd} 10 L 192 10`}
-                    fill="none"
-                    stroke="#10B981"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                );
-              }
-              const k = scaled.motionConfig.spring.stiffness;
-              const c = scaled.motionConfig.spring.damping;
-              const m = scaled.motionConfig.spring.mass ?? 0.9;
-              const omega = Math.sqrt(k / m) * 0.35;
-              const zeta = c / (2 * Math.sqrt(k * m));
-              const points: string[] = [];
-              for (let i = 0; i <= 46; i++) {
-                const t = (i / 46) * 2.2;
-                const x = 8 + (i / 46) * 184;
-                const env = Math.exp(-zeta * omega * t * 1.4);
-                const disp =
-                  zeta < 1
-                    ? env * Math.cos(omega * Math.sqrt(Math.max(0.05, 1 - zeta * zeta)) * t * 2.4)
-                    : env * (1 + omega * t);
-                const y = Math.max(3, Math.min(37, 14 + disp * 20));
-                points.push(`${i === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`);
-              }
-              return (
-                <path
-                  d={points.join(" ")}
-                  fill="none"
-                  stroke="#10B981"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              );
-            })()}
-          </svg>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setSandboxSlideActive((v) => !v)}
-          className="w-full p-0.5 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-between relative cursor-pointer"
-        >
-          <div className="flex-1 py-1 text-[10px] font-medium text-center relative z-10 text-zinc-300">
-            State A
-          </div>
-          <div className="flex-1 py-1 text-[10px] font-medium text-center relative z-10 text-zinc-300">
-            State B
-          </div>
-          <motion.div
-            animate={{ x: sandboxSlideActive ? "100%" : "0%" }}
-            transition={scaled.motionConfig.pillTransition}
-            className="absolute left-0.5 top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-md bg-emerald-500/20 border border-emerald-400/50"
-          />
-        </button>
-
-        <motion.div
-          key={sandboxReplayKey}
-          initial={{
-            opacity: tokens.motionPhysics === "instant" ? 1 : 0,
-            y: scaled.motionConfig.distance,
-            scale: scaled.motionConfig.popover.initial.scale,
-          }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={scaled.motionConfig.transition}
-          className="px-2.5 py-1.5 rounded-md bg-white/[0.03] flex items-center justify-between text-[10px] text-zinc-400"
-        >
-          <span>Slide Travel ({scaled.motionConfig.distance}px)</span>
-          <span className="text-emerald-400 tabular-nums">
-            {Math.round((scaled.motionConfig.spring.mass ?? 0.9) * 10) / 10}kg
-          </span>
-        </motion.div>
-
-        <div className="flex items-center gap-1.5">
-          <motion.button
-            type="button"
-            whileHover={{ scale: scaled.motionConfig.hoverScale }}
-            whileTap={{ scale: scaled.motionConfig.tapScale }}
-            transition={scaled.motionConfig.transition}
-            onClick={() =>
-              triggerToast(
-                `Spring pulse triggered (${tokens.motionPhysics} • ${tokens.motionSpeedMultiplier ?? 1}x)`
-              )
-            }
-            className="flex-1 py-1.5 px-2 rounded-md text-xs font-medium bg-white/[0.1] hover:bg-white/[0.16] text-white cursor-pointer text-center transform-gpu"
-          >
-            Test Tap &amp; Hover
-          </motion.button>
-          <button
-            type="button"
-            onClick={() => setIsDrawerOpen(true)}
-            className="py-1.5 px-2.5 rounded-md text-xs border border-white/[0.08] text-zinc-400 hover:text-white cursor-pointer text-center"
-          >
-            Drawer
-          </button>
         </div>
       </StudioSectionCard>
 
@@ -396,6 +255,148 @@ export function PanelMotion({
           </div>
         </div>
       </StudioAccordion>
+
+      {/* Quiet Live Motion Sandbox */}
+      <StudioSectionCard title="Live Motion Sandbox">
+        <div className="flex items-center justify-between text-[11px] text-zinc-400 -mt-1">
+          <span className="flex items-center gap-1.5">
+            <Activity className="w-3 h-3 text-emerald-400" />
+            Response curve
+          </span>
+          <button
+            type="button"
+            onClick={() => setSandboxReplayKey((k) => k + 1)}
+            className="text-[10px] text-emerald-400 hover:text-emerald-300 cursor-pointer flex items-center gap-1"
+          >
+            <RefreshCw className="w-2.5 h-2.5" />
+            <span>Replay</span>
+          </button>
+        </div>
+
+        <div className="h-10 w-full bg-white/[0.03] rounded-lg border border-white/[0.06] flex items-center justify-center overflow-hidden px-2">
+          <svg className="w-full h-8 overflow-visible" viewBox="0 0 200 40">
+            <line x1="8" y1="20" x2="192" y2="20" stroke="#27272A" strokeWidth="1" strokeDasharray="3 3" />
+            {(() => {
+              if (tokens.motionPhysics === "instant") {
+                return (
+                  <path
+                    d="M 8 34 L 24 34 L 24 10 L 192 10"
+                    fill="none"
+                    stroke="#10B981"
+                    strokeWidth="2"
+                    strokeLinecap="square"
+                  />
+                );
+              }
+              if (
+                tokens.motionPhysics === "linear" &&
+                tokens.motionStiffness === undefined &&
+                tokens.motionDamping === undefined
+              ) {
+                const riseEnd = Math.max(
+                  24,
+                  Math.min(180, Math.round(90 / (tokens.motionSpeedMultiplier ?? 1)))
+                );
+                return (
+                  <path
+                    d={`M 8 34 L ${riseEnd} 10 L 192 10`}
+                    fill="none"
+                    stroke="#10B981"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                );
+              }
+              const k = scaled.motionConfig.spring.stiffness;
+              const c = scaled.motionConfig.spring.damping;
+              const m = scaled.motionConfig.spring.mass ?? 0.9;
+              const omega = Math.sqrt(k / m) * 0.35;
+              const zeta = c / (2 * Math.sqrt(k * m));
+              const points: string[] = [];
+              for (let i = 0; i <= 46; i++) {
+                const t = (i / 46) * 2.2;
+                const x = 8 + (i / 46) * 184;
+                const env = Math.exp(-zeta * omega * t * 1.4);
+                const disp =
+                  zeta < 1
+                    ? env * Math.cos(omega * Math.sqrt(Math.max(0.05, 1 - zeta * zeta)) * t * 2.4)
+                    : env * (1 + omega * t);
+                const y = Math.max(3, Math.min(37, 14 + disp * 20));
+                points.push(`${i === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`);
+              }
+              return (
+                <path
+                  d={points.join(" ")}
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              );
+            })()}
+          </svg>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setSandboxSlideActive((v) => !v)}
+          className="w-full p-0.5 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-between relative cursor-pointer"
+        >
+          <div className="flex-1 py-1 text-[10px] font-medium text-center relative z-10 text-zinc-300">
+            State A
+          </div>
+          <div className="flex-1 py-1 text-[10px] font-medium text-center relative z-10 text-zinc-300">
+            State B
+          </div>
+          <motion.div
+            animate={{ x: sandboxSlideActive ? "100%" : "0%" }}
+            transition={scaled.motionConfig.pillTransition}
+            className="absolute left-0.5 top-0.5 bottom-0.5 w-[calc(50%-2px)] rounded-md bg-emerald-500/20 border border-emerald-400/50"
+          />
+        </button>
+
+        <motion.div
+          key={sandboxReplayKey}
+          initial={{
+            opacity: tokens.motionPhysics === "instant" ? 1 : 0,
+            y: scaled.motionConfig.distance,
+            scale: scaled.motionConfig.popover.initial.scale,
+          }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={scaled.motionConfig.transition}
+          className="px-2.5 py-1.5 rounded-md bg-white/[0.03] flex items-center justify-between text-[10px] text-zinc-400"
+        >
+          <span>Slide Travel ({scaled.motionConfig.distance}px)</span>
+          <span className="text-emerald-400 tabular-nums">
+            {Math.round((scaled.motionConfig.spring.mass ?? 0.9) * 10) / 10}kg
+          </span>
+        </motion.div>
+
+        <div className="flex items-center gap-1.5">
+          <motion.button
+            type="button"
+            whileHover={{ scale: scaled.motionConfig.hoverScale }}
+            whileTap={{ scale: scaled.motionConfig.tapScale }}
+            transition={scaled.motionConfig.transition}
+            onClick={() =>
+              triggerToast(
+                `Spring pulse triggered (${tokens.motionPhysics} • ${tokens.motionSpeedMultiplier ?? 1}x)`
+              )
+            }
+            className="flex-1 py-1.5 px-2 rounded-md text-xs font-medium bg-white/[0.1] hover:bg-white/[0.16] text-white cursor-pointer text-center transform-gpu"
+          >
+            Test Tap &amp; Hover
+          </motion.button>
+          <button
+            type="button"
+            onClick={() => setIsDrawerOpen(true)}
+            className="py-1.5 px-2.5 rounded-md text-xs border border-white/[0.08] text-zinc-400 hover:text-white cursor-pointer text-center"
+          >
+            Drawer
+          </button>
+        </div>
+      </StudioSectionCard>
+
     </div>
   );
 }

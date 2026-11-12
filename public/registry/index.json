@@ -1,12 +1,12 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 111,
+  "totalCount": 113,
   "tiers": {
     "core": 3,
     "atoms": 42,
-    "molecules": 40,
-    "organisms": 14,
+    "molecules": 41,
+    "organisms": 15,
     "templates": 5,
     "views": 7
   },
@@ -19,7 +19,7 @@
       "targetPath": "src/components/zerolight/types.ts",
       "dependencies": [],
       "registryDependencies": [],
-      "lines": 797,
+      "lines": 808,
       "registryUrl": "/registry/types.json"
     },
     {
@@ -1201,6 +1201,21 @@
       "registryUrl": "/registry/tree-select.json"
     },
     {
+      "name": "world-map",
+      "title": "World Map",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/world-map.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 637,
+      "registryUrl": "/registry/world-map.json"
+    },
+    {
       "name": "app-shell",
       "title": "App Shell",
       "type": "registry:ui",
@@ -1334,6 +1349,22 @@
       ],
       "lines": 294,
       "registryUrl": "/registry/filter-builder.json"
+    },
+    {
+      "name": "geo-breakdown",
+      "title": "Geo Breakdown",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/geo-breakdown.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context",
+        "progress-bar",
+        "trend-delta",
+        "world-map"
+      ],
+      "lines": 176,
+      "registryUrl": "/registry/geo-breakdown.json"
     },
     {
       "name": "modal",

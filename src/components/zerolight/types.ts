@@ -1,4 +1,5 @@
 export type CornerRadiusPreset = 0 | 8 | 16 | 24 | 999;
+export type ElevationPreset = "flat" | "soft" | "elevated";
 export type HeightDensityPreset = 36 | 40 | 44 | 48 | 52;
 export type MenuOffsetPreset = 4 | 8 | 10 | 14;
 export type MotionPhysicsPreset = "instant" | "snappy" | "damped" | "gentle" | "elastic" | "linear";
@@ -163,8 +164,9 @@ export interface ZeroLightTokens {
   chartStrokeWidth?: ChartStrokePreset;
   chartFillOpacity?: number;
   chartGridStyle?: ChartGridPreset;
-  // Layout Direction (Bi-Directional RTL/LTR Engine)
+  // Layout Direction (Bi-Directional RTL/LTR Engine) & Elevation
   direction?: "ltr" | "rtl";
+  elevation?: ElevationPreset;
   // Google Fonts & Typography Style Engine
   fontFamily?: string;
   headingFontFamily?: string;
@@ -203,6 +205,7 @@ export const DEFAULT_TOKENS: ZeroLightTokens = {
   chartFillOpacity: 0.25,
   chartGridStyle: "dotted",
   direction: "ltr",
+  elevation: "soft",
   // Typography defaults
   fontFamily: "Plus Jakarta Sans",
   headingFontFamily: "Plus Jakarta Sans",
@@ -358,6 +361,7 @@ export interface ScaledTokens {
   chartGridStyle: ChartGridPreset;
   // Bi-Directional Layout Direction & Surface Polarity
   direction: "ltr" | "rtl";
+  elevation: ElevationPreset;
   isRtl: boolean;
   isDarkSurface: boolean;
   // Resolved Typography Variables
@@ -461,11 +465,17 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
   }
 
   const isZeroBorder = tokens.borderWidth === 0;
+  const elevationPreset = tokens.elevation || "soft";
 
-  // When border is 0, activate atmospheric elevation so cards don't dissolve
-  const cardShadow = isZeroBorder
-    ? "0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)"
-    : "0 1px 2px rgba(0, 0, 0, 0.02)";
+  // Elevation-driven card shadow with automatic atmospheric fallback when border is 0
+  const cardShadow =
+    elevationPreset === "flat"
+      ? "none"
+      : elevationPreset === "elevated"
+        ? "0 12px 32px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05)"
+        : isZeroBorder
+          ? "0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)"
+          : "0 1px 2px rgba(0, 0, 0, 0.02)";
 
   // Luminance stepping: when border is 0, inputs/controls step down to a soft neutral tint
   // so their boundary remains crisp against the white card backplate
@@ -752,6 +762,7 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
     chartFillOpacity: tokens.chartFillOpacity ?? 0.25,
     chartGridStyle: tokens.chartGridStyle ?? "dotted",
     direction: tokens.direction || "ltr",
+    elevation: elevationPreset,
     isRtl: tokens.direction === "rtl",
     isDarkSurface: getContrastColor(tokens.universalFillColor) === "#FFFFFF",
     resolvedFontFamily: (() => {

@@ -81,50 +81,11 @@ export function PanelTypography({
     <div>
       {/* Quiet Live Specimen */}
       <StudioSectionCard
-        title="Preview"
+        title="Quick pairings"
         badge={`${tokens.fontSize}px • ${scaled.bodyWeight}/${scaled.headingWeight}`}
       >
-        <div
-          className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-2.5 space-y-0.5"
-          style={{
-            fontStyle: scaled.fontStyle,
-            letterSpacing: scaled.letterSpacingCss,
-          }}
-        >
-          <div className="flex items-baseline justify-between gap-2">
-            <span
-              style={{
-                fontFamily: scaled.resolvedHeadingFontFamily,
-                fontWeight: scaled.headingWeight,
-              }}
-              className="text-base text-white leading-snug truncate"
-            >
-              Aa Bb £12,296
-            </span>
-            <span
-              style={{ fontFamily: scaled.resolvedFontFamily }}
-              className="text-[10px] text-emerald-400 shrink-0"
-            >
-              +14.2%
-            </span>
-          </div>
-          <p
-            style={{
-              fontFamily: scaled.resolvedFontFamily,
-              fontWeight: scaled.bodyWeight,
-              lineHeight: scaled.lineHeightCss,
-            }}
-            className="text-[11px] text-zinc-400 truncate"
-          >
-            {isPaired
-              ? `${activeHeadingFont} + ${activeBodyFont}`
-              : activeBodyFont}
-          </p>
-        </div>
-
-        {/* Minimal Pairing Chips */}
-        <div className="flex flex-wrap gap-1">
-          {FONT_PAIRING_PRESETS.map((preset) => {
+        <div className="grid grid-cols-2 gap-1.5">
+          {FONT_PAIRING_PRESETS.map((preset, idx) => {
             const active =
               activeBodyFont.toLowerCase() === preset.fontFamily.toLowerCase() &&
               activeHeadingFont.toLowerCase() === preset.headingFontFamily.toLowerCase();
@@ -143,7 +104,11 @@ export function PanelTypography({
                   }));
                   triggerToast(`Typography: ${preset.label}`);
                 }}
-                className={`px-2 py-1 rounded-md text-[10px] transition-colors cursor-pointer ${
+                className={`px-2.5 py-1.5 rounded-lg text-[11px] text-left transition-colors cursor-pointer ${
+                  idx === FONT_PAIRING_PRESETS.length - 1 && FONT_PAIRING_PRESETS.length % 2 === 1
+                    ? "col-span-2"
+                    : ""
+                } ${
                   active
                     ? "bg-white/[0.12] text-white font-medium border border-white/20"
                     : "bg-white/[0.03] text-zinc-400 border border-white/[0.06] hover:text-zinc-200"
@@ -276,8 +241,8 @@ export function PanelTypography({
         )}
       </StudioSectionCard>
 
-      {/* Font Size & Styles */}
-      <StudioSectionCard title="Size & style">
+      {/* Font Size & Weights */}
+      <StudioSectionCard title="Size & weights">
         <StudioSliderRow
           label="Base font scale"
           valueLabel={`${tokens.fontSize}px`}
@@ -335,6 +300,52 @@ export function PanelTypography({
           </div>
         </div>
 
+      </StudioSectionCard>
+
+      <StudioSectionCard title="Live preview">
+        <div
+          className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-2 space-y-0.5"
+          style={{
+            fontStyle: scaled.fontStyle,
+            letterSpacing: scaled.letterSpacingCss,
+          }}
+        >
+          <div className="flex items-baseline justify-between gap-2">
+            <span
+              style={{
+                fontFamily: scaled.resolvedHeadingFontFamily,
+                fontWeight: scaled.headingWeight,
+              }}
+              className="text-base text-white leading-snug truncate"
+            >
+              Aa Bb £12,296
+            </span>
+            <span
+              style={{ fontFamily: scaled.resolvedFontFamily }}
+              className="text-[10px] text-emerald-400 shrink-0 tabular-nums"
+            >
+              +14.2%
+            </span>
+          </div>
+          <p
+            style={{
+              fontFamily: scaled.resolvedFontFamily,
+              fontWeight: scaled.bodyWeight,
+              lineHeight: scaled.lineHeightCss,
+            }}
+            className="text-[11px] text-zinc-400 truncate"
+          >
+            {isPaired
+              ? `${activeHeadingFont} + ${activeBodyFont}`
+              : activeBodyFont}
+          </p>
+        </div>
+      </StudioSectionCard>
+
+      <StudioAccordion
+        title="Style & rhythm"
+        summary={`${scaled.fontStyle} • ${tokens.letterSpacing || "normal"} • ${tokens.lineHeight || "normal"}`}
+      >
         <div className="grid grid-cols-2 gap-2 pt-0.5">
           <div className="space-y-1 text-xs">
             <span className="text-zinc-400 text-[11px]">Style</span>
@@ -379,12 +390,6 @@ export function PanelTypography({
             </div>
           </div>
         </div>
-      </StudioSectionCard>
-
-      <StudioAccordion
-        title="Spacing & rhythm"
-        summary={`${tokens.letterSpacing || "normal"} • ${tokens.lineHeight || "normal"}`}
-      >
         <div className="space-y-1 text-xs">
           <span className="text-zinc-300">Letter spacing</span>
           <div className="grid grid-cols-3 gap-0.5 p-0.5 rounded-lg bg-white/[0.04]">

@@ -38,3 +38,4 @@ export * from "./list-row";
 export * from "./popover";
 export * from "./toolbar";
 export * from "./file-card";
+export * from "./world-map";

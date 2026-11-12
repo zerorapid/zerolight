@@ -12,3 +12,4 @@ export * from "./app-shell";
 export * from "./modal";
 export * from "./page-header";
 export * from "./page-layout";
+export * from "./geo-breakdown";
