@@ -958,6 +958,41 @@ test("Visual Studio Redesign: Modular 5-tab architecture with sticky header/foot
   assert.ok(inspectorContent.includes("Copy CSS"), "StudioInspector should expose quick Copy CSS action in sticky footer");
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TEST SUITE 21: Missing Everyday Primitives & Layout Blocks
+// ─────────────────────────────────────────────────────────────────────────────
+console.log("\n=== Suite 21: Everyday Primitives & Layout Blocks ===");
+
+test("Missing Atom Primitives exist and are exported from atoms/index.ts", () => {
+  const atomsIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/index.ts"), "utf8");
+  for (const mod of ["label", "textarea", "card", "scroll-area", "button-group"]) {
+    assert.ok(fs.existsSync(path.join(rootDir, `src/components/zerolight/atoms/${mod}.tsx`)), `Missing atom: ${mod}.tsx`);
+    assert.ok(atomsIdx.includes(`export * from "./${mod}";`), `atoms/index.ts should export ${mod}`);
+  }
+  const cardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/card.tsx"), "utf8");
+  assert.ok(cardContent.includes("export function Card") && cardContent.includes("export function CardHeader") && cardContent.includes("export function CardContent"));
+});
+
+test("Missing Molecule Primitives exist and are exported from molecules/index.ts", () => {
+  const molIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/index.ts"), "utf8");
+  for (const mod of ["tabs", "list-row", "popover", "toolbar", "file-card"]) {
+    assert.ok(fs.existsSync(path.join(rootDir, `src/components/zerolight/molecules/${mod}.tsx`)), `Missing molecule: ${mod}.tsx`);
+    assert.ok(molIdx.includes(`export * from "./${mod}";`), `molecules/index.ts should export ${mod}`);
+  }
+  const popoverContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/popover.tsx"), "utf8");
+  assert.ok(popoverContent.includes("createPortal"), "Popover should render via createPortal");
+});
+
+test("Missing Organism & Block Primitives exist and are exported from organisms/index.ts", () => {
+  const orgIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  for (const mod of ["modal", "page-header", "page-layout"]) {
+    assert.ok(fs.existsSync(path.join(rootDir, `src/components/zerolight/organisms/${mod}.tsx`)), `Missing organism: ${mod}.tsx`);
+    assert.ok(orgIdx.includes(`export * from "./${mod}";`), `organisms/index.ts should export ${mod}`);
+  }
+  const modalContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/modal.tsx"), "utf8");
+  assert.ok(modalContent.includes("createPortal") && modalContent.includes("export const Dialog = Modal"), "Modal should use createPortal and alias Dialog");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

@@ -1,12 +1,12 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 98,
+  "totalCount": 111,
   "tiers": {
     "core": 3,
-    "atoms": 37,
-    "molecules": 35,
-    "organisms": 11,
+    "atoms": 42,
+    "molecules": 40,
+    "organisms": 14,
     "templates": 5,
     "views": 7
   },
@@ -121,6 +121,19 @@
       "registryUrl": "/registry/badge.json"
     },
     {
+      "name": "button-group",
+      "title": "Button Group",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/button-group.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 41,
+      "registryUrl": "/registry/button-group.json"
+    },
+    {
       "name": "button",
       "title": "Button",
       "type": "registry:ui",
@@ -146,6 +159,19 @@
       "registryDependencies": [],
       "lines": 78,
       "registryUrl": "/registry/capacity-meter.json"
+    },
+    {
+      "name": "card",
+      "title": "Card",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/card.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 139,
+      "registryUrl": "/registry/card.json"
     },
     {
       "name": "checkbox",
@@ -279,6 +305,19 @@
       "registryUrl": "/registry/key-badge.json"
     },
     {
+      "name": "label",
+      "title": "Label",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/label.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 48,
+      "registryUrl": "/registry/label.json"
+    },
+    {
       "name": "message-status",
       "title": "Message Status",
       "type": "registry:ui",
@@ -359,6 +398,19 @@
       ],
       "lines": 185,
       "registryUrl": "/registry/radio-group.json"
+    },
+    {
+      "name": "scroll-area",
+      "title": "Scroll Area",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/scroll-area.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 49,
+      "registryUrl": "/registry/scroll-area.json"
     },
     {
       "name": "segment-pill",
@@ -474,6 +526,19 @@
       ],
       "lines": 47,
       "registryUrl": "/registry/tag-chip.json"
+    },
+    {
+      "name": "textarea",
+      "title": "Textarea",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/textarea.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 108,
+      "registryUrl": "/registry/textarea.json"
     },
     {
       "name": "trace-dot",
@@ -742,6 +807,22 @@
       "registryUrl": "/registry/empty-state.json"
     },
     {
+      "name": "file-card",
+      "title": "File Card",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/file-card.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context",
+        "progress-bar"
+      ],
+      "lines": 103,
+      "registryUrl": "/registry/file-card.json"
+    },
+    {
       "name": "file-upload",
       "title": "File Upload",
       "type": "registry:ui",
@@ -863,6 +944,19 @@
       "registryUrl": "/registry/input-group.json"
     },
     {
+      "name": "list-row",
+      "title": "List Row",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/list-row.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 103,
+      "registryUrl": "/registry/list-row.json"
+    },
+    {
       "name": "pagination",
       "title": "Pagination",
       "type": "registry:ui",
@@ -877,6 +971,21 @@
       ],
       "lines": 253,
       "registryUrl": "/registry/pagination.json"
+    },
+    {
+      "name": "popover",
+      "title": "Popover",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/popover.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 127,
+      "registryUrl": "/registry/popover.json"
     },
     {
       "name": "profit-loss-chart",
@@ -1001,6 +1110,21 @@
       "registryUrl": "/registry/stepper.json"
     },
     {
+      "name": "tabs",
+      "title": "Tabs",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/tabs.tsx",
+      "dependencies": [
+        "framer-motion"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 140,
+      "registryUrl": "/registry/tabs.json"
+    },
+    {
       "name": "tag-input",
       "title": "Tag Input",
       "type": "registry:ui",
@@ -1013,6 +1137,19 @@
       ],
       "lines": 92,
       "registryUrl": "/registry/tag-input.json"
+    },
+    {
+      "name": "toolbar",
+      "title": "Toolbar",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/toolbar.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 54,
+      "registryUrl": "/registry/toolbar.json"
     },
     {
       "name": "tooltip",
@@ -1197,6 +1334,48 @@
       ],
       "lines": 294,
       "registryUrl": "/registry/filter-builder.json"
+    },
+    {
+      "name": "modal",
+      "title": "Modal",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/modal.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 162,
+      "registryUrl": "/registry/modal.json"
+    },
+    {
+      "name": "page-header",
+      "title": "Page Header",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/page-header.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 76,
+      "registryUrl": "/registry/page-header.json"
+    },
+    {
+      "name": "page-layout",
+      "title": "Page Layout",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/page-layout.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 98,
+      "registryUrl": "/registry/page-layout.json"
     },
     {
       "name": "quota-matrix",

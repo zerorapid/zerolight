@@ -1,0 +1,17 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "page-header",
+  "title": "Page Header",
+  "type": "registry:ui",
+  "tier": "organisms",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/organisms/page-header.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface PageHeaderProps {\n  title: React.ReactNode;\n  description?: React.ReactNode;\n  breadcrumbs?: React.ReactNode;\n  badge?: React.ReactNode;\n  actions?: React.ReactNode;\n  bottomSlot?: React.ReactNode;\n  bordered?: boolean;\n  className?: string;\n}\n\n/**\n * Standardized SaaS PageHeader block with optional breadcrumbs, status badge, primary actions, and tabs slot.\n */\nexport function PageHeader({\n  title,\n  description,\n  breadcrumbs,\n  badge,\n  actions,\n  bottomSlot,\n  bordered = true,\n  className = \"\",\n}: PageHeaderProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <header\n      style={{\n        borderColor: bordered ? tokens.universalBorderColor : undefined,\n        color: tokens.textIconColor,\n      }}\n      className={`w-full font-sans ${bordered ? \"pb-5 border-b\" : \"pb-3\"} ${className}`}\n    >\n      {breadcrumbs && <div className=\"mb-2.5\">{breadcrumbs}</div>}\n\n      <div className=\"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4\">\n        <div className=\"min-w-0 space-y-1\">\n          <div className=\"flex items-center gap-2.5 flex-wrap\">\n            <h1\n              style={{\n                fontSize: `${Math.max(20, scaled.headingFontSize + 6)}px`,\n              }}\n              className=\"font-semibold tracking-tight truncate\"\n            >\n              {title}\n            </h1>\n            {badge}\n          </div>\n          {description && (\n            <p\n              style={{ fontSize: `${scaled.scaledFontSize}px` }}\n              className=\"opacity-65 max-w-2xl leading-relaxed\"\n            >\n              {description}\n            </p>\n          )}\n        </div>\n\n        {actions && (\n          <div className=\"flex items-center gap-2 shrink-0 flex-wrap\">\n            {actions}\n          </div>\n        )}\n      </div>\n\n      {bottomSlot && <div className=\"mt-4\">{bottomSlot}</div>}\n    </header>\n  );\n}\n"
+    }
+  ]
+}

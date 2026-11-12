@@ -1,0 +1,17 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "button-group",
+  "title": "Button Group",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/button-group.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface ButtonGroupProps {\n  children: React.ReactNode;\n  orientation?: \"horizontal\" | \"vertical\";\n  className?: string;\n}\n\n/**\n * Groups action buttons into a single unified pill/bar with shared borders and outer radius.\n */\nexport function ButtonGroup({\n  children,\n  orientation = \"horizontal\",\n  className = \"\",\n}: ButtonGroupProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <div\n      role=\"group\"\n      style={{\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${Math.max(1, tokens.borderWidth)}px`,\n        borderRadius: `${scaled.scaledRadius === 999 ? 9999 : scaled.scaledRadius}px`,\n        backgroundColor: tokens.universalFillColor,\n      }}\n      className={`inline-flex ${\n        orientation === \"vertical\"\n          ? \"flex-col divide-y\"\n          : \"flex-row items-center divide-x\"\n      } overflow-hidden border shadow-2xs [&>button]:rounded-none [&>button]:border-0 ${className}`}\n    >\n      {children}\n    </div>\n  );\n}\n"
+    }
+  ]
+}

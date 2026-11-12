@@ -9,3 +9,6 @@ export * from "./tree-view";
 export * from "./chat-conversation";
 export * from "./toast";
 export * from "./app-shell";
+export * from "./modal";
+export * from "./page-header";
+export * from "./page-layout";

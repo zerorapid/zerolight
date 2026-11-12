@@ -1,0 +1,17 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "label",
+  "title": "Label",
+  "type": "registry:ui",
+  "tier": "atoms",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/label.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {\n  required?: boolean;\n  hint?: string;\n  error?: boolean;\n}\n\n/**\n * Accessible standalone form label bound to ZeroLight typography and polarity tokens.\n */\nexport function Label({\n  children,\n  required = false,\n  hint,\n  error = false,\n  className = \"\",\n  style,\n  ...props\n}: LabelProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <label\n      style={{\n        fontSize: `${Math.max(11, scaled.sublabelFontSize)}px`,\n        color: error ? \"#EF4444\" : tokens.textIconColor,\n        ...style,\n      }}\n      className={`inline-flex items-center gap-1.5 font-medium font-sans select-none ${className}`}\n      {...props}\n    >\n      <span>{children}</span>\n      {required && (\n        <span className=\"text-rose-500 font-semibold\" aria-hidden=\"true\">\n          *\n        </span>\n      )}\n      {hint && (\n        <span className=\"text-[11px] font-normal opacity-60\">{hint}</span>\n      )}\n    </label>\n  );\n}\n"
+    }
+  ]
+}

@@ -20,3 +20,8 @@ export * from "./currency-pill";
 export * from "./radio-group";
 export * from "./copy-trigger";
 export * from "./trend-delta";
+export * from "./label";
+export * from "./textarea";
+export * from "./card";
+export * from "./scroll-area";
+export * from "./button-group";

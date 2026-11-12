@@ -33,3 +33,8 @@ export * from "./form";
 export * from "./transfer";
 export * from "./tree-select";
 export * from "./cascader";
+export * from "./tabs";
+export * from "./list-row";
+export * from "./popover";
+export * from "./toolbar";
+export * from "./file-card";
