@@ -28,9 +28,9 @@ export function PanelTheme({
   triggerToast,
 }: PanelThemeProps) {
   return (
-    <div className="space-y-3">
-      <StudioSectionCard title="Theme Polarity" badge="4 Presets">
-        <div className="grid grid-cols-2 gap-2">
+    <div>
+      <StudioSectionCard title="Polarity">
+        <div className="grid grid-cols-2 gap-1.5">
           {(Object.keys(THEME_PRESETS) as ThemePresetId[]).map((presetKey) => {
             const preset = THEME_PRESETS[presetKey];
             const isActive =
@@ -49,10 +49,10 @@ export function PanelTheme({
                   handleUpdateTokens(preset.tokens);
                   triggerToast(`Theme preset: ${preset.label}`);
                 }}
-                className={`p-2 rounded-lg border text-xs font-medium flex items-center gap-2.5 transition-all cursor-pointer ${
+                className={`px-2.5 py-2 rounded-lg border text-xs flex items-center gap-2.5 transition-all cursor-pointer ${
                   isActive
-                    ? "bg-white text-black border-white font-semibold shadow-sm"
-                    : "bg-[#222226] text-neutral-300 border-[#3F3F46] hover:border-neutral-400"
+                    ? "bg-white/[0.11] text-white border-white/25 font-medium"
+                    : "bg-white/[0.03] text-zinc-400 border-white/[0.06] hover:text-zinc-200 hover:bg-white/[0.06]"
                 }`}
               >
                 <span
@@ -60,11 +60,11 @@ export function PanelTheme({
                     backgroundColor: preset.swatchBg,
                     borderColor: preset.swatchAccent,
                   }}
-                  className="w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center"
+                  className="w-3.5 h-3.5 rounded-full border-2 shrink-0 flex items-center justify-center"
                 >
                   <span
                     style={{ backgroundColor: preset.swatchAccent }}
-                    className="w-1.5 h-1.5 rounded-full"
+                    className="w-1 h-1 rounded-full"
                   />
                 </span>
                 <span className="truncate">{preset.label}</span>
@@ -74,7 +74,7 @@ export function PanelTheme({
         </div>
       </StudioSectionCard>
 
-      <StudioSectionCard title="Brand Accent" badge={tokens.primaryButtonColor.toUpperCase()}>
+      <StudioSectionCard title="Brand accent" badge={tokens.primaryButtonColor.toUpperCase()}>
         <div className="flex items-center justify-between gap-1.5">
           {BRAND_ACCENTS.map(({ label, primary, chart }) => {
             const active = tokens.primaryButtonColor.toLowerCase() === primary.toLowerCase();
@@ -92,10 +92,10 @@ export function PanelTheme({
                   triggerToast(`Accent: ${label}`);
                 }}
                 style={{ backgroundColor: primary }}
-                className={`w-7 h-7 rounded-lg border transition-all cursor-pointer ${
+                className={`w-6 h-6 rounded-full border transition-all cursor-pointer ${
                   active
-                    ? "ring-2 ring-white ring-offset-2 ring-offset-[#18181B] scale-105"
-                    : "border-white/20 opacity-85 hover:opacity-100 hover:scale-105"
+                    ? "ring-2 ring-white/80 ring-offset-2 ring-offset-[#0E0E10] scale-105"
+                    : "border-white/20 opacity-80 hover:opacity-100 hover:scale-105"
                 }`}
               />
             );
@@ -103,30 +103,30 @@ export function PanelTheme({
         </div>
       </StudioSectionCard>
 
-      <StudioSectionCard title="Semantic Colors" badge="5 Tokens">
-        <div className="space-y-2">
+      <StudioSectionCard title="Surface & semantic tokens">
+        <div className="space-y-0.5">
           <StudioColorRow
-            label="Surface Fill"
+            label="Surface fill"
             value={tokens.universalFillColor}
             onChange={(hex) => setTokens((prev) => ({ ...prev, universalFillColor: hex }))}
           />
           <StudioColorRow
-            label="Border Line"
+            label="Border line"
             value={tokens.universalBorderColor}
             onChange={(hex) => setTokens((prev) => ({ ...prev, universalBorderColor: hex }))}
           />
           <StudioColorRow
-            label="Text & Icons"
+            label="Text & icons"
             value={tokens.textIconColor}
             onChange={(hex) => setTokens((prev) => ({ ...prev, textIconColor: hex }))}
           />
           <StudioColorRow
-            label="Primary Action"
+            label="Primary action"
             value={tokens.primaryButtonColor}
             onChange={(hex) => setTokens((prev) => ({ ...prev, primaryButtonColor: hex }))}
           />
           <StudioColorRow
-            label="Hover Tint"
+            label="Hover tint"
             value={tokens.hoverBackplateTint}
             onChange={(hex) => setTokens((prev) => ({ ...prev, hoverBackplateTint: hex }))}
           />
