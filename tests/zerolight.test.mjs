@@ -1031,6 +1031,21 @@ test("WorldMap molecule and GeoBreakdown organism exist, export, and are showcas
   assert.ok(studioDoc.includes("<WorldMap") && studioDoc.includes("<GeoBreakdown"), "docs-studio.tsx should showcase WorldMap and GeoBreakdown");
 });
 
+test("Design System Learning Agent (.agents) skill, rules, AI footprints guide, and evolution log exist", () => {
+  for (const rel of [
+    ".agents/skills/design-system-learner/SKILL.md",
+    ".agents/rules/zerolight-bulletproof-saas.md",
+    ".agents/rules/learned-saas-rules.md",
+    ".agents/docs/ai-footprints-guide.md",
+    ".agents/memory/design-evolution-log.jsonl",
+  ]) {
+    assert.ok(fs.existsSync(path.join(rootDir, rel)), `Missing learning agent artifact: ${rel}`);
+  }
+  const logLine = fs.readFileSync(path.join(rootDir, ".agents/memory/design-evolution-log.jsonl"), "utf8").trim().split("\n")[0];
+  const parsed = JSON.parse(logLine);
+  assert.ok(Array.isArray(parsed.rulesAdded) && parsed.rulesAdded.length > 0, "Evolution log must record learned rules");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");
