@@ -47,13 +47,13 @@ import { useZeroLight } from "../context";
 import { ZeroLightStudio } from "../docs-studio";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
-import { SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary, SaaSTooltipLibrary, SaaSFeedbackLibrary, SaaSOverlaysLibrary, SaaSNavigationLibrary, SaaSDataLibrary, SaaSBusinessLibrary, SaaSLayoutLibrary } from "../libraries";
+import { SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary, SaaSTooltipLibrary, SaaSFeedbackLibrary, SaaSOverlaysLibrary, SaaSNavigationLibrary, SaaSDataLibrary, SaaSBusinessLibrary, SaaSLayoutLibrary, SaaSAppScreensLibrary } from "../libraries";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
 export type DashboardTab = "overview" | "ds-editor" | "docs" | "tools" | "settings";
-export type DocsSubView = "catalog" | "buttons" | "inputs" | "selections" | "indicators" | "dividers" | "tooltips" | "feedback" | "overlays" | "navigation" | "data" | "business" | "layouts";
+export type DocsSubView = "catalog" | "buttons" | "inputs" | "selections" | "indicators" | "dividers" | "tooltips" | "feedback" | "overlays" | "navigation" | "data" | "business" | "layouts" | "screens";
 export type SettingsSubTab = "general" | "security" | "mcp" | "api" | "compliance";
 
 export function DashboardShell() {
@@ -327,6 +327,7 @@ export function DashboardShell() {
                           { id: "data", label: "Data & Tables", count: "18" },
                           { id: "business", label: "Business & Billing", count: "16" },
                           { id: "layouts", label: "Page Layouts", count: "12" },
+                          { id: "screens", label: "App Screens (L5)", count: "6" },
                         ].map((sub) => {
                           const isSubActive = activeTab === "docs" && docsSubView === sub.id;
                           return (
@@ -388,6 +389,7 @@ export function DashboardShell() {
                               { id: "data", label: "Data (18)" },
                               { id: "business", label: "Business (16)" },
                               { id: "layouts", label: "Layouts (12)" },
+                              { id: "screens", label: "Screens (6)" },
                             ].map((sub) => (
                               <button
                                 key={sub.id}
@@ -721,6 +723,7 @@ export function DashboardShell() {
                   { id: "data", label: "SaaS Data & Tables", count: "18" },
                   { id: "business", label: "SaaS Business & Billing", count: "16" },
                   { id: "layouts", label: "SaaS Page Layouts", count: "12" },
+                  { id: "screens", label: "SaaS App Screens (L5)", count: "6" },
                 ].map((sub) => {
                   const active = docsSubView === sub.id;
                   return (
@@ -748,7 +751,7 @@ export function DashboardShell() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Badge variant="healthy">277 SaaS Pattern Variants Active</Badge>
+                <Badge variant="healthy">283 SaaS Pattern Variants Active</Badge>
               </div>
             </div>
 
@@ -770,6 +773,7 @@ export function DashboardShell() {
             {docsSubView === "data" && <SaaSDataLibrary />}
             {docsSubView === "business" && <SaaSBusinessLibrary />}
             {docsSubView === "layouts" && <SaaSLayoutLibrary />}
+            {docsSubView === "screens" && <SaaSAppScreensLibrary />}
           </div>
         )}
 

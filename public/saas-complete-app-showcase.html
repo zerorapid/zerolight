@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 5 Screens: Complete Interactive Multi-Page SaaS Application</title>
+  <!-- Google Fonts: Inter Sans only (Zero Monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            popover: '0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            drawer: '-10px 0 30px -5px rgba(0, 0, 0, 0.15)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Smooth sidebar transition */
+    #appSidebar {
+      transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    /* Drawer animation */
+    #detailDrawer {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-zinc-100 min-h-screen antialiased flex overflow-hidden">
+
+  <!-- =========================================================================
+       1. AUTHENTICATED APP SHELL: COLLAPSIBLE LEFT SIDEBAR
+  ========================================================================= -->
+  <aside 
+    id="appSidebar" 
+    class="w-60 h-screen border-r border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#0E0E10] flex flex-col justify-between shrink-0 z-30 select-none overflow-hidden relative"
+  >
+    <!-- Top Workspace Selector & Header -->
+    <div class="p-3 border-b border-zinc-100 dark:border-white/5 space-y-2">
+      <div class="flex items-center justify-between">
+        <!-- Workspace Switcher Button -->
+        <div class="relative flex-1 mr-1">
+          <button 
+            type="button" 
+            onclick="toggleWorkspacePopover()" 
+            id="workspaceTriggerBtn"
+            class="w-full flex items-center gap-2 p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-white/5 transition cursor-pointer text-left"
+          >
+            <div class="w-6 h-6 rounded-md bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 flex items-center justify-center text-xs font-bold shrink-0">
+              Z
+            </div>
+            <div class="sidebar-text truncate flex-1 min-w-0">
+              <p id="currentWorkspaceName" class="text-xs font-bold text-zinc-950 dark:text-white truncate">Hyderabad HQ</p>
+              <p class="text-[10px] text-zinc-400 truncate">Enterprise Hub</p>
+            </div>
+            <i data-lucide="chevrons-up-down" class="sidebar-text w-3 h-3 text-zinc-400 shrink-0"></i>
+          </button>
+
+          <!-- Workspace Popover Menu -->
+          <div 
+            id="workspacePopover" 
+            class="hidden absolute top-full left-0 mt-1 w-56 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-popover p-1.5 space-y-1 z-50 text-xs"
+          >
+            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block px-2 py-1">Switch Organization</span>
+            <button 
+              type="button" 
+              onclick="selectWorkspace('Hyderabad HQ')" 
+              class="w-full px-2 py-1.5 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium text-zinc-900 dark:text-zinc-100"
+            >
+              <span>Hyderabad HQ</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Active</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="selectWorkspace('Bengaluru Tech Hub')" 
+              class="w-full px-2 py-1.5 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium text-zinc-600 dark:text-zinc-400"
+            >
+              <span>Bengaluru Tech Hub</span>
+            </button>
+            <button 
+              type="button" 
+              onclick="selectWorkspace('Dubai Global Office')" 
+              class="w-full px-2 py-1.5 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium text-zinc-600 dark:text-zinc-400"
+            >
+              <span>Dubai Global Office</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar Collapse Toggle Button -->
+        <button 
+          type="button" 
+          onclick="toggleSidebarCollapse()" 
+          title="Toggle Sidebar (Expand/Collapse)"
+          class="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5 transition cursor-pointer"
+        >
+          <i data-lucide="panel-left-close" id="sidebarCollapseIcon" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 p-2 space-y-4 overflow-y-auto text-xs">
+      <!-- Section: Workspace -->
+      <div class="space-y-1">
+        <span class="sidebar-text text-[10px] font-bold text-zinc-400 uppercase tracking-wider px-2 block pb-1">Workspace</span>
+        
+        <button 
+          type="button" 
+          onclick="navigateTo('dashboard')" 
+          id="nav-dashboard"
+          class="nav-link w-full px-2.5 py-2 rounded-lg font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-2.5 cursor-pointer transition shadow-xs"
+        >
+          <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0"></i>
+          <span class="sidebar-text truncate">Dashboard</span>
+        </button>
+
+        <button 
+          type="button" 
+          onclick="navigateTo('invoices')" 
+          id="nav-invoices"
+          class="nav-link w-full px-2.5 py-2 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 flex items-center justify-between cursor-pointer transition"
+        >
+          <div class="flex items-center gap-2.5 truncate">
+            <i data-lucide="file-text" class="w-4 h-4 shrink-0"></i>
+            <span class="sidebar-text truncate">Client Invoices</span>
+          </div>
+          <span id="sidebarInvoiceCountBadge" class="sidebar-text text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-zinc-200 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">
+            6
+          </span>
+        </button>
+
+        <button 
+          type="button" 
+          onclick="navigateTo('pipeline')" 
+          id="nav-pipeline"
+          class="nav-link w-full px-2.5 py-2 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 flex items-center gap-2.5 cursor-pointer transition"
+        >
+          <i data-lucide="kanban" class="w-4 h-4 shrink-0"></i>
+          <span class="sidebar-text truncate">Deal Pipeline</span>
+        </button>
+      </div>
+
+      <!-- Section: Administration -->
+      <div class="space-y-1">
+        <span class="sidebar-text text-[10px] font-bold text-zinc-400 uppercase tracking-wider px-2 block pb-1">Administration</span>
+
+        <button 
+          type="button" 
+          onclick="navigateTo('team')" 
+          id="nav-team"
+          class="nav-link w-full px-2.5 py-2 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 flex items-center gap-2.5 cursor-pointer transition"
+        >
+          <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
+          <span class="sidebar-text truncate">Team & Roles</span>
+        </button>
+
+        <button 
+          type="button" 
+          onclick="navigateTo('billing')" 
+          id="nav-billing"
+          class="nav-link w-full px-2.5 py-2 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 flex items-center gap-2.5 cursor-pointer transition"
+        >
+          <i data-lucide="credit-card" class="w-4 h-4 shrink-0"></i>
+          <span class="sidebar-text truncate">Billing & Plan</span>
+        </button>
+
+        <button 
+          type="button" 
+          onclick="navigateTo('settings')" 
+          id="nav-settings"
+          class="nav-link w-full px-2.5 py-2 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 flex items-center gap-2.5 cursor-pointer transition"
+        >
+          <i data-lucide="settings" class="w-4 h-4 shrink-0"></i>
+          <span class="sidebar-text truncate">Settings</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Bottom User Profile Card -->
+    <div class="p-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between gap-2 bg-zinc-50/50 dark:bg-white/[0.02]">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="relative shrink-0">
+          <div class="w-7 h-7 rounded-full bg-zinc-300 dark:bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-800 dark:text-zinc-200">
+            SJ
+          </div>
+          <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#0E0E10]"></span>
+        </div>
+        <div class="sidebar-text truncate text-xs">
+          <p class="font-bold text-zinc-950 dark:text-white truncate">Sai Joshna</p>
+          <p class="text-[10px] text-zinc-400 truncate">Workspace Owner</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       2. GLOBAL TOP NAVIGATION BAR & WORKSPACE MAIN CANVAS
+  ========================================================================= -->
+  <div class="flex-1 flex flex-col h-screen overflow-hidden min-w-0">
+    
+    <!-- Global Header (56px) -->
+    <header class="h-14 border-b border-zinc-200/80 dark:border-white/10 px-4 sm:px-6 flex items-center justify-between bg-white dark:bg-[#0E0E10] shrink-0 z-20">
+      
+      <!-- Left: Mobile Trigger & Breadcrumb -->
+      <div class="flex items-center gap-3">
+        <button 
+          type="button" 
+          onclick="toggleMobileSidebar()" 
+          class="md:hidden p-1.5 rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-white/5"
+        >
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
+        <div class="flex items-center gap-1.5 text-xs">
+          <span id="breadcrumbWorkspace" class="font-medium text-zinc-500 dark:text-zinc-400">Hyderabad HQ</span>
+          <span class="text-zinc-300 dark:text-zinc-600">/</span>
+          <span id="breadcrumbPage" class="font-bold text-zinc-950 dark:text-white">Dashboard</span>
+        </div>
+      </div>
+
+      <!-- Right: Search ⌘K, Notifications, Theme & Primary CTA -->
+      <div class="flex items-center gap-2.5">
+        
+        <!-- Search ⌘K Button -->
+        <button 
+          type="button" 
+          onclick="openCommandPalette()"
+          class="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:border-zinc-300 transition cursor-pointer"
+        >
+          <i data-lucide="search" class="w-3.5 h-3.5"></i>
+          <span>Quick search...</span>
+          <span class="px-1.5 py-0.2 rounded font-sans text-[10px] font-bold bg-white dark:bg-white/10 text-zinc-600 dark:text-zinc-300 border border-zinc-200/80 dark:border-white/5">⌘K</span>
+        </button>
+
+        <!-- Notification Bell & Popover -->
+        <div class="relative">
+          <button 
+            type="button" 
+            onclick="toggleNotificationPopover()" 
+            class="p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer relative"
+          >
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span id="notifRedDot" class="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-600 ring-1 ring-white dark:ring-[#0E0E10]"></span>
+          </button>
+
+          <!-- Notification Popover -->
+          <div 
+            id="notifPopover" 
+            class="hidden absolute right-0 top-full mt-2 w-80 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-popover p-3 space-y-2 z-50 text-xs"
+          >
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <span class="font-bold text-zinc-900 dark:text-zinc-100">Notifications</span>
+              <button 
+                type="button" 
+                onclick="markAllNotificationsRead()" 
+                class="text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+              >
+                Mark all read
+              </button>
+            </div>
+            <div class="space-y-1.5">
+              <div class="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 space-y-0.5">
+                <p class="font-semibold text-zinc-900 dark:text-zinc-100">Invoice #INV-9042 Paid</p>
+                <p class="text-[11px] text-zinc-500 dark:text-zinc-400">₹1,25,000 received from Zerorapid India.</p>
+                <span class="text-[10px] text-zinc-400 font-sans tabular-nums">4 mins ago</span>
+              </div>
+              <div class="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 space-y-0.5">
+                <p class="font-semibold text-zinc-900 dark:text-zinc-100">Tally Prime Synchronized</p>
+                <p class="text-[11px] text-zinc-500 dark:text-zinc-400">84 ledgers verified with GSTN portal.</p>
+                <span class="text-[10px] text-zinc-400 font-sans tabular-nums">18 mins ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Light / Dark Theme Toggle -->
+        <button 
+          type="button" 
+          onclick="toggleTheme()" 
+          title="Toggle Theme"
+          class="p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+        >
+          <i data-lucide="moon" id="theme-icon" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Primary CTA: + New Invoice -->
+        <button 
+          type="button" 
+          onclick="openCreateInvoiceModal()"
+          class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+        >
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">New Invoice</span>
+        </button>
+
+      </div>
+    </header>
+
+    <!-- Reactive Page Canvas -->
+    <main id="pageStage" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-[#FAFAFA] dark:bg-[#09090B]">
+      <!-- Views will render dynamically here -->
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       3. SLIDE-OVER DETAIL DRAWER (INVOICE INSPECTOR)
+  ========================================================================= -->
+  <div 
+    id="drawerBackdrop" 
+    onclick="closeDetailDrawer()"
+    class="hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-xs transition-opacity"
+  ></div>
+
+  <aside 
+    id="detailDrawer" 
+    class="fixed right-0 top-0 bottom-0 w-full sm:w-[420px] bg-white dark:bg-[#121215] border-l border-zinc-200 dark:border-white/10 z-50 shadow-drawer flex flex-col justify-between translate-x-full"
+  >
+    <!-- Drawer Header -->
+    <div class="p-5 border-b border-zinc-100 dark:border-white/5 flex items-center justify-between">
+      <div>
+        <h3 id="drawerInvoiceId" class="text-sm font-bold text-zinc-950 dark:text-white font-sans tabular-nums">#INV-9042</h3>
+        <p id="drawerClientSubtitle" class="text-xs text-zinc-400">Zerorapid India Pvt Ltd</p>
+      </div>
+      <button type="button" onclick="closeDetailDrawer()" class="p-1 rounded-lg text-zinc-400 hover:text-zinc-900 dark:hover:text-white">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Drawer Content Body -->
+    <div class="flex-1 p-5 overflow-y-auto space-y-4 text-xs">
+      <!-- Status & Amount Card -->
+      <div class="p-4 rounded-xl bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-zinc-500 font-medium">Payment State</span>
+          <span id="drawerStatusBadge" class="px-2 py-0.5 rounded-full font-bold text-[10px]">Paid</span>
+        </div>
+        <div class="flex items-baseline justify-between pt-1">
+          <span class="text-zinc-500 font-medium">Total Billed</span>
+          <span id="drawerAmount" class="text-xl font-bold text-zinc-950 dark:text-white font-sans tabular-nums">₹1,25,000</span>
+        </div>
+      </div>
+
+      <!-- Dossier Metadata -->
+      <div class="space-y-3">
+        <div>
+          <span class="text-zinc-400 text-[11px] block">Client City / Region</span>
+          <p id="drawerCity" class="font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5">Hyderabad, Telangana</p>
+        </div>
+        <div>
+          <span class="text-zinc-400 text-[11px] block">Invoice Issue Date</span>
+          <p id="drawerDate" class="font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 font-sans tabular-nums">15 Nov 2026</p>
+        </div>
+        <div>
+          <span class="text-zinc-400 text-[11px] block">Operational Audit Notes</span>
+          <p id="drawerNotes" class="text-zinc-600 dark:text-zinc-300 text-[12px] leading-relaxed p-3 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 mt-1">
+            Input tax credit verified via GSTR-2B filing. Payment routed via ICICI RTGS.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Footer Actions -->
+    <div class="p-5 border-t border-zinc-100 dark:border-white/5 flex items-center gap-2 bg-zinc-50/50 dark:bg-white/[0.02]">
+      <button 
+        type="button" 
+        onclick="downloadInvoicePdf()"
+        class="flex-1 py-2 rounded-lg text-xs font-semibold border border-zinc-200/80 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 flex items-center justify-center gap-1.5 transition"
+      >
+        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+        <span>Download PDF</span>
+      </button>
+      <button 
+        type="button" 
+        id="drawerMarkPaidBtn"
+        onclick="markDrawerInvoicePaid()"
+        class="flex-1 py-2 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 flex items-center justify-center gap-1.5 transition shadow-xs"
+      >
+        <i data-lucide="check" class="w-3.5 h-3.5"></i>
+        <span>Mark as Paid</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       4. MODALS (CREATE INVOICE & INVITE MEMBER)
+  ========================================================================= -->
+  
+  <!-- Create Invoice Modal -->
+  <div id="createInvoiceModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+    <div class="w-full max-w-md bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100 dark:border-white/10">
+        <h4 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Create Client Invoice</h4>
+        <button type="button" onclick="closeCreateInvoiceModal()" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <form onsubmit="handleCreateInvoice(event)" class="p-5 space-y-3 text-xs">
+        <div>
+          <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Client Entity Name</label>
+          <input type="text" id="newInvoiceClient" placeholder="e.g. Deccan FinTech Systems" required class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Amount (INR)</label>
+            <input type="number" id="newInvoiceAmount" placeholder="95000" required class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 font-sans tabular-nums">
+          </div>
+          <div>
+            <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Initial Status</label>
+            <select id="newInvoiceStatus" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+              <option value="Pending">Pending</option>
+              <option value="Paid">Paid</option>
+              <option value="Overdue">Overdue</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Operational City / Hub</label>
+          <input type="text" id="newInvoiceCity" placeholder="e.g. Hyderabad" required class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+        </div>
+        <div>
+          <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Notes & Scope Summary</label>
+          <textarea id="newInvoiceNotes" rows="2" placeholder="Quarterly accounting telemetry and GST filing..." class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-white/10">
+          <button type="button" onclick="closeCreateInvoiceModal()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5">Cancel</button>
+          <button type="submit" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">Generate Invoice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Invite Member Modal -->
+  <div id="inviteMemberModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+    <div class="w-full max-w-md bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100 dark:border-white/10">
+        <h4 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Invite Team Member</h4>
+        <button type="button" onclick="closeInviteMemberModal()" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <form onsubmit="handleInviteMember(event)" class="p-5 space-y-3 text-xs">
+        <div>
+          <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Full Name</label>
+          <input type="text" id="newMemberName" placeholder="e.g. Vikram Rao" required class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10">
+        </div>
+        <div>
+          <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Corporate Email</label>
+          <input type="email" id="newMemberEmail" placeholder="vikram@company.com" required class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10">
+        </div>
+        <div>
+          <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Role Permission</label>
+          <select id="newMemberRole" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+            <option value="Admin">Admin</option>
+            <option value="Editor" selected>Editor</option>
+            <option value="Viewer">Viewer</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-white/10">
+          <button type="button" onclick="closeInviteMemberModal()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5">Cancel</button>
+          <button type="submit" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">Send Invite</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       5. GLOBAL ⌘K COMMAND PALETTE
+  ========================================================================= -->
+  <div id="cmdPaletteBackdrop" class="hidden fixed inset-0 z-50 flex items-start justify-center pt-20 p-4 bg-black/60 backdrop-blur-xs">
+    <div class="w-full max-w-lg bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-3 border-b border-zinc-100 dark:border-white/10 flex items-center gap-2.5">
+        <i data-lucide="search" class="w-4 h-4 text-zinc-400"></i>
+        <input 
+          type="text" 
+          id="cmdPaletteInput"
+          placeholder="Type a command or jump to page..." 
+          oninput="filterCommandPalette(this.value)"
+          class="w-full text-xs bg-transparent focus:outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-400"
+        />
+        <button type="button" onclick="closeCommandPalette()" class="text-zinc-400 hover:text-zinc-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div id="cmdPaletteResults" class="p-2 space-y-1 text-xs max-h-64 overflow-y-auto">
+        <button type="button" onclick="execCmd('new-invoice')" class="cmd-item w-full px-3 py-2 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium">
+          <div class="flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-blue-600"></i>
+            <span>Create New Invoice</span>
+          </div>
+          <span class="text-[10px] text-zinc-400 font-sans">Action</span>
+        </button>
+        <button type="button" onclick="execCmd('dashboard')" class="cmd-item w-full px-3 py-2 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium">
+          <div class="flex items-center gap-2">
+            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+            <span>Jump to Dashboard Home</span>
+          </div>
+          <span class="text-[10px] text-zinc-400 font-sans">Navigation</span>
+        </button>
+        <button type="button" onclick="execCmd('invoices')" class="cmd-item w-full px-3 py-2 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium">
+          <div class="flex items-center gap-2">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+            <span>Jump to Client Invoices</span>
+          </div>
+          <span class="text-[10px] text-zinc-400 font-sans">Navigation</span>
+        </button>
+        <button type="button" onclick="execCmd('pipeline')" class="cmd-item w-full px-3 py-2 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium">
+          <div class="flex items-center gap-2">
+            <i data-lucide="kanban" class="w-3.5 h-3.5"></i>
+            <span>Jump to Deal Pipeline</span>
+          </div>
+          <span class="text-[10px] text-zinc-400 font-sans">Navigation</span>
+        </button>
+        <button type="button" onclick="execCmd('team')" class="cmd-item w-full px-3 py-2 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium">
+          <div class="flex items-center gap-2">
+            <i data-lucide="users" class="w-3.5 h-3.5"></i>
+            <span>Jump to Team & Roles</span>
+          </div>
+          <span class="text-[10px] text-zinc-400 font-sans">Navigation</span>
+        </button>
+        <button type="button" onclick="execCmd('billing')" class="cmd-item w-full px-3 py-2 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium">
+          <div class="flex items-center gap-2">
+            <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
+            <span>Jump to Billing & Plan</span>
+          </div>
+          <span class="text-[10px] text-zinc-400 font-sans">Navigation</span>
+        </button>
+        <button type="button" onclick="execCmd('settings')" class="cmd-item w-full px-3 py-2 rounded-lg flex items-center justify-between hover:bg-zinc-100 dark:hover:bg-white/5 text-left font-medium">
+          <div class="flex items-center gap-2">
+            <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+            <span>Jump to Workspace Settings</span>
+          </div>
+          <span class="text-[10px] text-zinc-400 font-sans">Navigation</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       6. FLOATING TOAST NOTIFICATION
+  ========================================================================= -->
+  <div 
+    id="toastBox" 
+    class="hidden fixed bottom-5 right-5 z-50 px-4 py-3 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-2xl flex items-center gap-3 text-xs animate-in slide-in-from-bottom duration-200"
+  >
+    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 dark:text-emerald-600 shrink-0"></i>
+    <span id="toastMessage" class="font-medium">Action completed successfully</span>
+  </div>
+
+  <!-- =========================================================================
+       7. REACTIVE STATE & MULTI-PAGE APPLICATION CONTROLLER
+  ========================================================================= -->
+  <script>
+    // Reactive Application State
+    const appData = {
+      workspace: "Hyderabad HQ",
+      activePage: "dashboard",
+      selectedInvoiceId: null,
+      selectedRows: new Set(),
+      invoiceFilter: "all",
+      invoiceSearch: "",
+      billingPeriod: "yearly",
+      
+      invoices: [
+        { id: "INV-9042", client: "Zerorapid India Pvt Ltd", amount: 125000, status: "Paid", city: "Hyderabad, Telangana", date: "15 Nov 2026", notes: "Input tax credit verified via GSTR-2B filing. Payment routed via ICICI RTGS." },
+        { id: "INV-9041", client: "Deccan Logistics Hub", amount: 84200, status: "Pending", city: "Bengaluru, Karnataka", date: "14 Nov 2026", notes: "Vehicle tracking telemetry integration milestone." },
+        { id: "INV-9040", client: "Apex Retail Solutions", amount: 32600, status: "Overdue", city: "Mumbai, Maharashtra", date: "10 Nov 2026", notes: "Point of sale synchronization in progress. Awaiting store manager clearance." },
+        { id: "INV-9039", client: "Kaveri Global Exports", amount: 210000, status: "Paid", city: "Chennai, Tamil Nadu", date: "08 Nov 2026", notes: "Container export duty paid. GST input tax credit submitted to portal." },
+        { id: "INV-9038", client: "Bangalore Silicon Labs", amount: 65400, status: "Paid", city: "Bengaluru, Karnataka", date: "05 Nov 2026", notes: "Custom webhook event processor license." },
+        { id: "INV-9037", client: "Godavari Agro Mills", amount: 48000, status: "Pending", city: "Vijayawada, AP", date: "01 Nov 2026", notes: "Commodity weighbridge automation bridge." }
+      ],
+
+      deals: [
+        { id: "d1", title: "Deccan Telecom Hub", amount: 850000, company: "Deccan Telecom", stage: "new", desc: "50 Enterprise Seats & Custom Webhooks" },
+        { id: "d2", title: "Apex Logistics Gateway", amount: 420000, company: "Apex Logistics", stage: "new", desc: "Fleet Telemetry API Bridge" },
+        { id: "d3", title: "Zerorapid Payments Expansion", amount: 1400000, company: "Zerorapid Global", stage: "proposal", desc: "Enterprise Multi-Tenant Routing" },
+        { id: "d4", title: "Global Finserve Hub", amount: 2250000, company: "Global Finserve", stage: "won", desc: "Annual Contract + Dedicated Support" }
+      ],
+
+      team: [
+        { id: "m1", name: "Sai Joshna", email: "sai@zerorapid.com", role: "Owner", presence: "Online" },
+        { id: "m2", name: "Rahul Verma", email: "rahul@zerorapid.com", role: "Admin", presence: "Online" },
+        { id: "m3", name: "Priya Sharma", email: "priya@zerorapid.com", role: "Editor", presence: "Away" },
+        { id: "m4", name: "Vikram Reddy", email: "vikram@zerorapid.com", role: "Viewer", presence: "Offline" }
+      ]
+    };
+
+    // Initialize application on load
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      renderPage();
+      updateSidebarBadges();
+    });
+
+    // Page Router
+    function navigateTo(pageId) {
+      appData.activePage = pageId;
+      
+      // Update sidebar active state
+      document.querySelectorAll('.nav-link').forEach(btn => {
+        btn.className = 'nav-link w-full px-2.5 py-2 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 flex items-center gap-2.5 cursor-pointer transition';
+      });
+      const activeBtn = document.getElementById(`nav-${pageId}`);
+      if (activeBtn) {
+        activeBtn.className = 'nav-link w-full px-2.5 py-2 rounded-lg font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-2.5 cursor-pointer transition shadow-xs';
+      }
+
+      // Update Top Breadcrumb
+      const pageTitles = {
+        dashboard: "Dashboard",
+        invoices: "Client Invoices",
+        pipeline: "Deal Pipeline",
+        team: "Team & Roles",
+        billing: "Billing & Plan",
+        settings: "Workspace Settings"
+      };
+      document.getElementById('breadcrumbPage').textContent = pageTitles[pageId] || "Dashboard";
+
+      renderPage();
+    }
+
+    // Render Page Views Dynamically
+    function renderPage() {
+      const stage = document.getElementById('pageStage');
+      
+      if (appData.activePage === 'dashboard') {
+        stage.innerHTML = renderDashboardView();
+      } else if (appData.activePage === 'invoices') {
+        stage.innerHTML = renderInvoicesView();
+      } else if (appData.activePage === 'pipeline') {
+        stage.innerHTML = renderPipelineView();
+      } else if (appData.activePage === 'team') {
+        stage.innerHTML = renderTeamView();
+      } else if (appData.activePage === 'billing') {
+        stage.innerHTML = renderBillingView();
+      } else if (appData.activePage === 'settings') {
+        stage.innerHTML = renderSettingsView();
+      }
+
+      lucide.createIcons();
+    }
+
+    // -------------------------------------------------------------------------
+    // VIEW 1: DASHBOARD HOME
+    // -------------------------------------------------------------------------
+    function renderDashboardView() {
+      const totalBilled = appData.invoices.reduce((acc, inv) => acc + inv.amount, 0);
+      const paidCount = appData.invoices.filter(inv => inv.status === 'Paid').length;
+      const overdueBalance = appData.invoices.filter(inv => inv.status === 'Overdue').reduce((acc, inv) => acc + inv.amount, 0);
+      const openDealsCount = appData.deals.filter(d => d.stage !== 'won').length;
+
+      return `
+        <div class="space-y-6 animate-in fade-in duration-200">
+          
+          <!-- Header Welcome Strip -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-zinc-200/80 dark:border-white/10">
+            <div>
+              <h1 class="text-base font-bold text-zinc-950 dark:text-white">Welcome back, Sai</h1>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400">Executive operations overview for ${appData.workspace} · Real-time telemetry</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="navigateTo('invoices')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-white/10 border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 transition shadow-xs">
+                View All Invoices
+              </button>
+              <button onclick="navigateTo('pipeline')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+                Pipeline Board →
+              </button>
+            </div>
+          </div>
+
+          <!-- 4-KPI Top Row -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-1">
+              <span class="text-xs text-zinc-400 font-medium">Total Billed</span>
+              <div class="text-2xl font-bold text-zinc-950 dark:text-white font-sans tabular-nums">
+                ₹${(totalBilled).toLocaleString('en-IN')}
+              </div>
+              <span class="text-[10px] text-emerald-600 font-bold font-sans tabular-nums">+18.4% MoM</span>
+            </div>
+
+            <div class="p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-1">
+              <span class="text-xs text-zinc-400 font-medium">Paid Invoices</span>
+              <div class="text-2xl font-bold text-zinc-950 dark:text-white font-sans tabular-nums">
+                ${paidCount} <span class="text-xs font-normal text-zinc-400">of ${appData.invoices.length}</span>
+              </div>
+              <span class="text-[10px] text-emerald-600 font-bold font-sans tabular-nums">100% Reconciled</span>
+            </div>
+
+            <div class="p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-1">
+              <span class="text-xs text-zinc-400 font-medium">Overdue Balance</span>
+              <div class="text-2xl font-bold text-red-600 dark:text-red-400 font-sans tabular-nums">
+                ₹${(overdueBalance).toLocaleString('en-IN')}
+              </div>
+              <button onclick="filterInvoicesByStatus('Overdue')" class="text-[10px] text-red-600 font-semibold underline cursor-pointer">Follow up client →</button>
+            </div>
+
+            <div class="p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-1">
+              <span class="text-xs text-zinc-400 font-medium">Open Pipeline Deals</span>
+              <div class="text-2xl font-bold text-zinc-950 dark:text-white font-sans tabular-nums">
+                ${openDealsCount}
+              </div>
+              <span class="text-[10px] text-zinc-400 font-sans tabular-nums">Weighted ₹35.2L</span>
+            </div>
+
+          </div>
+
+          <!-- Asymmetric 8 / 4 Split -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- 8-Col Monthly Collections Bar Chart -->
+            <div class="lg:col-span-8 p-5 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-4">
+              <div class="flex items-center justify-between text-xs">
+                <div>
+                  <h3 class="font-bold text-zinc-950 dark:text-white text-sm">Monthly Revenue Collections</h3>
+                  <p class="text-zinc-400 text-[11px]">H2 FY26 Automated Tally & Gateway Receipts</p>
+                </div>
+                <span class="font-bold font-sans tabular-nums text-xs bg-zinc-100 dark:bg-white/10 px-2.5 py-1 rounded-md">₹64.2L Total</span>
+              </div>
+
+              <!-- Pure CSS Bar Chart -->
+              <div class="h-36 flex items-end justify-between gap-3 pt-4 border-b border-zinc-100 dark:border-white/5">
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-t h-[40%] hover:bg-zinc-300 transition"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Jun</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-t h-[55%] hover:bg-zinc-300 transition"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Jul</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-t h-[70%] hover:bg-zinc-300 transition"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Aug</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-t h-[65%] hover:bg-zinc-300 transition"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Sep</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-t h-[85%] hover:bg-zinc-300 transition"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Oct</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                  <div class="w-full bg-zinc-950 dark:bg-white rounded-t h-[100%] shadow-sm"></div>
+                  <span class="text-[10px] font-bold text-zinc-950 dark:text-white font-sans">Nov</span>
+                </div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-zinc-400">
+                <span>Peak Volume: November (₹16.5L)</span>
+                <span class="font-sans tabular-nums">Zero Third-Party JS</span>
+              </div>
+            </div>
+
+            <!-- 4-Col Recent Activity Feed -->
+            <div class="lg:col-span-4 p-5 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-3">
+              <div class="flex items-center justify-between text-xs pb-1 border-b border-zinc-100 dark:border-white/5">
+                <h3 class="font-bold text-zinc-950 dark:text-white text-sm">Recent Activity</h3>
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              </div>
+              <div class="space-y-2 text-xs">
+                ${appData.invoices.slice(0, 4).map(inv => `
+                  <div class="p-2.5 rounded-xl bg-zinc-50 dark:bg-white/5 space-y-1">
+                    <div class="flex justify-between font-bold">
+                      <span class="truncate">${inv.client}</span>
+                      <span class="font-sans tabular-nums">${inv.status === 'Paid' ? '₹' + inv.amount.toLocaleString('en-IN') : inv.status}</span>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-zinc-400">
+                      <span>${inv.id}</span>
+                      <span>${inv.date}</span>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // VIEW 2: CLIENT INVOICES (WITH DETAIL DRAWER & BULK ACTIONS)
+    // -------------------------------------------------------------------------
+    function renderInvoicesView() {
+      // Filter logic
+      const filtered = appData.invoices.filter(inv => {
+        const matchStatus = appData.invoiceFilter === 'all' || inv.status.toLowerCase() === appData.invoiceFilter.toLowerCase();
+        const matchSearch = appData.invoiceSearch === '' || 
+          inv.client.toLowerCase().includes(appData.invoiceSearch) || 
+          inv.id.toLowerCase().includes(appData.invoiceSearch) ||
+          inv.city.toLowerCase().includes(appData.invoiceSearch);
+        return matchStatus && matchSearch;
+      });
+
+      const hasSelection = appData.selectedRows.size > 0;
+
+      return `
+        <div class="space-y-4 animate-in fade-in duration-200">
+          
+          <!-- Top Control Header: Filter Pills & Search -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            
+            <!-- Filter Pills with Item Counters -->
+            <div class="flex items-center gap-1.5 p-1 bg-zinc-100 dark:bg-white/5 rounded-xl border border-zinc-200/80 dark:border-white/10 text-xs">
+              ${['all', 'Paid', 'Pending', 'Overdue'].map(f => {
+                const count = f === 'all' ? appData.invoices.length : appData.invoices.filter(i => i.status.toLowerCase() === f.toLowerCase()).length;
+                const isActive = appData.invoiceFilter.toLowerCase() === f.toLowerCase();
+                return `
+                  <button 
+                    type="button" 
+                    onclick="filterInvoicesByStatus('${f}')" 
+                    class="px-3 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1.5 ${
+                      isActive 
+                        ? 'font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs' 
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900'
+                    }"
+                  >
+                    <span class="capitalize">${f}</span>
+                    <span class="text-[10px] font-sans tabular-nums font-bold px-1.5 py-0.2 rounded-full ${isActive ? 'bg-zinc-100 dark:bg-white/10' : 'bg-zinc-200 dark:bg-white/5'}">
+                      ${count}
+                    </span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Instant Search Input -->
+            <div class="relative min-w-[220px]">
+              <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+              <input 
+                type="text" 
+                placeholder="Search client or ID..." 
+                value="${appData.invoiceSearch}"
+                oninput="handleInvoiceSearch(this.value)"
+                class="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-white dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              />
+            </div>
+
+          </div>
+
+          <!-- Invoices Data Table Card -->
+          <div class="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-zinc-100 dark:border-white/5 bg-zinc-50/60 dark:bg-white/[0.02] text-zinc-400 text-[11px]">
+                    <th class="p-3 w-10 text-center">
+                      <input 
+                        type="checkbox" 
+                        onchange="toggleSelectAllInvoices(this.checked)"
+                        ${filtered.length > 0 && filtered.every(i => appData.selectedRows.has(i.id)) ? 'checked' : ''}
+                        class="rounded border-zinc-300 text-zinc-950 focus:ring-0 cursor-pointer"
+                      />
+                    </th>
+                    <th class="py-3 px-3 font-semibold">Invoice ID</th>
+                    <th class="py-3 px-3 font-semibold">Client Name</th>
+                    <th class="py-3 px-3 font-semibold">Amount</th>
+                    <th class="py-3 px-3 font-semibold">City</th>
+                    <th class="py-3 px-3 font-semibold">Date</th>
+                    <th class="py-3 px-3 font-semibold">Status</th>
+                    <th class="py-3 px-3 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-100 dark:divide-white/5">
+                  ${filtered.length === 0 ? `
+                    <tr>
+                      <td colspan="8" class="p-8 text-center text-zinc-400">
+                        <i data-lucide="file-question" class="w-8 h-8 mx-auto mb-2 text-zinc-300"></i>
+                        <p class="font-semibold text-zinc-600 dark:text-zinc-300">No invoices match your filter</p>
+                        <p class="text-[11px]">Try adjusting your search query or reset filter pills.</p>
+                      </td>
+                    </tr>
+                  ` : filtered.map(inv => {
+                    const isChecked = appData.selectedRows.has(inv.id);
+                    const statusClass = inv.status === 'Paid'
+                      ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                      : inv.status === 'Pending'
+                      ? 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
+                      : 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300';
+
+                    return `
+                      <tr class="hover:bg-zinc-50/70 dark:hover:bg-white/[0.02] transition ${isChecked ? 'bg-zinc-50 dark:bg-white/5' : ''}">
+                        <td class="p-3 text-center">
+                          <input 
+                            type="checkbox" 
+                            onchange="toggleInvoiceSelection('${inv.id}', this.checked)"
+                            ${isChecked ? 'checked' : ''}
+                            class="rounded border-zinc-300 text-zinc-950 focus:ring-0 cursor-pointer"
+                          />
+                        </td>
+                        <td class="py-3 px-3 font-bold font-sans tabular-nums text-zinc-900 dark:text-zinc-100">${inv.id}</td>
+                        <td class="py-3 px-3 font-semibold text-zinc-900 dark:text-zinc-100">${inv.client}</td>
+                        <td class="py-3 px-3 font-bold font-sans tabular-nums">₹${inv.amount.toLocaleString('en-IN')}</td>
+                        <td class="py-3 px-3 text-zinc-500">${inv.city}</td>
+                        <td class="py-3 px-3 font-sans tabular-nums text-zinc-400">${inv.date}</td>
+                        <td class="py-3 px-3">
+                          <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${statusClass}">
+                            ${inv.status}
+                          </span>
+                        </td>
+                        <td class="py-3 px-3 text-right">
+                          <button 
+                            type="button" 
+                            onclick="inspectInvoice('${inv.id}')"
+                            class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white transition cursor-pointer"
+                          >
+                            Inspect
+                          </button>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table Footer -->
+            <div class="p-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+              <span>Showing ${filtered.length} of ${appData.invoices.length} invoices</span>
+              <span class="font-sans tabular-nums">100% Tax Compliant</span>
+            </div>
+          </div>
+
+          <!-- Floating Bulk Action Bar (Revealed when rows are selected) -->
+          ${hasSelection ? `
+            <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-4 py-2.5 rounded-2xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-2xl flex items-center gap-4 text-xs animate-in slide-in-from-bottom duration-150">
+              <span class="font-bold font-sans tabular-nums">${appData.selectedRows.size} invoice${appData.selectedRows.size > 1 ? 's' : ''} selected</span>
+              <div class="h-3 w-px bg-white/20 dark:bg-zinc-950/20"></div>
+              <button onclick="bulkMarkPaid()" class="font-semibold hover:underline flex items-center gap-1 cursor-pointer">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                <span>Mark Paid</span>
+              </button>
+              <button onclick="bulkExportCSV()" class="font-semibold hover:underline flex items-center gap-1 cursor-pointer">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Export CSV</span>
+              </button>
+              <button onclick="clearBulkSelection()" class="text-zinc-400 hover:text-white dark:hover:text-zinc-950 cursor-pointer">
+                Clear
+              </button>
+            </div>
+          ` : ''}
+
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // VIEW 3: DEAL PIPELINE KANBAN BOARD
+    // -------------------------------------------------------------------------
+    function renderPipelineView() {
+      const stages = [
+        { id: "new", title: "New Leads", count: appData.deals.filter(d => d.stage === 'new').length },
+        { id: "proposal", title: "Proposal Sent", count: appData.deals.filter(d => d.stage === 'proposal').length },
+        { id: "won", title: "Closed Won", count: appData.deals.filter(d => d.stage === 'won').length }
+      ];
+
+      return `
+        <div class="space-y-4 animate-in fade-in duration-200">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-200/80 dark:border-white/10">
+            <div>
+              <h2 class="text-base font-bold text-zinc-950 dark:text-white">Deal Pipeline</h2>
+              <p class="text-xs text-zinc-400">Manage institutional client contracts and move stages live</p>
+            </div>
+            <button onclick="addNewDealQuick()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs flex items-center gap-1.5">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>+ Add Deal</span>
+            </button>
+          </div>
+
+          <!-- 3-Column Kanban Board -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${stages.map(st => `
+              <div class="p-3.5 rounded-2xl bg-zinc-100/70 dark:bg-white/[0.03] border border-zinc-200/70 dark:border-white/5 space-y-3">
+                <div class="flex items-center justify-between pb-1">
+                  <span class="text-xs font-bold text-zinc-950 dark:text-white">${st.title}</span>
+                  <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-zinc-200 dark:bg-white/10 font-sans tabular-nums">
+                    ${st.count}
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  ${appData.deals.filter(d => d.stage === st.id).map(d => `
+                    <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs space-y-2 text-xs">
+                      <div class="flex justify-between items-start">
+                        <span class="font-bold text-zinc-900 dark:text-zinc-100">${d.title}</span>
+                        <span class="font-bold font-sans tabular-nums text-zinc-950 dark:text-white">₹${(d.amount).toLocaleString('en-IN')}</span>
+                      </div>
+                      <p class="text-[11px] text-zinc-400">${d.desc}</p>
+                      
+                      ${st.id !== 'won' ? `
+                        <div class="pt-1 flex justify-end">
+                          <button onclick="advanceDeal('${d.id}')" class="text-[11px] font-semibold text-blue-600 hover:underline flex items-center gap-1 cursor-pointer">
+                            <span>Move Next</span>
+                            <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                          </button>
+                        </div>
+                      ` : `
+                        <div class="pt-1 flex justify-end">
+                          <span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                            <i data-lucide="check" class="w-3 h-3"></i>
+                            <span>Contract Won</span>
+                          </span>
+                        </div>
+                      `}
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // VIEW 4: TEAM & ROLES DIRECTORY
+    // -------------------------------------------------------------------------
+    function renderTeamView() {
+      return `
+        <div class="space-y-4 animate-in fade-in duration-200">
+          <div class="flex items-center justify-between pb-2 border-b border-zinc-200/80 dark:border-white/10">
+            <div>
+              <h2 class="text-base font-bold text-zinc-950 dark:text-white">Team & Permissions</h2>
+              <p class="text-xs text-zinc-400">Manage member privileges for ${appData.workspace}</p>
+            </div>
+            <button onclick="openInviteMemberModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs flex items-center gap-1.5">
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+              <span>+ Invite Member</span>
+            </button>
+          </div>
+
+          <div class="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden">
+            <div class="divide-y divide-zinc-100 dark:divide-white/5">
+              ${appData.team.map(m => {
+                const presenceColor = m.presence === 'Online' ? 'bg-emerald-500' : m.presence === 'Away' ? 'bg-amber-500' : 'bg-zinc-400';
+                return `
+                  <div class="p-4 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-3">
+                      <div class="relative">
+                        <div class="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200">
+                          ${m.name.split(' ').map(n=>n[0]).join('')}
+                        </div>
+                        <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full ${presenceColor} ring-2 ring-white dark:ring-[#121215]"></span>
+                      </div>
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold text-zinc-900 dark:text-zinc-100">${m.name}</span>
+                          <span class="text-[10px] px-1.5 py-0.2 rounded font-bold bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300">${m.role}</span>
+                        </div>
+                        <span class="text-zinc-400 text-[11px]">${m.email}</span>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="text-[11px] text-zinc-400">${m.presence}</span>
+                      <button class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white p-1">
+                        <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // VIEW 5: BILLING & PLAN OVERVIEW
+    // -------------------------------------------------------------------------
+    function renderBillingView() {
+      const isYearly = appData.billingPeriod === 'yearly';
+
+      return `
+        <div class="space-y-6 animate-in fade-in duration-200">
+          
+          <div class="pb-2 border-b border-zinc-200/80 dark:border-white/10">
+            <h2 class="text-base font-bold text-zinc-950 dark:text-white">Billing & Plan Quota</h2>
+            <p class="text-xs text-zinc-400">Current subscription and monthly API limits</p>
+          </div>
+
+          <!-- Enterprise Plan Card -->
+          <div class="p-5 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Active Plan</span>
+                <h3 class="text-lg font-bold text-zinc-950 dark:text-white mt-0.5">Enterprise Growth Tier</h3>
+                <p class="text-xs text-zinc-400">Next renewal on 15 Dec 2026 · Auto-debited from VISA •••• 4242</p>
+              </div>
+              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">Active</span>
+            </div>
+
+            <!-- Quota Progress Bars -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-white/5 space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="font-semibold text-zinc-800 dark:text-zinc-200">API Requests (Monthly)</span>
+                  <span class="font-sans tabular-nums text-zinc-500">8,240 / 10,000</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-zinc-200 dark:bg-white/10 overflow-hidden">
+                  <div class="h-full bg-amber-500 rounded-full" style="width: 82.4%"></div>
+                </div>
+                <span class="text-[10px] text-zinc-400">Resets automatically on 01 Dec 2026</span>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-white/5 space-y-2">
+                <div class="flex justify-between text-xs">
+                  <span class="font-semibold text-zinc-800 dark:text-zinc-200">Active Team Seats</span>
+                  <span class="font-sans tabular-nums text-zinc-500">4 / 25 Allocated</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-zinc-200 dark:bg-white/10 overflow-hidden">
+                  <div class="h-full bg-zinc-950 dark:bg-white rounded-full" style="width: 16%"></div>
+                </div>
+                <span class="text-[10px] text-zinc-400">21 additional seats available</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3-Tier Plan Switcher with Monthly/Yearly Toggle -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Compare Available Tiers</h3>
+              
+              <!-- Period Switcher -->
+              <div class="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
+                <button 
+                  onclick="setBillingPeriod('monthly')"
+                  class="px-3 py-1 rounded-md transition cursor-pointer ${!isYearly ? 'font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs' : 'font-medium text-zinc-600 dark:text-zinc-400'}"
+                >
+                  Monthly
+                </button>
+                <button 
+                  onclick="setBillingPeriod('yearly')"
+                  class="px-3 py-1 rounded-md transition cursor-pointer flex items-center gap-1.5 ${isYearly ? 'font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs' : 'font-medium text-zinc-600 dark:text-zinc-400'}"
+                >
+                  <span>Yearly</span>
+                  <span class="text-[10px] font-bold px-1 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Save 20%</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Tier 1 -->
+              <div class="p-4 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] space-y-3">
+                <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Starter</span>
+                <div class="text-2xl font-bold font-sans tabular-nums">${isYearly ? '₹999' : '₹1,299'}<span class="text-xs text-zinc-400 font-normal">/mo</span></div>
+                <p class="text-xs text-zinc-400">For early-stage startups and small finance operations.</p>
+                <button class="w-full py-1.5 rounded-lg text-xs font-semibold border border-zinc-200 dark:border-white/10">Downgrade</button>
+              </div>
+
+              <!-- Tier 2 (Current) -->
+              <div class="p-4 rounded-xl border-2 border-zinc-950 dark:border-white bg-white dark:bg-[#121215] space-y-3 shadow-md relative">
+                <span class="absolute -top-2.5 right-4 px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Active Tier</span>
+                <span class="text-xs font-bold text-zinc-950 dark:text-white uppercase tracking-wider">Enterprise Growth</span>
+                <div class="text-2xl font-bold font-sans tabular-nums">${isYearly ? '₹2,499' : '₹2,999'}<span class="text-xs text-zinc-400 font-normal">/mo</span></div>
+                <p class="text-xs text-zinc-400">Complete Tally Prime bridge, GST invoices, and 25 seats.</p>
+                <button class="w-full py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Manage Current</button>
+              </div>
+
+              <!-- Tier 3 -->
+              <div class="p-4 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] space-y-3">
+                <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Unlimited Scale</span>
+                <div class="text-2xl font-bold font-sans tabular-nums">${isYearly ? '₹6,499' : '₹7,999'}<span class="text-xs text-zinc-400 font-normal">/mo</span></div>
+                <p class="text-xs text-zinc-400">Unlimited API webhook endpoints and dedicated account executive.</p>
+                <button class="w-full py-1.5 rounded-lg text-xs font-semibold border border-zinc-200 dark:border-white/10">Contact Sales</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // VIEW 6: WORKSPACE SETTINGS (ANNOTATED FORM)
+    // -------------------------------------------------------------------------
+    function renderSettingsView() {
+      return `
+        <div class="space-y-6 animate-in fade-in duration-200 max-w-4xl">
+          <div class="pb-2 border-b border-zinc-200/80 dark:border-white/10">
+            <h2 class="text-base font-bold text-zinc-950 dark:text-white">Workspace Settings</h2>
+            <p class="text-xs text-zinc-400">Manage legal identification and organization preferences</p>
+          </div>
+
+          <!-- Two-Column Annotated Form Layout -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+            
+            <div class="md:col-span-4 space-y-1">
+              <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Workspace Identity</h3>
+              <p class="text-xs text-zinc-500 leading-relaxed">
+                Configure your verified company title, legal GSTIN registration, and regional hub for tax compliance certificates.
+              </p>
+            </div>
+
+            <div class="md:col-span-8 p-5 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs space-y-4">
+              <form onsubmit="handleSaveSettings(event)" class="space-y-3 text-xs">
+                <div>
+                  <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Company Legal Name</label>
+                  <input type="text" id="settingLegalName" value="Zerorapid India Pvt Ltd" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+                </div>
+                <div>
+                  <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Registered GSTIN Number</label>
+                  <input type="text" id="settingGstin" value="36AABCP1234F1Z5" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 font-sans tabular-nums">
+                </div>
+                <div>
+                  <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Regional Headquarters</label>
+                  <input type="text" id="settingHq" value="${appData.workspace}" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+                </div>
+                <div class="flex items-center justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-white/5">
+                  <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+    // -------------------------------------------------------------------------
+    // INTERACTIVE ACTIONS & HANDLERS
+    // -------------------------------------------------------------------------
+    
+    // Workspace Switcher
+    function toggleWorkspacePopover() {
+      const popover = document.getElementById('workspacePopover');
+      popover.classList.toggle('hidden');
+    }
+    function selectWorkspace(name) {
+      appData.workspace = name;
+      document.getElementById('currentWorkspaceName').textContent = name;
+      document.getElementById('breadcrumbWorkspace').textContent = name;
+      document.getElementById('workspacePopover').classList.add('hidden');
+      showToast(`Switched workspace to ${name}`);
+      renderPage();
+    }
+
+    // Sidebar Collapse
+    let isSidebarCollapsed = false;
+    function toggleSidebarCollapse() {
+      isSidebarCollapsed = !isSidebarCollapsed;
+      const sidebar = document.getElementById('appSidebar');
+      const icon = document.getElementById('sidebarCollapseIcon');
+      
+      if (isSidebarCollapsed) {
+        sidebar.style.width = '68px';
+        icon.setAttribute('data-lucide', 'panel-left-open');
+        document.querySelectorAll('.sidebar-text').forEach(el => el.classList.add('hidden'));
+      } else {
+        sidebar.style.width = '240px';
+        icon.setAttribute('data-lucide', 'panel-left-close');
+        document.querySelectorAll('.sidebar-text').forEach(el => el.classList.remove('hidden'));
+      }
+      lucide.createIcons();
+    }
+
+    // Mobile Sidebar Drawer
+    function toggleMobileSidebar() {
+      const sidebar = document.getElementById('appSidebar');
+      sidebar.classList.toggle('hidden');
+    }
+
+    // Notification Popover
+    function toggleNotificationPopover() {
+      document.getElementById('notifPopover').classList.toggle('hidden');
+    }
+    function markAllNotificationsRead() {
+      document.getElementById('notifRedDot').classList.add('hidden');
+      document.getElementById('notifPopover').classList.add('hidden');
+      showToast('All notifications marked as read');
+    }
+
+    // Invoices Filtering & Search
+    function filterInvoicesByStatus(status) {
+      appData.invoiceFilter = status;
+      renderPage();
+    }
+    function handleInvoiceSearch(query) {
+      appData.invoiceSearch = query.trim().toLowerCase();
+      renderPage();
+    }
+
+    // Row Checkbox Selection
+    function toggleInvoiceSelection(id, checked) {
+      if (checked) {
+        appData.selectedRows.add(id);
+      } else {
+        appData.selectedRows.delete(id);
+      }
+      renderPage();
+    }
+    function toggleSelectAllInvoices(checked) {
+      if (checked) {
+        appData.invoices.forEach(inv => appData.selectedRows.add(inv.id));
+      } else {
+        appData.selectedRows.clear();
+      }
+      renderPage();
+    }
+    function clearBulkSelection() {
+      appData.selectedRows.clear();
+      renderPage();
+    }
+    function bulkMarkPaid() {
+      appData.invoices.forEach(inv => {
+        if (appData.selectedRows.has(inv.id)) {
+          inv.status = 'Paid';
+        }
+      });
+      const count = appData.selectedRows.size;
+      appData.selectedRows.clear();
+      showToast(`Marked ${count} invoices as Paid`);
+      updateSidebarBadges();
+      renderPage();
+    }
+    function bulkExportCSV() {
+      showToast(`Exported ${appData.selectedRows.size} invoices to CSV`);
+      appData.selectedRows.clear();
+      renderPage();
+    }
+
+    // Slide-over Detail Drawer
+    function inspectInvoice(id) {
+      const inv = appData.invoices.find(i => i.id === id);
+      if (!inv) return;
+      appData.selectedInvoiceId = id;
+
+      document.getElementById('drawerInvoiceId').textContent = inv.id;
+      document.getElementById('drawerClientSubtitle').textContent = inv.client;
+      document.getElementById('drawerAmount').textContent = '₹' + inv.amount.toLocaleString('en-IN');
+      document.getElementById('drawerCity').textContent = inv.city;
+      document.getElementById('drawerDate').textContent = inv.date;
+      document.getElementById('drawerNotes').textContent = inv.notes;
+      
+      const badge = document.getElementById('drawerStatusBadge');
+      badge.textContent = inv.status;
+      badge.className = `px-2 py-0.5 rounded-full font-bold text-[10px] ${
+        inv.status === 'Paid' ? 'bg-emerald-50 text-emerald-700' : inv.status === 'Pending' ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
+      }`;
+
+      const markPaidBtn = document.getElementById('drawerMarkPaidBtn');
+      if (inv.status === 'Paid') {
+        markPaidBtn.classList.add('opacity-50', 'pointer-events-none');
+        markPaidBtn.textContent = 'Already Paid';
+      } else {
+        markPaidBtn.classList.remove('opacity-50', 'pointer-events-none');
+        markPaidBtn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i><span>Mark as Paid</span>';
+      }
+      lucide.createIcons();
+
+      document.getElementById('drawerBackdrop').classList.remove('hidden');
+      const drawer = document.getElementById('detailDrawer');
+      drawer.classList.remove('translate-x-full');
+    }
+
+    function closeDetailDrawer() {
+      document.getElementById('drawerBackdrop').classList.add('hidden');
+      document.getElementById('detailDrawer').classList.add('translate-x-full');
+    }
+
+    function markDrawerInvoicePaid() {
+      if (!appData.selectedInvoiceId) return;
+      const inv = appData.invoices.find(i => i.id === appData.selectedInvoiceId);
+      if (inv) {
+        inv.status = 'Paid';
+        showToast(`Invoice ${inv.id} marked as Paid`);
+        closeDetailDrawer();
+        updateSidebarBadges();
+        renderPage();
+      }
+    }
+
+    function downloadInvoicePdf() {
+      showToast(`Generating tax invoice PDF for ${appData.selectedInvoiceId}...`);
+    }
+
+    // Create Invoice Modal
+    function openCreateInvoiceModal() {
+      document.getElementById('createInvoiceModal').classList.remove('hidden');
+    }
+    function closeCreateInvoiceModal() {
+      document.getElementById('createInvoiceModal').classList.add('hidden');
+    }
+    function handleCreateInvoice(e) {
+      e.preventDefault();
+      const client = document.getElementById('newInvoiceClient').value.trim();
+      const amount = parseInt(document.getElementById('newInvoiceAmount').value) || 0;
+      const status = document.getElementById('newInvoiceStatus').value;
+      const city = document.getElementById('newInvoiceCity').value.trim();
+      const notes = document.getElementById('newInvoiceNotes').value.trim() || "Manual invoice generated via dashboard.";
+      
+      const newId = `#INV-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      appData.invoices.unshift({
+        id: newId,
+        client,
+        amount,
+        status,
+        city,
+        date: "Today",
+        notes
+      });
+
+      closeCreateInvoiceModal();
+      showToast(`Invoice ${newId} created successfully`);
+      updateSidebarBadges();
+      renderPage();
+    }
+
+    // Kanban Deal Pipeline
+    function advanceDeal(dealId) {
+      const deal = appData.deals.find(d => d.id === dealId);
+      if (!deal) return;
+      if (deal.stage === 'new') deal.stage = 'proposal';
+      else if (deal.stage === 'proposal') deal.stage = 'won';
+      showToast(`Deal "${deal.title}" advanced to ${deal.stage.toUpperCase()}`);
+      renderPage();
+    }
+    function addNewDealQuick() {
+      const newDeal = {
+        id: `d_${Date.now()}`,
+        title: "Hyderabad Retail Cloud",
+        amount: 680000,
+        company: "Deccan Retail",
+        stage: "new",
+        desc: "Point of sale inventory telemetry contract"
+      };
+      appData.deals.unshift(newDeal);
+      showToast('New deal added to pipeline');
+      renderPage();
+    }
+
+    // Team Invite Modal
+    function openInviteMemberModal() {
+      document.getElementById('inviteMemberModal').classList.remove('hidden');
+    }
+    function closeInviteMemberModal() {
+      document.getElementById('inviteMemberModal').classList.add('hidden');
+    }
+    function handleInviteMember(e) {
+      e.preventDefault();
+      const name = document.getElementById('newMemberName').value.trim();
+      const email = document.getElementById('newMemberEmail').value.trim();
+      const role = document.getElementById('newMemberRole').value;
+
+      appData.team.push({
+        id: `m_${Date.now()}`,
+        name,
+        email,
+        role,
+        presence: "Online"
+      });
+
+      closeInviteMemberModal();
+      showToast(`Invitation sent to ${email}`);
+      renderPage();
+    }
+
+    // Billing Switcher
+    function setBillingPeriod(period) {
+      appData.billingPeriod = period;
+      renderPage();
+    }
+
+    // Workspace Settings Save
+    function handleSaveSettings(e) {
+      e.preventDefault();
+      showToast('Workspace settings saved successfully');
+    }
+
+    // Command Palette
+    function openCommandPalette() {
+      document.getElementById('cmdPaletteBackdrop').classList.remove('hidden');
+      document.getElementById('cmdPaletteInput').focus();
+    }
+    function closeCommandPalette() {
+      document.getElementById('cmdPaletteBackdrop').classList.add('hidden');
+    }
+    function filterCommandPalette(val) {
+      const query = val.toLowerCase();
+      document.querySelectorAll('.cmd-item').forEach(btn => {
+        const text = btn.textContent.toLowerCase();
+        if (text.includes(query)) btn.classList.remove('hidden');
+        else btn.classList.add('hidden');
+      });
+    }
+    function execCmd(cmd) {
+      closeCommandPalette();
+      if (cmd === 'new-invoice') {
+        openCreateInvoiceModal();
+      } else {
+        navigateTo(cmd);
+      }
+    }
+
+    // Keyboard Shortcuts: Cmd+K and Escape
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openCommandPalette();
+      } else if (e.key === 'Escape') {
+        closeCommandPalette();
+        closeDetailDrawer();
+        closeCreateInvoiceModal();
+        closeInviteMemberModal();
+        document.getElementById('workspacePopover').classList.add('hidden');
+        document.getElementById('notifPopover').classList.add('hidden');
+      }
+    });
+
+    // Toast System
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById('toastBox');
+      const text = document.getElementById('toastMessage');
+      text.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2500);
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        icon.setAttribute('data-lucide', 'sun');
+        localStorage.setItem('theme', 'dark');
+      }
+      lucide.createIcons();
+    }
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.setAttribute('data-lucide', 'sun');
+    }
+
+    function updateSidebarBadges() {
+      const badge = document.getElementById('sidebarInvoiceCountBadge');
+      if (badge) {
+        badge.textContent = appData.invoices.length;
+      }
+    }
+  </script>
+</body>
+</html>
