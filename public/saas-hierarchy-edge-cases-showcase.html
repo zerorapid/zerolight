@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS Smart Hierarchy, Layout & Edge Cases Library (12 Patterns)</title>
+  <!-- Google Fonts: Inter Sans only (Zero Monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            popover: '0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            drawer: '-10px 0 30px -5px rgba(0, 0, 0, 0.15)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --motion-timing: 200ms;
+      --motion-bezier: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Dynamic Spring Transition Class */
+    .spring-motion {
+      transition: all var(--motion-timing) var(--motion-bezier);
+    }
+    /* Responsive Frame Resizing */
+    .preview-frame {
+      transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .frame-desktop { max-width: 100%; }
+    .frame-tablet { max-width: 768px; }
+    .frame-mobile { max-width: 390px; }
+
+    /* Skeleton Shimmer Keyframe */
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+    .shimmer-bg {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer-bg::after {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      transform: translateX(-100%);
+      background-image: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0,
+        rgba(255, 255, 255, 0.4) 20%,
+        rgba(255, 255, 255, 0.6) 60%,
+        rgba(255, 255, 255, 0)
+      );
+      animation: shimmer 1.8s infinite;
+      content: '';
+    }
+    .dark .shimmer-bg::after {
+      background-image: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0,
+        rgba(255, 255, 255, 0.05) 20%,
+        rgba(255, 255, 255, 0.1) 60%,
+        rgba(255, 255, 255, 0)
+      );
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-zinc-100 min-h-screen antialiased transition-colors duration-150">
+
+  <!-- =========================================================================
+       STICKY GLOBAL CONTROL BAR: STRESS TESTS, MOTION & RESPONSIVENESS
+  ========================================================================= -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 px-4 sm:px-6 py-3.5 space-y-3">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      
+      <!-- Left: ARCH-SPEC Badge, Title & Live Counter -->
+      <div class="flex items-center gap-3">
+        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+          ARCH-SPEC
+        </span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
+              SaaS Smart Hierarchy, Layout & Edge Cases Library
+            </h1>
+            <span id="pattern-counter" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              12 Patterns
+            </span>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">
+            Resilience engineering: Text truncation, extreme metrics, spring physics curves, and network recovery.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Search, Motion Engine, Stress Toggle, Viewports & Theme -->
+      <div class="flex flex-wrap items-center gap-2">
+        
+        <!-- Search Input -->
+        <div class="relative min-w-[190px]">
+          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Search edge cases..." 
+            oninput="handleSearch(this.value)"
+            class="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
+          />
+          <button 
+            type="button" 
+            id="clear-search-btn" 
+            onclick="clearSearch()" 
+            class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+          >
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+
+        <!-- Motion Physics Curve Switcher -->
+        <div class="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
+          <button 
+            type="button" 
+            onclick="setMotionPhysics('snappy')" 
+            id="motion-snappy"
+            class="motion-btn px-2 py-1 rounded-md font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer"
+            title="Snappy: Stiffness 520, Damping 32"
+          >
+            Snappy
+          </button>
+          <button 
+            type="button" 
+            onclick="setMotionPhysics('damped')" 
+            id="motion-damped"
+            class="motion-btn px-2 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition cursor-pointer"
+            title="Damped: Stiffness 400, Damping 28"
+          >
+            Damped
+          </button>
+          <button 
+            type="button" 
+            onclick="setMotionPhysics('gentle')" 
+            id="motion-gentle"
+            class="motion-btn px-2 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition cursor-pointer"
+            title="Gentle: Stiffness 280, Damping 30"
+          >
+            Gentle
+          </button>
+          <button 
+            type="button" 
+            onclick="setMotionPhysics('instant')" 
+            id="motion-instant"
+            class="motion-btn px-2 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition cursor-pointer"
+            title="Instant: 0ms Latency for Reduced Motion"
+          >
+            Instant
+          </button>
+        </div>
+
+        <!-- Extreme Stress Test Toggle -->
+        <button 
+          type="button" 
+          id="stress-toggle-btn"
+          onclick="toggleStressTest()" 
+          class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+        >
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500"></i>
+          <span id="stress-toggle-label">Stress Test: Off</span>
+        </button>
+
+        <!-- Viewport Toggles -->
+        <div class="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
+          <button 
+            type="button" 
+            onclick="setViewport('desktop')" 
+            id="viewport-desktop"
+            class="viewport-btn p-1.5 rounded-md bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs transition"
+            title="Desktop 100%"
+          >
+            <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
+          </button>
+          <button 
+            type="button" 
+            onclick="setViewport('tablet')" 
+            id="viewport-tablet"
+            class="viewport-btn p-1.5 rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition"
+            title="Tablet 768px"
+          >
+            <i data-lucide="tablet" class="w-3.5 h-3.5"></i>
+          </button>
+          <button 
+            type="button" 
+            onclick="setViewport('mobile')" 
+            id="viewport-mobile"
+            class="viewport-btn p-1.5 rounded-md text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition"
+            title="Mobile 390px"
+          >
+            <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+
+        <!-- Light / Dark Theme Toggle -->
+        <button 
+          type="button" 
+          onclick="toggleTheme()" 
+          title="Toggle Theme"
+          class="p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+        >
+          <i data-lucide="moon" id="theme-icon" class="w-4 h-4"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Category Filter Pill Rail -->
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-1.5 pt-1">
+      <button 
+        type="button" 
+        onclick="setCategory('all')" 
+        id="cat-pill-all"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs"
+      >
+        <span>All Patterns</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950">12</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('typography')" 
+        id="cat-pill-typography"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Typography & Truncation</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('metrics')" 
+        id="cat-pill-metrics"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Metrics & Zero States</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('motion')" 
+        id="cat-pill-motion"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Motion Physics</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('recovery')" 
+        id="cat-pill-recovery"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Recovery & Skeletons</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN GRID: 12 INTERACTIVE EDGE CASE & MOTION PATTERNS
+  ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-12">
+
+    <!-- CATEGORY 1: TYPOGRAPHY & TRUNCATION -->
+    <section data-section-category="typography" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>01. Typography & Text Truncation Resilience</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">3 Patterns</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Single/multi-line ellipsis protection, copy triggers, and overflow badge wraps.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Pattern 01: Single-Line Truncation -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="typography" data-title="Single-Line Truncation with One-Click Copy & Tooltip">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">01</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Single-Line Ellipsis</h3>
+              </div>
+              <button onclick="openCodeModal('01 Single-Line Truncation', snippet01)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Never breaks container bounds. Exposes full value on hover and one-click copy.</p>
+
+            <div class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-1.5">
+              <span class="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">Legal Entity Title</span>
+              <div class="flex items-center justify-between gap-2">
+                <span id="p01-text" class="text-xs font-bold text-zinc-950 dark:text-white truncate" title="Zerorapid India Private Limited (Regional Logistics Hub)">
+                  Zerorapid India Private Limited (Regional Logistics Hub)
+                </span>
+                <button onclick="copyP01Text()" id="p01-copy-btn" class="shrink-0 p-1 rounded hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-500 hover:text-zinc-900 transition" title="Copy full legal title">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Class: truncate</span>
+            <span class="font-sans tabular-nums">Max Width: 100%</span>
+          </div>
+        </div>
+
+        <!-- Pattern 02: Multi-Line Clamp -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="typography" data-title="Multi-Line Clamp with Interactive Read More Toggle">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">02</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Multi-Line 2-Line Clamp</h3>
+              </div>
+              <button onclick="openCodeModal('02 Multi-Line Clamp', snippet02)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Strict line-clamp-2 preserves vertical card rhythm with inline expansion.</p>
+
+            <div class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-1.5 text-xs">
+              <p id="p02-text" class="line-clamp-2 text-zinc-600 dark:text-zinc-300 text-[12px] leading-relaxed transition-all">
+                The Indian Goods and Services Tax input tax credit reconciliation was verified against GSTR-2B filings across ICICI RTGS settlements without discrepancy.
+              </p>
+              <button onclick="toggleP02Clamp()" id="p02-toggle-btn" class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+                Show more ↓
+              </button>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Class: line-clamp-2</span>
+            <span>Smooth Toggle</span>
+          </div>
+        </div>
+
+        <!-- Pattern 03: Tag & Badge Cloud Overflow -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="typography" data-title="Wrapping Tag & Badge Cloud with Dynamic +N More Counter">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">03</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Tag Overflow Wrapping</h3>
+              </div>
+              <button onclick="openCodeModal('03 Tag Overflow', snippet03)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Flex wrap layout gracefully folds multiple tags without blowing out tables.</p>
+
+            <div id="p03-tag-container" class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white dark:bg-white/10 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200">GST-18%</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white dark:bg-white/10 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200">Enterprise</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-white dark:bg-white/10 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200">RTGS</span>
+              <span id="p03-more-pill" class="hidden px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 font-sans tabular-nums">+4 More</span>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Container: flex-wrap</span>
+            <span class="font-sans tabular-nums">Zero Overflow</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CATEGORY 2: METRICS & ZERO STATES -->
+    <section data-section-category="metrics" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>02. Numeric & Financial Metric Resilience</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">3 Patterns</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Zero balances, negative credit adjustments, metric abbreviations, and offline fallback states.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Pattern 04: Zero, Negative & Large Financial Numbers -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="metrics" data-title="Zero, Negative & Large Value Formatter">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">04</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Zero & Negative Metrics</h3>
+              </div>
+              <button onclick="openCodeModal('04 Zero & Negative Numbers', snippet04)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Clean zero handling and distinct red treatment for credit note adjustments.</p>
+
+            <div class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-zinc-500">Unsettled Returns</span>
+                <span id="p04-negative" class="font-bold text-red-600 font-sans tabular-nums">-₹14,200</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-zinc-500">Pending Dispute Balance</span>
+                <span id="p04-zero" class="font-bold text-zinc-400 font-sans tabular-nums">₹0.00</span>
+              </div>
+              <div class="flex justify-between items-center text-xs">
+                <span class="text-zinc-500">Annual Gross Scaled</span>
+                <span id="p04-large" class="font-bold text-zinc-950 dark:text-white font-sans tabular-nums" title="₹12,48,00,000">₹12.48 Cr</span>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Font: tabular-nums</span>
+            <span>Zero Monospace</span>
+          </div>
+        </div>
+
+        <!-- Pattern 05: Tabular-Nums KPI Strip with Dynamic Delta Arrows -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="metrics" data-title="Tabular-Nums KPI Strip with Dynamic Delta Arrows">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">05</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">KPI Delta Arrows</h3>
+              </div>
+              <button onclick="openCodeModal('05 KPI Delta Strip', snippet05)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Prevents jitter during real-time streaming updates with fixed character widths.</p>
+
+            <div class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-1">
+              <span class="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Average Retention</span>
+              <div class="flex items-baseline justify-between">
+                <span id="p05-kpi-val" class="text-xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">98.42%</span>
+                <span id="p05-delta" class="text-xs font-bold text-emerald-600 flex items-center gap-0.5 font-sans tabular-nums">
+                  <i data-lucide="trending-up" class="w-3 h-3"></i>
+                  <span>+1.2%</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Jitter-free font rendering</span>
+            <span>Delta verified</span>
+          </div>
+        </div>
+
+        <!-- Pattern 06: Currency Rate Fallback & Offline Sync Warning -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="metrics" data-title="Currency Rate Fallback & Offline Sync Warning">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">06</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Offline Ledger Fallback</h3>
+              </div>
+              <button onclick="openCodeModal('06 Offline Fallback', snippet06)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Gracefully indicates cached values when RBI or bank exchange rates are unreachable.</p>
+
+            <div id="p06-card" class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-2 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-zinc-900 dark:text-zinc-100">USD to INR Rate</span>
+                <span id="p06-rate" class="font-bold font-sans tabular-nums">₹84.42</span>
+              </div>
+              <div id="p06-warning" class="hidden p-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/30 text-amber-800 dark:text-amber-300 text-[11px] flex items-center gap-2">
+                <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+                <span>Cached offline. Live RBI sync pending reconnect.</span>
+              </div>
+              <button onclick="toggleP06SimulateOffline()" id="p06-sim-btn" class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
+                Simulate Offline Disconnect
+              </button>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Fallback: Local Cache</span>
+            <span>Fail-Safe</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CATEGORY 3: MOTION PHYSICS -->
+    <section data-section-category="motion" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>03. Motion Physics & Interactive Springs</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">3 Patterns</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Hardware-accelerated transforms, gesture press micro-interactions, and spring drawers.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Pattern 07: Spring Physics Interactive Button -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="motion" data-title="Spring Physics Interactive Button & Elevation Card">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">07</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Tactile Press Physics</h3>
+              </div>
+              <button onclick="openCodeModal('07 Press Physics', snippet07)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Subtle active:scale-[0.98] depression mimics physical tactile hardware switches.</p>
+
+            <div class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-3 flex flex-col items-center justify-center py-6">
+              <button class="spring-motion px-4 py-2 rounded-xl text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-md hover:scale-[1.02] active:scale-[0.97] cursor-pointer">
+                Interactive Spring Button
+              </button>
+              <span class="text-[10px] text-zinc-400">Click & hold to test spring recoil</span>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>CSS: active:scale-[0.97]</span>
+            <span>Recoil Physics</span>
+          </div>
+        </div>
+
+        <!-- Pattern 08: Staggered List Entrance Animation -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="motion" data-title="Staggered List Item Entrance with Gesture Spring">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">08</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Staggered List Entrance</h3>
+              </div>
+              <button onclick="openCodeModal('08 Staggered List', snippet08)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Sequential 40ms stagger delays avoid visual cognitive overwhelm on table load.</p>
+
+            <div id="p08-list" class="space-y-1.5 text-xs">
+              <div class="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 flex justify-between items-center spring-motion hover:translate-x-1">
+                <span>1. Ledger Verified</span>
+                <span class="font-bold font-sans tabular-nums text-emerald-600">✓</span>
+              </div>
+              <div class="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 flex justify-between items-center spring-motion hover:translate-x-1">
+                <span>2. Tax Calculation</span>
+                <span class="font-bold font-sans tabular-nums text-emerald-600">✓</span>
+              </div>
+              <div class="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 flex justify-between items-center spring-motion hover:translate-x-1">
+                <span>3. Settlement Release</span>
+                <span class="font-bold font-sans tabular-nums text-blue-600">Syncing</span>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <button onclick="replayP08Animation()" class="text-blue-600 dark:text-blue-400 font-semibold cursor-pointer">Replay Entrance</button>
+            <span class="font-sans tabular-nums">40ms Stagger</span>
+          </div>
+        </div>
+
+        <!-- Pattern 09: Smooth Slide-Over Detail Drawer -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="motion" data-title="Smooth Easing Slide-Over Drawer with Backdrop Blur">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">09</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Slide-Over Drawer Spring</h3>
+              </div>
+              <button onclick="openCodeModal('09 Slide-Over Drawer', snippet09)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Non-blocking progressive disclosure with hardware-accelerated translateX.</p>
+
+            <div class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-3 flex flex-col items-center justify-center py-6">
+              <button onclick="openSampleDrawer()" class="spring-motion px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-white/10 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-white shadow-xs hover:bg-zinc-100 cursor-pointer flex items-center gap-1.5">
+                <i data-lucide="panel-right" class="w-3.5 h-3.5"></i>
+                <span>Open Slide-Over Drawer</span>
+              </button>
+              <span class="text-[10px] text-zinc-400">Tests cubic-bezier physics curve</span>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Curve: cubic-bezier</span>
+            <span>Backdrop Blur</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CATEGORY 4: RECOVERY & SKELETONS -->
+    <section data-section-category="recovery" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>04. Empty, Skeleton & Network Error Recovery</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">3 Patterns</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Shimmer loaders matching exact layout geometry, actionable empty states, and auto-retry countdowns.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Pattern 10: Geometric Skeleton Shimmer -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="recovery" data-title="Geometric Skeleton Shimmer Placeholder Grid">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">10</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Exact Shimmer Skeletons</h3>
+              </div>
+              <button onclick="openCodeModal('10 Skeleton Shimmer', snippet10)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Zero layout shift (CLS 0.0) by mirroring loaded card height and widths.</p>
+
+            <div id="p10-container" class="p-3 bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 rounded-xl space-y-2.5">
+              <div class="shimmer-bg h-4 w-1/3 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
+              <div class="shimmer-bg h-6 w-2/3 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
+              <div class="shimmer-bg h-3 w-1/2 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <button onclick="toggleP10Skeleton()" id="p10-toggle-btn" class="text-blue-600 dark:text-blue-400 font-semibold cursor-pointer">Toggle Loaded Content</button>
+            <span>CLS: 0.00</span>
+          </div>
+        </div>
+
+        <!-- Pattern 11: Actionable Zero-State Empty Canvas -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="recovery" data-title="Actionable Zero-State Empty Canvas with Primary CTA">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">11</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Actionable Empty Canvas</h3>
+              </div>
+              <button onclick="openCodeModal('11 Actionable Empty State', snippet11)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Avoids dead ends by guiding users immediately toward their primary action.</p>
+
+            <div class="p-6 border-2 border-dashed border-zinc-200 dark:border-white/10 rounded-xl text-center space-y-2">
+              <div class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-white/10 mx-auto flex items-center justify-center text-zinc-400">
+                <i data-lucide="inbox" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-zinc-950 dark:text-white">No Invoices Generated Yet</p>
+                <p class="text-[10px] text-zinc-400">Start billing your institutional clients today.</p>
+              </div>
+              <button class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs cursor-pointer">
+                + Create First Invoice
+              </button>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>Primary CTA: Included</span>
+            <span>Zero Dead-Ends</span>
+          </div>
+        </div>
+
+        <!-- Pattern 12: Network Timeout Error Card with Retry Loop -->
+        <div class="pattern-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between" data-category="recovery" data-title="Network Timeout Error Card with Live Retry Countdown Loop">
+          <div class="p-4 sm:p-5 space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">12</span>
+                <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Live Auto-Retry Loop</h3>
+              </div>
+              <button onclick="openCodeModal('12 Network Error Retry', snippet12)" class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1">
+                <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <p class="text-[11px] text-zinc-400">Self-healing network error card with active countdown timer & manual trigger.</p>
+
+            <div class="p-3 bg-red-50/60 dark:bg-red-950/20 border border-red-200/60 dark:border-red-900/30 rounded-xl space-y-2 text-xs">
+              <div class="flex items-center gap-2 text-red-700 dark:text-red-300 font-bold">
+                <i data-lucide="wifi-off" class="w-4 h-4"></i>
+                <span>GST Portal Timeout (504)</span>
+              </div>
+              <p class="text-[11px] text-red-600 dark:text-red-400">Gateway did not respond within 4,000ms. Retrying connection...</p>
+              <div class="flex items-center justify-between pt-1">
+                <span class="text-[10px] text-zinc-400 font-sans tabular-nums">Auto-retry in <strong id="p12-countdown">4</strong>s</span>
+                <button onclick="triggerP12ManualRetry()" id="p12-retry-btn" class="px-2.5 py-1 rounded bg-white dark:bg-white/10 border border-zinc-200 text-zinc-900 dark:text-white font-semibold flex items-center gap-1 cursor-pointer">
+                  <i data-lucide="refresh-cw" id="p12-spinner" class="w-3 h-3"></i>
+                  <span>Retry Now</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="px-4 py-2 bg-zinc-50/50 dark:bg-white/5 border-t border-zinc-100 dark:border-white/5 text-[10px] text-zinc-400 flex justify-between">
+            <span>State: Auto-recovering</span>
+            <span>Manual Override</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       SAMPLE SLIDE-OVER DRAWER (PATTERN 09)
+  ========================================================================= -->
+  <div id="sampleDrawerBackdrop" onclick="closeSampleDrawer()" class="hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-xs transition-opacity"></div>
+  <aside id="sampleDrawer" class="fixed right-0 top-0 bottom-0 w-full sm:w-[400px] bg-white dark:bg-[#121215] border-l border-zinc-200 dark:border-white/10 z-50 shadow-drawer flex flex-col justify-between translate-x-full transition-transform duration-300">
+    <div class="p-5 border-b border-zinc-100 dark:border-white/5 flex items-center justify-between">
+      <div>
+        <h4 class="text-sm font-bold text-zinc-950 dark:text-white font-sans tabular-nums">#INV-9042 Inspector</h4>
+        <p class="text-xs text-zinc-400">Spring physics transition demonstration</p>
+      </div>
+      <button onclick="closeSampleDrawer()" class="p-1 rounded text-zinc-400 hover:text-zinc-900"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div class="p-5 space-y-4 text-xs flex-1 overflow-y-auto">
+      <div class="p-3 bg-zinc-50 dark:bg-white/5 border rounded-xl space-y-1">
+        <span class="text-zinc-400 font-medium">Billed Amount</span>
+        <div class="text-xl font-bold font-sans tabular-nums">₹1,25,000</div>
+      </div>
+      <p class="text-zinc-600 dark:text-zinc-300 leading-relaxed text-[12px]">
+        Slide-over drawer utilizes cubic-bezier(0.16, 1, 0.3, 1) spring physics for natural entrance without jarring deceleration.
+      </p>
+    </div>
+    <div class="p-5 border-t border-zinc-100 dark:border-white/5 flex justify-end">
+      <button onclick="closeSampleDrawer()" class="px-4 py-2 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Close Drawer</button>
+    </div>
+  </aside>
+
+  <!-- =========================================================================
+       CLEAN CODE MODAL
+  ========================================================================= -->
+  <div id="code-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+    <div class="w-full max-w-xl bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100 dark:border-white/10">
+        <h4 id="code-modal-title" class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Pattern HTML/CSS Snippet</h4>
+        <button type="button" onclick="closeCodeModal()" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-4 bg-zinc-950 text-zinc-100 font-sans text-xs overflow-x-auto max-h-[340px]">
+        <pre id="code-modal-content" class="whitespace-pre-wrap font-sans leading-relaxed"></pre>
+      </div>
+      <div class="flex justify-end gap-2 px-5 py-3 border-t border-zinc-100 dark:border-white/10 bg-zinc-50/50 dark:bg-white/5">
+        <button type="button" onclick="closeCodeModal()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 cursor-pointer">
+          Close
+        </button>
+        <button type="button" id="copy-code-btn" onclick="copyModalCode()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-1.5 cursor-pointer transition hover:opacity-90">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy HTML Snippet</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       INTERACTIVE JAVASCRIPT CONTROLLERS
+  ========================================================================= -->
+  <script>
+    lucide.createIcons();
+
+    // 1. Motion Physics Engine Switcher
+    function setMotionPhysics(curve) {
+      document.querySelectorAll('.motion-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        btn.classList.add('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      });
+      const active = document.getElementById(`motion-${curve}`);
+      if (active) {
+        active.classList.add('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        active.classList.remove('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      }
+
+      const root = document.documentElement;
+      if (curve === 'snappy') {
+        root.style.setProperty('--motion-timing', '150ms');
+        root.style.setProperty('--motion-bezier', 'cubic-bezier(0.19, 1, 0.22, 1)');
+      } else if (curve === 'damped') {
+        root.style.setProperty('--motion-timing', '220ms');
+        root.style.setProperty('--motion-bezier', 'cubic-bezier(0.16, 1, 0.3, 1)');
+      } else if (curve === 'gentle') {
+        root.style.setProperty('--motion-timing', '350ms');
+        root.style.setProperty('--motion-bezier', 'cubic-bezier(0.25, 1, 0.5, 1)');
+      } else if (curve === 'instant') {
+        root.style.setProperty('--motion-timing', '0ms');
+        root.style.setProperty('--motion-bezier', 'linear');
+      }
+    }
+
+    // 2. Extreme Stress Test Toggle
+    let isStressTest = false;
+    function toggleStressTest() {
+      isStressTest = !isStressTest;
+      const btn = document.getElementById('stress-toggle-btn');
+      const label = document.getElementById('stress-toggle-label');
+
+      if (isStressTest) {
+        btn.classList.add('border-amber-500', 'bg-amber-50', 'text-amber-800', 'dark:bg-amber-950/40', 'dark:text-amber-300');
+        label.textContent = 'Stress Test: ON!';
+
+        // Inject extreme data
+        document.getElementById('p01-text').textContent = 'HubSpot International Holdings & Global Cloud Infrastructure Operations Private Limited';
+        document.getElementById('p01-text').setAttribute('title', 'HubSpot International Holdings & Global Cloud Infrastructure Operations Private Limited');
+
+        document.getElementById('p02-text').textContent = 'GST audit discrepancy flagged under Section 16(4) regarding invoice #INV-9042. Credit reversal of ₹1,48,200 pending reconciliation with Central Board of Indirect Taxes and Customs portal across multiple state tax jurisdictions.';
+
+        document.getElementById('p03-more-pill').classList.remove('hidden');
+
+        document.getElementById('p04-negative').textContent = '-₹48,200 (Credit Note Issued)';
+        document.getElementById('p04-zero').textContent = '₹0.00 (Zero Balance)';
+        document.getElementById('p04-large').textContent = '₹124.8 Cr (Large Cap)';
+
+        document.getElementById('p05-kpi-val').textContent = '100.00%';
+        document.getElementById('p05-delta').innerHTML = '<i data-lucide="trending-down" class="w-3 h-3 text-red-500"></i><span class="text-red-500">-0.00%</span>';
+        lucide.createIcons();
+
+        document.getElementById('p06-warning').classList.remove('hidden');
+      } else {
+        btn.classList.remove('border-amber-500', 'bg-amber-50', 'text-amber-800', 'dark:bg-amber-950/40', 'dark:text-amber-300');
+        label.textContent = 'Stress Test: Off';
+
+        // Revert normal data
+        document.getElementById('p01-text').textContent = 'Zerorapid India Private Limited (Regional Logistics Hub)';
+        document.getElementById('p01-text').setAttribute('title', 'Zerorapid India Private Limited (Regional Logistics Hub)');
+
+        document.getElementById('p02-text').textContent = 'The Indian Goods and Services Tax input tax credit reconciliation was verified against GSTR-2B filings across ICICI RTGS settlements without discrepancy.';
+
+        document.getElementById('p03-more-pill').classList.add('hidden');
+
+        document.getElementById('p04-negative').textContent = '-₹14,200';
+        document.getElementById('p04-zero').textContent = '₹0.00';
+        document.getElementById('p04-large').textContent = '₹12.48 Cr';
+
+        document.getElementById('p05-kpi-val').textContent = '98.42%';
+        document.getElementById('p05-delta').innerHTML = '<i data-lucide="trending-up" class="w-3 h-3 text-emerald-600"></i><span class="text-emerald-600">+1.2%</span>';
+        lucide.createIcons();
+
+        document.getElementById('p06-warning').classList.add('hidden');
+      }
+    }
+
+    // Pattern 01: Copy Text
+    function copyP01Text() {
+      const text = document.getElementById('p01-text').textContent.trim();
+      navigator.clipboard.writeText(text);
+      const btn = document.getElementById('p01-copy-btn');
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i>';
+        lucide.createIcons();
+      }, 1500);
+    }
+
+    // Pattern 02: Toggle Clamp
+    let p02Clamped = true;
+    function toggleP02Clamp() {
+      p02Clamped = !p02Clamped;
+      const el = document.getElementById('p02-text');
+      const btn = document.getElementById('p02-toggle-btn');
+      if (p02Clamped) {
+        el.classList.add('line-clamp-2');
+        btn.textContent = 'Show more ↓';
+      } else {
+        el.classList.remove('line-clamp-2');
+        btn.textContent = 'Show less ↑';
+      }
+    }
+
+    // Pattern 06: Toggle Offline
+    let p06Offline = false;
+    function toggleP06SimulateOffline() {
+      p06Offline = !p06Offline;
+      const warn = document.getElementById('p06-warning');
+      const rate = document.getElementById('p06-rate');
+      const btn = document.getElementById('p06-sim-btn');
+      if (p06Offline) {
+        warn.classList.remove('hidden');
+        rate.classList.add('text-zinc-400');
+        btn.textContent = 'Reconnect Live Feed';
+      } else {
+        warn.classList.add('hidden');
+        rate.classList.remove('text-zinc-400');
+        btn.textContent = 'Simulate Offline Disconnect';
+      }
+    }
+
+    // Pattern 08: Replay Animation
+    function replayP08Animation() {
+      const list = document.getElementById('p08-list');
+      const items = list.querySelectorAll('div');
+      items.forEach(item => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(8px)';
+      });
+      items.forEach((item, idx) => {
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, idx * 60);
+      });
+    }
+
+    // Pattern 09: Sample Drawer
+    function openSampleDrawer() {
+      document.getElementById('sampleDrawerBackdrop').classList.remove('hidden');
+      document.getElementById('sampleDrawer').classList.remove('translate-x-full');
+    }
+    function closeSampleDrawer() {
+      document.getElementById('sampleDrawerBackdrop').classList.add('hidden');
+      document.getElementById('sampleDrawer').classList.add('translate-x-full');
+    }
+
+    // Pattern 10: Toggle Skeleton
+    let p10IsSkeleton = true;
+    function toggleP10Skeleton() {
+      p10IsSkeleton = !p10IsSkeleton;
+      const c = document.getElementById('p10-container');
+      const btn = document.getElementById('p10-toggle-btn');
+      if (p10IsSkeleton) {
+        c.innerHTML = `
+          <div class="shimmer-bg h-4 w-1/3 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
+          <div class="shimmer-bg h-6 w-2/3 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
+          <div class="shimmer-bg h-3 w-1/2 bg-zinc-200 dark:bg-zinc-800 rounded"></div>
+        `;
+        btn.textContent = 'Toggle Loaded Content';
+      } else {
+        c.innerHTML = `
+          <div class="space-y-1">
+            <span class="text-[10px] text-zinc-400">Total Billed</span>
+            <div class="text-xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">₹48,20,000</div>
+            <span class="text-[10px] text-emerald-600 font-bold">+18.4% vs last month</span>
+          </div>
+        `;
+        btn.textContent = 'Toggle Skeleton Shimmer';
+      }
+    }
+
+    // Pattern 12: Network Error Auto-Retry Countdown
+    let p12Seconds = 4;
+    let p12Timer = setInterval(() => {
+      p12Seconds--;
+      if (p12Seconds <= 0) {
+        p12Seconds = 4;
+        triggerP12ManualRetry();
+      }
+      const el = document.getElementById('p12-countdown');
+      if (el) el.textContent = p12Seconds;
+    }, 1000);
+
+    function triggerP12ManualRetry() {
+      const spinner = document.getElementById('p12-spinner');
+      if (spinner) spinner.classList.add('animate-spin');
+      setTimeout(() => {
+        if (spinner) spinner.classList.remove('animate-spin');
+      }, 700);
+    }
+
+    // Responsive Viewports
+    function setViewport(vp) {
+      document.querySelectorAll('.viewport-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+      });
+      const active = document.getElementById(`viewport-${vp}`);
+      if (active) active.classList.add('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+
+      document.querySelectorAll('main').forEach(m => {
+        m.classList.remove('frame-desktop', 'frame-tablet', 'frame-mobile');
+        m.classList.add(`frame-${vp}`);
+      });
+    }
+
+    // Filtering & Instant Search
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    function handleSearch(query) {
+      currentSearch = query.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (currentSearch.length > 0) clearBtn.classList.remove('hidden');
+      else clearBtn.classList.add('hidden');
+      applyFilters();
+    }
+    function clearSearch() {
+      const input = document.getElementById('search-input');
+      input.value = '';
+      currentSearch = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      applyFilters();
+    }
+    function setCategory(catId) {
+      currentCategory = catId;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.classList.remove('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        btn.classList.add('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+      });
+      const activeBtn = document.getElementById(`cat-pill-${catId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        activeBtn.classList.add('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+      }
+      applyFilters();
+    }
+    function applyFilters() {
+      const cards = document.querySelectorAll('.pattern-card');
+      let visible = 0;
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+        const matchCat = (currentCategory === 'all' || cat === currentCategory);
+        const matchSearch = (currentSearch === '' || title.includes(currentSearch));
+        if (matchCat && matchSearch) {
+          card.classList.remove('hidden');
+          visible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+      document.querySelectorAll('[data-section-category]').forEach(sec => {
+        const secCat = sec.getAttribute('data-section-category');
+        if (currentCategory !== 'all' && secCat !== currentCategory) sec.classList.add('hidden');
+        else sec.classList.remove('hidden');
+      });
+      document.getElementById('pattern-counter').textContent = `${visible} of 12 Patterns`;
+    }
+
+    // Code Modal
+    let currentSnippet = '';
+    function openCodeModal(title, snippet) {
+      document.getElementById('code-modal-title').textContent = title;
+      document.getElementById('code-modal-content').textContent = snippet;
+      currentSnippet = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copyModalCode() {
+      navigator.clipboard.writeText(currentSnippet);
+      const btn = document.getElementById('copy-code-btn');
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy HTML Snippet</span>';
+        lucide.createIcons();
+      }, 1500);
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        icon.setAttribute('data-lucide', 'sun');
+        localStorage.setItem('theme', 'dark');
+      }
+      lucide.createIcons();
+    }
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.setAttribute('data-lucide', 'sun');
+    }
+
+    // Snippets for all 12 patterns
+    const snippet01 = `<!-- 01 Single-Line Truncation -->\n<div class="flex items-center justify-between gap-2">\n  <span class="truncate text-xs font-bold" title="Long Client Title">Long Client Title...</span>\n  <button onclick="copy()">Copy</button>\n</div>`;
+    const snippet02 = `<!-- 02 Multi-Line Line Clamp -->\n<p class="line-clamp-2 text-xs leading-relaxed">\n  Detailed audit logs...\n</p>\n<button onclick="toggle()">Show more</button>`;
+    const snippet03 = `<!-- 03 Tag Overflow Wrap -->\n<div class="flex flex-wrap gap-1.5">\n  <span class="px-2 py-0.5 rounded text-[10px] bg-zinc-100">Tag 1</span>\n  <span class="px-2 py-0.5 rounded text-[10px] bg-blue-100">+3 More</span>\n</div>`;
+    const snippet04 = `<!-- 04 Zero & Negative Numbers -->\n<span class="text-red-600 font-sans tabular-nums font-bold">-₹14,200</span>\n<span class="text-zinc-400 font-sans tabular-nums font-bold">₹0.00</span>`;
+    const snippet05 = `<!-- 05 Tabular-Nums Delta Strip -->\n<div class="flex items-baseline gap-2 font-sans tabular-nums">\n  <span class="text-2xl font-bold">98.42%</span>\n  <span class="text-xs text-emerald-600">+1.2%</span>\n</div>`;
+    const snippet06 = `<!-- 06 Offline Fallback Warning -->\n<div class="p-2 bg-amber-50 text-amber-800 rounded-lg text-xs flex gap-2">\n  <span>Cached offline. Live sync pending.</span>\n</div>`;
+    const snippet07 = `<!-- 07 Spring Physics Button -->\n<button class="transition-transform duration-150 active:scale-[0.97] hover:scale-[1.02] bg-zinc-950 text-white px-4 py-2 rounded-xl text-xs">\n  Interactive Spring Button\n</button>`;
+    const snippet08 = `<!-- 08 Staggered List Entrance -->\n<div class="space-y-1">\n  <div style="transition-delay: 40ms" class="p-2 border rounded-lg">Item 1</div>\n  <div style="transition-delay: 80ms" class="p-2 border rounded-lg">Item 2</div>\n</div>`;
+    const snippet09 = `<!-- 09 Slide-Over Drawer -->\n<aside class="fixed right-0 top-0 bottom-0 w-96 bg-white border-l transition-transform duration-250 ease-out translate-x-full">\n  <div class="p-5">Drawer Content</div>\n</aside>`;
+    const snippet10 = `<!-- 10 Exact Skeleton Shimmer -->\n<div class="shimmer-bg h-4 w-1/3 bg-zinc-200 rounded"></div>\n<div class="shimmer-bg h-6 w-2/3 bg-zinc-200 rounded"></div>`;
+    const snippet11 = `<!-- 11 Actionable Empty State -->\n<div class="border-2 border-dashed p-8 rounded-xl text-center space-y-2">\n  <h4>No Invoices Found</h4>\n  <button class="bg-zinc-950 text-white px-3 py-1.5 rounded-lg text-xs">+ Create Invoice</button>\n</div>`;
+    const snippet12 = `<!-- 12 Network Timeout Auto-Retry -->\n<div class="p-3 bg-red-50 text-red-700 rounded-xl text-xs flex justify-between">\n  <span>Gateway Timeout (504)</span>\n  <button onclick="retry()">Retry Now</button>\n</div>`;
+  </script>
+</body>
+</html>
