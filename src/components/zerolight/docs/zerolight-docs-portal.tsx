@@ -207,7 +207,7 @@ export function ZeroLightDocsPortal() {
         {/* Right Info Badge */}
         <div className="flex items-center gap-2">
           <Badge variant="healthy" className="text-[11px]">
-            118 Primitives Active
+            119 Primitives Active
           </Badge>
         </div>
       </header>
