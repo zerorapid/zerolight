@@ -337,9 +337,17 @@ export function SaaSButtonLibrary() {
             style={heightStyle}
             disabled={globalState === "disabled"}
             onClick={() => triggerToast("Main Action: Changes saved")}
-            className="w-full sm:w-auto px-5 rounded-xl bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition shadow-xs flex items-center justify-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-5 rounded-xl bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {globalState === "saving" ? "Saving..." : globalState === "saved" ? "Saved ✓" : "Save Changes"}
+            {globalState === "saving" ? (
+              <span>Saving...</span>
+            ) : globalState === "saved" ? (
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-emerald-400" /> Saved
+              </span>
+            ) : (
+              <span>Save Changes</span>
+            )}
           </button>
         </Card>
 
@@ -884,7 +892,7 @@ export function SaaSButtonLibrary() {
           number="21"
           title="Click-to-Save Progress"
           category="loading"
-          code={`<button onClick={handleSave} className="px-5 rounded-xl bg-zinc-950 text-white font-semibold text-xs">\n  {savingProgress === "saving" ? "Saving..." : savingProgress === "saved" ? "Saved ✓" : "Save Record"}\n</button>`}
+          code={`<button onClick={handleSave} className="px-5 rounded-xl bg-zinc-950 text-white font-semibold text-xs flex items-center gap-2">\n  {savingProgress === "saving" && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}\n  {savingProgress === "saved" && <Check className="w-3.5 h-3.5" />}\n  <span>{savingProgress === "saving" ? "Saving..." : savingProgress === "saved" ? "Saved" : "Save Record"}</span>\n</button>`}
         >
           <button
             type="button"
@@ -899,7 +907,7 @@ export function SaaSButtonLibrary() {
             {savingProgress === "saving" && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
             {savingProgress === "saved" && <Check className="w-3.5 h-3.5" />}
             <span>
-              {savingProgress === "saving" ? "Saving..." : savingProgress === "saved" ? "Saved ✓" : "Save Record"}
+              {savingProgress === "saving" ? "Saving..." : savingProgress === "saved" ? "Saved" : "Save Record"}
             </span>
           </button>
         </Card>
@@ -908,7 +916,7 @@ export function SaaSButtonLibrary() {
           number="22"
           title="One-Click Copy Link"
           category="loading"
-          code={`<button onClick={handleCopy} className="px-4 rounded-xl border border-zinc-200 text-xs font-semibold flex items-center gap-2">\n  {copied ? <Check /> : <Copy />}\n  <span>{copied ? "Copied ✓" : "Copy Link"}</span>\n</button>`}
+          code={`<button onClick={handleCopy} className="px-4 rounded-xl border border-zinc-200 text-xs font-semibold flex items-center gap-2">\n  {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-zinc-500" />}\n  <span>{copied ? "Copied" : "Copy Link"}</span>\n</button>`}
         >
           <button
             type="button"
@@ -917,7 +925,7 @@ export function SaaSButtonLibrary() {
             className="px-4 rounded-xl bg-white border border-zinc-200 text-zinc-900 font-semibold text-xs flex items-center gap-2 hover:bg-zinc-50 transition shadow-2xs cursor-pointer"
           >
             {linkCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-zinc-500" />}
-            <span>{linkCopied ? "Copied ✓" : "Copy Link"}</span>
+            <span>{linkCopied ? "Copied" : "Copy Link"}</span>
           </button>
         </Card>
 

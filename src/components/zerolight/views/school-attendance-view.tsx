@@ -425,10 +425,10 @@ export function SchoolAttendanceInner() {
           <Button
             variant="primary"
             size="sm"
-            iconLeft={<Send />}
+            iconLeft={isSubmitted ? <Check className="w-3.5 h-3.5" /> : <Send className="w-3.5 h-3.5" />}
             onClick={() => setIsSubmitModalOpen(true)}
           >
-            {isSubmitted ? "Submitted ✓" : "Submit Attendance"}
+            {isSubmitted ? "Submitted" : "Submit Attendance"}
           </Button>
 
           {/* Teacher Profile Avatar */}

@@ -405,7 +405,7 @@ export function SaaSTooltipLibrary() {
           title="Click-to-Copy Confirmation Tooltip"
           category="cat2"
           description="Tooltip morphs from instruction to affirmative confirmation upon click."
-          code={`<button onClick={handleCopy} className="px-3.5 py-1.5 border rounded-xl">\n  {copied ? "Copied ✓" : "Click to copy link"}\n</button>`}
+          code={`<button onClick={handleCopy} className="px-3.5 py-1.5 border rounded-xl flex items-center gap-1">\n  {copied ? <><Check className="w-3.5 h-3.5 text-emerald-400" /> Copied</> : "Click to copy link"}\n</button>`}
         >
           <div className="group relative inline-flex justify-center">
             <button
@@ -426,7 +426,13 @@ export function SaaSTooltipLibrary() {
                 previewOpen || copyConfirmed ? "opacity-100 translate-y-0" : "opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none"
               } transition-all rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20`}
             >
-              {copyConfirmed ? <span className="text-emerald-400 font-bold">Copied ✓</span> : "Click to copy link"}
+              {copyConfirmed ? (
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5" /> Copied
+                </span>
+              ) : (
+                "Click to copy link"
+              )}
               <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]" />
             </div>
           </div>
@@ -909,7 +915,7 @@ export function SaaSTooltipLibrary() {
           title="Quick Rename Popover"
           category="cat6"
           description="Click-to-rename title with instant live label update."
-          code={`<button onClick={() => setOpen(!open)}>{title} ✎</button>\n<div className="w-64 bg-white border rounded-2xl p-3 shadow-2xl">\n  <input value={title} onChange={e => setTitle(e.target.value)} />\n</div>`}
+          code={`<button onClick={() => setOpen(!open)} className="flex items-center gap-1.5">{title} <Edit2 className="w-3.5 h-3.5" /></button>\n<div className="w-64 bg-white border rounded-2xl p-3 shadow-2xl">\n  <input value={title} onChange={e => setTitle(e.target.value)} />\n</div>`}
         >
           <div className="relative" data-popover-container>
             <button

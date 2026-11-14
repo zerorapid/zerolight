@@ -53,16 +53,123 @@ import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
 export type DashboardTab = "overview" | "ds-editor" | "docs" | "tools" | "settings";
-export type DocsSubView = "catalog" | "buttons" | "inputs" | "selections" | "indicators" | "dividers" | "tooltips" | "feedback" | "overlays" | "navigation" | "data" | "business" | "layouts" | "screens" | "edge-cases";
+export type DocsTier = "foundations" | "atoms" | "molecules" | "organisms" | "templates" | "pages";
+export type DocsSubView =
+  | "catalog"
+  | "buttons"
+  | "inputs"
+  | "selections"
+  | "indicators"
+  | "dividers"
+  | "tooltips"
+  | "feedback"
+  | "overlays"
+  | "navigation"
+  | "data"
+  | "business"
+  | "layouts"
+  | "screens"
+  | "edge-cases"
+  | "catalog-molecules";
 export type SettingsSubTab = "general" | "security" | "mcp" | "api" | "compliance";
+
+export const DOCS_TIERS: {
+  id: DocsTier;
+  label: string;
+  badge: string;
+  count: string;
+  defaultTab: DocsSubView;
+  tabs: { id: DocsSubView; label: string; count: string; desc: string }[];
+}[] = [
+  {
+    id: "foundations",
+    label: "Foundations (L0)",
+    badge: "L0",
+    count: "34",
+    defaultTab: "catalog",
+    tabs: [
+      { id: "catalog", label: "Tokens & Principles", count: "119", desc: "Design tokens, color swatches, hairlines & typography scale" },
+      { id: "dividers", label: "Dividers & Spacers", count: "22", desc: "Monochrome hairlines, inset boundaries & proportional spacing" },
+      { id: "edge-cases", label: "Hierarchy & Resilience", count: "12", desc: "Spring motion physics, truncation resilience & layout stress tests" },
+    ],
+  },
+  {
+    id: "atoms",
+    label: "Atoms (L1)",
+    badge: "L1",
+    count: "153",
+    defaultTab: "buttons",
+    tabs: [
+      { id: "buttons", label: "Buttons", count: "33", desc: "Primary, secondary, outline, ghost & split action triggers" },
+      { id: "inputs", label: "Inputs & Fields", count: "44", desc: "Text, conjoined, tags, currency & keyboard-accessible fields" },
+      { id: "selections", label: "Selection Controls", count: "26", desc: "Custom switches, segmented rails & radio cards" },
+      { id: "indicators", label: "Status & Indicators", count: "28", desc: "Status dots, badges, circular rings & progress meters" },
+      { id: "tooltips", label: "Tooltips & Popovers", count: "22", desc: "Directional hints, hover cards & contextual popovers" },
+    ],
+  },
+  {
+    id: "molecules",
+    label: "Molecules (L2)",
+    badge: "L2",
+    count: "20",
+    defaultTab: "feedback",
+    tabs: [
+      { id: "feedback", label: "Feedback & Alerts", count: "20", desc: "Inline notice bars, floating toasts, empty states & recovery cards" },
+      { id: "catalog-molecules", label: "Molecules Catalog", count: "44", desc: "StatCards, input groups, date pickers & micro data charts" },
+    ],
+  },
+  {
+    id: "organisms",
+    label: "Organisms (L3)",
+    badge: "L3",
+    count: "70",
+    defaultTab: "overlays",
+    tabs: [
+      { id: "overlays", label: "Overlays & Command", count: "16", desc: "Modal dialogs, slide-over detail drawers & ⌘K command palette" },
+      { id: "navigation", label: "Navigation & Menus", count: "20", desc: "Collapsible sidebars, top headers, wizard steppers & breadcrumbs" },
+      { id: "data", label: "Data & Tables", count: "18", desc: "Sortable tables, bulk action bars, filter builders & Kanban boards" },
+      { id: "business", label: "Business & Billing", count: "16", desc: "Invoicing modules, subscription tiers, @mentions & audit logs" },
+    ],
+  },
+  {
+    id: "templates",
+    label: "Templates (L4)",
+    badge: "L4",
+    count: "12",
+    defaultTab: "layouts",
+    tabs: [
+      { id: "layouts", label: "Layout Blueprints", count: "12", desc: "App shell, auth split, settings grid & list-detail layouts" },
+    ],
+  },
+  {
+    id: "pages",
+    label: "Pages (L5)",
+    badge: "L5",
+    count: "6",
+    defaultTab: "screens",
+    tabs: [
+      { id: "screens", label: "App Screens", count: "6", desc: "Complete working SaaS applications with interactive workflows" },
+    ],
+  },
+];
 
 export function DashboardShell() {
   const { user, logout } = useAuth();
   const { tokens } = useZeroLight();
   const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
-  const [docsSubView, setDocsSubView] = useState<DocsSubView>("catalog");
+  const [docsTier, setDocsTier] = useState<DocsTier>("atoms");
+  const [docsSubView, setDocsSubView] = useState<DocsSubView>("buttons");
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
+
+  useEffect(() => {
+    const parent = DOCS_TIERS.find((t) => t.tabs.some((tab) => tab.id === docsSubView));
+    if (parent && parent.id !== docsTier) {
+      setDocsTier(parent.id);
+    }
+  }, [docsSubView, docsTier]);
+
+  const activeTierData = DOCS_TIERS.find((t) => t.id === docsTier) || DOCS_TIERS[1];
   const leaveTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
@@ -310,52 +417,39 @@ export function DashboardShell() {
                       </AnimatePresence>
                     </button>
 
-                    {/* Submenu for Design System in Expanded Mode */}
+                    {/* Submenu for Design System in Expanded Mode: 6 Atomic Tiers */}
                     {item.id === "docs" && !isCollapsed && (
                       <div className="ml-7 pl-3 py-1 my-1 border-l border-white/10 space-y-1 relative">
-                        {[
-                          { id: "catalog", label: "Catalog & Tokens", count: "119" },
-                          { id: "buttons", label: "Button Library", count: "33" },
-                          { id: "inputs", label: "Input Library", count: "44" },
-                          { id: "selections", label: "Selection Controls", count: "26" },
-                          { id: "indicators", label: "Status & Indicators", count: "28" },
-                          { id: "dividers", label: "Dividers & Spacers", count: "22" },
-                          { id: "tooltips", label: "Tooltips & Popovers", count: "22" },
-                          { id: "feedback", label: "Alerts & Empty States", count: "20" },
-                          { id: "overlays", label: "Overlays & ⌘K", count: "16" },
-                          { id: "navigation", label: "Navigation & Menus", count: "20" },
-                          { id: "data", label: "Data & Tables", count: "18" },
-                          { id: "business", label: "Business & Billing", count: "16" },
-                          { id: "layouts", label: "Page Layouts", count: "12" },
-                          { id: "screens", label: "App Screens (L5)", count: "6" },
-                          { id: "edge-cases", label: "Hierarchy & Edge Cases", count: "12" },
-                        ].map((sub) => {
-                          const isSubActive = activeTab === "docs" && docsSubView === sub.id;
+                        {DOCS_TIERS.map((tier) => {
+                          const isTierActive = activeTab === "docs" && docsTier === tier.id;
                           return (
                             <button
-                              key={sub.id}
+                              key={tier.id}
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setActiveTab("docs");
-                                setDocsSubView(sub.id as DocsSubView);
+                                setDocsTier(tier.id);
+                                if (!tier.tabs.some((t) => t.id === docsSubView)) {
+                                  setDocsSubView(tier.defaultTab);
+                                }
                               }}
                               className={`w-full px-2 py-1.5 rounded-lg text-[11px] font-semibold flex items-center justify-between transition-colors cursor-pointer relative ${
-                                isSubActive
+                                isTierActive
                                   ? "text-white bg-white/10 font-bold"
                                   : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
                               }`}
                             >
-                              {isSubActive && (
+                              {isTierActive && (
                                 <motion.div
                                   layoutId="sidebar-sub-pip"
                                   className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-1.5 h-3 rounded-full bg-white shadow-xs"
                                   transition={{ type: "spring", stiffness: 450, damping: 30 }}
                                 />
                               )}
-                              <span className="truncate">{sub.label}</span>
-                              <span className="text-[10px] font-sans tabular-nums text-zinc-500 font-bold">
-                                {sub.count}
+                              <span className="truncate">{tier.label}</span>
+                              <span className="text-[10px] font-sans tabular-nums text-zinc-400 font-bold">
+                                {tier.count}
                               </span>
                             </button>
                           );
@@ -376,38 +470,28 @@ export function DashboardShell() {
                         </div>
                         {item.id === "docs" && (
                           <div className="pt-1.5 mt-1 border-t border-white/10 space-y-1">
-                            {[
-                              { id: "catalog", label: "Catalog (119)" },
-                              { id: "buttons", label: "Buttons (33)" },
-                              { id: "inputs", label: "Inputs (44)" },
-                              { id: "selections", label: "Selections (26)" },
-                              { id: "indicators", label: "Indicators (28)" },
-                              { id: "dividers", label: "Dividers (22)" },
-                              { id: "tooltips", label: "Tooltips (22)" },
-                              { id: "feedback", label: "Feedback (20)" },
-                              { id: "overlays", label: "Overlays (16)" },
-                              { id: "navigation", label: "Navigation (20)" },
-                              { id: "data", label: "Data (18)" },
-                              { id: "business", label: "Business (16)" },
-                              { id: "layouts", label: "Layouts (12)" },
-                              { id: "screens", label: "Screens (6)" },
-                              { id: "edge-cases", label: "Edge Cases (12)" },
-                            ].map((sub) => (
+                            {DOCS_TIERS.map((tier) => (
                               <button
-                                key={sub.id}
+                                key={tier.id}
                                 type="button"
                                 onClick={() => {
                                   setActiveTab("docs");
-                                  setDocsSubView(sub.id as DocsSubView);
+                                  setDocsTier(tier.id);
+                                  if (!tier.tabs.some((t) => t.id === docsSubView)) {
+                                    setDocsSubView(tier.defaultTab);
+                                  }
                                   setHoveredTab(null);
                                 }}
-                                className={`w-full px-2 py-1 rounded-lg text-left text-xs font-medium cursor-pointer transition ${
-                                  activeTab === "docs" && docsSubView === sub.id
+                                className={`w-full px-2 py-1 rounded-lg text-left text-xs font-medium cursor-pointer transition flex items-center justify-between gap-2 ${
+                                  activeTab === "docs" && docsTier === tier.id
                                     ? "bg-white/20 text-white font-bold"
                                     : "text-zinc-300 hover:bg-white/10"
                                 }`}
                               >
-                                {sub.label}
+                                <span>{tier.label}</span>
+                                <span className="text-[10px] text-zinc-400 font-sans tabular-nums font-bold">
+                                  {tier.count}
+                                </span>
                               </button>
                             ))}
                           </div>
@@ -709,51 +793,49 @@ export function DashboardShell() {
         {activeTab === "docs" && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Top Sub-Nav Switcher */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-200/80">
-              <div className="flex items-center gap-1.5 p-1 bg-zinc-200/60 rounded-xl border border-zinc-300/40 w-fit">
-                {[
-                  { id: "catalog", label: "Component Catalog & Foundations", count: "119" },
-                  { id: "buttons", label: "SaaS Button Library", count: "33" },
-                  { id: "inputs", label: "SaaS Input Field Library", count: "44" },
-                  { id: "selections", label: "SaaS Selection Controls", count: "26" },
-                  { id: "indicators", label: "SaaS Status & Indicators", count: "28" },
-                  { id: "dividers", label: "SaaS Dividers & Spacers", count: "22" },
-                  { id: "tooltips", label: "SaaS Tooltips & Popovers", count: "22" },
-                  { id: "feedback", label: "SaaS Feedback & Alerts", count: "20" },
-                  { id: "overlays", label: "SaaS Overlays & ⌘K", count: "16" },
-                  { id: "navigation", label: "SaaS Navigation & Sidebars", count: "20" },
-                  { id: "data", label: "SaaS Data & Tables", count: "18" },
-                  { id: "business", label: "SaaS Business & Billing", count: "16" },
-                  { id: "layouts", label: "SaaS Page Layouts", count: "12" },
-                  { id: "screens", label: "SaaS App Screens (L5)", count: "6" },
-                  { id: "edge-cases", label: "SaaS Hierarchy & Edge Cases", count: "12" },
-                ].map((sub) => {
-                  const active = docsSubView === sub.id;
-                  return (
-                    <button
-                      key={sub.id}
-                      type="button"
-                      onClick={() => setDocsSubView(sub.id as DocsSubView)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
-                        active
-                          ? "bg-white text-zinc-950 shadow-xs font-bold"
-                          : "text-zinc-600 hover:text-zinc-950 hover:bg-white/50"
-                      }`}
-                    >
-                      <span>{sub.label}</span>
-                      <span
-                        className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-md font-bold ${
-                          active ? "bg-zinc-950 text-white" : "bg-zinc-300/70 text-zinc-600"
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-200/80 dark:border-white/10">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                {/* Active Tier Breadcrumb & Badge */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Design System /</span>
+                  <span className="text-xs font-extrabold text-zinc-950 dark:text-white">{activeTierData.label}</span>
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-sans tabular-nums">
+                    {activeTierData.badge}
+                  </span>
+                </div>
+
+                {/* Contextual Tier Tabs */}
+                <div className="flex flex-wrap items-center gap-1.5 p-1 bg-zinc-200/60 dark:bg-white/10 rounded-xl border border-zinc-300/40 dark:border-white/10 w-fit">
+                  {activeTierData.tabs.map((sub) => {
+                    const active = docsSubView === sub.id;
+                    return (
+                      <button
+                        key={sub.id}
+                        type="button"
+                        onClick={() => setDocsSubView(sub.id as DocsSubView)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                          active
+                            ? "bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs font-bold"
+                            : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5"
                         }`}
                       >
-                        {sub.count}
-                      </span>
-                    </button>
-                  );
-                })}
+                        <span>{sub.label}</span>
+                        <span
+                          className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-md font-bold ${
+                            active
+                              ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
+                              : "bg-zinc-300/70 dark:bg-white/15 text-zinc-600 dark:text-zinc-300"
+                          }`}
+                        >
+                          {sub.count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <Badge variant="healthy">295 SaaS Pattern Variants Active</Badge>
               </div>
             </div>
@@ -771,6 +853,11 @@ export function DashboardShell() {
             {docsSubView === "dividers" && <SaaSDividerLibrary />}
             {docsSubView === "tooltips" && <SaaSTooltipLibrary />}
             {docsSubView === "feedback" && <SaaSFeedbackLibrary />}
+            {docsSubView === "catalog-molecules" && (
+              <div className="w-full -mt-2 -ml-6 -mr-6 md:-mt-4 md:-ml-8 md:-mr-8 -mb-8">
+                <ZeroLightDocsPortal />
+              </div>
+            )}
             {docsSubView === "overlays" && <SaaSOverlaysLibrary />}
             {docsSubView === "navigation" && <SaaSNavigationLibrary />}
             {docsSubView === "data" && <SaaSDataLibrary />}

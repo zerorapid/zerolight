@@ -470,7 +470,7 @@ export function SaaSIndicatorLibrary() {
           number="09"
           title="Removable Filter Tags"
           category="cat2"
-          code={`<div className="flex gap-2">\n  {tags.map(t => <span key={t}>{t} <button onClick={remove}>×</button></span>)}\n</div>`}
+          code={`<div className="flex gap-2">\n  {tags.map(t => <span key={t}>{t} <button onClick={remove}><X className="w-3 h-3" /></button></span>)}\n</div>`}
         >
           <div className="flex flex-wrap items-center gap-1.5">
             {filterTags.map((tag) => (

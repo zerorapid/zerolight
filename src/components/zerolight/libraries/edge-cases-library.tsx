@@ -607,11 +607,11 @@ export function SaaSEdgeCasesLibrary() {
               <div key={p08Key} className="space-y-1.5 text-xs animate-in fade-in duration-200">
                 <div className="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 flex justify-between items-center hover:translate-x-1 transition-transform">
                   <span>1. Ledger Verified</span>
-                  <span className="font-bold font-sans tabular-nums text-emerald-600">✓</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
                 </div>
                 <div className="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 flex justify-between items-center hover:translate-x-1 transition-transform">
                   <span>2. Tax Calculation</span>
-                  <span className="font-bold font-sans tabular-nums text-emerald-600">✓</span>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
                 </div>
                 <div className="p-2 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 flex justify-between items-center hover:translate-x-1 transition-transform">
                   <span>3. Settlement Release</span>

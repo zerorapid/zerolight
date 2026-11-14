@@ -305,7 +305,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 onClick={() => setIsOpen(false)}
                 className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
             <div className="py-4 text-xs text-zinc-600 dark:text-zinc-400">

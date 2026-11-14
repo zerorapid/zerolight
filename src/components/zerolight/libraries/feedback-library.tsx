@@ -243,7 +243,7 @@ export function SaaSFeedbackLibrary() {
           title="Neutral Info Alert"
           category="cat1"
           description="Subtle informative notice with dismiss button."
-          code={`<div className="p-3.5 rounded-xl bg-zinc-100 border border-zinc-200 flex justify-between">\n  <div><div className="font-bold text-zinc-900">Automatic Tax Calculation</div><p className="text-xs text-zinc-600">GST rates synchronized dynamically.</p></div>\n  <button>×</button>\n</div>`}
+          code={`<div className="p-3.5 rounded-xl bg-zinc-100 border border-zinc-200 flex justify-between">\n  <div><div className="font-bold text-zinc-900">Automatic Tax Calculation</div><p className="text-xs text-zinc-600">GST rates synchronized dynamically.</p></div>\n  <button><X className="w-3.5 h-3.5" /></button>\n</div>`}
         >
           {!dismissedAlerts.has("alert-01") ? (
             <div className={`${densityConfig.padding} ${densityConfig.text} rounded-xl bg-zinc-100 border border-zinc-200 flex items-start justify-between gap-3 transition-all duration-200`}>
@@ -275,7 +275,7 @@ export function SaaSFeedbackLibrary() {
           title="Success Confirmation Alert"
           category="cat1"
           description="Soft emerald callout confirming verified business identity."
-          code={`<div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex justify-between">\n  <div><div className="font-bold text-emerald-950">Bank Account Verified</div><p className="text-xs text-emerald-800">Penny-drop verification completed.</p></div>\n  <button>×</button>\n</div>`}
+          code={`<div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex justify-between">\n  <div><div className="font-bold text-emerald-950">Bank Account Verified</div><p className="text-xs text-emerald-800">Penny-drop verification completed.</p></div>\n  <button><X className="w-3.5 h-3.5" /></button>\n</div>`}
         >
           {!dismissedAlerts.has("alert-02") ? (
             <div className={`${densityConfig.padding} ${densityConfig.text} rounded-xl bg-emerald-50 border border-emerald-200 flex items-start justify-between gap-3 transition-all duration-200`}>
@@ -307,7 +307,7 @@ export function SaaSFeedbackLibrary() {
           title="Warning Alert with Action"
           category="cat1"
           description="Seat capacity warning with inline expansion link."
-          code={`<div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex justify-between">\n  <div><div className="font-bold text-amber-950">90% of Monthly Seats Used</div><a href="#" className="font-bold">Add seats →</a></div>\n  <button>×</button>\n</div>`}
+          code={`<div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex justify-between">\n  <div><div className="font-bold text-amber-950">90% of Monthly Seats Used</div><a href="#" className="font-bold">Add seats</a></div>\n  <button><X className="w-3.5 h-3.5" /></button>\n</div>`}
         >
           {!dismissedAlerts.has("alert-03") ? (
             <div className={`${densityConfig.padding} ${densityConfig.text} rounded-xl bg-amber-50 border border-amber-200 flex items-start justify-between gap-3 transition-all duration-200`}>
@@ -492,7 +492,7 @@ export function SaaSFeedbackLibrary() {
           title="New Feature Release Banner"
           category="cat2"
           description="Product announcement bar highlighting major software release."
-          code={`<div className="p-3 rounded-xl bg-zinc-900 text-white flex justify-between text-xs">\n  <div className="flex items-center gap-2"><span className="bg-emerald-500 px-1.5 py-0.5 rounded text-[10px]">New</span><span>Bulk GST invoice export is live.</span></div>\n  <button>×</button>\n</div>`}
+          code={`<div className="p-3 rounded-xl bg-zinc-900 text-white flex justify-between text-xs">\n  <div className="flex items-center gap-2"><span className="bg-emerald-500 px-1.5 py-0.5 rounded text-[10px]">New</span><span>Bulk GST invoice export is live.</span></div>\n  <button><X className="w-3.5 h-3.5" /></button>\n</div>`}
         >
           {!dismissedAlerts.has("banner-09") ? (
             <div className="p-3 rounded-xl bg-zinc-900 text-white flex items-center justify-between gap-2 shadow-sm text-xs">

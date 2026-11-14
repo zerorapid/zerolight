@@ -976,11 +976,11 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                                 onClick={() => advanceDeal(deal.id)}
                                 className="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/20 text-zinc-900 dark:text-white transition cursor-pointer"
                               >
-                                Move Next →
+                                Advance Deal
                               </button>
                             ) : (
-                              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
-                                ✓ Closed Deal
+                              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                <Check className="w-3.5 h-3.5" /> Closed Deal
                               </span>
                             )}
                           </div>

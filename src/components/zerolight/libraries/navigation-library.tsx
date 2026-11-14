@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Home,
   ArrowLeft,
+  ArrowRight,
   User,
   Users,
   Key,
@@ -801,7 +802,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                           <div className={`w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center font-sans tabular-nums shadow-xs ${
                             wizardStep > 1 ? "bg-emerald-600 text-white" : "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
                           }`}>
-                            {wizardStep > 1 ? "✓" : "1"}
+                            {wizardStep > 1 ? <Check className="w-3.5 h-3.5" /> : "1"}
                           </div>
                           <span className={`text-[11px] ${wizardStep >= 1 ? "font-bold text-zinc-950 dark:text-white" : "text-zinc-400"}`}>Account</span>
                         </div>
@@ -811,7 +812,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                           <div className={`w-7 h-7 rounded-full font-bold text-xs flex items-center justify-center font-sans tabular-nums shadow-xs ${
                             wizardStep > 2 ? "bg-emerald-600 text-white" : wizardStep === 2 ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950" : "bg-zinc-200 dark:bg-white/10 text-zinc-500"
                           }`}>
-                            {wizardStep > 2 ? "✓" : "2"}
+                            {wizardStep > 2 ? <Check className="w-3.5 h-3.5" /> : "2"}
                           </div>
                           <span className={`text-[11px] ${wizardStep >= 2 ? "font-bold text-zinc-950 dark:text-white" : "text-zinc-400"}`}>Workspace</span>
                         </div>
@@ -845,9 +846,10 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                         <button
                           type="button"
                           onClick={() => setWizardStep((s) => (s < 3 ? s + 1 : 1))}
-                          className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 shadow-xs transition cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 shadow-xs transition cursor-pointer flex items-center gap-1.5"
                         >
-                          {wizardStep === 3 ? "Reset Wizard" : "Continue →"}
+                          <span>{wizardStep === 3 ? "Reset Wizard" : "Continue"}</span>
+                          {wizardStep < 3 && <ArrowRight className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     </div>
@@ -860,7 +862,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
 
                       <div className="relative z-10 flex items-start gap-3">
                         <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs">
-                          ✓
+                          <Check className="w-3.5 h-3.5" />
                         </div>
                         <div>
                           <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Verify Organization Identity</h4>

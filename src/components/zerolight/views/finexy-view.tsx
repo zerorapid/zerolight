@@ -30,6 +30,7 @@ import {
   Sun,
   Moon,
   ArrowLeft,
+  Check,
   CheckCircle2,
   DollarSign,
   TrendingUp,
@@ -349,7 +350,7 @@ export function FinexyDashboardInner() {
             {/* Brand Logo & Name */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-[#15803D] flex items-center justify-center text-white shadow-sm font-bold text-lg">
-                <span className="tracking-tighter">↗</span>
+                <ArrowUpRight className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-bold tracking-tight text-neutral-900">
                 Finexy
@@ -487,7 +488,7 @@ export function FinexyDashboardInner() {
                           >
                             <span>{curr}</span>
                             {selectedCurrency === curr && (
-                              <span className="text-emerald-600 font-bold">✓</span>
+                              <Check className="w-3.5 h-3.5 text-emerald-600" />
                             )}
                           </button>
                         ))}

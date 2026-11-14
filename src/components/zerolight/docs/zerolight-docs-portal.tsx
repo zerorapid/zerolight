@@ -750,9 +750,9 @@ const { scaled } = useZeroLight();
                     <span className="text-emerald-400 font-bold">$ </span>
                     <span className="text-zinc-200">npx zerolight add world-atlas-map</span>
                     <div className="text-zinc-400 pl-4 mt-1">
-                      ✔ Resolved 119 registry components<br />
-                      ✔ Injected src/components/WorldAtlasMap.tsx with D3 Natural Earth projection<br />
-                      ✔ Synced zero-dependency token bindings
+                      &gt; Resolved 119 registry components<br />
+                      &gt; Injected src/components/WorldAtlasMap.tsx with D3 Natural Earth projection<br />
+                      &gt; Synced zero-dependency token bindings
                     </div>
                   </div>
 

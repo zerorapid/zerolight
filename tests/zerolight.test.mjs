@@ -2156,6 +2156,45 @@ test("SaaS Smart Hierarchy, Layout & Edge Cases: 12 interactive patterns, spring
   assert.ok(dashboardContent.includes('docsSubView === "edge-cases"'), 'DashboardShell must render SaaSEdgeCasesLibrary on edge-cases tab');
 });
 
+// -----------------------------------------------------------------
+// Test Suite 42: 6-Tier Atomic Architecture & Icon Hardening Verification
+// -----------------------------------------------------------------
+console.log("\n=== Suite 42: 6-Tier Atomic Architecture & Icon Hardening Verification ===");
+
+test("Atomic Hierarchy: 6 clean sidebar tiers (Foundations, Atoms, Molecules, Organisms, Templates, Pages) with contextual tabs", () => {
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  
+  // Verify 6 Tiers definition
+  assert.ok(dashboardContent.includes('id: "foundations"'), "must define Foundations tier");
+  assert.ok(dashboardContent.includes('id: "atoms"'), "must define Atoms tier");
+  assert.ok(dashboardContent.includes('id: "molecules"'), "must define Molecules tier");
+  assert.ok(dashboardContent.includes('id: "organisms"'), "must define Organisms tier");
+  assert.ok(dashboardContent.includes('id: "templates"'), "must define Templates tier");
+  assert.ok(dashboardContent.includes('id: "pages"'), "must define Pages tier");
+
+  // Verify DOCS_TIERS configuration exists
+  assert.ok(dashboardContent.includes("DOCS_TIERS"), "must configure DOCS_TIERS");
+  assert.ok(dashboardContent.includes("activeTierData"), "must compute activeTierData contextually");
+
+  // Verify Icon Hardening across libraries
+  const buttonLib = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/button-library.tsx"), "utf8");
+  assert.ok(!buttonLib.includes("Saved ✓"), "button-library must use Check icon instead of Saved text symbol");
+  assert.ok(!buttonLib.includes("Copied ✓"), "button-library must use Check icon instead of Copied text symbol");
+
+  const edgeLib = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/edge-cases-library.tsx"), "utf8");
+  assert.ok(!edgeLib.includes('>✓<'), "edge-cases-library must use Lucide Check icon instead of raw checkmark text");
+
+  const navLib = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/navigation-library.tsx"), "utf8");
+  assert.ok(!navLib.includes('"✓"'), "navigation-library must use Lucide Check icon in wizard steps");
+
+  const overlayLib = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/overlays-library.tsx"), "utf8");
+  assert.ok(!overlayLib.includes(">✕<"), "overlays-library must use Lucide X icon instead of ✕ symbol");
+
+  const inputLib = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/input-library.tsx"), "utf8");
+  assert.ok(inputLib.includes("<Minus"), "input-library must use Lucide Minus icon in counter stepper");
+  assert.ok(inputLib.includes("<Plus"), "input-library must use Lucide Plus icon in counter stepper");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

@@ -16,6 +16,7 @@ import {
   Edit2,
   Trash2,
   Plus,
+  Minus,
   X,
   Code2,
   SlidersHorizontal,
@@ -616,26 +617,26 @@ export function SaaSInputFieldLibrary() {
         {/* ========================================================================= */}
         <InputCard
           number="07"
-          title="Plus / Minus Counter"
+          title="Stepper Counter"
           label="User Seats"
           category="cat2"
-          code={`<div className="flex items-center justify-between border rounded-xl">\n  <button onClick={dec}>-</button>\n  <span>{seats}</span>\n  <button onClick={inc}>+</button>\n</div>`}
+          code={`<div className="flex items-center justify-between border rounded-xl px-2">\n  <button onClick={dec}><Minus className="w-3.5 h-3.5" /></button>\n  <span className="tabular-nums">{seats}</span>\n  <button onClick={inc}><Plus className="w-3.5 h-3.5" /></button>\n</div>`}
         >
           <div className={`rounded-xl border px-2 flex items-center justify-between transition-all ${getStateClass()}`} style={heightStyle}>
             <button
               type="button"
               onClick={() => setSeatCount(Math.max(1, seatCount - 1))}
-              className="w-7 h-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center font-bold text-zinc-600 text-sm cursor-pointer"
+              className="w-7 h-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center text-zinc-600 transition cursor-pointer"
             >
-              -
+              <Minus className="w-3.5 h-3.5" />
             </button>
             <span className="font-sans tabular-nums text-xs font-bold text-zinc-950">{seatCount}</span>
             <button
               type="button"
               onClick={() => setSeatCount(seatCount + 1)}
-              className="w-7 h-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center font-bold text-zinc-600 text-sm cursor-pointer"
+              className="w-7 h-7 rounded-lg hover:bg-zinc-100 flex items-center justify-center text-zinc-600 transition cursor-pointer"
             >
-              +
+              <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
         </InputCard>
