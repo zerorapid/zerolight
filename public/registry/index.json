@@ -1,11 +1,11 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 117,
+  "totalCount": 118,
   "tiers": {
     "core": 3,
     "atoms": 42,
-    "molecules": 43,
+    "molecules": 44,
     "organisms": 17,
     "templates": 5,
     "views": 7
@@ -1231,6 +1231,17 @@
       "registryUrl": "/registry/tree-select.json"
     },
     {
+      "name": "world-map-data",
+      "title": "World Map Data",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/world-map-data.ts",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 1321,
+      "registryUrl": "/registry/world-map-data.json"
+    },
+    {
       "name": "world-map",
       "title": "World Map",
       "type": "registry:ui",
@@ -1240,9 +1251,10 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "context"
+        "context",
+        "world-map-data"
       ],
-      "lines": 843,
+      "lines": 488,
       "registryUrl": "/registry/world-map.json"
     },
     {
