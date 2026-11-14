@@ -47,13 +47,13 @@ import { useZeroLight } from "../context";
 import { ZeroLightStudio } from "../docs-studio";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
-import { SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary } from "../libraries";
+import { SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary, SaaSTooltipLibrary } from "../libraries";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
 export type DashboardTab = "overview" | "ds-editor" | "docs" | "tools" | "settings";
-export type DocsSubView = "catalog" | "buttons" | "inputs" | "selections" | "indicators" | "dividers";
+export type DocsSubView = "catalog" | "buttons" | "inputs" | "selections" | "indicators" | "dividers" | "tooltips";
 export type SettingsSubTab = "general" | "security" | "mcp" | "api" | "compliance";
 
 export function DashboardShell() {
@@ -320,6 +320,7 @@ export function DashboardShell() {
                           { id: "selections", label: "Selection Controls", count: "26" },
                           { id: "indicators", label: "Status & Indicators", count: "28" },
                           { id: "dividers", label: "Dividers & Spacers", count: "22" },
+                          { id: "tooltips", label: "Tooltips & Popovers", count: "22" },
                         ].map((sub) => {
                           const isSubActive = activeTab === "docs" && docsSubView === sub.id;
                           return (
@@ -374,6 +375,7 @@ export function DashboardShell() {
                               { id: "selections", label: "Selections (26)" },
                               { id: "indicators", label: "Indicators (28)" },
                               { id: "dividers", label: "Dividers (22)" },
+                              { id: "tooltips", label: "Tooltips (22)" },
                             ].map((sub) => (
                               <button
                                 key={sub.id}
@@ -700,6 +702,7 @@ export function DashboardShell() {
                   { id: "selections", label: "SaaS Selection Controls", count: "26" },
                   { id: "indicators", label: "SaaS Status & Indicators", count: "28" },
                   { id: "dividers", label: "SaaS Dividers & Spacers", count: "22" },
+                  { id: "tooltips", label: "SaaS Tooltips & Popovers", count: "22" },
                 ].map((sub) => {
                   const active = docsSubView === sub.id;
                   return (
@@ -727,7 +730,7 @@ export function DashboardShell() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Badge variant="healthy">153 SaaS Pattern Variants Active</Badge>
+                <Badge variant="healthy">175 SaaS Pattern Variants Active</Badge>
               </div>
             </div>
 
@@ -742,6 +745,7 @@ export function DashboardShell() {
             {docsSubView === "selections" && <SaaSSelectionLibrary />}
             {docsSubView === "indicators" && <SaaSIndicatorLibrary />}
             {docsSubView === "dividers" && <SaaSDividerLibrary />}
+            {docsSubView === "tooltips" && <SaaSTooltipLibrary />}
           </div>
         )}
 

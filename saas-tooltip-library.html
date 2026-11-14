@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS Tooltip & Popover Library (22 Variants)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --tooltip-pad: 5px 10px;
+      --tooltip-text: 12px;
+      --popover-width: 248px;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Dynamic Density Classes */
+    .density-small {
+      --tooltip-pad: 4px 8px;
+      --tooltip-text: 11px;
+      --popover-width: 220px;
+    }
+    .density-medium {
+      --tooltip-pad: 5px 10px;
+      --tooltip-text: 12px;
+      --popover-width: 248px;
+    }
+    .density-large {
+      --tooltip-pad: 7px 13px;
+      --tooltip-text: 13px;
+      --popover-width: 280px;
+    }
+    .custom-tooltip {
+      padding: var(--tooltip-pad);
+      font-size: var(--tooltip-text);
+      transition: opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .custom-popover {
+      width: var(--popover-width);
+    }
+    /* Preview Open Mode - forces all tooltips & popovers visible for visual QA */
+    .preview-open-active .tooltip-bubble {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      transform: translate(0, 0) !important;
+    }
+    .preview-open-active .popover-bubble {
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-[#09090B] dark:text-[#FAFAFA] antialiased min-h-screen transition-colors duration-200 density-medium">
+
+  <!-- Sticky Global Control Bar -->
+  <header class="sticky top-0 z-40 bg-[#FAFAFA]/90 dark:bg-[#09090B]/90 backdrop-blur-md border-b border-[#09090B]/[0.08] dark:border-white/[0.08] px-4 sm:px-6 py-3 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto space-y-3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <!-- Brand & Live Counter -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 flex items-center justify-center font-bold text-xs tracking-tight shadow-sm">
+            ZL
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-sm font-bold tracking-tight text-zinc-950 dark:text-white">SaaS Tooltip & Popover Library</h1>
+              <span id="variant-counter-badge" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-200/80 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 tabular-nums">
+                22 Variants
+              </span>
+            </div>
+            <p class="text-[11px] text-zinc-500 dark:text-zinc-400">
+              Directional hover tooltips, shortcut hints, quota popovers & safety confirmation dialogs.
+            </p>
+          </div>
+        </div>
+
+        <!-- Controls: Search, 3 Density Tiers, Preview Open Toggle, Theme -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <!-- Instant Search -->
+          <div class="relative min-w-[170px]">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Search tooltips..."
+              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white transition"
+            />
+          </div>
+
+          <!-- 3 Global Size Density Toggles -->
+          <div class="flex items-center p-0.5 rounded-xl bg-zinc-200/70 dark:bg-zinc-800/80 border border-zinc-300/40 dark:border-zinc-700/50">
+            <button
+              type="button"
+              onclick="setDensityTier('small')"
+              id="tier-small"
+              class="tier-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+            >
+              Small
+            </button>
+            <button
+              type="button"
+              onclick="setDensityTier('medium')"
+              id="tier-medium"
+              class="tier-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-[#121215] text-zinc-950 dark:text-white shadow-xs transition cursor-pointer"
+            >
+              Medium
+            </button>
+            <button
+              type="button"
+              onclick="setDensityTier('large')"
+              id="tier-large"
+              class="tier-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+            >
+              Large
+            </button>
+          </div>
+
+          <!-- Preview Open Toggle -->
+          <button
+            type="button"
+            id="preview-open-btn"
+            onclick="togglePreviewOpen()"
+            class="px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
+          >
+            <span class="w-2 h-2 rounded-full bg-zinc-400" id="preview-dot"></span>
+            <span id="preview-label">Preview Open: Off</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button
+            type="button"
+            onclick="toggleTheme()"
+            class="p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
+            title="Toggle Light / Dark Mode"
+          >
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal Category Filter Pill Rail -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+        <button
+          type="button"
+          onclick="filterCategory('all')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-xs"
+          data-category="all"
+        >
+          All (22)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat1')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat1"
+        >
+          1. Directional Tooltips (4)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat2')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat2"
+        >
+          2. Shortcuts & Status (4)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat3')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat3"
+        >
+          3. Toolbar & Hints (4)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat4')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat4"
+        >
+          4. Rich Popovers (4)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat5')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat5"
+        >
+          5. Safety & Confirm (3)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat6')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat6"
+        >
+          6. Quick-Edit & Notes (3)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="variant-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 1: DIRECTIONAL HOVER TOOLTIPS (4)     -->
+      <!-- ============================================== -->
+
+      <!-- Variant 01: Top Hover Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Top Hover Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">01</span>
+              Top Hover Tooltip
+            </span>
+            <button onclick="openCodeModal('01 Top Hover Tooltip', snippet01)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Default dark obsidian tooltip appearing centered above the trigger.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <button class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-semibold cursor-pointer shadow-xs">
+                Save Draft
+              </button>
+              <!-- Top Tooltip Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20">
+                Saves your latest changes
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 02: Bottom Hover Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Bottom Hover Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">02</span>
+              Bottom Hover Tooltip
+            </span>
+            <button onclick="openCodeModal('02 Bottom Hover Tooltip', snippet02)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Downward tooltip positioned below navigation or header buttons.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <button class="px-3.5 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                Export Report
+              </button>
+              <!-- Bottom Tooltip Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute top-full mt-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 -translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20">
+                Download report as PDF
+                <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 03: Left Side Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Left Side Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">03</span>
+              Left Side Tooltip
+            </span>
+            <button onclick="openCodeModal('03 Left Side Tooltip', snippet03)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Leftward tooltip suited for right-side drawer and rail triggers.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-end pr-10 relative min-h-[90px]">
+            <div class="group relative inline-flex items-center">
+              <!-- Left Tooltip Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute right-full mr-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 translate-x-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20">
+                Archive record
+                <div class="absolute top-1/2 left-full -translate-y-1/2 border-4 border-transparent border-l-[#0B0F19]"></div>
+              </div>
+              <button class="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 cursor-pointer shadow-xs">
+                <i data-lucide="archive" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 04: Right Side Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Right Side Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">04</span>
+              Right Side Tooltip
+            </span>
+            <button onclick="openCodeModal('04 Right Side Tooltip', snippet04)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Rightward tooltip for collapsed icon sidebars (Fitts's Law).
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-start pl-10 relative min-h-[90px]">
+            <div class="group relative inline-flex items-center">
+              <button class="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 cursor-pointer shadow-xs">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+              </button>
+              <!-- Right Tooltip Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute left-full ml-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20">
+                Open team settings
+                <div class="absolute top-1/2 right-full -translate-y-1/2 border-4 border-transparent border-r-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 2: SHORTCUT, LIGHT & STATUS (4)       -->
+      <!-- ============================================== -->
+
+      <!-- Variant 05: Keyboard Shortcut Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Keyboard Shortcut Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">05</span>
+              Keyboard Shortcut Tooltip
+            </span>
+            <button onclick="openCodeModal('05 Keyboard Shortcut Tooltip', snippet05)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Action label paired with high-contrast keyboard shortcut badge.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <button class="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 cursor-pointer shadow-xs">
+                <i data-lucide="search" class="w-4 h-4"></i>
+              </button>
+              <!-- Shortcut Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium flex items-center gap-2 whitespace-nowrap shadow-xl z-20">
+                <span>Quick Search</span>
+                <span class="px-1.5 py-0.2 rounded bg-white/20 text-white font-bold text-[10px] tabular-nums">⌘K</span>
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 06: Light Surface Bordered Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Light Surface Bordered Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">06</span>
+              Light Surface Bordered Tooltip
+            </span>
+            <button onclick="openCodeModal('06 Light Surface Bordered Tooltip', snippet06)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Inverted crisp white card tooltip with subtle hairline border.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <button class="px-3 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-semibold cursor-pointer shadow-xs">
+                Workspace Info
+              </button>
+              <!-- Light Card Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-xl bg-white border border-zinc-200 text-zinc-900 font-semibold whitespace-nowrap shadow-xl z-20">
+                Primary AWS Asia (Mumbai) Zone
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-white"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 07: Multi-Line Explanation Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Multi-Line Explanation Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">07</span>
+              Multi-Line Explanation Tooltip
+            </span>
+            <button onclick="openCodeModal('07 Multi-Line Explanation Tooltip', snippet07)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Dashed underline term revealing structured calculations.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <span class="border-b border-dashed border-zinc-500 text-xs font-bold text-zinc-950 dark:text-white cursor-help">
+                Net Revenue
+              </span>
+              <!-- Multi-line Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 w-52 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-xl bg-[#0B0F19] text-white text-[11px] leading-relaxed p-2.5 shadow-xl z-20">
+                Gross sales minus tax, refunds, and merchant processing charges for this cycle.
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 08: Click-to-Copy Confirmation Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Click-to-Copy Confirmation Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">08</span>
+              Click-to-Copy Confirmation Tooltip
+            </span>
+            <button onclick="openCodeModal('08 Click-to-Copy Confirmation Tooltip', snippet08)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Tooltip morphs from instruction to affirmative confirmation upon click.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <button
+                type="button"
+                id="copy-link-btn"
+                onclick="triggerCopyTooltip()"
+                class="px-3.5 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <i data-lucide="link-2" class="w-3.5 h-3.5"></i>
+                <span>Copy Invite Link</span>
+              </button>
+              <!-- Interactive Bubble -->
+              <div id="copy-tooltip-text" class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20">
+                Click to copy link
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 3: TOOLBAR & ICON HELP (4)           -->
+      <!-- ============================================== -->
+
+      <!-- Variant 09: Icon Action Bar with Tooltips -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Icon Action Bar with Tooltips">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">09</span>
+              Icon Action Bar with Tooltips
+            </span>
+            <button onclick="openCodeModal('09 Icon Action Bar with Tooltips', snippet09)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Compact 4-icon action strip with individualized directional hints.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="flex items-center gap-1 p-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xs">
+              <!-- Edit -->
+              <div class="group relative">
+                <button class="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                  <i data-lucide="edit-3" class="w-4 h-4"></i>
+                </button>
+                <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white whitespace-nowrap z-20">Edit Row</div>
+              </div>
+              <!-- Duplicate -->
+              <div class="group relative">
+                <button class="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+                <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white whitespace-nowrap z-20">Duplicate</div>
+              </div>
+              <!-- Share -->
+              <div class="group relative">
+                <button class="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                  <i data-lucide="share-2" class="w-4 h-4"></i>
+                </button>
+                <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white whitespace-nowrap z-20">Share Link</div>
+              </div>
+              <!-- Delete -->
+              <div class="group relative">
+                <button class="p-1.5 rounded-lg hover:bg-rose-50 text-rose-600">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+                <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-rose-600 text-white whitespace-nowrap z-20">Delete</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 10: Disabled Button Reason Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Disabled Button Reason Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">10</span>
+              Disabled Button Reason Tooltip
+            </span>
+            <button onclick="openCodeModal('10 Disabled Button Reason Tooltip', snippet10)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Explains plan lock limitations without frustrating the user.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <button disabled class="px-3.5 py-1.5 rounded-xl bg-zinc-200 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 text-xs font-semibold cursor-not-allowed flex items-center gap-1.5">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                Export All (CSV)
+              </button>
+              <!-- Lock Reason Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20">
+                Available on Pro Plan
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 11: Live Status Dot Tooltip -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Live Status Dot Tooltip">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">11</span>
+              Live Status Dot Tooltip
+            </span>
+            <button onclick="openCodeModal('11 Live Status Dot Tooltip', snippet11)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Health badge revealing exact uptime latency and cluster health.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center">
+              <div class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>API Healthy</span>
+              </div>
+              <!-- Status Breakdown Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20 tabular-nums">
+                All 4 servers responding in 42ms
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 12: Truncated Text Full-Name Hint -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Truncated Text Full-Name Hint">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">12</span>
+              Truncated Text Full-Name Hint
+            </span>
+            <button onclick="openCodeModal('12 Truncated Text Full-Name Hint', snippet12)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Ellipsized filenames seamlessly expand to full title on hover.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="group relative inline-flex justify-center max-w-[200px]">
+              <span class="truncate text-xs font-medium text-zinc-800 dark:text-zinc-200 cursor-help">
+                q4_financial_audit_compliance_report_final_v2.pdf
+              </span>
+              <!-- Full Name Bubble -->
+              <div class="tooltip-bubble custom-tooltip absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 translate-y-1 pointer-events-none rounded-lg bg-[#0B0F19] text-white font-medium whitespace-nowrap shadow-xl z-20">
+                q4_financial_audit_compliance_report_final_v2.pdf
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 4: RICH INFO & PROFILE POPOVERS (4)   -->
+      <!-- ============================================== -->
+
+      <!-- Variant 13: Feature Info Card Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="Feature Info Card Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">13</span>
+              Feature Info Card Popover
+            </span>
+            <button onclick="openCodeModal('13 Feature Info Card Popover', snippet13)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Click-triggered contextual explanation of seat-based billing.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-13')"
+                class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5 hover:text-zinc-950 dark:hover:text-white cursor-pointer"
+              >
+                <span>How Billing Works</span>
+                <i data-lucide="help-circle" class="w-3.5 h-3.5 text-zinc-400"></i>
+              </button>
+              <!-- Info Popover -->
+              <div id="popover-13" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="font-bold text-zinc-950 dark:text-white mb-1">Prorated Seat Model</div>
+                <p class="text-[11px] text-zinc-500 leading-relaxed mb-2">
+                  Seats added mid-month are calculated to the minute and automatically credited if removed before the 25th.
+                </p>
+                <a href="#learn-more" class="text-[11px] font-bold text-zinc-950 dark:text-white hover:underline flex items-center gap-1">
+                  Learn about invoices &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 14: User Profile Preview Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="User Profile Preview Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">14</span>
+              User Profile Preview Popover
+            </span>
+            <button onclick="openCodeModal('14 User Profile Preview Popover', snippet14)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Teammate mention tag revealing avatar, role, and quick actions.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-14')"
+                class="px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-xs font-semibold text-zinc-900 dark:text-zinc-100 hover:bg-zinc-200 transition cursor-pointer"
+              >
+                @Ananya Reddy
+              </button>
+              <!-- Profile Popover -->
+              <div id="popover-14" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="flex items-center gap-2.5 mb-2.5">
+                  <div class="w-9 h-9 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-xs">
+                    AR
+                  </div>
+                  <div>
+                    <div class="font-bold text-zinc-950 dark:text-white">Ananya Reddy</div>
+                    <div class="text-[11px] text-zinc-500">Security Lead • Hyderabad</div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-zinc-600 dark:text-zinc-400 py-1.5 border-t border-zinc-100 dark:border-zinc-800">
+                  <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Active Now</span>
+                  <a href="#message" class="font-bold text-zinc-950 dark:text-white hover:underline">Message &rarr;</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 15: Usage & Quota Breakdown Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="Usage & Quota Breakdown Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">15</span>
+              Usage & Quota Breakdown Popover
+            </span>
+            <button onclick="openCodeModal('15 Usage & Quota Breakdown Popover', snippet15)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Pill button opening full storage metrics with upgrade path.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-15')"
+                class="px-3 py-1.5 rounded-xl border border-amber-300/80 bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-300 text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <i data-lucide="hard-drive" class="w-3.5 h-3.5"></i>
+                <span class="tabular-nums">82% Storage Used</span>
+              </button>
+              <!-- Quota Popover -->
+              <div id="popover-15" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="flex justify-between font-bold text-zinc-950 dark:text-white mb-1.5">
+                  <span>Workspace Vault</span>
+                  <span class="tabular-nums">8.2 / 10 GB</span>
+                </div>
+                <div class="h-2 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden mb-2">
+                  <div class="h-full bg-amber-500 rounded-full w-[82%]"></div>
+                </div>
+                <p class="text-[11px] text-zinc-500 mb-2">1.8 GB remaining before sync slows down.</p>
+                <button class="w-full py-1.5 rounded-lg bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs shadow-xs">
+                  Upgrade to 50 GB
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 16: Keyboard Shortcuts Cheat-Sheet Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="Keyboard Shortcuts Cheat-Sheet Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">16</span>
+              Keyboard Shortcuts Cheat-Sheet Popover
+            </span>
+            <button onclick="openCodeModal('16 Keyboard Shortcuts Cheat-Sheet Popover', snippet16)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Global key shortcuts card for power users and command palettes.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-16')"
+                class="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <i data-lucide="command" class="w-3.5 h-3.5"></i>
+                <span>Shortcuts</span>
+              </button>
+              <!-- Shortcuts Popover -->
+              <div id="popover-16" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 shadow-2xl z-30 text-xs animate-in fade-in duration-150 space-y-1.5">
+                <div class="font-bold text-zinc-950 dark:text-white mb-1">Global Hotkeys</div>
+                <div class="flex justify-between items-center text-[11px] text-zinc-600 dark:text-zinc-400">
+                  <span>Search Everywhere</span>
+                  <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-bold text-zinc-900 dark:text-zinc-100">⌘ K</kbd>
+                </div>
+                <div class="flex justify-between items-center text-[11px] text-zinc-600 dark:text-zinc-400">
+                  <span>Create New Invoice</span>
+                  <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-bold text-zinc-900 dark:text-zinc-100">⌘ N</kbd>
+                </div>
+                <div class="flex justify-between items-center text-[11px] text-zinc-600 dark:text-zinc-400">
+                  <span>Quick Save</span>
+                  <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-bold text-zinc-900 dark:text-zinc-100">⌘ S</kbd>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 5: CONFIRMATION & WARNING POPOVERS (3)-->
+      <!-- ============================================== -->
+
+      <!-- Variant 17: Delete Confirmation Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Delete Confirmation Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">17</span>
+              Delete Confirmation Popover
+            </span>
+            <button onclick="openCodeModal('17 Delete Confirmation Popover', snippet17)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Non-modal lightweight safety check replacing intrusive browser popups.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-17')"
+                class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs hover:bg-rose-100"
+              >
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Delete Invoice</span>
+              </button>
+              <!-- Delete Popover -->
+              <div id="popover-17" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="font-bold text-zinc-950 dark:text-white mb-1">Delete this record?</div>
+                <p class="text-[11px] text-zinc-500 mb-3">This action cannot be undone and will void tax logs.</p>
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="closeAllPopovers()" class="px-2.5 py-1 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 text-[11px] font-semibold">
+                    Cancel
+                  </button>
+                  <button onclick="simulateAction('Invoice deleted successfully')" class="px-3 py-1 rounded-lg bg-rose-600 text-white text-[11px] font-semibold shadow-xs">
+                    Yes, Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 18: Publish Live Confirmation Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Publish Live Confirmation Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">18</span>
+              Publish Live Confirmation Popover
+            </span>
+            <button onclick="openCodeModal('18 Publish Live Confirmation Popover', snippet18)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Confirms deployment to live production environment.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-18')"
+                class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
+                <span>Publish Live</span>
+              </button>
+              <!-- Publish Popover -->
+              <div id="popover-18" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="font-bold text-zinc-950 dark:text-white mb-1">Push to production?</div>
+                <p class="text-[11px] text-zinc-500 mb-3">All 48 workspace members will immediately see these design tokens.</p>
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="closeAllPopovers()" class="px-2.5 py-1 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 text-[11px] font-semibold">
+                    Not Yet
+                  </button>
+                  <button onclick="simulateAction('Published live to production')" class="px-3 py-1 rounded-lg bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[11px] font-semibold shadow-xs">
+                    Publish Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 19: Revoke Access Warning Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Revoke Access Warning Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">19</span>
+              Revoke Access Warning Popover
+            </span>
+            <button onclick="openCodeModal('19 Revoke Access Warning Popover', snippet19)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Safeguards API keys and critical integrations from accidental revocation.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-19')"
+                class="px-3 py-1.5 rounded-xl border border-amber-300 bg-amber-50 text-amber-900 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs hover:bg-amber-100"
+              >
+                <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                <span>Revoke Key</span>
+              </button>
+              <!-- Revoke Popover -->
+              <div id="popover-19" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="font-bold text-amber-950 dark:text-amber-400 mb-1">Revoke sk_live_89a?</div>
+                <p class="text-[11px] text-zinc-500 mb-3">Live payment webhooks using this key will immediately return 401 Unauthorized.</p>
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="closeAllPopovers()" class="px-2.5 py-1 rounded-lg text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 text-[11px] font-semibold">
+                    Keep Key
+                  </button>
+                  <button onclick="simulateAction('API Key revoked')" class="px-3 py-1 rounded-lg bg-amber-600 text-white text-[11px] font-semibold shadow-xs">
+                    Revoke
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 6: QUICK-EDIT & SHARE POPOVERS (3)   -->
+      <!-- ============================================== -->
+
+      <!-- Variant 20: Share Link & Access Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat6" data-title="Share Link & Access Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">20</span>
+              Share Link & Access Popover
+            </span>
+            <button onclick="openCodeModal('20 Share Link & Access Popover', snippet20)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Quick share input box with copy button and permission selector.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-20')"
+                class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <i data-lucide="share" class="w-3.5 h-3.5"></i>
+                <span>Share</span>
+              </button>
+              <!-- Share Popover -->
+              <div id="popover-20" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="font-bold text-zinc-950 dark:text-white mb-2">Share Project Access</div>
+                <div class="flex items-center gap-1.5 mb-2">
+                  <input readonly value="https://zerolight.app/p/erp-q4" class="w-full px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-[11px] text-zinc-700 dark:text-zinc-300" />
+                  <button onclick="simulateAction('Project link copied')" class="px-2.5 py-1 rounded-lg bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[11px] font-semibold whitespace-nowrap shadow-xs">
+                    Copy
+                  </button>
+                </div>
+                <div class="text-[11px] text-zinc-500">Anyone in your team with link can edit.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 21: Quick Rename Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat6" data-title="Quick Rename Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">21</span>
+              Quick Rename Popover
+            </span>
+            <button onclick="openCodeModal('21 Quick Rename Popover', snippet21)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Click-to-rename title with instant live label update.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                id="rename-trigger-btn"
+                onclick="togglePopover('popover-21')"
+                class="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-xs font-semibold text-zinc-950 dark:text-white flex items-center gap-1.5 cursor-pointer shadow-xs hover:border-zinc-400"
+              >
+                <span id="pipeline-title-label">Q4 Sales Pipeline</span>
+                <i data-lucide="edit-2" class="w-3.5 h-3.5 text-zinc-400"></i>
+              </button>
+              <!-- Rename Popover -->
+              <div id="popover-21" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="font-bold text-zinc-950 dark:text-white mb-1.5">Rename Document</div>
+                <input id="rename-input-box" value="Q4 Sales Pipeline" class="w-full px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs mb-2 text-zinc-950 dark:text-white" />
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="closeAllPopovers()" class="px-2 py-1 rounded-lg text-zinc-600 dark:text-zinc-400 text-[11px] font-semibold">
+                    Cancel
+                  </button>
+                  <button onclick="saveRenameTitle()" class="px-2.5 py-1 rounded-lg bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[11px] font-semibold shadow-xs">
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 22: Quick Note / Feedback Popover -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat6" data-title="Quick Note / Feedback Popover">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">22</span>
+              Quick Note / Feedback Popover
+            </span>
+            <button onclick="openCodeModal('22 Quick Note / Feedback Popover', snippet22)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Compact in-app feedback textarea popping up right next to trigger.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center relative min-h-[90px]">
+            <div class="relative" data-popover-root>
+              <button
+                type="button"
+                onclick="togglePopover('popover-22')"
+                class="px-3.5 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5 cursor-pointer shadow-xs hover:bg-zinc-100"
+              >
+                <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                <span>Send Feedback</span>
+              </button>
+              <!-- Feedback Popover -->
+              <div id="popover-22" class="popover-bubble custom-popover hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-2 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-3.5 shadow-2xl z-30 text-xs animate-in fade-in duration-150">
+                <div class="font-bold text-zinc-950 dark:text-white mb-1.5">Send Quick Note</div>
+                <textarea rows="3" placeholder="Describe issue or request..." class="w-full p-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-xs mb-2 text-zinc-950 dark:text-white resize-none"></textarea>
+                <div class="flex items-center justify-end gap-1.5">
+                  <button onclick="closeAllPopovers()" class="px-2 py-1 rounded-lg text-zinc-600 dark:text-zinc-400 text-[11px] font-semibold">
+                    Cancel
+                  </button>
+                  <button onclick="simulateAction('Feedback submitted. Thank you!')" class="px-3 py-1 rounded-lg bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[11px] font-semibold shadow-xs">
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Clean Code Modal -->
+  <div id="code-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800">
+        <h3 id="modal-title" class="text-sm font-bold text-zinc-950 dark:text-white"></h3>
+        <button onclick="closeCodeModal()" class="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-5">
+        <div class="relative">
+          <pre id="modal-code" class="p-4 rounded-xl bg-zinc-900 text-zinc-100 text-xs overflow-x-auto font-sans leading-relaxed"></pre>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+        <button onclick="closeCodeModal()" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white">
+          Close
+        </button>
+        <button id="copy-code-btn" onclick="copySnippetCode()" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-semibold flex items-center gap-1.5 shadow-sm hover:opacity-90 transition">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy HTML/CSS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-banner" class="fixed bottom-5 right-5 z-50 bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl shadow-2xl border border-white/10 text-xs font-semibold hidden animate-in fade-in slide-in-from-bottom-2 duration-150"></div>
+
+  <!-- JavaScript Engine -->
+  <script>
+    lucide.createIcons();
+
+    // Density Tier State
+    function setDensityTier(tier) {
+      document.body.classList.remove('density-small', 'density-medium', 'density-large');
+      document.body.classList.add(`density-${tier}`);
+
+      document.querySelectorAll('.tier-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-[#121215]', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+        btn.classList.add('text-zinc-600', 'dark:text-zinc-400');
+      });
+      const activeBtn = document.getElementById(`tier-${tier}`);
+      activeBtn.classList.add('bg-white', 'dark:bg-[#121215]', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+      activeBtn.classList.remove('text-zinc-600', 'dark:text-zinc-400');
+    }
+
+    // Preview Open Toggle
+    let previewOpen = false;
+    function togglePreviewOpen() {
+      previewOpen = !previewOpen;
+      const body = document.body;
+      const dot = document.getElementById('preview-dot');
+      const label = document.getElementById('preview-label');
+
+      if (previewOpen) {
+        body.classList.add('preview-open-active');
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-500 shadow-xs';
+        label.textContent = 'Preview Open: On';
+      } else {
+        body.classList.remove('preview-open-active');
+        dot.className = 'w-2 h-2 rounded-full bg-zinc-400';
+        label.textContent = 'Preview Open: Off';
+      }
+    }
+
+    // Light / Dark Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+      }
+    }
+
+    // Popover Toggles & Outside Click Handler
+    function togglePopover(id) {
+      const popover = document.getElementById(id);
+      const isCurrentlyOpen = !popover.classList.contains('hidden');
+      closeAllPopovers();
+      if (!isCurrentlyOpen) {
+        popover.classList.remove('hidden');
+      }
+    }
+
+    function closeAllPopovers() {
+      document.querySelectorAll('.popover-bubble').forEach(p => p.classList.add('hidden'));
+    }
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!target.closest('[data-popover-root]')) {
+        closeAllPopovers();
+      }
+    });
+
+    // Category Filtering
+    let currentCategory = 'all';
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(pill => {
+        if (pill.getAttribute('data-category') === cat) {
+          pill.className = 'cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-xs';
+        } else {
+          pill.className = 'cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60';
+        }
+      });
+      applyFilters();
+    }
+
+    // Search Filtering
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', () => {
+      applyFilters();
+    });
+
+    function applyFilters() {
+      const query = searchInput.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.variant-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+        const matchesCategory = currentCategory === 'all' || cat === currentCategory;
+        const matchesQuery = query === '' || title.includes(query);
+
+        if (matchesCategory && matchesQuery) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('variant-counter-badge').textContent = `${visibleCount} Variants`;
+    }
+
+    // Interactive Action 08: Copy Link Tooltip
+    function triggerCopyTooltip() {
+      navigator.clipboard.writeText("https://zerolight.app/invite/hyderabad-lead");
+      const tooltip = document.getElementById('copy-tooltip-text');
+      tooltip.innerHTML = '<span class="text-emerald-400 font-bold">Copied ✓</span>';
+      setTimeout(() => {
+        tooltip.innerHTML = 'Click to copy link';
+      }, 1800);
+      showToast("Invite link copied to clipboard");
+    }
+
+    // Interactive Action 21: Rename Title
+    function saveRenameTitle() {
+      const val = document.getElementById('rename-input-box').value.trim();
+      if (val) {
+        document.getElementById('pipeline-title-label').textContent = val;
+        closeAllPopovers();
+        showToast(`Document renamed to "${val}"`);
+      }
+    }
+
+    // Toast Simulator
+    function simulateAction(msg) {
+      closeAllPopovers();
+      showToast(msg);
+    }
+    function showToast(msg) {
+      const toast = document.getElementById('toast-banner');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2500);
+    }
+
+    // Modal & Code Snippets
+    let currentCodeSnippet = '';
+    function openCodeModal(title, snippet) {
+      currentCodeSnippet = snippet;
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-code').textContent = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copySnippetCode() {
+      navigator.clipboard.writeText(currentCodeSnippet).then(() => {
+        const btn = document.getElementById('copy-code-btn');
+        btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy HTML/CSS</span>';
+          lucide.createIcons();
+        }, 1800);
+      });
+    }
+
+    // Snippets
+    const snippet01 = `<!-- 01 Top Hover Tooltip -->\n<div class="group relative inline-flex justify-center">\n  <button class="px-3 py-1.5 bg-zinc-950 text-white rounded-xl">Save Draft</button>\n  <div class="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs whitespace-nowrap shadow-xl">\n    Saves your latest changes\n    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#0B0F19]"></div>\n  </div>\n</div>`;
+    const snippet02 = `<!-- 02 Bottom Hover Tooltip -->\n<div class="group relative inline-flex justify-center">\n  <button class="px-3 py-1.5 border rounded-xl">Export Report</button>\n  <div class="absolute top-full mt-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs whitespace-nowrap shadow-xl">\n    Download report as PDF\n    <div class="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-[#0B0F19]"></div>\n  </div>\n</div>`;
+    const snippet03 = `<!-- 03 Left Side Tooltip -->\n<div class="group relative inline-flex items-center">\n  <div class="absolute right-full mr-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs whitespace-nowrap shadow-xl">\n    Archive record\n    <div class="absolute top-1/2 left-full -translate-y-1/2 border-4 border-transparent border-l-[#0B0F19]"></div>\n  </div>\n  <button class="p-2 border rounded-xl">Archive</button>\n</div>`;
+    const snippet04 = `<!-- 04 Right Side Tooltip -->\n<div class="group relative inline-flex items-center">\n  <button class="p-2 border rounded-xl">Settings</button>\n  <div class="absolute left-full ml-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs whitespace-nowrap shadow-xl">\n    Open team settings\n    <div class="absolute top-1/2 right-full -translate-y-1/2 border-4 border-transparent border-r-[#0B0F19]"></div>\n  </div>\n</div>`;
+    const snippet05 = `<!-- 05 Keyboard Shortcut Tooltip -->\n<div class="group relative inline-flex justify-center">\n  <button class="p-2 border rounded-xl">Search</button>\n  <div class="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs flex items-center gap-2 whitespace-nowrap shadow-xl">\n    <span>Quick Search</span>\n    <span class="px-1.5 py-0.2 rounded bg-white/20 text-white font-bold text-[10px]">⌘K</span>\n  </div>\n</div>`;
+    const snippet06 = `<!-- 06 Light Surface Bordered Tooltip -->\n<div class="group relative inline-flex justify-center">\n  <button class="px-3 py-1.5 bg-zinc-950 text-white rounded-xl">Workspace Info</button>\n  <div class="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 rounded-xl bg-white border border-zinc-200 text-zinc-900 px-3 py-1.5 text-xs font-semibold whitespace-nowrap shadow-xl">\n    Primary AWS Asia Zone\n  </div>\n</div>`;
+    const snippet07 = `<!-- 07 Multi-Line Explanation Tooltip -->\n<div class="group relative inline-flex justify-center">\n  <span class="border-b border-dashed text-xs font-bold cursor-help">Net Revenue</span>\n  <div class="absolute bottom-full mb-2 w-52 opacity-0 group-hover:opacity-100 rounded-xl bg-[#0B0F19] text-white text-[11px] p-2.5 shadow-xl leading-relaxed">\n    Gross sales minus tax, refunds, and merchant fees.\n  </div>\n</div>`;
+    const snippet08 = `<!-- 08 Click-to-Copy Confirmation Tooltip -->\n<button onclick="copyLink()" class="px-3 py-1.5 border rounded-xl">Copy Invite Link</button>`;
+    const snippet09 = `<!-- 09 Icon Action Bar with Tooltips -->\n<div class="flex items-center gap-1 p-1 border rounded-xl bg-white">\n  <button title="Edit Row">Edit</button>\n  <button title="Duplicate">Copy</button>\n  <button title="Share Link">Share</button>\n  <button title="Delete">Trash</button>\n</div>`;
+    const snippet10 = `<!-- 10 Disabled Button Reason Tooltip -->\n<div class="group relative inline-flex justify-center">\n  <button disabled class="px-3.5 py-1.5 bg-zinc-200 text-zinc-400 rounded-xl">Export All</button>\n  <div class="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs whitespace-nowrap shadow-xl">\n    Available on Pro Plan\n  </div>\n</div>`;
+    const snippet11 = `<!-- 11 Live Status Dot Tooltip -->\n<div class="group relative inline-flex justify-center">\n  <div class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">API Healthy</div>\n  <div class="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs whitespace-nowrap shadow-xl">\n    All 4 servers responding in 42ms\n  </div>\n</div>`;
+    const snippet12 = `<!-- 12 Truncated Text Full-Name Hint -->\n<div class="group relative inline-flex justify-center max-w-[200px]">\n  <span class="truncate text-xs">q4_audit_report_final.pdf</span>\n  <div class="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 rounded-lg bg-[#0B0F19] text-white px-2.5 py-1 text-xs whitespace-nowrap shadow-xl">\n    q4_audit_report_final.pdf\n  </div>\n</div>`;
+    const snippet13 = `<!-- 13 Feature Info Card Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p13')">How Billing Works</button>\n  <div id="p13" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-xl p-3 shadow-2xl">\n    <div class="font-bold">Prorated Seat Model</div>\n    <p class="text-xs text-zinc-500">Seats added mid-month are calculated to the minute.</p>\n  </div>\n</div>`;
+    const snippet14 = `<!-- 14 User Profile Preview Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p14')">@Ananya Reddy</button>\n  <div id="p14" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3.5 shadow-2xl">\n    <div class="font-bold">Ananya Reddy</div>\n    <div class="text-xs text-zinc-500">Security Lead</div>\n  </div>\n</div>`;
+    const snippet15 = `<!-- 15 Usage & Quota Breakdown Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p15')">82% Storage Used</button>\n  <div id="p15" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3.5 shadow-2xl">\n    <div class="font-bold">Workspace Vault: 8.2 / 10 GB</div>\n    <div class="h-2 rounded-full bg-zinc-200 overflow-hidden"><div class="h-full bg-amber-500 w-[82%]"></div></div>\n  </div>\n</div>`;
+    const snippet16 = `<!-- 16 Keyboard Shortcuts Cheat-Sheet Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p16')">Shortcuts</button>\n  <div id="p16" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3 shadow-2xl space-y-1">\n    <div class="flex justify-between"><span>Search Everywhere</span><kbd>⌘ K</kbd></div>\n    <div class="flex justify-between"><span>New Invoice</span><kbd>⌘ N</kbd></div>\n  </div>\n</div>`;
+    const snippet17 = `<!-- 17 Delete Confirmation Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p17')">Delete Invoice</button>\n  <div id="p17" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3.5 shadow-2xl">\n    <div class="font-bold">Delete this record?</div>\n    <div class="flex justify-end gap-2 mt-2"><button>Cancel</button><button class="bg-rose-600 text-white px-2 py-1 rounded">Yes, Delete</button></div>\n  </div>\n</div>`;
+    const snippet18 = `<!-- 18 Publish Live Confirmation Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p18')">Publish Live</button>\n  <div id="p18" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3.5 shadow-2xl">\n    <div class="font-bold">Push to production?</div>\n    <div class="flex justify-end gap-2 mt-2"><button>Not Yet</button><button class="bg-zinc-950 text-white px-2 py-1 rounded">Publish Now</button></div>\n  </div>\n</div>`;
+    const snippet19 = `<!-- 19 Revoke Access Warning Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p19')">Revoke Key</button>\n  <div id="p19" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3.5 shadow-2xl">\n    <div class="font-bold">Revoke API Key?</div>\n    <div class="flex justify-end gap-2 mt-2"><button>Keep</button><button class="bg-amber-600 text-white px-2 py-1 rounded">Revoke</button></div>\n  </div>\n</div>`;
+    const snippet20 = `<!-- 20 Share Link & Access Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p20')">Share</button>\n  <div id="p20" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3.5 shadow-2xl">\n    <input readonly value="https://zerolight.app/p/erp" />\n  </div>\n</div>`;
+    const snippet21 = `<!-- 21 Quick Rename Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p21')">Q4 Pipeline ✎</button>\n  <div id="p21" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3 shadow-2xl">\n    <input value="Q4 Pipeline" />\n  </div>\n</div>`;
+    const snippet22 = `<!-- 22 Quick Note / Feedback Popover -->\n<div class="relative" data-popover-root>\n  <button onclick="togglePopover('p22')">Send Feedback</button>\n  <div id="p22" class="hidden absolute bottom-full mb-2 w-64 bg-white border rounded-2xl p-3.5 shadow-2xl">\n    <textarea placeholder="Your notes..."></textarea>\n  </div>\n</div>`;
+  </script>
+</body>
+</html>

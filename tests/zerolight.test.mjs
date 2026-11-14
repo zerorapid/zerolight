@@ -1432,7 +1432,7 @@ test("SaaS Selection Controls Library: 26 interactive variants across 6 categori
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSSelectionLibrary"), "DashboardShell must integrate SaaSSelectionLibrary");
-  assert.ok(dashboardContent.includes("153 SaaS Pattern Variants Active"), "DashboardShell must synchronize 153 SaaS pattern variants active badge");
+  assert.ok(dashboardContent.includes("175 SaaS Pattern Variants Active"), "DashboardShell must synchronize 175 SaaS pattern variants active badge");
 });
 
 // -----------------------------------------------------------------
@@ -1542,8 +1542,82 @@ test("SaaS Divider & Spacer Library: 22 interactive variants across 6 categories
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSDividerLibrary"), "DashboardShell must integrate SaaSDividerLibrary");
-  assert.ok(dashboardContent.includes("153 SaaS Pattern Variants Active"), "DashboardShell must synchronize 153 active variants badge");
+  assert.ok(dashboardContent.includes("175 SaaS Pattern Variants Active"), "DashboardShell must synchronize 175 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"dividers\""), "DashboardShell must render SaaSDividerLibrary on dividers tab");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 33: SaaS Tooltip & Popover Library (22 Variants)
+// -----------------------------------------------------------------
+console.log("\n=== Suite 33: SaaS Tooltip & Popover Library (22 Variants) ===");
+
+test("SaaS Tooltip & Popover Library: 22 interactive variants across 6 categories", () => {
+  // Check standalone HTML web application
+  const htmlPath = path.join(rootDir, "public/saas-tooltip-library.html");
+  assert.ok(fs.existsSync(htmlPath), "public/saas-tooltip-library.html must exist");
+  const htmlContent = fs.readFileSync(htmlPath, "utf8");
+  assert.ok(htmlContent.includes("SaaS Tooltip & Popover Library"), "HTML must have header title");
+  assert.ok(htmlContent.includes("22 Variants"), "HTML must indicate 22 variants");
+  assert.ok(htmlContent.includes("preview-open-active"), "HTML must support global preview open mode");
+  assert.ok(htmlContent.includes("setDensityTier"), "HTML must support density tier resizing");
+  assert.ok(htmlContent.includes("togglePopover"), "HTML must implement popover toggling");
+  assert.ok(htmlContent.includes("cdn.tailwindcss.com"), "HTML must include Tailwind CDN");
+  assert.ok(htmlContent.includes("lucide@latest"), "HTML must include Lucide Icons CDN");
+
+  // Check React Component
+  const ttPath = path.join(rootDir, "src/components/zerolight/libraries/tooltip-library.tsx");
+  assert.ok(fs.existsSync(ttPath), "tooltip-library.tsx must exist");
+  const ttContent = fs.readFileSync(ttPath, "utf8");
+
+  // Export check
+  assert.ok(ttContent.includes("export function SaaSTooltipLibrary"), "must export SaaSTooltipLibrary");
+
+  // 6 Categories
+  assert.ok(ttContent.includes("1. Directional Tooltips"), "must contain Directional Tooltips category");
+  assert.ok(ttContent.includes("2. Shortcuts & Status"), "must contain Shortcuts & Status category");
+  assert.ok(ttContent.includes("3. Toolbar & Hints"), "must contain Toolbar & Hints category");
+  assert.ok(ttContent.includes("4. Rich Popovers"), "must contain Rich Popovers category");
+  assert.ok(ttContent.includes("5. Safety & Confirm"), "must contain Safety & Confirm category");
+  assert.ok(ttContent.includes("6. Quick-Edit & Notes"), "must contain Quick-Edit & Notes category");
+
+  // 3 Density Tiers
+  for (const tier of ["small", "medium", "large"]) {
+    assert.ok(ttContent.includes(`"${tier}"`), `Tooltip library must support tier ${tier}`);
+  }
+
+  // Key interactive features
+  assert.ok(ttContent.includes("Top Hover Tooltip"), "must implement top hover tooltip");
+  assert.ok(ttContent.includes("Bottom Hover Tooltip"), "must implement bottom hover tooltip");
+  assert.ok(ttContent.includes("Left Side Tooltip"), "must implement left side tooltip");
+  assert.ok(ttContent.includes("Right Side Tooltip"), "must implement right side tooltip");
+  assert.ok(ttContent.includes("Keyboard Shortcut Tooltip"), "must implement keyboard shortcut tooltip");
+  assert.ok(ttContent.includes("Light Surface Bordered Tooltip"), "must implement light card tooltip");
+  assert.ok(ttContent.includes("Multi-Line Explanation Tooltip"), "must implement multi-line explanation tooltip");
+  assert.ok(ttContent.includes("Click-to-Copy Confirmation Tooltip"), "must implement copy confirmation tooltip");
+  assert.ok(ttContent.includes("Icon Action Bar with Tooltips"), "must implement icon action bar");
+  assert.ok(ttContent.includes("Disabled Button Reason Tooltip"), "must implement disabled button tooltip");
+  assert.ok(ttContent.includes("Live Status Dot Tooltip"), "must implement live status tooltip");
+  assert.ok(ttContent.includes("Truncated Text Full-Name Hint"), "must implement truncated text hint");
+  assert.ok(ttContent.includes("Feature Info Card Popover"), "must implement feature info popover");
+  assert.ok(ttContent.includes("User Profile Preview Popover"), "must implement user profile popover");
+  assert.ok(ttContent.includes("Usage & Quota Breakdown Popover"), "must implement quota breakdown popover");
+  assert.ok(ttContent.includes("Keyboard Shortcuts Cheat-Sheet Popover"), "must implement shortcuts cheat sheet");
+  assert.ok(ttContent.includes("Delete Confirmation Popover"), "must implement delete confirmation popover");
+  assert.ok(ttContent.includes("Publish Live Confirmation Popover"), "must implement publish confirmation popover");
+  assert.ok(ttContent.includes("Revoke Access Warning Popover"), "must implement revoke warning popover");
+  assert.ok(ttContent.includes("Share Link & Access Popover"), "must implement share link popover");
+  assert.ok(ttContent.includes("Quick Rename Popover"), "must implement quick rename popover");
+  assert.ok(ttContent.includes("Quick Note / Feedback Popover"), "must implement quick note feedback popover");
+
+  // Export from libraries/index.ts
+  const libIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/index.ts"), "utf8");
+  assert.ok(libIdx.includes('export * from "./tooltip-library";'), "libraries/index.ts must export tooltip-library");
+
+  // Dashboard integration
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("SaaSTooltipLibrary"), "DashboardShell must integrate SaaSTooltipLibrary");
+  assert.ok(dashboardContent.includes("175 SaaS Pattern Variants Active"), "DashboardShell must synchronize 175 active variants badge");
+  assert.ok(dashboardContent.includes("docsSubView === \"tooltips\""), "DashboardShell must render SaaSTooltipLibrary on tooltips tab");
 });
 
 console.log("\n==================================================");
