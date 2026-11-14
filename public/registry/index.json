@@ -1,12 +1,12 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 115,
+  "totalCount": 117,
   "tiers": {
     "core": 3,
     "atoms": 42,
     "molecules": 43,
-    "organisms": 15,
+    "organisms": 17,
     "templates": 5,
     "views": 7
   },
@@ -1279,6 +1279,28 @@
       "registryUrl": "/registry/audit-log.json"
     },
     {
+      "name": "billing-portal",
+      "title": "Billing Portal",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/billing-portal.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context",
+        "detail-drawer",
+        "modal",
+        "payment-card",
+        "progress-bar",
+        "stat-card"
+      ],
+      "lines": 768,
+      "registryUrl": "/registry/billing-portal.json"
+    },
+    {
       "name": "chat-conversation",
       "title": "Chat Conversation",
       "type": "registry:ui",
@@ -1456,6 +1478,25 @@
       "registryUrl": "/registry/quota-matrix.json"
     },
     {
+      "name": "team-permissions",
+      "title": "Team Permissions",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/team-permissions.tsx",
+      "dependencies": [
+        "lucide-react",
+        "zod"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context",
+        "modal"
+      ],
+      "lines": 630,
+      "registryUrl": "/registry/team-permissions.json"
+    },
+    {
       "name": "toast",
       "title": "Toast",
       "type": "registry:ui",
@@ -1583,14 +1624,12 @@
       "type": "registry:ui",
       "tier": "views",
       "targetPath": "src/components/zerolight/views/billing-view.tsx",
-      "dependencies": [
-        "lucide-react"
-      ],
+      "dependencies": [],
       "registryDependencies": [
-        "context",
-        "types"
+        "billing-portal",
+        "context"
       ],
-      "lines": 297,
+      "lines": 23,
       "registryUrl": "/registry/billing-view.json"
     },
     {
@@ -1672,7 +1711,7 @@
         "context",
         "types"
       ],
-      "lines": 222,
+      "lines": 224,
       "registryUrl": "/registry/settings-view.json"
     }
   ]

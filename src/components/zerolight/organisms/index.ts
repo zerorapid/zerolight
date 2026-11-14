@@ -13,3 +13,5 @@ export * from "./modal";
 export * from "./page-header";
 export * from "./page-layout";
 export * from "./geo-breakdown";
+export * from "./billing-portal";
+export * from "./team-permissions";

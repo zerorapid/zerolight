@@ -6,6 +6,7 @@ import {
   FormField,
   Switch,
   RadioGroup,
+  TeamPermissions,
 } from "@/components/zerolight";
 import {
   Building2,
@@ -111,6 +112,7 @@ export function SettingsView() {
 
         {activeTab === "team" && (
           <div className="space-y-6">
+            <TeamPermissions />
             <div className="p-6 bg-white border border-neutral-200/70 rounded-xl space-y-4 shadow-2xs">
               <h3 className="text-sm font-bold text-neutral-900">Default Member Onboarding Role</h3>
               <p className="text-xs text-neutral-500">New engineers invited to this cluster inherit this default role scope.</p>

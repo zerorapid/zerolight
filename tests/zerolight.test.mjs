@@ -1080,6 +1080,33 @@ test("Enterprise Security Headers, Zod Schema & SaaS Blueprints exist and functi
   assert.ok(docsStudio.includes("<OrganizationSwitcher") && docsStudio.includes("<ApiKeyVault"), "docs-studio.tsx must showcase OrganizationSwitcher and ApiKeyVault");
 });
 
+test("Enterprise BillingPortal and TeamPermissions organisms exist, export, and comply with token invariants", () => {
+  const orgIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  assert.ok(orgIdx.includes('export * from "./billing-portal";'), "organisms/index.ts must export billing-portal");
+  assert.ok(orgIdx.includes('export * from "./team-permissions";'), "organisms/index.ts must export team-permissions");
+
+  const billingContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/billing-portal.tsx"), "utf8");
+  assert.ok(billingContent.includes("useZeroLight"), "BillingPortal must bind to useZeroLight tokens");
+  assert.ok(billingContent.includes("PaymentCard"), "BillingPortal must embed PaymentCard");
+  assert.ok(billingContent.includes("DetailDrawer"), "BillingPortal must support interactive invoice detail drawer");
+  assert.ok(billingContent.includes("tabular-nums"), "BillingPortal must use tabular-nums for financial amounts");
+  assert.ok(!billingContent.includes("font-mono"), "BillingPortal must not use font-mono for metrics");
+
+  const teamContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/team-permissions.tsx"), "utf8");
+  assert.ok(teamContent.includes("useZeroLight"), "TeamPermissions must bind to useZeroLight tokens");
+  assert.ok(teamContent.includes("InviteSchema") && teamContent.includes("z.object"), "TeamPermissions must validate invites with Zod");
+  assert.ok(teamContent.includes("PERMISSION_SCOPES"), "TeamPermissions must declare granular RBAC scopes");
+  assert.ok(teamContent.includes("twoFactorEnabled"), "TeamPermissions must track hardware 2FA status");
+  assert.ok(!teamContent.includes("font-mono"), "TeamPermissions must not use font-mono for metrics");
+
+  const docsStudio = fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8");
+  assert.ok(docsStudio.includes("<BillingPortal") && docsStudio.includes("<TeamPermissions"), "docs-studio.tsx must showcase BillingPortal and TeamPermissions");
+
+  const registry = JSON.parse(fs.readFileSync(path.join(rootDir, "public/registry/index.json"), "utf8"));
+  assert.ok(registry.items.some((i) => i.name === "billing-portal"), "Registry must include billing-portal");
+  assert.ok(registry.items.some((i) => i.name === "team-permissions"), "Registry must include team-permissions");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

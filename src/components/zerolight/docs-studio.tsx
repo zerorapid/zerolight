@@ -180,6 +180,8 @@ import {
   useToast,
   AppShell,
   GeoBreakdown,
+  BillingPortal,
+  TeamPermissions,
 } from "./organisms";
 import {
   DashboardTemplate,
@@ -4906,6 +4908,34 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                     <Badge variant="neutral">organisms/geo-breakdown</Badge>
                   </div>
                   <GeoBreakdown />
+                </div>
+
+                {/* ── 15. ENTERPRISE BILLING & SUBSCRIPTION HUB ── */}
+                <div id="org-billing-portal" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: tokens.universalBorderColor }}>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight">Enterprise Billing & Subscription Hub</h2>
+                      <p className="text-xs opacity-60 mt-0.5">
+                        High-trust enterprise billing portal with monthly/annual tiers, PCI-DSS vault, quota meters, and invoice breakdown.
+                      </p>
+                    </div>
+                    <Badge variant="neutral">organisms/billing-portal</Badge>
+                  </div>
+                  <BillingPortal />
+                </div>
+
+                {/* ── 16. TEAM MEMBERS & GRANULAR RBAC ── */}
+                <div id="org-team-permissions" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: tokens.universalBorderColor }}>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight">Team Members & Granular RBAC Matrix</h2>
+                      <p className="text-xs opacity-60 mt-0.5">
+                        Enterprise access control with member roster, Zod-validated invites, 2FA enforcement, and deterministic policy matrix.
+                      </p>
+                    </div>
+                    <Badge variant="neutral">organisms/team-permissions</Badge>
+                  </div>
+                  <TeamPermissions />
                 </div>
               </>
             )}
