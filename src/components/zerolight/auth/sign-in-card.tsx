@@ -84,17 +84,25 @@ export function SignInCard() {
                 backgroundColor: tokens.primaryButtonColor,
                 borderRadius: `${scaled.scaledRadius}px`,
               }}
-              className="inline-flex items-center justify-center w-12 h-12 text-white shadow-md mx-auto"
+              className="inline-flex items-center justify-center w-12 h-12 text-white shadow-md mx-auto overflow-hidden p-2"
             >
-              {/* Minimalist Geometric ZeroLight Delta Mark */}
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 22 20 2 20 12 2" />
-              </svg>
+              {tokens.logoLight || tokens.logoDark ? (
+                <img
+                  src={tokens.logoLight || tokens.logoDark}
+                  alt={tokens.logoBrandName || "Brand"}
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                /* Minimalist Geometric ZeroLight Delta Mark */
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 22 20 2 20 12 2" />
+                </svg>
+              )}
             </div>
             <div>
               <div className="flex items-center justify-center gap-1.5">
                 <h1 className="text-xl font-bold tracking-tight text-zinc-950">
-                  ZeroLight OS
+                  {tokens.logoBrandName || "ZeroLight OS"}
                 </h1>
                 <Badge variant="neutral" className="text-[10px] py-0 px-1.5">v2.0</Badge>
               </div>

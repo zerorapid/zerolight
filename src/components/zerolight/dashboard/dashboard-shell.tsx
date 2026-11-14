@@ -106,14 +106,22 @@ export function DashboardShell() {
           {/* Top Brand Mark */}
           <div className="p-2.5 flex items-center justify-between border-b border-zinc-100">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 22 20 2 20 12 2" />
-                </svg>
+              <div className="w-8 h-8 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-xs shadow-xs overflow-hidden">
+                {tokens.logoLight || tokens.logoDark ? (
+                  <img
+                    src={tokens.logoLight || tokens.logoDark}
+                    alt={tokens.logoBrandName || "Brand"}
+                    className="w-full h-full object-contain p-1"
+                  />
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="12 2 22 20 2 20 12 2" />
+                  </svg>
+                )}
               </div>
               <div>
                 <span className="font-bold text-xs text-zinc-950 block tracking-tight">
-                  ZeroLight OS
+                  {tokens.logoBrandName || "ZeroLight OS"}
                 </span>
                 <span className="text-[10px] text-zinc-400 font-medium">Enterprise v2.4</span>
               </div>

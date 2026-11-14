@@ -1227,6 +1227,15 @@ test("Visual Studio Logo Variations Manager & My Themes Persistence", () => {
   assert.ok(themeContent.includes("STORAGE_CUSTOM_THEMES"), "must persist custom themes with localStorage");
   assert.ok(themeContent.includes("handleSaveCustomTheme"), "must support saving custom theme");
   assert.ok(themeContent.includes("handleDeleteCustomTheme"), "must support deleting custom theme");
+
+  // Dynamic brand logo binding in Dashboard & SignInCard
+  const dashboardPath = path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx");
+  const dashboardContent = fs.readFileSync(dashboardPath, "utf8");
+  assert.ok(dashboardContent.includes("tokens.logoLight") || dashboardContent.includes("tokens.logoBrandName"), "DashboardShell must bind custom logo & brand name");
+
+  const signInPath = path.join(rootDir, "src/components/zerolight/auth/sign-in-card.tsx");
+  const signInContent = fs.readFileSync(signInPath, "utf8");
+  assert.ok(signInContent.includes("tokens.logoLight") || signInContent.includes("tokens.logoBrandName"), "SignInCard must bind custom logo & brand name");
 });
 
 // -----------------------------------------------------------------

@@ -20,7 +20,10 @@ const REGISTRY_PATH = path.join(ROOT_DIR, "public", "registry", "index.json");
 function loadRegistry() {
   if (fs.existsSync(REGISTRY_PATH)) {
     try {
-      return JSON.parse(fs.readFileSync(REGISTRY_PATH, "utf8"));
+      const parsed = JSON.parse(fs.readFileSync(REGISTRY_PATH, "utf8"));
+      if (Array.isArray(parsed)) return parsed;
+      if (parsed && Array.isArray(parsed.items)) return parsed.items;
+      return [];
     } catch {
       return [];
     }
@@ -93,15 +96,16 @@ function handleToolCall(name, args) {
       const category = args?.category || "all";
       const items = registry.filter((item) => {
         if (category === "all") return true;
-        return item.type === category;
+        return item.tier === category || item.type === category;
       });
       return {
         total: items.length,
         components: items.map((i) => ({
           name: i.name,
-          type: i.type,
-          description: i.description || "",
-          dependencies: i.dependencies || [],
+          title: i.title || i.name,
+          tier: i.tier || i.type,
+          dependencies: i.dependencies || i.registryDependencies || [],
+          targetPath: i.targetPath,
         })),
       };
     }
@@ -120,10 +124,11 @@ function handleToolCall(name, args) {
       // Check if file exists in src/components/zerolight/
       let code = "";
       const searchPaths = [
-        path.join(ROOT_DIR, "src", "components", "zerolight", match.type, `${match.name}.tsx`),
-        path.join(ROOT_DIR, "src", "components", "zerolight", match.type, `${match.name}.ts`),
+        match.targetPath ? path.join(ROOT_DIR, match.targetPath) : null,
+        path.join(ROOT_DIR, "src", "components", "zerolight", match.tier || match.type, `${match.name}.tsx`),
+        path.join(ROOT_DIR, "src", "components", "zerolight", match.tier || match.type, `${match.name}.ts`),
         path.join(ROOT_DIR, "src", "components", `${match.name}.tsx`),
-      ];
+      ].filter(Boolean);
       for (const sp of searchPaths) {
         if (fs.existsSync(sp)) {
           code = fs.readFileSync(sp, "utf8");
@@ -133,8 +138,9 @@ function handleToolCall(name, args) {
 
       return {
         name: match.name,
-        type: match.type,
-        dependencies: match.dependencies || [],
+        title: match.title,
+        tier: match.tier || match.type,
+        dependencies: match.dependencies || match.registryDependencies || [],
         sourceFound: Boolean(code),
         code: code || "// Source code available via ZeroLight registry bundle",
       };
@@ -152,7 +158,7 @@ function handleToolCall(name, args) {
         };
       }
 
-      const targetBase = args?.targetDir ? path.resolve(ROOT_DIR, args.targetDir) : path.join(ROOT_DIR, "src", "components", "zerolight", match.type);
+      const targetBase = args?.targetDir ? path.resolve(ROOT_DIR, args.targetDir) : path.join(ROOT_DIR, "src", "components", "zerolight", match.tier || "atoms");
       const targetPath = path.join(targetBase, `${match.name}.tsx`);
 
       return {
