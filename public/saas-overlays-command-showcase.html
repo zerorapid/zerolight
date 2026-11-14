@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 3 Organism Library: SaaS Overlays, Modals, Drawers & ⌘K Command Palette (16 Variants)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --modal-width: 440px;
+      --drawer-width: 420px;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Dynamic Width Classes */
+    .width-small {
+      --modal-width: 380px;
+      --drawer-width: 360px;
+    }
+    .width-medium {
+      --modal-width: 440px;
+      --drawer-width: 420px;
+    }
+    .width-large {
+      --modal-width: 540px;
+      --drawer-width: 520px;
+    }
+    .custom-modal-box {
+      width: 100%;
+      max-width: var(--modal-width);
+    }
+    .custom-drawer-box {
+      width: 100%;
+      max-width: var(--drawer-width);
+    }
+    /* Smooth CSS Keyframes for Overlay Stage */
+    @keyframes modalPopIn {
+      0% { opacity: 0; transform: scale(0.96) translateY(6px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes slideInRight {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes slideInLeft {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes commandSlideDown {
+      0% { opacity: 0; transform: scale(0.98) translateY(-14px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .anim-modal-in {
+      animation: modalPopIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .anim-drawer-right {
+      animation: slideInRight 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .anim-drawer-left {
+      animation: slideInLeft 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .anim-command-down {
+      animation: commandSlideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-[#09090B] dark:text-[#FAFAFA] antialiased min-h-screen transition-colors duration-200 width-medium">
+
+  <!-- Sticky Global Control Bar -->
+  <header class="sticky top-0 z-40 bg-[#FAFAFA]/90 dark:bg-[#09090B]/90 backdrop-blur-md border-b border-[#09090B]/[0.08] dark:border-white/[0.08] px-4 sm:px-6 py-3 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto space-y-3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <!-- Brand, L3 Badge & Live Counter -->
+        <div class="flex items-center gap-3">
+          <div class="px-2 py-1 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs tracking-tight shadow-sm flex items-center gap-1">
+            <span>L3</span>
+            <span class="text-zinc-400 dark:text-zinc-500 font-normal">|</span>
+            <span>Organisms</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-sm font-bold tracking-tight text-zinc-950 dark:text-white">Overlays, Modals, Drawers & ⌘K Palette</h1>
+              <span id="variant-counter-badge" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-200/80 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 tabular-nums">
+                16 Variants
+              </span>
+            </div>
+            <p class="text-[11px] text-zinc-500 dark:text-zinc-400">
+              Spring-animated dialogs, slide-overs, global ⌘K launcher & contextual coordinates menu.
+            </p>
+          </div>
+        </div>
+
+        <!-- Controls: Quick Launch ⌘K, Search, Width Toggles, Theme -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <!-- Quick Launch ⌘K Button -->
+          <button
+            type="button"
+            onclick="openOverlayStage('overlay-cmd-11')"
+            class="px-3 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+          >
+            <i data-lucide="command" class="w-3.5 h-3.5"></i>
+            <span>Command Bar</span>
+            <kbd class="px-1.5 py-0.2 rounded bg-white/20 dark:bg-zinc-900/20 text-[10px] font-bold tabular-nums">⌘K</kbd>
+          </button>
+
+          <!-- Instant Search -->
+          <div class="relative min-w-[160px]">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Search overlays..."
+              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white transition"
+            />
+          </div>
+
+          <!-- 3 Global Width Toggles (Small, Medium, Large) -->
+          <div class="flex items-center p-0.5 rounded-xl bg-zinc-200/70 dark:bg-zinc-800/80 border border-zinc-300/40 dark:border-zinc-700/50">
+            <button
+              type="button"
+              onclick="setWidthTier('small')"
+              id="width-small"
+              class="width-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+            >
+              Small (380px)
+            </button>
+            <button
+              type="button"
+              onclick="setWidthTier('medium')"
+              id="width-medium"
+              class="width-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-[#121215] text-zinc-950 dark:text-white shadow-xs transition cursor-pointer"
+            >
+              Medium (440px)
+            </button>
+            <button
+              type="button"
+              onclick="setWidthTier('large')"
+              id="width-large"
+              class="width-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+            >
+              Large (540px)
+            </button>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button
+            type="button"
+            onclick="toggleTheme()"
+            class="p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
+            title="Toggle Light / Dark Mode"
+          >
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal Category Filter Pill Rail -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+        <button
+          type="button"
+          onclick="filterCategory('all')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-xs"
+          data-category="all"
+        >
+          All (16)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat1')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat1"
+        >
+          1. Confirmation Dialogs (3)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat2')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat2"
+        >
+          2. Form & Invite Modals (3)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat3')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat3"
+        >
+          3. Slide-Over Drawers (4)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat4')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat4"
+        >
+          4. Command Palettes (2)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat5')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat5"
+        >
+          5. Context Menus (2)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat6')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat6"
+        >
+          6. Onboarding & Steps (2)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="variant-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 1: CONFIRMATION & ALERT DIALOGS (3)   -->
+      <!-- ============================================== -->
+
+      <!-- Variant 01: Standard Action Confirm Dialog -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Standard Action Confirm Dialog">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">01</span>
+              Standard Action Confirm Dialog
+            </span>
+            <button onclick="openCodeModal('01 Standard Action Confirm Dialog', snippet01)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Lightweight non-destructive archive prompt with secondary cancel.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-01')"
+              class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+            >
+              <i data-lucide="archive" class="w-3.5 h-3.5"></i>
+              <span>Open Archive Dialog</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 02: Type-to-Confirm Delete Dialog -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Type-to-Confirm Delete Dialog">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">02</span>
+              Type-to-Confirm Delete Dialog
+            </span>
+            <button onclick="openCodeModal('02 Type-to-Confirm Delete Dialog', snippet02)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Irreversible deletion safety guard requiring user to type DELETE.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-02')"
+              class="px-4 py-2 rounded-xl bg-rose-600 text-white font-semibold text-xs flex items-center gap-2 shadow-xs hover:bg-rose-700 transition cursor-pointer"
+            >
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              <span>Delete Workspace</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 03: Success Receipt Dialog -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Success Receipt Dialog">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">03</span>
+              Success Receipt Dialog
+            </span>
+            <button onclick="openCodeModal('03 Success Receipt Dialog', snippet03)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Affirmative post-transaction confirmation with payment reference.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-03')"
+              class="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-semibold text-xs flex items-center gap-2 shadow-xs hover:bg-zinc-100 transition cursor-pointer"
+            >
+              <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-500"></i>
+              <span>View Payment Receipt</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 2: FORM, INVITE & UPGRADE MODALS (3)  -->
+      <!-- ============================================== -->
+
+      <!-- Variant 04: Create Record Form Modal -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Create Record Form Modal">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">04</span>
+              Create Record Form Modal
+            </span>
+            <button onclick="openCodeModal('04 Create Record Form Modal', snippet04)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Multi-field client creation modal with sticky action footer.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-04')"
+              class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+            >
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+              <span>+ Create Client</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 05: Invite Team Members Modal -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Invite Team Members Modal">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">05</span>
+              Invite Team Members Modal
+            </span>
+            <button onclick="openCodeModal('05 Invite Team Members Modal', snippet05)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Collaborator invitation dialog with email input and live member roles.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-05')"
+              class="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-semibold text-xs flex items-center gap-2 shadow-xs hover:bg-zinc-100 transition cursor-pointer"
+            >
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+              <span>Invite Teammates</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 06: Plan Upgrade Modal -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Plan Upgrade Modal">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">06</span>
+              Plan Upgrade Modal
+            </span>
+            <button onclick="openCodeModal('06 Plan Upgrade Modal', snippet06)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Pro Plan feature gate dialog with pricing badge and free trial CTA.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-06')"
+              class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+            >
+              <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Upgrade to Pro</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 3: SLIDE-OVER DRAWERS & PANELS (4)    -->
+      <!-- ============================================== -->
+
+      <!-- Variant 07: Right Record Detail Drawer -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Right Record Detail Drawer">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">07</span>
+              Right Record Detail Drawer
+            </span>
+            <button onclick="openCodeModal('07 Right Record Detail Drawer', snippet07)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Slides in from right showing invoice metadata, paid status, and actions.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-drawer-07')"
+              class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+            >
+              <i data-lucide="panel-right-open" class="w-3.5 h-3.5"></i>
+              <span>View Invoice #INV-9042</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 08: Slide-Over Edit Form Drawer -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Slide-Over Edit Form Drawer">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">08</span>
+              Slide-Over Edit Form Drawer
+            </span>
+            <button onclick="openCodeModal('08 Slide-Over Edit Form Drawer', snippet08)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Side-panel editor keeping underlying table context visible.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-drawer-08')"
+              class="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-semibold text-xs flex items-center gap-2 shadow-xs hover:bg-zinc-100 transition cursor-pointer"
+            >
+              <i data-lucide="edit" class="w-3.5 h-3.5"></i>
+              <span>Edit Order Details</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 09: Slide-Over Filter Panel -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Slide-Over Filter Panel">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">09</span>
+              Slide-Over Filter Panel
+            </span>
+            <button onclick="openCodeModal('09 Slide-Over Filter Panel', snippet09)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Faceted filtering panel with status pills, checkboxes, and reset.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-drawer-09')"
+              class="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-semibold text-xs flex items-center gap-2 shadow-xs hover:bg-zinc-100 transition cursor-pointer"
+            >
+              <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5"></i>
+              <span>Open Filter Drawer</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 10: Left Mobile Navigation Drawer -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Left Mobile Navigation Drawer">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">10</span>
+              Left Mobile Navigation Drawer
+            </span>
+            <button onclick="openCodeModal('10 Left Mobile Navigation Drawer', snippet10)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Leftward navigation drawer for responsive mobile viewports.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-drawer-10')"
+              class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+            >
+              <i data-lucide="menu" class="w-3.5 h-3.5"></i>
+              <span>Open Left Nav Drawer</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 4: COMMAND PALETTES (2)               -->
+      <!-- ============================================== -->
+
+      <!-- Variant 11: Global Command Palette (⌘K) -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="Global Command Palette (⌘K)">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">11</span>
+              Global Command Palette (⌘K)
+            </span>
+            <button onclick="openCodeModal('11 Global Command Palette', snippet11)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Live searchable keyboard-first launcher filtering commands as you type.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-cmd-11')"
+              class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+            >
+              <i data-lucide="command" class="w-3.5 h-3.5"></i>
+              <span>Launch Command Palette (⌘K)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 12: Scoped Record Quick-Switcher -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="Scoped Record Quick-Switcher">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">12</span>
+              Scoped Record Quick-Switcher
+            </span>
+            <button onclick="openCodeModal('12 Scoped Record Quick-Switcher', snippet12)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Scoped search switching active client workspace records instantaneously.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-cmd-12')"
+              class="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-semibold text-xs flex items-center gap-2 shadow-xs hover:bg-zinc-100 transition cursor-pointer"
+            >
+              <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+              <span>Quick-Switch Client</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 5: CONTEXT MENUS (2)                  -->
+      <!-- ============================================== -->
+
+      <!-- Variant 13: Right-Click Table Row Area -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Right-Click Table Row Area">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">13</span>
+              Right-Click Table Row Area
+            </span>
+            <button onclick="openCodeModal('13 Right-Click Table Row Area', snippet13)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Right-click or tap inside this dashed zone to spawn coordinates context menu.
+          </p>
+          <div
+            id="context-zone-13"
+            oncontextmenu="handleCustomContextMenu(event, 'row')"
+            onclick="handleCustomContextMenu(event, 'row')"
+            class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-2 border-dashed border-zinc-300 dark:border-zinc-700 text-center cursor-context-menu hover:border-zinc-950 transition"
+          >
+            <i data-lucide="mouse-pointer-click" class="w-5 h-5 mx-auto mb-1 text-zinc-500"></i>
+            <div class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Right-Click or Tap Row Zone</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">Spawns: Details, Duplicate, Copy Link, Delete</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 14: Canvas / Card Context Menu -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Canvas / Card Context Menu">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">14</span>
+              Canvas / Card Context Menu
+            </span>
+            <button onclick="openCodeModal('14 Canvas / Card Context Menu', snippet14)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Widget area context menu for exporting and pinning dashboard cards.
+          </p>
+          <div
+            id="context-zone-14"
+            oncontextmenu="handleCustomContextMenu(event, 'widget')"
+            onclick="handleCustomContextMenu(event, 'widget')"
+            class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border-2 border-dashed border-zinc-300 dark:border-zinc-700 text-center cursor-context-menu hover:border-zinc-950 transition"
+          >
+            <i data-lucide="layout-grid" class="w-5 h-5 mx-auto mb-1 text-zinc-500"></i>
+            <div class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Right-Click Widget Area</div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">Spawns: Refresh, Export PNG, Pin to Top</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 6: GUIDED SETUP & ONBOARDING (2)      -->
+      <!-- ============================================== -->
+
+      <!-- Variant 15: CSV Column Mapping Step Modal -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat6" data-title="CSV Column Mapping Step Modal">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">15</span>
+              CSV Column Mapping Step Modal
+            </span>
+            <button onclick="openCodeModal('15 CSV Column Mapping Step Modal', snippet15)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            Multi-step import dialog aligning spreadsheet columns to schema.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-15')"
+              class="px-4 py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-2 shadow-xs hover:opacity-90 transition cursor-pointer"
+            >
+              <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+              <span>Launch CSV Mapper</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 16: Welcome Walkthrough Modal -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat6" data-title="Welcome Walkthrough Modal">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">16</span>
+              Welcome Walkthrough Modal
+            </span>
+            <button onclick="openCodeModal('16 Welcome Walkthrough Modal', snippet16)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-6">
+            First-session video tour dialog with skip and start exploration CTAs.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center justify-center">
+            <button
+              type="button"
+              onclick="openOverlayStage('overlay-modal-16')"
+              class="px-4 py-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-semibold text-xs flex items-center gap-2 shadow-xs hover:bg-zinc-100 transition cursor-pointer"
+            >
+              <i data-lucide="play-circle" class="w-3.5 h-3.5 text-zinc-950 dark:text-white"></i>
+              <span>Open Walkthrough Modal</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================== -->
+  <!-- SHARED INTERACTIVE OVERLAY STAGE (BACKDROP)    -->
+  <!-- ============================================== -->
+  <div
+    id="overlay-backdrop"
+    onclick="handleBackdropClick(event)"
+    class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center transition-all duration-200"
+  >
+    <!-- OVERLAY 01: Standard Action Confirm Dialog -->
+    <div id="overlay-modal-01" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-2xl anim-modal-in hidden text-xs">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+        <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Archive Project?</h3>
+        <button onclick="closeActiveOverlay()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <p class="text-zinc-600 dark:text-zinc-400 my-4 leading-relaxed text-[11px]">
+        Archiving will hide "Q4 Enterprise ERP" from your active workspace list. Existing invoices will remain accessible in your audit log.
+      </p>
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+        <button onclick="closeActiveOverlay()" class="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold hover:bg-zinc-100">
+          Cancel
+        </button>
+        <button onclick="simulateAction('Project archived successfully')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">
+          Archive Project
+        </button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 02: Type-to-Confirm Delete Dialog -->
+    <div id="overlay-modal-02" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-2xl anim-modal-in hidden text-xs">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+        <h3 class="text-sm font-bold text-rose-600 flex items-center gap-1.5">
+          <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+          Delete Workspace Permanently
+        </h3>
+        <button onclick="closeActiveOverlay()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <p class="text-zinc-600 dark:text-zinc-400 my-3 leading-relaxed text-[11px]">
+        This will permanently erase all client ledgers, payment keys, and member seats. Type <strong class="text-zinc-950 dark:text-white">DELETE</strong> to confirm:
+      </p>
+      <input
+        id="type-to-confirm-input"
+        type="text"
+        placeholder="Type DELETE to enable"
+        oninput="handleDeleteInputChange(this.value)"
+        class="w-full px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 mb-4 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-rose-500"
+      />
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+        <button onclick="closeActiveOverlay()" class="px-3 py-1.5 rounded-xl text-zinc-600 dark:text-zinc-400 font-semibold">
+          Cancel
+        </button>
+        <button
+          id="delete-forever-btn"
+          disabled
+          onclick="simulateAction('Workspace permanently deleted')"
+          class="px-3.5 py-1.5 rounded-xl bg-zinc-200 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 font-semibold cursor-not-allowed shadow-xs transition"
+        >
+          Delete Forever
+        </button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 03: Success Receipt Dialog -->
+    <div id="overlay-modal-03" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-2xl anim-modal-in hidden text-xs text-center">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center mx-auto mb-3 text-emerald-600">
+        <i data-lucide="check" class="w-6 h-6 stroke-[3]"></i>
+      </div>
+      <h3 class="text-base font-bold text-zinc-950 dark:text-white mb-1">Payment Received</h3>
+      <p class="text-zinc-500 mb-4 text-[11px]">Direct NEFT settlement via RazorpayX payout.</p>
+      <div class="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 mb-4 space-y-2 text-left">
+        <div class="flex justify-between">
+          <span class="text-zinc-500">Amount Paid</span>
+          <span class="font-bold text-zinc-950 dark:text-white tabular-nums text-sm">₹1,25,000</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-zinc-500">Transaction ID</span>
+          <span class="font-semibold text-zinc-900 dark:text-zinc-100 tabular-nums">RZP-90824190</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-zinc-500">Timestamp</span>
+          <span class="text-zinc-700 dark:text-zinc-300 tabular-nums">15 Nov 2026, 03:30 AM</span>
+        </div>
+      </div>
+      <button onclick="closeActiveOverlay()" class="w-full py-2 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold shadow-xs">
+        Done
+      </button>
+    </div>
+
+    <!-- OVERLAY 04: Create Record Form Modal -->
+    <div id="overlay-modal-04" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-2xl anim-modal-in hidden text-xs">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+        <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Create New Client</h3>
+        <button onclick="closeActiveOverlay()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="space-y-3 my-4">
+        <div>
+          <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Company Legal Name</label>
+          <input type="text" placeholder="e.g. Telangana Logistics Ltd" class="w-full px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs" />
+        </div>
+        <div>
+          <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Billing Contact Email</label>
+          <input type="email" placeholder="finance@company.com" class="w-full px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs" />
+        </div>
+        <div>
+          <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Headquarters City</label>
+          <input type="text" placeholder="Hyderabad" class="w-full px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs" />
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+        <button onclick="closeActiveOverlay()" class="px-3 py-1.5 rounded-xl text-zinc-600 dark:text-zinc-400 font-semibold">
+          Cancel
+        </button>
+        <button onclick="simulateAction('Client Telangana Logistics created')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">
+          Create Client
+        </button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 05: Invite Team Members Modal -->
+    <div id="overlay-modal-05" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-2xl anim-modal-in hidden text-xs">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+        <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Invite Team Members</h3>
+        <button onclick="closeActiveOverlay()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="my-4 space-y-3">
+        <div class="flex gap-2">
+          <input id="invite-email-input" type="email" placeholder="colleague@domain.com" class="flex-1 px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs" />
+          <button onclick="sendInviteEmail()" class="px-3 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">
+            Send
+          </button>
+        </div>
+        <div class="text-[11px] font-bold uppercase text-zinc-400 tracking-wider pt-2">Active Workspace Members</div>
+        <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <div class="py-2 flex items-center justify-between">
+            <span class="font-medium text-zinc-800 dark:text-zinc-200">jayapal@zerorapid.com</span>
+            <span class="px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-800 font-bold text-[10px]">Owner</span>
+          </div>
+          <div class="py-2 flex items-center justify-between">
+            <span class="font-medium text-zinc-800 dark:text-zinc-200">ananya@zerorapid.com</span>
+            <span class="px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-bold text-[10px]">Admin</span>
+          </div>
+        </div>
+      </div>
+      <div class="pt-2 border-t border-zinc-100 dark:border-zinc-800 text-right">
+        <button onclick="closeActiveOverlay()" class="px-3.5 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold">
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 06: Plan Upgrade Modal -->
+    <div id="overlay-modal-06" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-2xl anim-modal-in hidden text-xs">
+      <div class="flex items-center justify-between mb-3">
+        <span class="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400 font-bold text-[10px] uppercase">
+          Pro Plan
+        </span>
+        <button onclick="closeActiveOverlay()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <h3 class="text-base font-bold text-zinc-950 dark:text-white mb-1">Unlock Multi-Branch Sync</h3>
+      <p class="text-zinc-500 mb-4 text-[11px] leading-relaxed">Synchronize inventories across Mumbai, Hyderabad, and Bengaluru with real-time replication.</p>
+      <div class="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 mb-5">
+        <div class="text-2xl font-bold tabular-nums text-zinc-950 dark:text-white">₹2,499 <span class="text-xs font-normal text-zinc-500">/ month</span></div>
+        <div class="text-[11px] text-zinc-500 mt-1">Includes unlimited seats, custom domain & audit webhooks.</div>
+      </div>
+      <button onclick="simulateAction('Started 14-Day Free Pro Trial')" class="w-full py-2.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs shadow-xs mb-2">
+        Start 14-Day Free Trial
+      </button>
+      <div class="text-center text-[10px] text-zinc-400">No credit card required upfront. Cancel anytime.</div>
+    </div>
+
+    <!-- OVERLAY 07: Right Record Detail Drawer -->
+    <div id="overlay-drawer-07" class="custom-drawer-box fixed right-0 top-0 bottom-0 bg-white dark:bg-[#121215] border-l border-zinc-200 dark:border-zinc-800 shadow-2xl anim-drawer-right hidden flex flex-col justify-between text-xs z-50">
+      <div>
+        <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-bold text-zinc-950 dark:text-white tabular-nums">Invoice #INV-9042</h3>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">Paid</span>
+            </div>
+            <div class="text-[11px] text-zinc-400 mt-0.5">Hyderabad Tech Park Pvt Ltd</div>
+          </div>
+          <button onclick="closeActiveOverlay()" class="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="p-5 space-y-4">
+          <div class="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+            <div class="text-zinc-500 text-[11px]">Invoice Value</div>
+            <div class="text-xl font-bold tabular-nums text-zinc-950 dark:text-white mt-0.5">₹84,500</div>
+          </div>
+          <div class="space-y-2 text-[11px]">
+            <div class="flex justify-between py-1 border-b border-zinc-100 dark:border-zinc-800">
+              <span class="text-zinc-500">Issued On</span>
+              <span class="font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">01 Nov 2026</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-zinc-100 dark:border-zinc-800">
+              <span class="text-zinc-500">Due Date</span>
+              <span class="font-medium text-zinc-900 dark:text-zinc-100 tabular-nums">15 Nov 2026</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-zinc-100 dark:border-zinc-800">
+              <span class="text-zinc-500">Payment Mode</span>
+              <span class="font-medium text-zinc-900 dark:text-zinc-100">NEFT / Corporate Bank</span>
+            </div>
+          </div>
+          <div>
+            <div class="text-zinc-500 text-[11px] mb-1">Internal Notes</div>
+            <div class="p-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-[11px] text-zinc-700 dark:text-zinc-300 leading-relaxed">
+              Approved by CFO on 02 Nov. TDS deduction of 2% applicable under Section 194C.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-end gap-2 bg-zinc-50 dark:bg-zinc-900/60">
+        <button onclick="simulateAction('Downloaded Invoice PDF')" class="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 font-semibold flex items-center gap-1.5">
+          <i data-lucide="download" class="w-3.5 h-3.5"></i>
+          <span>Download PDF</span>
+        </button>
+        <button onclick="simulateAction('Editing Record #INV-9042')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">
+          Edit Record
+        </button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 08: Slide-Over Edit Form Drawer -->
+    <div id="overlay-drawer-08" class="custom-drawer-box fixed right-0 top-0 bottom-0 bg-white dark:bg-[#121215] border-l border-zinc-200 dark:border-zinc-800 shadow-2xl anim-drawer-right hidden flex flex-col justify-between text-xs z-50">
+      <div>
+        <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Edit Order Details</h3>
+          <button onclick="closeActiveOverlay()" class="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="p-5 space-y-3">
+          <div>
+            <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Purchase Order ID</label>
+            <input type="text" value="PO-88219" class="w-full px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs tabular-nums font-semibold" />
+          </div>
+          <div>
+            <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Shipping Address</label>
+            <textarea rows="3" class="w-full p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs">HITEC City, Madhapur, Hyderabad, Telangana 500081</textarea>
+          </div>
+          <div>
+            <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Fulfillment Status</label>
+            <div class="flex gap-2">
+              <button class="px-3 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs">Processing</button>
+              <button class="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs">Dispatched</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-end gap-2 bg-zinc-50 dark:bg-zinc-900/60">
+        <button onclick="closeActiveOverlay()" class="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 font-semibold">Cancel</button>
+        <button onclick="simulateAction('Order details saved')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 09: Slide-Over Filter Panel -->
+    <div id="overlay-drawer-09" class="custom-drawer-box fixed right-0 top-0 bottom-0 bg-white dark:bg-[#121215] border-l border-zinc-200 dark:border-zinc-800 shadow-2xl anim-drawer-right hidden flex flex-col justify-between text-xs z-50">
+      <div>
+        <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Filter Records</h3>
+          <button onclick="closeActiveOverlay()" class="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-2">Record Status</label>
+            <div class="flex flex-wrap gap-1.5">
+              <button class="px-2.5 py-1 rounded-lg bg-zinc-950 text-white font-semibold text-[11px]">All</button>
+              <button class="px-2.5 py-1 rounded-lg border border-zinc-200 text-zinc-700 text-[11px]">Paid</button>
+              <button class="px-2.5 py-1 rounded-lg border border-zinc-200 text-zinc-700 text-[11px]">Pending</button>
+              <button class="px-2.5 py-1 rounded-lg border border-zinc-200 text-zinc-700 text-[11px]">Overdue</button>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-zinc-800 dark:text-zinc-200 mb-2">Branch Locations</label>
+            <div class="space-y-1.5 text-zinc-700 dark:text-zinc-300">
+              <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="rounded" /> <span>Hyderabad Central</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked class="rounded" /> <span>Mumbai BKC</span></label>
+              <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="rounded" /> <span>Bengaluru Outer Ring</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-900/60">
+        <button onclick="showToast('Filters reset')" class="text-zinc-500 font-semibold hover:underline">Reset</button>
+        <button onclick="simulateAction('Filters applied (48 results found)')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">Show 48 Results</button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 10: Left Mobile Navigation Drawer -->
+    <div id="overlay-drawer-10" class="custom-drawer-box fixed left-0 top-0 bottom-0 bg-white dark:bg-[#121215] border-r border-zinc-200 dark:border-zinc-800 shadow-2xl anim-drawer-left hidden flex flex-col justify-between text-xs z-50">
+      <div>
+        <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <div class="flex items-center gap-2 font-bold text-sm text-zinc-950 dark:text-white">
+            <div class="w-6 h-6 rounded-lg bg-zinc-950 text-white flex items-center justify-center text-xs">ZL</div>
+            <span>ZeroLight SaaS</span>
+          </div>
+          <button onclick="closeActiveOverlay()" class="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="p-3 space-y-1 font-semibold text-zinc-700 dark:text-zinc-300">
+          <a href="#overview" class="flex items-center gap-2.5 p-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-white"><i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview</a>
+          <a href="#invoices" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900"><i data-lucide="file-text" class="w-4 h-4"></i> Invoices</a>
+          <a href="#customers" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900"><i data-lucide="users" class="w-4 h-4"></i> Customers</a>
+          <a href="#settings" class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900"><i data-lucide="settings" class="w-4 h-4"></i> Workspace Settings</a>
+        </div>
+      </div>
+      <div class="p-4 border-t border-zinc-200 dark:border-zinc-800 text-zinc-400 text-[11px]">
+        Logged in as jayapal@zerorapid.com
+      </div>
+    </div>
+
+    <!-- OVERLAY 11: Global Command Palette (⌘K) -->
+    <div id="overlay-cmd-11" class="w-full max-w-xl mx-4 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl anim-command-down hidden text-xs overflow-hidden">
+      <div class="p-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-2.5">
+        <i data-lucide="search" class="w-4 h-4 text-zinc-400"></i>
+        <input
+          id="cmd-palette-search"
+          type="text"
+          placeholder="Type a command or search..."
+          oninput="handleCommandSearch(this.value)"
+          class="w-full bg-transparent text-sm font-medium focus:outline-none placeholder-zinc-400 text-zinc-900 dark:text-white"
+        />
+        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 font-bold text-[10px]">ESC</kbd>
+      </div>
+      <div id="cmd-list" class="p-2 max-h-72 overflow-y-auto space-y-1">
+        <div class="cmd-item flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer" onclick="simulateAction('Created New Client')">
+          <div class="flex items-center gap-2.5 font-medium"><i data-lucide="user-plus" class="w-4 h-4 text-zinc-500"></i> Create New Client</div>
+          <kbd class="text-[10px] text-zinc-400 font-bold">⌘ N</kbd>
+        </div>
+        <div class="cmd-item flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer" onclick="simulateAction('Generating Invoice')">
+          <div class="flex items-center gap-2.5 font-medium"><i data-lucide="file-plus" class="w-4 h-4 text-zinc-500"></i> Create New Invoice</div>
+          <kbd class="text-[10px] text-zinc-400 font-bold">⌘ I</kbd>
+        </div>
+        <div class="cmd-item flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer" onclick="simulateAction('Exported CSV Spreadsheet')">
+          <div class="flex items-center gap-2.5 font-medium"><i data-lucide="download" class="w-4 h-4 text-zinc-500"></i> Export Financial Ledger</div>
+          <kbd class="text-[10px] text-zinc-400 font-bold">⌘ E</kbd>
+        </div>
+        <div class="cmd-item flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer" onclick="simulateAction('Switched to Billing Tab')">
+          <div class="flex items-center gap-2.5 font-medium"><i data-lucide="credit-card" class="w-4 h-4 text-zinc-500"></i> Go to Billing & Invoices</div>
+          <kbd class="text-[10px] text-zinc-400 font-bold">G B</kbd>
+        </div>
+        <div class="cmd-item flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer" onclick="simulateAction('Opened Security Keys')">
+          <div class="flex items-center gap-2.5 font-medium"><i data-lucide="shield" class="w-4 h-4 text-zinc-500"></i> Open Security & Passkeys</div>
+          <kbd class="text-[10px] text-zinc-400 font-bold">G S</kbd>
+        </div>
+      </div>
+      <div class="p-2.5 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 flex items-center justify-between text-[11px] text-zinc-500">
+        <span>Navigation: <kbd class="px-1 py-0.2 bg-zinc-200 rounded font-bold">↑</kbd> <kbd class="px-1 py-0.2 bg-zinc-200 rounded font-bold">↓</kbd></span>
+        <span>Select: <kbd class="px-1 py-0.2 bg-zinc-200 rounded font-bold">↵ Enter</kbd></span>
+      </div>
+    </div>
+
+    <!-- OVERLAY 12: Scoped Record Quick-Switcher -->
+    <div id="overlay-cmd-12" class="w-full max-w-xl mx-4 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl anim-command-down hidden text-xs overflow-hidden">
+      <div class="p-3.5 border-b border-zinc-200 dark:border-zinc-800 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-bold text-[10px]">Clients</span>
+        <input
+          type="text"
+          placeholder="Switch active client workspace..."
+          class="w-full bg-transparent text-sm font-medium focus:outline-none text-zinc-900 dark:text-white"
+        />
+        <kbd class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 font-bold text-[10px]">ESC</kbd>
+      </div>
+      <div class="p-2 space-y-1 max-h-72 overflow-y-auto">
+        <div class="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer" onclick="simulateAction('Switched workspace to Telangana Logistics')">
+          <div><div class="font-bold text-zinc-900 dark:text-white">Telangana Logistics Ltd</div><div class="text-[11px] text-zinc-500">Hyderabad • 48 Active Invoices</div></div>
+          <span class="text-emerald-600 font-bold text-[10px]">Active</span>
+        </div>
+        <div class="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer" onclick="simulateAction('Switched workspace to Mumbai Fintech')">
+          <div><div class="font-bold text-zinc-900 dark:text-white">Mumbai Fintech Works</div><div class="text-[11px] text-zinc-500">BKC Mumbai • 112 Active Invoices</div></div>
+          <span class="text-zinc-400 font-bold text-[10px]">Switch</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY 15: CSV Column Mapping Step Modal -->
+    <div id="overlay-modal-15" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-2xl anim-modal-in hidden text-xs">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+        <div>
+          <span class="text-[10px] font-bold uppercase text-zinc-400">Step 2 of 3 · Data Import</span>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white">Map CSV Spreadsheet Columns</h3>
+        </div>
+        <button onclick="closeActiveOverlay()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="space-y-3 my-4">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+          <div><div class="font-bold">Company_Title</div><div class="text-[10px] text-zinc-400">CSV Column 1</div></div>
+          <span class="text-xs font-semibold text-zinc-950 dark:text-white">→ Legal Name</span>
+        </div>
+        <div class="flex items-center justify-between p-2 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+          <div><div class="font-bold">Contact_Email</div><div class="text-[10px] text-zinc-400">CSV Column 2</div></div>
+          <span class="text-xs font-semibold text-zinc-950 dark:text-white">→ Billing Email</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+        <button onclick="closeActiveOverlay()" class="px-3 py-1.5 rounded-xl border border-zinc-200 font-semibold">Back</button>
+        <button onclick="simulateAction('Imported 142 records successfully')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">Complete Import</button>
+      </div>
+    </div>
+
+    <!-- OVERLAY 16: Welcome Walkthrough Modal -->
+    <div id="overlay-modal-16" class="custom-modal-box bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 shadow-2xl anim-modal-in hidden text-xs text-center">
+      <div class="w-full h-32 rounded-xl bg-zinc-900 text-white flex flex-col items-center justify-center mb-4 relative overflow-hidden">
+        <i data-lucide="play" class="w-8 h-8 text-white fill-white mb-1"></i>
+        <span class="text-[11px] font-semibold">2-Minute Product Walkthrough</span>
+      </div>
+      <h3 class="text-sm font-bold text-zinc-950 dark:text-white mb-1">Welcome to ZeroLight 2.0</h3>
+      <p class="text-zinc-500 mb-4 text-[11px] leading-relaxed">Discover how tokenized components, obsidian docks, and tactile motion physics work together.</p>
+      <div class="flex items-center justify-center gap-2">
+        <button onclick="closeActiveOverlay()" class="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 font-semibold">Skip Tour</button>
+        <button onclick="simulateAction('Walkthrough started')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold shadow-xs">Get Started</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING RIGHT-CLICK CONTEXT MENU -->
+  <div
+    id="custom-context-menu"
+    class="fixed z-50 hidden bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-xl p-1 shadow-2xl text-xs font-semibold min-w-[170px] animate-in fade-in duration-100"
+  >
+    <div id="context-menu-items"></div>
+  </div>
+
+  <!-- Clean Code Modal -->
+  <div id="code-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800">
+        <h3 id="modal-title" class="text-sm font-bold text-zinc-950 dark:text-white"></h3>
+        <button onclick="closeCodeModal()" class="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-5">
+        <div class="relative">
+          <pre id="modal-code" class="p-4 rounded-xl bg-zinc-900 text-zinc-100 text-xs overflow-x-auto font-sans leading-relaxed"></pre>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+        <button onclick="closeCodeModal()" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white">
+          Close
+        </button>
+        <button id="copy-code-btn" onclick="copySnippetCode()" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-semibold flex items-center gap-1.5 shadow-sm hover:opacity-90 transition">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy HTML/CSS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Stack -->
+  <div id="toast-banner" class="fixed bottom-5 right-5 z-50 bg-[#0B0F19] text-white px-4 py-2.5 rounded-xl shadow-2xl border border-white/10 text-xs font-semibold hidden animate-in fade-in slide-in-from-bottom-2 duration-150"></div>
+
+  <!-- JavaScript Engine -->
+  <script>
+    lucide.createIcons();
+
+    // Global Key Listener for Cmd+K and Escape
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        openOverlayStage('overlay-cmd-11');
+      }
+      if (e.key === 'Escape') {
+        closeActiveOverlay();
+        hideContextMenu();
+      }
+    });
+
+    // Width Toggles
+    function setWidthTier(tier) {
+      document.body.classList.remove('width-small', 'width-medium', 'width-large');
+      document.body.classList.add(`width-${tier}`);
+
+      document.querySelectorAll('.width-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-[#121215]', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+        btn.classList.add('text-zinc-600', 'dark:text-zinc-400');
+      });
+      const activeBtn = document.getElementById(`width-${tier}`);
+      activeBtn.classList.add('bg-white', 'dark:bg-[#121215]', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+      activeBtn.classList.remove('text-zinc-600', 'dark:text-zinc-400');
+    }
+
+    // Overlay Stage Management
+    let currentOpenOverlayId = null;
+    function openCommandPalette() {
+      openOverlayStage('overlay-cmd-11');
+    }
+
+    function openOverlayStage(overlayId) {
+      closeActiveOverlay();
+      currentOpenOverlayId = overlayId;
+      const backdrop = document.getElementById('overlay-backdrop');
+      const target = document.getElementById(overlayId);
+
+      backdrop.classList.remove('hidden');
+      target.classList.remove('hidden');
+
+      if (overlayId === 'overlay-cmd-11') {
+        setTimeout(() => document.getElementById('cmd-palette-search').focus(), 50);
+      }
+      if (overlayId === 'overlay-modal-02') {
+        setTimeout(() => document.getElementById('type-to-confirm-input').focus(), 50);
+      }
+    }
+
+    function closeActiveOverlay() {
+      const backdrop = document.getElementById('overlay-backdrop');
+      if (currentOpenOverlayId) {
+        const target = document.getElementById(currentOpenOverlayId);
+        if (target) target.classList.add('hidden');
+        currentOpenOverlayId = null;
+      }
+      backdrop.classList.add('hidden');
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target.id === 'overlay-backdrop') {
+        closeActiveOverlay();
+      }
+    }
+
+    // Type to Confirm Handler
+    function handleDeleteConfirmation(val) {
+      return handleDeleteInputChange(val);
+    }
+    function handleDeleteInputChange(val) {
+      const btn = document.getElementById('delete-forever-btn');
+      if (val.trim() === 'DELETE') {
+        btn.removeAttribute('disabled');
+        btn.className = 'px-3.5 py-1.5 rounded-xl bg-rose-600 text-white font-semibold shadow-xs hover:bg-rose-700 cursor-pointer transition';
+      } else {
+        btn.setAttribute('disabled', 'true');
+        btn.className = 'px-3.5 py-1.5 rounded-xl bg-zinc-200 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 font-semibold cursor-not-allowed shadow-xs transition';
+      }
+    }
+
+    // Command Search Filter
+    function handleCommandSearch(query) {
+      const q = query.toLowerCase().trim();
+      const items = document.querySelectorAll('.cmd-item');
+      items.forEach(item => {
+        if (q === '' || item.textContent.toLowerCase().includes(q)) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Right-Click Context Menu Logic
+    function handleCustomContextMenu(e, type) {
+      e.preventDefault();
+      const menu = document.getElementById('custom-context-menu');
+      const itemsContainer = document.getElementById('context-menu-items');
+
+      let html = '';
+      if (type === 'row') {
+        html = `
+          <button onclick="simulateAction('Opened Row Details')" class="w-full px-2.5 py-1.5 rounded-lg text-left text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="eye" class="w-3.5 h-3.5"></i> <span>Open Details</span>
+          </button>
+          <button onclick="simulateAction('Row duplicated')" class="w-full px-2.5 py-1.5 rounded-lg text-left text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span>Duplicate Row</span>
+          </button>
+          <button onclick="simulateAction('Link copied to clipboard')" class="w-full px-2.5 py-1.5 rounded-lg text-left text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="link" class="w-3.5 h-3.5"></i> <span>Copy Link</span>
+          </button>
+          <div class="my-1 border-t border-zinc-100 dark:border-zinc-800"></div>
+          <button onclick="simulateAction('Row deleted')" class="w-full px-2.5 py-1.5 rounded-lg text-left text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> <span>Delete Row</span>
+          </button>
+        `;
+      } else {
+        html = `
+          <button onclick="simulateAction('Widget refreshed')" class="w-full px-2.5 py-1.5 rounded-lg text-left text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i> <span>Refresh Widget</span>
+          </button>
+          <button onclick="simulateAction('Widget exported as PNG')" class="w-full px-2.5 py-1.5 rounded-lg text-left text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="image" class="w-3.5 h-3.5"></i> <span>Export PNG</span>
+          </button>
+          <button onclick="simulateAction('Widget pinned to dashboard top')" class="w-full px-2.5 py-1.5 rounded-lg text-left text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="pin" class="w-3.5 h-3.5"></i> <span>Pin to Top</span>
+          </button>
+        `;
+      }
+      itemsContainer.innerHTML = html;
+      lucide.createIcons();
+
+      menu.style.left = `${Math.min(e.clientX, window.innerWidth - 200)}px`;
+      menu.style.top = `${Math.min(e.clientY, window.innerHeight - 180)}px`;
+      menu.classList.remove('hidden');
+    }
+
+    function hideContextMenu() {
+      document.getElementById('custom-context-menu').classList.add('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#custom-context-menu')) {
+        hideContextMenu();
+      }
+    });
+
+    // Invite Email Action
+    function sendInviteEmail() {
+      const input = document.getElementById('invite-email-input');
+      if (input.value.trim()) {
+        simulateAction(`Invitation sent to ${input.value.trim()}`);
+        input.value = '';
+      }
+    }
+
+    // Action Toast
+    function simulateAction(msg) {
+      closeActiveOverlay();
+      hideContextMenu();
+      showToast(msg);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-banner');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 2500);
+    }
+
+    // Light / Dark Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+      }
+    }
+
+    // Category Filtering
+    let currentCategory = 'all';
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(pill => {
+        if (pill.getAttribute('data-category') === cat) {
+          pill.className = 'cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-xs';
+        } else {
+          pill.className = 'cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60';
+        }
+      });
+      applyFilters();
+    }
+
+    // Search Filtering
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', applyFilters);
+
+    function applyFilters() {
+      const query = searchInput.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.variant-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+        const matchesCategory = currentCategory === 'all' || cat === currentCategory;
+        const matchesQuery = query === '' || title.includes(query);
+
+        if (matchesCategory && matchesQuery) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('variant-counter-badge').textContent = `${visibleCount} Variants`;
+    }
+
+    // Code Modal
+    let currentCodeSnippet = '';
+    function openCodeModal(title, snippet) {
+      currentCodeSnippet = snippet;
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-code').textContent = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copySnippetCode() {
+      navigator.clipboard.writeText(currentCodeSnippet).then(() => {
+        const btn = document.getElementById('copy-code-btn');
+        btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy HTML/CSS</span>';
+          lucide.createIcons();
+        }, 1800);
+      });
+    }
+
+    // Snippets
+    const snippet01 = `<!-- 01 Action Confirm Dialog -->\n<div class="fixed inset-0 bg-black/60 flex items-center justify-center p-4">\n  <div class="bg-white rounded-2xl p-5 max-w-md w-full shadow-2xl">\n    <h3 class="font-bold text-sm">Archive Project?</h3>\n    <p class="text-xs text-zinc-600 my-3">Archiving will hide this project from active workspaces.</p>\n    <div class="flex justify-end gap-2">\n      <button class="px-3 py-1.5 border rounded-xl">Cancel</button>\n      <button class="px-3.5 py-1.5 bg-zinc-950 text-white rounded-xl">Archive</button>\n    </div>\n  </div>\n</div>`;
+    const snippet02 = `<!-- 02 Type-to-Confirm Delete Dialog -->\n<div class="bg-white rounded-2xl p-5 max-w-md w-full shadow-2xl">\n  <h3 class="font-bold text-rose-600">Delete Workspace Permanently</h3>\n  <p class="text-xs my-2">Type DELETE to confirm:</p>\n  <input oninput="val === 'DELETE' ? enable() : disable()" class="border p-2 rounded-xl w-full text-xs" />\n  <button id="delBtn" disabled class="bg-rose-600 text-white px-3 py-1.5 rounded-xl mt-3">Delete Forever</button>\n</div>`;
+    const snippet03 = `<!-- 03 Success Receipt Dialog -->\n<div class="bg-white rounded-2xl p-6 text-center max-w-sm w-full">\n  <div class="w-12 h-12 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-3">✓</div>\n  <h3 class="font-bold">Payment Received</h3>\n  <div class="text-xl font-bold my-3">₹1,25,000</div>\n  <button class="w-full bg-zinc-950 text-white py-2 rounded-xl font-bold">Done</button>\n</div>`;
+    const snippet04 = `<!-- 04 Create Record Form Modal -->\n<div class="bg-white rounded-2xl p-5 max-w-md w-full">\n  <h3 class="font-bold mb-3">Create New Client</h3>\n  <input placeholder="Company Name" class="border p-2 rounded-xl w-full mb-2" />\n  <input placeholder="Billing Email" class="border p-2 rounded-xl w-full mb-3" />\n  <button class="bg-zinc-950 text-white px-3 py-1.5 rounded-xl">Create Client</button>\n</div>`;
+    const snippet05 = `<!-- 05 Invite Team Members Modal -->\n<div class="bg-white rounded-2xl p-5 max-w-md w-full">\n  <h3 class="font-bold mb-3">Invite Team Members</h3>\n  <div class="flex gap-2 mb-3"><input placeholder="email@domain.com" class="border p-2 flex-1 rounded-xl" /><button class="bg-zinc-950 text-white px-3 rounded-xl">Send</button></div>\n</div>`;
+    const snippet06 = `<!-- 06 Plan Upgrade Modal -->\n<div class="bg-white rounded-2xl p-6 max-w-md w-full">\n  <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full text-xs font-bold">PRO PLAN</span>\n  <h3 class="text-lg font-bold my-2">Unlock Multi-Branch Sync</h3>\n  <div class="text-2xl font-bold mb-4">₹2,499 / mo</div>\n  <button class="w-full bg-zinc-950 text-white py-2.5 rounded-xl font-bold">Start Free Trial</button>\n</div>`;
+    const snippet07 = `<!-- 07 Right Record Detail Drawer -->\n<div class="fixed right-0 top-0 bottom-0 w-96 bg-white shadow-2xl p-5 flex flex-col justify-between">\n  <div>\n    <h3 class="font-bold">Invoice #INV-9042</h3>\n    <div class="text-xl font-bold my-3">₹84,500</div>\n  </div>\n  <button class="bg-zinc-950 text-white py-2 rounded-xl">Download PDF</button>\n</div>`;
+    const snippet08 = `<!-- 08 Slide-Over Edit Form Drawer -->\n<div class="fixed right-0 top-0 bottom-0 w-96 bg-white shadow-2xl p-5">\n  <h3 class="font-bold mb-4">Edit Order Details</h3>\n  <input value="PO-88219" class="border p-2 rounded-xl w-full mb-3" />\n</div>`;
+    const snippet09 = `<!-- 09 Slide-Over Filter Panel -->\n<div class="fixed right-0 top-0 bottom-0 w-96 bg-white shadow-2xl p-5 flex flex-col justify-between">\n  <h3 class="font-bold mb-4">Filter Records</h3>\n  <button class="bg-zinc-950 text-white py-2 rounded-xl">Show 48 Results</button>\n</div>`;
+    const snippet10 = `<!-- 10 Left Mobile Navigation Drawer -->\n<div class="fixed left-0 top-0 bottom-0 w-80 bg-white shadow-2xl p-5">\n  <h3 class="font-bold mb-4">ZeroLight SaaS</h3>\n  <a href="#">Overview</a>\n</div>`;
+    const snippet11 = `<!-- 11 Global Command Palette (⌘K) -->\n<div class="max-w-xl w-full bg-white rounded-2xl shadow-2xl p-3">\n  <input placeholder="Type a command or search..." class="w-full text-sm font-medium p-2 border-b" />\n  <div class="p-2 space-y-1">\n    <div class="flex justify-between p-2 hover:bg-zinc-100 rounded-xl"><span>Create New Client</span><kbd>⌘ N</kbd></div>\n  </div>\n</div>`;
+    const snippet12 = `<!-- 12 Scoped Record Quick-Switcher -->\n<div class="max-w-xl w-full bg-white rounded-2xl shadow-2xl p-3">\n  <input placeholder="Switch active client..." class="w-full p-2 border-b" />\n</div>`;
+    const snippet13 = `<!-- 13 Right-Click Table Row Area -->\n<div oncontextmenu="openContextMenu(e)">\n  Right-click or tap here\n</div>`;
+    const snippet14 = `<!-- 14 Canvas Context Menu -->\n<div oncontextmenu="openWidgetMenu(e)">\n  Right-click widget\n</div>`;
+    const snippet15 = `<!-- 15 CSV Column Mapping Step Modal -->\n<div class="bg-white rounded-2xl p-5 max-w-md w-full">\n  <h3 class="font-bold mb-3">Map CSV Spreadsheet Columns</h3>\n  <button class="bg-zinc-950 text-white px-3 py-1.5 rounded-xl">Complete Import</button>\n</div>`;
+    const snippet16 = `<!-- 16 Welcome Walkthrough Modal -->\n<div class="bg-white rounded-2xl p-5 max-w-md w-full text-center">\n  <h3 class="font-bold mb-2">Welcome to ZeroLight 2.0</h3>\n  <button class="bg-zinc-950 text-white px-4 py-2 rounded-xl">Get Started</button>\n</div>`;
+  </script>
+</body>
+</html>
