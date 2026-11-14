@@ -176,6 +176,23 @@ export interface ZeroLightTokens {
   letterSpacing?: LetterSpacingPreset;
   lineHeight?: LineHeightPreset;
   tabularNums?: boolean;
+  // Brand & Logo Variation Tokens
+  logoLight?: string;
+  logoDark?: string;
+  logoFavicon?: string;
+  logoBrandName?: string;
+}
+
+export interface CustomBrandTheme {
+  id: string;
+  name: string;
+  createdAt: string;
+  tokens: Partial<ZeroLightTokens>;
+  logos?: {
+    light?: string;
+    dark?: string;
+    favicon?: string;
+  };
 }
 
 export const DEFAULT_TOKENS: ZeroLightTokens = {

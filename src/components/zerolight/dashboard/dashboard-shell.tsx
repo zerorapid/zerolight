@@ -30,6 +30,7 @@ import { BillingPortal } from "../organisms/billing-portal";
 import { TeamPermissions } from "../organisms/team-permissions";
 import { GeoBreakdown } from "../organisms/geo-breakdown";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
+import { GeistDocsPortal } from "../docs/geist-docs-portal";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
@@ -349,8 +350,8 @@ export function DashboardShell() {
 
         {/* TAB 3: DESIGN SYSTEM (GEIST+) SHOWCASE */}
         {activeTab === "geist-docs" && (
-          <div className="w-full -mt-2 -ml-2 -mr-2 animate-in fade-in duration-200">
-            <ZeroLightStudio initialTier="molecules" />
+          <div className="w-full -mt-6 -ml-6 -mr-6 md:-mt-8 md:-ml-8 md:-mr-8 -mb-8 animate-in fade-in duration-200">
+            <GeistDocsPortal />
           </div>
         )}
 

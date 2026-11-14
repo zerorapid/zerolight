@@ -1171,6 +1171,53 @@ test("WorldAtlasMap: 2D flat canvas, 6 customizable render styles, floating cont
   assert.ok(dashboardContent.includes("<WorldAtlasMap"), "DashboardShell must integrate WorldAtlasMap");
 });
 
+// -----------------------------------------------------------------
+// Test Suite 26: Geist+ Documentation Portal & Logo Variations Manager
+// -----------------------------------------------------------------
+console.log("\n26. Geist+ Documentation Portal & Logo Variations Manager:");
+
+test("GeistDocsPortal: Foundations, Brands, Components, Show code and Feedback capsule", () => {
+  const docsPath = path.join(rootDir, "src/components/zerolight/docs/geist-docs-portal.tsx");
+  assert.ok(fs.existsSync(docsPath), "src/components/zerolight/docs/geist-docs-portal.tsx must exist");
+
+  const docsContent = fs.readFileSync(docsPath, "utf8");
+  assert.ok(docsContent.includes("export function GeistDocsPortal"), "must export GeistDocsPortal component");
+  assert.ok(docsContent.includes("GEIST_DOCS_NAV"), "must define complete navigation hierarchy");
+
+  // Foundations & Brands
+  assert.ok(docsContent.includes("introduction") && docsContent.includes("colors") && docsContent.includes("materials"), "must support foundations");
+  assert.ok(docsContent.includes("brand-vercel") && docsContent.includes("brand-nextjs"), "must support brand pages");
+  assert.ok(docsContent.includes("Misuse") && docsContent.includes("Here are some examples of ways that you should not use the Vercel marks"), "must include trademark misuse rules");
+
+  // UI elements from Geist reference
+  assert.ok(docsContent.includes("Show code"), "must support collapsible Show code accordion");
+  assert.ok(docsContent.includes("Give feedback"), "must include sentiment feedback capsule");
+  assert.ok(docsContent.includes("⌘K"), "must support Cmd+K search shortcut");
+
+  // Root export check
+  const zlIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
+  assert.ok(zlIndex.includes("geist-docs-portal"), "src/components/zerolight/index.ts must export GeistDocsPortal");
+
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("<GeistDocsPortal"), "DashboardShell must integrate GeistDocsPortal for geist-docs tab");
+});
+
+test("Visual Studio Logo Variations Manager & My Themes Persistence", () => {
+  const assetsPath = path.join(rootDir, "src/components/zerolight/studio/panel-assets.tsx");
+  const assetsContent = fs.readFileSync(assetsPath, "utf8");
+  assert.ok(assetsContent.includes("Logo Variations"), "panel-assets.tsx must contain Logo Variations section");
+  assert.ok(assetsContent.includes("Primary Light Logo"), "must support primary light logo upload");
+  assert.ok(assetsContent.includes("Dark Surface Logo"), "must support dark surface logo upload");
+  assert.ok(assetsContent.includes("Favicon / Icon Mark"), "must support square favicon upload");
+
+  const themePath = path.join(rootDir, "src/components/zerolight/studio/panel-theme.tsx");
+  const themeContent = fs.readFileSync(themePath, "utf8");
+  assert.ok(themeContent.includes("My Themes"), "panel-theme.tsx must contain My Themes library");
+  assert.ok(themeContent.includes("STORAGE_CUSTOM_THEMES"), "must persist custom themes with localStorage");
+  assert.ok(themeContent.includes("handleSaveCustomTheme"), "must support saving custom theme");
+  assert.ok(themeContent.includes("handleDeleteCustomTheme"), "must support deleting custom theme");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
+import { UploadCloud, Image as ImageIcon, Trash2, Check, Sparkles } from "lucide-react";
 import {
   ChartGridPreset,
   ChartPalettePreset,
@@ -348,6 +349,145 @@ export function PanelAssets({ tokens, scaled, setTokens }: PanelAssetsProps) {
 
       </StudioSectionCard>
 
+      {/* Brand & Logo Variations Manager */}
+      <StudioSectionCard
+        title="Logo Variations"
+        badge={tokens.logoBrandName || "Default"}
+        accentBadge
+      >
+        <div className="space-y-3 text-xs pt-1">
+          <div className="space-y-1">
+            <span className="text-zinc-300">Brand Name</span>
+            <input
+              type="text"
+              value={tokens.logoBrandName || ""}
+              placeholder="e.g. ZeroLight OS / Acme"
+              onChange={(e) => setTokens((prev) => ({ ...prev, logoBrandName: e.target.value }))}
+              className="w-full px-2.5 py-1.5 rounded-md bg-white/[0.04] border border-white/[0.08] text-white text-xs outline-none focus:border-white/30 transition"
+            />
+          </div>
+
+          {/* Slot 1: Primary Light Logo */}
+          <LogoSlot
+            title="Primary Light Logo"
+            desc="Rendered on light/white surfaces"
+            previewBg="bg-white"
+            value={tokens.logoLight}
+            onChange={(val) => setTokens((prev) => ({ ...prev, logoLight: val }))}
+          />
+
+          {/* Slot 2: Dark Logo */}
+          <LogoSlot
+            title="Dark Surface Logo"
+            desc="Rendered on dark/obsidian surfaces"
+            previewBg="bg-zinc-950"
+            value={tokens.logoDark}
+            onChange={(val) => setTokens((prev) => ({ ...prev, logoDark: val }))}
+          />
+
+          {/* Slot 3: Favicon / Mark */}
+          <LogoSlot
+            title="Favicon / Icon Mark (32×32)"
+            desc="Browser tab, avatar mark & compact rail"
+            previewBg="bg-zinc-900"
+            isFavicon
+            value={tokens.logoFavicon}
+            onChange={(val) => setTokens((prev) => ({ ...prev, logoFavicon: val }))}
+          />
+        </div>
+      </StudioSectionCard>
+
+    </div>
+  );
+}
+
+// Logo Slot with drag-and-drop / file upload & preview
+function LogoSlot({
+  title,
+  desc,
+  previewBg,
+  value,
+  isFavicon = false,
+  onChange,
+}: {
+  title: string;
+  desc: string;
+  previewBg: string;
+  value?: string;
+  isFavicon?: boolean;
+  onChange: (val: string) => void;
+}) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        if (result) onChange(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.06] space-y-2">
+      <div className="flex items-center justify-between">
+        <div>
+          <span className="font-semibold text-zinc-200 block text-[11px]">{title}</span>
+          <span className="text-[10px] text-zinc-400 block">{desc}</span>
+        </div>
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="p-1 text-zinc-400 hover:text-rose-400 transition"
+            title="Remove Logo"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2.5">
+        {/* Preview Frame */}
+        <div
+          className={`shrink-0 rounded-md border border-white/10 flex items-center justify-center overflow-hidden ${previewBg} ${
+            isFavicon ? "w-9 h-9" : "w-20 h-9"
+          }`}
+        >
+          {value ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={value}
+              alt={title}
+              className={`max-h-full max-w-full object-contain ${isFavicon ? "p-1" : "p-1.5"}`}
+            />
+          ) : (
+            <span className="text-[9px] text-zinc-500 tabular-nums">None</span>
+          )}
+        </div>
+
+        {/* Upload Action */}
+        <div className="flex-1">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,.svg"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full py-1.5 px-2 rounded-md bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-zinc-300 text-[11px] font-medium flex items-center justify-center gap-1.5 transition cursor-pointer"
+          >
+            <UploadCloud className="w-3 h-3 text-zinc-400" />
+            <span>{value ? "Replace" : "Upload File"}</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

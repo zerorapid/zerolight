@@ -19,7 +19,7 @@
       "targetPath": "src/components/zerolight/types.ts",
       "dependencies": [],
       "registryDependencies": [],
-      "lines": 818,
+      "lines": 835,
       "registryUrl": "/registry/types.json"
     },
     {
@@ -48,10 +48,11 @@
         "context",
         "dashboard-shell",
         "docs-studio",
+        "geist-docs-portal",
         "sign-in-card",
         "types"
       ],
-      "lines": 12,
+      "lines": 13,
       "registryUrl": "/registry/zerolight-index.json"
     },
     {

@@ -1,8 +1,11 @@
 "use client";
 
-import React from "react";
-import { THEME_PRESETS, ThemePresetId, ZeroLightTokens } from "../types";
+import React, { useState, useEffect } from "react";
+import { Plus, Trash2, Bookmark, Check, Sparkles } from "lucide-react";
+import { THEME_PRESETS, ThemePresetId, ZeroLightTokens, CustomBrandTheme } from "../types";
 import { StudioAccordion, StudioColorRow, StudioSectionCard } from "./studio-ui";
+
+const STORAGE_CUSTOM_THEMES = "zl_user_custom_themes";
 
 export interface PanelThemeProps {
   tokens: ZeroLightTokens;
@@ -27,8 +30,166 @@ export function PanelTheme({
   handleUpdateTokens,
   triggerToast,
 }: PanelThemeProps) {
+  const [newThemeName, setNewThemeName] = useState("");
+  const [customThemes, setCustomThemes] = useState<CustomBrandTheme[]>([]);
+
+  // Load custom saved themes from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_CUSTOM_THEMES);
+      if (stored) {
+        setCustomThemes(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.warn("Failed to read custom themes", e);
+    }
+  }, []);
+
+  const handleSaveCustomTheme = () => {
+    if (!newThemeName.trim()) {
+      triggerToast("Enter a theme name first");
+      return;
+    }
+
+    const newTheme: CustomBrandTheme = {
+      id: `theme_${Date.now()}`,
+      name: newThemeName.trim(),
+      createdAt: new Date().toLocaleDateString(),
+      tokens: { ...tokens },
+      logos: {
+        light: tokens.logoLight,
+        dark: tokens.logoDark,
+        favicon: tokens.logoFavicon,
+      },
+    };
+
+    const updated = [newTheme, ...customThemes];
+    setCustomThemes(updated);
+    try {
+      localStorage.setItem(STORAGE_CUSTOM_THEMES, JSON.stringify(updated));
+    } catch (e) {
+      console.warn("Failed to save custom theme", e);
+    }
+    setNewThemeName("");
+    triggerToast(`Theme "${newTheme.name}" saved to My Themes!`);
+  };
+
+  const handleDeleteCustomTheme = (id: string, name: string) => {
+    const updated = customThemes.filter((t) => t.id !== id);
+    setCustomThemes(updated);
+    try {
+      localStorage.setItem(STORAGE_CUSTOM_THEMES, JSON.stringify(updated));
+    } catch (e) {
+      console.warn("Failed to delete custom theme", e);
+    }
+    triggerToast(`Deleted theme "${name}"`);
+  };
+
+  const handleApplyCustomTheme = (theme: CustomBrandTheme) => {
+    handleUpdateTokens({
+      ...theme.tokens,
+      logoLight: theme.logos?.light,
+      logoDark: theme.logos?.dark,
+      logoFavicon: theme.logos?.favicon,
+      logoBrandName: theme.name,
+    });
+    triggerToast(`Applied theme: ${theme.name}`);
+  };
+
   return (
     <div>
+      {/* My Themes (Custom Theme & Logo Variations Library) */}
+      <StudioSectionCard
+        title="My Themes"
+        badge={`${customThemes.length} saved`}
+        accentBadge={customThemes.length > 0}
+      >
+        <div className="space-y-2.5 pt-0.5">
+          {/* Save Current Tokens as Theme */}
+          <div className="flex items-center gap-1.5">
+            <input
+              type="text"
+              placeholder="Save current theme as..."
+              value={newThemeName}
+              onChange={(e) => setNewThemeName(e.target.value)}
+              className="flex-1 px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs text-white outline-none focus:border-white/30 transition placeholder:text-zinc-500"
+            />
+            <button
+              type="button"
+              onClick={handleSaveCustomTheme}
+              className="px-3 py-1.5 rounded-lg bg-white/[0.12] hover:bg-white/[0.2] border border-white/20 text-xs font-semibold text-white transition flex items-center gap-1 cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Save</span>
+            </button>
+          </div>
+
+          {/* Saved Custom Themes List */}
+          {customThemes.length > 0 ? (
+            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-0.5">
+              {customThemes.map((theme) => {
+                const isSelected =
+                  tokens.universalFillColor === theme.tokens.universalFillColor &&
+                  tokens.primaryButtonColor === theme.tokens.primaryButtonColor;
+
+                return (
+                  <div
+                    key={theme.id}
+                    className={`p-2 rounded-lg border text-xs flex items-center justify-between transition group ${
+                      isSelected
+                        ? "bg-white/[0.1] border-white/30 text-white font-medium"
+                        : "bg-white/[0.02] border-white/[0.06] text-zinc-300 hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCustomTheme(theme)}
+                      className="flex-1 text-left flex items-center gap-2 min-w-0 cursor-pointer"
+                    >
+                      {/* Swatch indicator */}
+                      <span
+                        style={{
+                          backgroundColor: theme.tokens.universalFillColor || "#FFFFFF",
+                          borderColor: theme.tokens.primaryButtonColor || "#111111",
+                        }}
+                        className="w-3.5 h-3.5 rounded-full border-2 shrink-0 flex items-center justify-center"
+                      >
+                        <span
+                          style={{ backgroundColor: theme.tokens.primaryButtonColor || "#111111" }}
+                          className="w-1 h-1 rounded-full"
+                        />
+                      </span>
+
+                      <div className="min-w-0">
+                        <span className="truncate block font-semibold text-[11px]">
+                          {theme.name}
+                        </span>
+                        <span className="text-[10px] text-zinc-500 block">
+                          {theme.createdAt} {theme.logos?.light ? "• Logo Attached" : ""}
+                        </span>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteCustomTheme(theme.id, theme.name)}
+                      className="p-1 text-zinc-500 hover:text-rose-400 opacity-60 group-hover:opacity-100 transition cursor-pointer"
+                      title="Delete Theme"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-[11px] text-zinc-500 italic">
+              No custom themes yet. Customize colors and logos, then save them above!
+            </p>
+          )}
+        </div>
+      </StudioSectionCard>
+
       <StudioSectionCard title="Polarity">
         <div className="grid grid-cols-2 gap-1.5">
           {(Object.keys(THEME_PRESETS) as ThemePresetId[]).map((presetKey) => {
