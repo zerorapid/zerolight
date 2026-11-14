@@ -1432,7 +1432,7 @@ test("SaaS Selection Controls Library: 26 interactive variants across 6 categori
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSSelectionLibrary"), "DashboardShell must integrate SaaSSelectionLibrary");
-  assert.ok(dashboardContent.includes("131 SaaS Pattern Variants Active"), "DashboardShell must synchronize 131 SaaS pattern variants active badge");
+  assert.ok(dashboardContent.includes("153 SaaS Pattern Variants Active"), "DashboardShell must synchronize 153 SaaS pattern variants active badge");
 });
 
 // -----------------------------------------------------------------
@@ -1483,6 +1483,67 @@ test("SaaS Status & Indicator Library: 28 interactive variants across 6 categori
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSIndicatorLibrary"), "DashboardShell must integrate SaaSIndicatorLibrary");
   assert.ok(dashboardContent.includes("docsSubView === \"indicators\""), "DashboardShell must render SaaSIndicatorLibrary on indicators tab");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 32: SaaS Divider & Spacer Library (22 Variants)
+// -----------------------------------------------------------------
+console.log("\n=== Suite 32: SaaS Divider & Spacer Library (22 Variants) ===");
+
+test("SaaS Divider & Spacer Library: 22 interactive variants across 6 categories", () => {
+  // Check standalone HTML web application
+  const htmlPath = path.join(rootDir, "public/saas-divider-library.html");
+  assert.ok(fs.existsSync(htmlPath), "public/saas-divider-library.html must exist");
+  const htmlContent = fs.readFileSync(htmlPath, "utf8");
+  assert.ok(htmlContent.includes("SaaS Divider & Spacer Library"), "HTML must have header title");
+  assert.ok(htmlContent.includes("22 Variants"), "HTML must indicate 22 variants");
+  assert.ok(htmlContent.includes("guides-active"), "HTML must implement visual spacing guides");
+  assert.ok(htmlContent.includes("setSpacingScale"), "HTML must implement spacing scale toggles");
+  assert.ok(htmlContent.includes("toggleAdvancedDetails"), "HTML must implement expandable section divider");
+  assert.ok(htmlContent.includes("changeInteractiveGap"), "HTML must implement dynamic interactive gap preview");
+  assert.ok(htmlContent.includes("cdn.tailwindcss.com"), "HTML must include Tailwind CDN");
+  assert.ok(htmlContent.includes("lucide@latest"), "HTML must include Lucide Icons CDN");
+
+  // Check React Component
+  const divPath = path.join(rootDir, "src/components/zerolight/libraries/divider-library.tsx");
+  assert.ok(fs.existsSync(divPath), "divider-library.tsx must exist");
+  const divContent = fs.readFileSync(divPath, "utf8");
+
+  // Export check
+  assert.ok(divContent.includes("export function SaaSDividerLibrary"), "must export SaaSDividerLibrary");
+
+  // 6 Categories
+  assert.ok(divContent.includes("1. Horizontal Rules"), "must contain Horizontal Rules category");
+  assert.ok(divContent.includes("2. Labeled & Interactive"), "must contain Labeled & Interactive category");
+  assert.ok(divContent.includes("3. Vertical & Splitters"), "must contain Vertical & Splitters category");
+  assert.ok(divContent.includes("4. Consistent Spacing"), "must contain Consistent Spacing category");
+  assert.ok(divContent.includes("5. Auto-Push & Layout"), "must contain Auto-Push & Layout category");
+  assert.ok(divContent.includes("6. Card & List"), "must contain Card & List category");
+
+  // 3 Spacing Scale Toggles
+  for (const scale of ["tight", "default", "relaxed"]) {
+    assert.ok(divContent.includes(`"${scale}"`), `Divider library must support scale ${scale}`);
+  }
+
+  // Key interactive features
+  assert.ok(divContent.includes("Simple Hairline Rule"), "must implement simple hairline rule");
+  assert.ok(divContent.includes("Dashed Receipt Divider"), "must implement dashed receipt divider");
+  assert.ok(divContent.includes("Centered Text Divider"), "must implement centered text divider");
+  assert.ok(divContent.includes("Expand / Collapse Section Divider"), "must implement expand/collapse section divider");
+  assert.ok(divContent.includes("Interactive Spacing Scale Preview"), "must implement interactive spacing scale preview");
+  assert.ok(divContent.includes("Left-to-Right Auto Spacer"), "must implement left-to-right auto spacer");
+  assert.ok(divContent.includes("Clean List Row Divider"), "must implement clean list row divider");
+  assert.ok(divContent.includes("Card Footer Action Divider"), "must implement card footer action divider");
+
+  // Export from libraries/index.ts
+  const libIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/index.ts"), "utf8");
+  assert.ok(libIdx.includes('export * from "./divider-library";'), "libraries/index.ts must export divider-library");
+
+  // Dashboard integration
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("SaaSDividerLibrary"), "DashboardShell must integrate SaaSDividerLibrary");
+  assert.ok(dashboardContent.includes("153 SaaS Pattern Variants Active"), "DashboardShell must synchronize 153 active variants badge");
+  assert.ok(dashboardContent.includes("docsSubView === \"dividers\""), "DashboardShell must render SaaSDividerLibrary on dividers tab");
 });
 
 console.log("\n==================================================");
