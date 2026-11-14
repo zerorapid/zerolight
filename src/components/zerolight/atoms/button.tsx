@@ -103,9 +103,9 @@ export function Button({
         };
       case "destructive":
         return {
-          backgroundColor: "#FFF1F2",
-          color: "#E11D48",
-          borderColor: "#FECDD3",
+          backgroundColor: scaled.isDarkSurface ? "#3A0D14" : "#FFF1F2",
+          color: scaled.isDarkSurface ? "#FB7185" : "#E11D48",
+          borderColor: scaled.isDarkSurface ? "#7F1D1D" : "#FECDD3",
         };
     }
   };

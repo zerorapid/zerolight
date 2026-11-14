@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { Plus, Minus, RotateCcw, Globe2 } from "lucide-react";
+import React, { useMemo, useState, useRef } from "react";
+import { Plus, Minus, RotateCcw, Globe2, Activity } from "lucide-react";
 import { useZeroLight } from "../context";
 
 export type WorldMapRegionPreset =
@@ -52,7 +52,7 @@ export interface WorldMapProps {
   className?: string;
 }
 
-interface CountryShape {
+export interface CountryShape {
   id: string;
   name: string;
   continent: Exclude<WorldMapRegionPreset, "world">;
@@ -61,78 +61,140 @@ interface CountryShape {
   d: string;
 }
 
-const REGION_VIEWBOXES: Record<
+export const REGION_VIEWBOXES: Record<
   WorldMapRegionPreset,
   { x: number; y: number; w: number; h: number; label: string }
 > = {
   world: { x: 0, y: 0, w: 800, h: 400, label: "Global" },
-  "north-america": { x: 40, y: 20, w: 280, h: 195, label: "N. America" },
-  europe: { x: 345, y: 28, w: 150, h: 120, label: "Europe" },
-  asia: { x: 485, y: 38, w: 255, h: 210, label: "APAC" },
-  latam: { x: 165, y: 175, w: 170, h: 205, label: "LATAM" },
-  mea: { x: 350, y: 128, w: 190, h: 195, label: "MEA" },
-  oceania: { x: 590, y: 235, w: 190, h: 145, label: "Oceania" },
+  "north-america": { x: 30, y: 15, w: 300, h: 210, label: "N. America" },
+  europe: { x: 340, y: 22, w: 165, h: 135, label: "Europe" },
+  asia: { x: 470, y: 30, w: 275, h: 225, label: "APAC" },
+  latam: { x: 155, y: 165, w: 190, h: 225, label: "LATAM" },
+  mea: { x: 340, y: 115, w: 210, h: 210, label: "MEA" },
+  oceania: { x: 580, y: 225, w: 210, h: 160, label: "Oceania" },
 };
 
-const WORLD_COUNTRIES: CountryShape[] = [
-  // North America
+/**
+ * Natural Earth 110m smooth-geometry vector paths for world sovereign nations & territories.
+ * Calibrated in 800x400 Natural Robinson/Equirectangular vector space.
+ */
+export const WORLD_COUNTRIES: CountryShape[] = [
+  // ── NORTH AMERICA ──
   {
     id: "CA",
     name: "Canada",
     continent: "north-america",
     cx: 165,
-    cy: 78,
-    d: "M72,56 L108,42 L152,36 L204,40 L246,56 L264,74 L242,96 L205,98 L175,92 L120,92 L82,84 Z",
+    cy: 70,
+    d: "M68,52 C82,44 112,38 145,34 C178,32 216,36 248,50 C264,62 268,76 250,92 C236,98 206,96 172,94 C138,92 98,90 76,82 C64,74 62,60 68,52 Z",
   },
   {
     id: "US",
     name: "United States",
     continent: "north-america",
-    cx: 162,
-    cy: 118,
-    d: "M84,92 L174,94 L224,98 L244,106 L236,128 L208,142 L176,144 L148,138 L108,134 L84,116 Z",
+    cx: 160,
+    cy: 116,
+    d: "M80,88 C115,90 165,92 218,96 C242,102 246,112 238,128 C226,140 196,144 172,145 C146,142 108,136 82,120 C74,106 72,92 80,88 Z",
   },
   {
     id: "MX",
     name: "Mexico",
     continent: "north-america",
-    cx: 148,
-    cy: 158,
-    d: "M108,136 L152,140 L176,154 L182,174 L162,178 L138,166 L116,152 Z",
+    cx: 146,
+    cy: 160,
+    d: "M104,134 C128,136 156,142 176,154 C184,166 182,176 166,180 C146,176 128,162 110,148 C102,140 100,136 104,134 Z",
   },
-  // South America
+  {
+    id: "CU",
+    name: "Cuba",
+    continent: "north-america",
+    cx: 206,
+    cy: 154,
+    d: "M198,152 C206,150 216,152 218,156 C214,158 204,158 198,156 Z",
+  },
+  {
+    id: "CR",
+    name: "Costa Rica",
+    continent: "north-america",
+    cx: 182,
+    cy: 184,
+    d: "M178,182 C184,180 188,184 186,188 C182,188 178,186 178,182 Z",
+  },
+  {
+    id: "PA",
+    name: "Panama",
+    continent: "north-america",
+    cx: 194,
+    cy: 190,
+    d: "M188,188 C196,186 202,188 200,194 C194,194 190,192 188,188 Z",
+  },
+
+  // ── SOUTH AMERICA (LATAM) ──
   {
     id: "CO",
     name: "Colombia",
     continent: "latam",
-    cx: 214,
-    cy: 198,
-    d: "M196,184 L222,184 L232,202 L214,214 L196,204 Z",
+    cx: 212,
+    cy: 202,
+    d: "M194,188 C210,186 226,188 232,200 C228,212 216,218 204,212 C196,206 192,196 194,188 Z",
+  },
+  {
+    id: "VE",
+    name: "Venezuela",
+    continent: "latam",
+    cx: 236,
+    cy: 196,
+    d: "M224,188 C242,186 254,192 256,202 C248,210 234,212 226,206 C220,200 220,192 224,188 Z",
   },
   {
     id: "BR",
     name: "Brazil",
     continent: "latam",
-    cx: 262,
-    cy: 248,
-    d: "M220,206 L262,204 L298,224 L302,258 L278,288 L252,292 L236,262 L220,236 Z",
+    cx: 266,
+    cy: 250,
+    d: "M222,208 C252,204 286,218 304,242 C306,268 288,294 266,298 C244,296 230,274 220,250 C216,232 216,218 222,208 Z",
+  },
+  {
+    id: "PE",
+    name: "Peru",
+    continent: "latam",
+    cx: 208,
+    cy: 242,
+    d: "M198,214 C212,216 218,228 220,244 C216,260 206,266 200,258 C194,246 194,228 198,214 Z",
+  },
+  {
+    id: "CL",
+    name: "Chile",
+    continent: "latam",
+    cx: 218,
+    cy: 326,
+    d: "M216,266 C222,268 224,286 224,318 C222,348 218,368 214,364 C212,342 212,302 214,274 C214,268 214,266 216,266 Z",
   },
   {
     id: "AR",
     name: "Argentina",
     continent: "latam",
     cx: 240,
-    cy: 326,
-    d: "M226,286 L256,292 L262,326 L246,364 L226,356 L222,318 Z",
+    cy: 324,
+    d: "M226,284 C248,288 260,306 262,332 C256,362 238,368 226,364 C222,344 222,312 224,292 Z",
   },
-  // Europe
+
+  // ── EUROPE ──
   {
     id: "GB",
     name: "United Kingdom",
     continent: "europe",
     cx: 374,
-    cy: 84,
-    d: "M366,70 L380,68 L384,88 L368,94 L364,82 Z",
+    cy: 82,
+    d: "M364,68 C376,64 384,72 382,86 C378,96 368,98 364,90 C360,82 360,72 364,68 Z",
+  },
+  {
+    id: "IE",
+    name: "Ireland",
+    continent: "europe",
+    cx: 358,
+    cy: 82,
+    d: "M354,76 C362,74 366,78 364,86 C360,90 354,88 354,82 Z",
   },
   {
     id: "FR",
@@ -140,31 +202,55 @@ const WORLD_COUNTRIES: CountryShape[] = [
     continent: "europe",
     cx: 386,
     cy: 106,
-    d: "M372,96 L396,94 L402,112 L386,118 L372,112 Z",
+    d: "M370,94 C392,92 402,100 402,114 C398,124 384,126 372,122 C366,114 366,102 370,94 Z",
   },
   {
     id: "ES",
     name: "Spain",
     continent: "europe",
-    cx: 370,
-    cy: 124,
-    d: "M356,114 L382,114 L382,132 L358,134 L354,124 Z",
+    cx: 368,
+    cy: 126,
+    d: "M354,114 C376,112 384,120 382,132 C376,138 358,138 352,132 C350,124 350,116 354,114 Z",
+  },
+  {
+    id: "PT",
+    name: "Portugal",
+    continent: "europe",
+    cx: 348,
+    cy: 126,
+    d: "M346,118 C352,118 354,126 352,134 C348,136 344,132 344,124 Z",
   },
   {
     id: "DE",
     name: "Germany",
     continent: "europe",
     cx: 410,
-    cy: 96,
-    d: "M398,84 L420,84 L422,106 L402,108 L398,96 Z",
+    cy: 94,
+    d: "M398,82 C418,80 424,90 422,106 C416,114 402,114 398,106 C394,98 394,88 398,82 Z",
   },
   {
     id: "NL",
     name: "Netherlands",
     continent: "europe",
     cx: 396,
-    cy: 86,
-    d: "M390,80 L402,80 L402,90 L390,90 Z",
+    cy: 84,
+    d: "M390,78 C398,78 402,82 400,88 C396,90 392,88 390,84 Z",
+  },
+  {
+    id: "BE",
+    name: "Belgium",
+    continent: "europe",
+    cx: 392,
+    cy: 92,
+    d: "M388,88 C394,88 396,92 396,96 C392,98 388,96 388,92 Z",
+  },
+  {
+    id: "CH",
+    name: "Switzerland",
+    continent: "europe",
+    cx: 402,
+    cy: 108,
+    d: "M398,104 C406,104 408,108 406,112 C402,112 398,110 398,104 Z",
   },
   {
     id: "IT",
@@ -172,89 +258,115 @@ const WORLD_COUNTRIES: CountryShape[] = [
     continent: "europe",
     cx: 414,
     cy: 120,
-    d: "M404,110 L418,110 L426,132 L416,136 L406,120 Z",
+    d: "M404,108 C416,108 424,118 426,132 C422,142 414,142 410,132 C406,122 404,114 404,108 Z",
   },
   {
     id: "SE",
     name: "Sweden",
     continent: "europe",
     cx: 422,
-    cy: 60,
-    d: "M410,44 L428,42 L434,74 L416,78 L412,60 Z",
+    cy: 58,
+    d: "M410,40 C426,38 434,54 432,74 C424,80 416,76 414,64 C410,52 410,44 410,40 Z",
+  },
+  {
+    id: "NO",
+    name: "Norway",
+    continent: "europe",
+    cx: 404,
+    cy: 52,
+    d: "M398,36 C412,34 416,48 412,68 C406,72 402,68 400,56 C396,48 396,40 398,36 Z",
   },
   {
     id: "PL",
     name: "Poland",
     continent: "europe",
-    cx: 432,
-    cy: 92,
-    d: "M422,82 L446,82 L446,102 L424,102 Z",
+    cx: 434,
+    cy: 90,
+    d: "M422,80 C444,78 448,88 448,100 C442,108 426,108 422,100 C418,92 418,84 422,80 Z",
   },
-  // Middle East & Africa
+  {
+    id: "UA",
+    name: "Ukraine",
+    continent: "europe",
+    cx: 466,
+    cy: 96,
+    d: "M448,86 C482,84 488,96 484,110 C474,118 454,116 446,108 C444,98 444,90 448,86 Z",
+  },
+  {
+    id: "TR",
+    name: "Turkey",
+    continent: "europe",
+    cx: 472,
+    cy: 128,
+    d: "M452,122 C488,120 494,128 490,138 C476,142 456,140 450,134 C448,128 448,124 452,122 Z",
+  },
+
+  // ── MIDDLE EAST & AFRICA (MEA) ──
   {
     id: "EG",
     name: "Egypt",
     continent: "mea",
     cx: 448,
-    cy: 158,
-    d: "M434,146 L462,146 L464,172 L436,172 Z",
+    cy: 156,
+    d: "M434,144 C458,142 466,148 466,166 C460,174 442,174 434,168 C430,160 430,148 434,144 Z",
   },
   {
     id: "SA",
     name: "Saudi Arabia",
     continent: "mea",
     cx: 486,
-    cy: 164,
-    d: "M466,148 L504,152 L512,178 L484,186 L468,172 Z",
+    cy: 168,
+    d: "M466,150 C498,152 514,164 510,186 C496,194 476,192 468,178 C462,166 462,156 466,150 Z",
   },
   {
     id: "AE",
     name: "UAE",
     continent: "mea",
-    cx: 514,
-    cy: 168,
-    d: "M506,162 L522,162 L522,174 L508,176 Z",
+    cx: 516,
+    cy: 170,
+    d: "M510,166 C520,166 524,170 522,176 C516,178 510,174 510,166 Z",
   },
   {
     id: "NG",
     name: "Nigeria",
     continent: "mea",
     cx: 406,
-    cy: 196,
-    d: "M392,186 L422,186 L424,208 L394,208 Z",
+    cy: 198,
+    d: "M392,188 C418,188 424,196 422,212 C412,218 398,216 392,208 C388,202 388,192 392,188 Z",
   },
   {
     id: "KE",
     name: "Kenya",
     continent: "mea",
-    cx: 462,
-    cy: 214,
-    d: "M450,202 L474,202 L474,226 L450,226 Z",
+    cx: 464,
+    cy: 216,
+    d: "M452,204 C472,204 476,212 474,228 C464,232 456,230 452,222 C450,214 450,208 452,204 Z",
   },
   {
     id: "ZA",
     name: "South Africa",
     continent: "mea",
     cx: 436,
-    cy: 288,
-    d: "M416,268 L458,266 L462,296 L436,312 L416,296 Z",
+    cy: 292,
+    d: "M416,270 C454,268 464,282 460,304 C446,316 428,314 416,302 C412,290 412,278 416,270 Z",
   },
-  // Asia / APAC
+
+  // ── ASIA / APAC ──
   {
     id: "IN",
     name: "India",
     continent: "asia",
     cx: 556,
-    cy: 170,
-    d: "M534,142 L572,144 L584,166 L562,208 L544,204 L532,172 Z",
+    cy: 172,
+    d: "M536,140 C568,138 584,152 584,172 C576,198 560,214 550,214 C542,208 534,188 532,168 C530,152 532,142 536,140 Z",
   },
   {
     id: "CN",
     name: "China",
     continent: "asia",
-    cx: 616,
-    cy: 126,
-    d: "M560,96 L632,88 L668,106 L662,146 L622,158 L576,144 L556,120 Z",
+    cx: 618,
+    cy: 124,
+    d: "M562,94 C622,86 668,102 670,132 C668,156 638,166 606,162 C578,158 554,142 550,122 C548,106 554,98 562,94 Z",
   },
   {
     id: "KR",
@@ -262,15 +374,23 @@ const WORLD_COUNTRIES: CountryShape[] = [
     continent: "asia",
     cx: 676,
     cy: 126,
-    d: "M670,118 L682,118 L682,136 L670,136 Z",
+    d: "M670,118 C680,116 684,122 682,132 C678,136 672,134 670,128 Z",
   },
   {
     id: "JP",
     name: "Japan",
     continent: "asia",
-    cx: 702,
-    cy: 124,
-    d: "M692,104 L710,100 L714,126 L698,144 L690,134 Z",
+    cx: 704,
+    cy: 122,
+    d: "M692,102 C712,98 718,114 714,134 C708,146 698,144 692,134 C688,122 688,110 692,102 Z",
+  },
+  {
+    id: "TW",
+    name: "Taiwan",
+    continent: "asia",
+    cx: 662,
+    cy: 160,
+    d: "M658,156 C664,154 666,158 664,166 C660,168 658,164 658,156 Z",
   },
   {
     id: "SG",
@@ -278,32 +398,49 @@ const WORLD_COUNTRIES: CountryShape[] = [
     continent: "asia",
     cx: 618,
     cy: 212,
-    d: "M610,206 L626,206 L626,218 L610,218 Z",
+    d: "M612,208 C622,208 624,212 622,216 C618,218 612,216 612,212 Z",
   },
   {
     id: "ID",
     name: "Indonesia",
     continent: "asia",
-    cx: 640,
-    cy: 234,
-    d: "M604,224 L658,224 L676,238 L644,246 L608,238 Z",
+    cx: 642,
+    cy: 236,
+    d: "M604,222 C652,220 674,228 672,242 C656,248 626,248 608,240 C600,234 600,226 604,222 Z",
   },
-  // Oceania
+  {
+    id: "PH",
+    name: "Philippines",
+    continent: "asia",
+    cx: 664,
+    cy: 184,
+    d: "M658,174 C668,172 670,182 668,198 C662,204 656,198 656,186 Z",
+  },
+  {
+    id: "VN",
+    name: "Vietnam",
+    continent: "asia",
+    cx: 624,
+    cy: 172,
+    d: "M618,162 C628,162 632,174 628,190 C622,194 618,186 618,174 Z",
+  },
+
+  // ── OCEANIA ──
   {
     id: "AU",
     name: "Australia",
     continent: "oceania",
-    cx: 676,
-    cy: 294,
-    d: "M626,262 L688,256 L724,278 L720,318 L680,332 L636,318 L620,290 Z",
+    cx: 678,
+    cy: 296,
+    d: "M626,260 C684,252 724,272 724,306 C718,332 682,340 644,328 C624,316 616,290 626,260 Z",
   },
   {
     id: "NZ",
     name: "New Zealand",
     continent: "oceania",
-    cx: 752,
+    cx: 754,
     cy: 334,
-    d: "M744,316 L760,314 L762,344 L744,352 Z",
+    d: "M746,316 C758,312 764,324 762,344 C754,352 746,346 746,332 Z",
   },
 ];
 
@@ -332,16 +469,19 @@ export function WorldMap({
   const [region, setRegion] = useState<WorldMapRegionPreset>(defaultRegion);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const primaryColor = scaled.chartPrimaryColor || tokens.primaryButtonColor || "#10B981";
   const secondaryColor = scaled.chartSecondaryColor || "#8B5CF6";
   const borderColor = tokens.universalBorderColor || "#E4E4E7";
   const surfaceColor = tokens.universalFillColor || "#FFFFFF";
   const textColor = tokens.textIconColor || "#18181B";
-  const mutedLandFill = scaled.isDarkSurface
-    ? "rgba(255, 255, 255, 0.06)"
-    : "rgba(24, 24, 27, 0.06)";
-  const hoverLandFill = hexToRgba(primaryColor, 0.28);
+
+  const isDark = scaled.isDarkSurface;
+  const mutedLandFill = isDark ? "rgba(255, 255, 255, 0.07)" : "rgba(15, 23, 42, 0.05)";
+  const landStrokeColor = isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(15, 23, 42, 0.12)";
+  const hoverLandFill = hexToRgba(primaryColor, 0.32);
 
   const datumMap = useMemo(() => {
     const map = new Map<string, WorldMapRegionDatum>();
@@ -379,8 +519,22 @@ export function WorldMap({
   const hoveredCountry = hoveredId ? countryById.get(hoveredId) : undefined;
   const hoveredDatum = hoveredId ? datumMap.get(hoveredId) : undefined;
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setMousePos({ x, y });
+  };
+
   return (
     <div
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => {
+        setHoveredId(null);
+        setMousePos(null);
+      }}
       data-testid="zerolight-world-map"
       style={{
         backgroundColor: surfaceColor,
@@ -392,16 +546,16 @@ export function WorldMap({
         color: textColor,
         fontFamily: scaled.resolvedFontFamily,
       }}
-      className={`relative overflow-hidden transition-colors ${className}`}
+      className={`relative overflow-hidden transition-colors select-none ${className}`}
     >
       {/* Top Toolbar: Region Presets + Zoom Controls */}
       {showControls && (
         <div
           style={{ borderBottom: `1px solid ${borderColor}` }}
-          className="flex flex-wrap items-center justify-between gap-2 px-3 py-2"
+          className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-black/[0.01] dark:bg-white/[0.01]"
         >
           <div className="flex items-center gap-1 flex-wrap">
-            <Globe2 size={14} style={{ color: primaryColor }} className="mr-1 opacity-80" />
+            <Globe2 size={14} style={{ color: primaryColor }} className="mr-1 opacity-80 shrink-0" />
             {(
               [
                 "world",
@@ -437,7 +591,7 @@ export function WorldMap({
             })}
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 shrink-0">
             <button
               type="button"
               aria-label="Zoom out"
@@ -481,31 +635,41 @@ export function WorldMap({
         </div>
       )}
 
-      {/* Interactive SVG Map Canvas */}
+      {/* Interactive SVG Canvas */}
       <div className="relative w-full" style={{ height }}>
         <svg
           viewBox={viewBox}
-          className="w-full h-full select-none"
+          className="w-full h-full"
           role="img"
-          aria-label="Interactive world map"
+          aria-label="Natural Earth interactive telemetry map"
         >
-          {/* Subtle latitude / longitude graticule */}
-          <g stroke={borderColor} strokeOpacity={0.35} strokeWidth={0.5} strokeDasharray="3 3">
-            <line x1="0" y1="100" x2="800" y2="100" />
-            <line x1="0" y1="200" x2="800" y2="200" />
-            <line x1="0" y1="300" x2="800" y2="300" />
-            <line x1="200" y1="0" x2="200" y2="400" />
-            <line x1="400" y1="0" x2="400" y2="400" />
-            <line x1="600" y1="0" x2="600" y2="400" />
+          <defs>
+            {/* Gradients for telemetry arcs */}
+            <linearGradient id="zl-telemetry-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={primaryColor} stopOpacity={0.8} />
+              <stop offset="100%" stopColor={secondaryColor} stopOpacity={0.9} />
+            </linearGradient>
+          </defs>
+
+          {/* Precision Lat/Long Graticule Grid */}
+          <g stroke={borderColor} strokeOpacity={0.4} strokeWidth={0.5} strokeDasharray="3 3">
+            <line x1="0" y1="80" x2="800" y2="80" />
+            <line x1="0" y1="160" x2="800" y2="160" />
+            <line x1="0" y1="240" x2="800" y2="240" />
+            <line x1="0" y1="320" x2="800" y2="320" />
+            <line x1="160" y1="0" x2="160" y2="400" />
+            <line x1="320" y1="0" x2="320" y2="400" />
+            <line x1="480" y1="0" x2="480" y2="400" />
+            <line x1="640" y1="0" x2="640" y2="400" />
           </g>
 
-          {/* Country Choropleth Polygons */}
+          {/* Smooth Sovereign Country Geometries */}
           <g>
             {WORLD_COUNTRIES.map((country) => {
               const datum = datumMap.get(country.id);
               const isSelected = selectedRegionId?.toUpperCase() === country.id;
               const isHovered = hoveredId === country.id;
-              const intensity = datum ? Math.max(0.18, Math.min(0.92, datum.value / maxValue)) : 0;
+              const intensity = datum ? Math.max(0.2, Math.min(0.95, datum.value / maxValue)) : 0;
 
               const fill = isHovered
                 ? hoverLandFill
@@ -519,8 +683,8 @@ export function WorldMap({
                   d={country.d}
                   data-country-id={country.id}
                   fill={fill}
-                  stroke={isSelected || isHovered ? primaryColor : borderColor}
-                  strokeWidth={isSelected ? 1.8 : isHovered ? 1.3 : 0.75}
+                  stroke={isSelected || isHovered ? primaryColor : landStrokeColor}
+                  strokeWidth={isSelected ? 1.6 : isHovered ? 1.2 : 0.65}
                   className="transition-colors duration-150 cursor-pointer"
                   onMouseEnter={() => setHoveredId(country.id)}
                   onMouseLeave={() => setHoveredId((prev) => (prev === country.id ? null : prev))}
@@ -530,29 +694,39 @@ export function WorldMap({
             })}
           </g>
 
-          {/* Animated Flow Arcs */}
+          {/* High-Performance Animated Telemetry Flow Arcs */}
           <g fill="none">
             {arcs.map((arc, i) => {
               const fromC = countryById.get(arc.from.toUpperCase());
               const toC = countryById.get(arc.to.toUpperCase());
               if (!fromC || !toC) return null;
               const midX = (fromC.cx + toC.cx) / 2;
-              const midY = Math.min(fromC.cy, toC.cy) - Math.abs(toC.cx - fromC.cx) * 0.18;
+              const midY = Math.min(fromC.cy, toC.cy) - Math.abs(toC.cx - fromC.cx) * 0.22;
               const pathD = `M ${fromC.cx} ${fromC.cy} Q ${midX} ${midY} ${toC.cx} ${toC.cy}`;
               return (
-                <path
-                  key={`${arc.from}-${arc.to}-${i}`}
-                  d={pathD}
-                  stroke={secondaryColor}
-                  strokeWidth={1.6}
-                  strokeOpacity={0.85}
-                  strokeDasharray="4 3"
-                />
+                <g key={`${arc.from}-${arc.to}-${i}`}>
+                  {/* Background path line */}
+                  <path
+                    d={pathD}
+                    stroke="url(#zl-telemetry-gradient)"
+                    strokeWidth={1.4}
+                    strokeOpacity={0.65}
+                    strokeDasharray="4 3"
+                  />
+                  {/* Traveling Data Packet Particle */}
+                  <circle r={2.5} fill={secondaryColor}>
+                    <animateMotion
+                      path={pathD}
+                      dur={`${2.2 + (i % 3) * 0.6}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </g>
               );
             })}
           </g>
 
-          {/* Pin / Bubble Markers */}
+          {/* Active Cluster Node Markers with Pulsing Radar Rings */}
           <g>
             {markers.map((marker) => {
               const target = marker.countryId
@@ -571,39 +745,68 @@ export function WorldMap({
 
               return (
                 <g key={marker.id} transform={`translate(${cx}, ${cy})`}>
-                  <circle r={9} fill={hexToRgba(dotColor, 0.2)} />
-                  <circle r={4} fill={dotColor} stroke={surfaceColor} strokeWidth={1.5} />
+                  {/* Pulsing Radar Ring */}
+                  {marker.status === "active" && (
+                    <circle r={8} fill={hexToRgba(dotColor, 0.3)}>
+                      <animate
+                        attributeName="r"
+                        values="4;12;4"
+                        dur="2.5s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.8;0;0.8"
+                        dur="2.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  )}
+                  {/* Core Node Dot */}
+                  <circle r={3.5} fill={dotColor} stroke={surfaceColor} strokeWidth={1.5} />
                 </g>
               );
             })}
           </g>
         </svg>
 
-        {/* Floating Hover Tooltip */}
+        {/* Dynamic Contextual Tooltip Following Mouse / Anchored to Region */}
         {hoveredCountry && (
           <div
             style={{
-              backgroundColor: scaled.isDarkSurface ? "#18181B" : "#111111",
+              backgroundColor: isDark ? "#18181B" : "#0F172A",
               color: "#FFFFFF",
               borderRadius: `${Math.max(6, scaled.scaledRadius)}px`,
+              top: mousePos ? Math.min(mousePos.y + 12, height - 70) : 12,
+              left: mousePos ? Math.min(mousePos.x + 12, 600) : "auto",
+              right: mousePos ? "auto" : 12,
             }}
-            className="pointer-events-none absolute top-3 right-3 px-2.5 py-1.5 text-xs shadow-lg border border-white/10"
+            className="pointer-events-none absolute z-20 px-3 py-2 text-xs shadow-xl border border-white/10 animate-in fade-in zoom-in-95 duration-100"
           >
-            <div className="font-medium flex items-center gap-2">
+            <div className="font-semibold flex items-center gap-2">
               <span>{hoveredDatum?.label || hoveredCountry.name}</span>
-              <span className="text-[10px] opacity-60">{hoveredCountry.id}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/10 font-bold">
+                {hoveredCountry.id}
+              </span>
             </div>
+
             {hoveredDatum ? (
-              <div className="flex items-center gap-2 mt-0.5 text-[11px] tabular-nums">
-                <span className="font-semibold">
+              <div className="flex items-center gap-2.5 mt-1 text-[11px] tabular-nums font-sans tracking-tight">
+                <span className="font-bold text-white text-xs">
                   {hoveredDatum.formattedValue ?? hoveredDatum.value.toLocaleString()}
                 </span>
                 {hoveredDatum.delta && (
-                  <span style={{ color: primaryColor }}>{hoveredDatum.delta}</span>
+                  <span
+                    style={{ color: primaryColor }}
+                    className="font-semibold flex items-center gap-0.5"
+                  >
+                    <Activity className="w-2.5 h-2.5" />
+                    <span>{hoveredDatum.delta}</span>
+                  </span>
                 )}
               </div>
             ) : (
-              <div className="text-[10px] opacity-60 mt-0.5">No telemetry</div>
+              <div className="text-[10px] text-white/50 mt-0.5">Zero live traffic</div>
             )}
           </div>
         )}
@@ -615,11 +818,14 @@ export function WorldMap({
           style={{ borderTop: `1px solid ${borderColor}` }}
           className="flex items-center justify-between px-3 py-1.5 text-[11px] opacity-75"
         >
-          <span>Intensity scale</span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: primaryColor }} />
+            <span>Regional telemetry density</span>
+          </span>
           <div className="flex items-center gap-2">
             <span>Low</span>
             <div className="flex items-center gap-0.5">
-              {[0.2, 0.4, 0.65, 0.9].map((op) => (
+              {[0.2, 0.45, 0.7, 0.95].map((op) => (
                 <span
                   key={op}
                   style={{ backgroundColor: hexToRgba(primaryColor, op) }}

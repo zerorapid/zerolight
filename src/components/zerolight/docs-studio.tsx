@@ -126,6 +126,7 @@ import {
   EmptyState,
   Accordion,
   FileUpload,
+  DEFAULT_MOCK_FILES,
   Stepper,
   ChatBubble,
   ChatInput,
@@ -2927,6 +2928,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       label="Upload Kubernetes manifest or certificate"
                       acceptText="Supports .yaml, .json, .pem, or .crt files"
                       maxSizeText="Max payload size: 25 MB"
+                      files={DEFAULT_MOCK_FILES}
                       onRemoveFile={() => triggerToast("Removed configuration file")}
                     />
                   </div>

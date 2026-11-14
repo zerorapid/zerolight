@@ -26,39 +26,40 @@ export function AlertBanner({
   const { tokens, scaled } = useZeroLight();
 
   const getSeverityConfig = () => {
+    const isDark = scaled.isDarkSurface;
     switch (severity) {
       case "critical":
         return {
-          icon: <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />,
-          bg: "#FFF1F2",
-          border: "#FECDD3",
-          titleColor: "#9F1239",
-          descColor: "#BE123C",
+          icon: <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />,
+          bg: isDark ? "#2D0E14" : "#FFF1F2",
+          border: isDark ? "#5B1924" : "#FECDD3",
+          titleColor: isDark ? "#FDA4AF" : "#9F1239",
+          descColor: isDark ? "#F43F5E" : "#BE123C",
         };
       case "warning":
         return {
-          icon: <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />,
-          bg: "#FFFBEB",
-          border: "#FDE68A",
-          titleColor: "#92400E",
-          descColor: "#B45309",
+          icon: <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />,
+          bg: isDark ? "#2A1805" : "#FFFBEB",
+          border: isDark ? "#5C350A" : "#FDE68A",
+          titleColor: isDark ? "#FCD34D" : "#92400E",
+          descColor: isDark ? "#FBBF24" : "#B45309",
         };
       case "success":
         return {
-          icon: <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />,
-          bg: "#ECFDF5",
-          border: "#A7F3D0",
-          titleColor: "#065F46",
-          descColor: "#047857",
+          icon: <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />,
+          bg: isDark ? "#06281E" : "#ECFDF5",
+          border: isDark ? "#0E563F" : "#A7F3D0",
+          titleColor: isDark ? "#6EE7B7" : "#065F46",
+          descColor: isDark ? "#34D399" : "#047857",
         };
       case "info":
       default:
         return {
-          icon: <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />,
-          bg: "#EFF6FF",
-          border: "#BFDBFE",
-          titleColor: "#1E40AF",
-          descColor: "#1D4ED8",
+          icon: <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />,
+          bg: isDark ? "#0B2144" : "#EFF6FF",
+          border: isDark ? "#173E77" : "#BFDBFE",
+          titleColor: isDark ? "#93C5FD" : "#1E40AF",
+          descColor: isDark ? "#60A5FA" : "#1D4ED8",
         };
     }
   };

@@ -22,7 +22,7 @@ export interface FileUploadProps {
   className?: string;
 }
 
-const DEFAULT_MOCK_FILES: UploadedFile[] = [
+export const DEFAULT_MOCK_FILES: UploadedFile[] = [
   { id: "f1", name: "k8s-cluster-manifest.yaml", size: "24.5 KB", progress: 100, status: "complete" },
   { id: "f2", name: "tls-wildcard-cert.pem", size: "4.8 KB", progress: 68, status: "uploading" },
 ];
@@ -31,7 +31,7 @@ export function FileUpload({
   label = "Upload manifest or certificate",
   acceptText = "Supports .yaml, .json, .pem, or .crt files",
   maxSizeText = "Max payload size: 10 MB",
-  files = DEFAULT_MOCK_FILES,
+  files = [],
   onRemoveFile,
   className = "",
 }: FileUploadProps) {

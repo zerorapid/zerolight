@@ -35,7 +35,7 @@ export function SearchBar({
         paddingRight: `${scaled.scaledPaddingX}px`,
         transition: scaled.transitionStyle,
       }}
-      className={`flex items-center gap-2 border w-full focus-within:ring-2 focus-within:ring-black/10 transition-colors ${className}`}
+      className={`flex items-center gap-2 border w-full focus-within:ring-2 focus-within:ring-neutral-900/10 dark:focus-within:ring-white/20 transition-colors ${className}`}
     >
       <Search
         size={scaled.iconSmSize || 16}

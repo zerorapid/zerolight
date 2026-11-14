@@ -30,13 +30,11 @@ export function Slider({
 
   return (
     <div className="space-y-2 w-full">
-      {(label || true) && (
+      {label && (
         <div className="flex items-center justify-between text-xs">
-          {label && (
-            <label htmlFor={id} style={{ color: tokens.textIconColor }} className="font-medium">
-              {label}
-            </label>
-          )}
+          <label htmlFor={id} style={{ color: tokens.textIconColor }} className="font-medium">
+            {label}
+          </label>
           <span style={{ color: tokens.textIconColor }} className="tabular-nums font-semibold ml-auto">
             {value}%
           </span>

@@ -470,7 +470,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 96,
+      "lines": 94,
       "registryUrl": "/registry/slider.json"
     },
     {
@@ -618,7 +618,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 111,
+      "lines": 112,
       "registryUrl": "/registry/alert-banner.json"
     },
     {
@@ -1242,7 +1242,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 637,
+      "lines": 843,
       "registryUrl": "/registry/world-map.json"
     },
     {
