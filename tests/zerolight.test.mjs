@@ -1257,6 +1257,47 @@ test("SignInCard strictly consumes ZeroLight tokens and native atoms", () => {
   assert.ok(signInContent.includes("tokens.universalFillColor"), "SignInCard must bind universalFillColor");
 });
 
+console.log("\n=== Suite 28: Enterprise Goldmines (MCP, Data Grid & TenantKit) ===");
+
+test("Goldmine 1: Standalone Stdio MCP Server exists and exposes required AI agent tools", () => {
+  const mcpPath = path.join(rootDir, "bin/zerolight-mcp.mjs");
+  assert.ok(fs.existsSync(mcpPath), "bin/zerolight-mcp.mjs must exist");
+  const mcpContent = fs.readFileSync(mcpPath, "utf8");
+  assert.ok(mcpContent.includes("list_components"), "MCP must expose list_components tool");
+  assert.ok(mcpContent.includes("get_component_schema"), "MCP must expose get_component_schema tool");
+  assert.ok(mcpContent.includes("add_component"), "MCP must expose add_component tool");
+  assert.ok(mcpContent.includes("get_design_tokens"), "MCP must expose get_design_tokens tool");
+  assert.ok(mcpContent.includes("jsonrpc"), "MCP must implement JSON-RPC 2.0");
+
+  const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, "package.json"), "utf8"));
+  assert.equal(pkg.bin?.["zerolight-mcp"], "./bin/zerolight-mcp.mjs", "package.json must declare zerolight-mcp binary");
+});
+
+test("Goldmine 2: Enterprise DataTable supports TSV/CSV paste, export & column pinning", () => {
+  const dtPath = path.join(rootDir, "src/components/zerolight/organisms/data-table.tsx");
+  const dtContent = fs.readFileSync(dtPath, "utf8");
+  assert.ok(dtContent.includes("enableClipboardPaste"), "DataTable must support enableClipboardPaste");
+  assert.ok(dtContent.includes("enableExport"), "DataTable must support enableExport");
+  assert.ok(dtContent.includes("exportToCSV"), "DataTable must implement exportToCSV");
+  assert.ok(dtContent.includes("exportToJSON"), "DataTable must implement exportToJSON");
+  assert.ok(dtContent.includes("handlePasteData"), "DataTable must parse clipboard TSV/CSV data");
+  assert.ok(dtContent.includes("pinSelectionColumn"), "DataTable must support pinSelectionColumn");
+  assert.ok(dtContent.includes("pinActionsColumn"), "DataTable must support pinActionsColumn");
+});
+
+test("Goldmine 4: TenantKit organism exists with multi-tenant switcher and isolation controls", () => {
+  const tenantPath = path.join(rootDir, "src/components/zerolight/organisms/tenant-kit.tsx");
+  assert.ok(fs.existsSync(tenantPath), "tenant-kit.tsx must exist");
+  const tenantContent = fs.readFileSync(tenantPath, "utf8");
+  assert.ok(tenantContent.includes("useZeroLight"), "TenantKit must consume useZeroLight");
+  assert.ok(tenantContent.includes("Switch Micro-Tenant"), "TenantKit must support micro-tenant switching");
+  assert.ok(tenantContent.includes("Dedicated VPC"), "TenantKit must support isolation architecture levels");
+  assert.ok(tenantContent.includes("ProgressBar"), "TenantKit must use ProgressBar for quotas");
+
+  const orgIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  assert.ok(orgIdx.includes('export * from "./tenant-kit";'), "organisms/index.ts must export tenant-kit");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

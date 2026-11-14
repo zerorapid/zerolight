@@ -49,6 +49,8 @@ import { StatCard } from "../molecules/stat-card";
 import { AlertBanner } from "../molecules/alert-banner";
 import { Tooltip } from "../molecules/tooltip";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
+import { DataTable } from "../organisms/data-table";
+import { TenantKit } from "../organisms/tenant-kit";
 
 export interface DocItem {
   id: string;
@@ -85,6 +87,8 @@ export const ZEROLIGHT_DOCS_NAV: DocItem[] = [
   { id: "alert-banner", title: "Alert Banner", category: "components", tier: "molecule", description: "System notification banner for healthy, warning, error, and neutral operational states." },
   { id: "tooltip", title: "Tooltip", category: "components", tier: "molecule", description: "Portaled micro-copy popup attached to trigger element." },
   { id: "world-atlas-map", title: "World Atlas Map", category: "components", tier: "organism", description: "Apple/Airbnb 2D flat monochrome vector atlas with 6 pattern styles and zero antimeridian artifacts." },
+  { id: "data-table", title: "Enterprise Data Grid", category: "components", tier: "organism", description: "Enterprise data grid with Excel TSV/CSV clipboard paste, sticky column pinning, and instant export." },
+  { id: "tenant-kit", title: "Micro-Tenant Kit", category: "components", tier: "organism", description: "Multi-tenant workspace switcher, isolation badges, quota progress, and sovereign tenancy matrix." },
   { id: "toast", title: "Toast Notification", category: "components", tier: "organism", description: "A succinct message that is displayed temporarily with stackable physics." },
 
   // BRAND ASSETS
@@ -500,6 +504,56 @@ toast("Your changes have been saved successfully.");`}
             </div>
           )}
 
+          {/* COMPONENT: ENTERPRISE DATA GRID */}
+          {activeId === "data-table" && (
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <h3 className="text-base font-bold text-zinc-950">Enterprise Data Grid with TSV/CSV Paste & Export</h3>
+                <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-4">
+                  <DataTable editable={true} enableClipboardPaste={true} enableExport={true} />
+                  <div className="mt-4">
+                    <CollapsibleCode
+                      code={`import { DataTable } from "@/components/zerolight";
+
+// Enterprise Data Grid with Excel Clipboard TSV Paste & CSV/JSON Export
+<DataTable
+  editable={true}
+  enableClipboardPaste={true}
+  enableExport={true}
+  pinSelectionColumn={true}
+  pinActionsColumn={true}
+/>`}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* COMPONENT: MICRO-TENANT KIT */}
+          {activeId === "tenant-kit" && (
+            <div className="space-y-8">
+              <div className="space-y-3">
+                <h3 className="text-base font-bold text-zinc-950">Micro-Tenant Kit with Sovereign Isolation</h3>
+                <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-4">
+                  <TenantKit />
+                  <div className="mt-4">
+                    <CollapsibleCode
+                      code={`import { TenantKit } from "@/components/zerolight";
+
+// Micro-Tenant Workspace Switcher & Sovereign Isolation Controller
+<TenantKit
+  onSelectTenant={(id) => console.log("Switched tenant:", id)}
+  onInviteMember={(id) => console.log("Invite seat:", id)}
+  onUpgradeTier={(id) => console.log("Scale tenant:", id)}
+/>`}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* BRAND: IDENTITY */}
           {activeId === "brand-identity" && (
             <div className="space-y-8">
@@ -523,6 +577,8 @@ toast("Your changes have been saved successfully.");`}
             activeId !== "button" &&
             activeId !== "input" &&
             activeId !== "world-atlas-map" &&
+            activeId !== "data-table" &&
+            activeId !== "tenant-kit" &&
             activeId !== "toast" &&
             activeId !== "brand-identity" && (
               <div className="space-y-6">

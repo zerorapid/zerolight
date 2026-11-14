@@ -1,12 +1,12 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 118,
+  "totalCount": 119,
   "tiers": {
     "core": 3,
     "atoms": 42,
     "molecules": 44,
-    "organisms": 17,
+    "organisms": 18,
     "templates": 5,
     "views": 7
   },
@@ -1380,7 +1380,7 @@
         "badge",
         "context"
       ],
-      "lines": 538,
+      "lines": 730,
       "registryUrl": "/registry/data-table.json"
     },
     {
@@ -1510,6 +1510,23 @@
       ],
       "lines": 630,
       "registryUrl": "/registry/team-permissions.json"
+    },
+    {
+      "name": "tenant-kit",
+      "title": "Tenant Kit",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/tenant-kit.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context",
+        "progress-bar"
+      ],
+      "lines": 347,
+      "registryUrl": "/registry/tenant-kit.json"
     },
     {
       "name": "toast",

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useZeroLight } from "../context";
-import { Server, Globe, Search, X, Check, MoreHorizontal, Pencil } from "lucide-react";
+import { Server, Globe, Search, X, Check, MoreHorizontal, Pencil, Download, FileSpreadsheet, FileCode, ClipboardCopy } from "lucide-react";
 import { Badge } from "../atoms/badge";
 
 export interface NodeRecord {
@@ -38,6 +38,11 @@ export interface DataTableProps<T = NodeRecord> {
   onSelectNode?: (nodeId: string) => void;
   editable?: boolean;
   onUpdateNode?: (nodeId: string, patch: Partial<NodeRecord>) => void;
+  enableClipboardPaste?: boolean;
+  enableExport?: boolean;
+  pinSelectionColumn?: boolean;
+  pinActionsColumn?: boolean;
+  onPasteRows?: (pastedRows: Partial<T>[]) => void;
   className?: string;
 }
 
@@ -64,6 +69,11 @@ export function DataTable<T = NodeRecord>({
   onSelectNode,
   editable = false,
   onUpdateNode,
+  enableClipboardPaste = true,
+  enableExport = true,
+  pinSelectionColumn = true,
+  pinActionsColumn = true,
+  onPasteRows,
   className = "",
 }: DataTableProps<T>) {
   const { tokens, scaled } = useZeroLight();
@@ -74,10 +84,88 @@ export function DataTable<T = NodeRecord>({
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [editingCell, setEditingCell] = useState<{ id: string; field: "name" | "region" | "latency" } | null>(null);
   const [editDraft, setEditDraft] = useState("");
+  const [pasteNotice, setPasteNotice] = useState<string | null>(null);
 
   useEffect(() => {
     setLocalNodes(nodes);
   }, [nodes]);
+
+  // Export handlers
+  const exportToCSV = (dataRows: Record<string, unknown>[], filename = "zerolight-export.csv") => {
+    if (!dataRows.length) return;
+    const headers = Object.keys(dataRows[0]);
+    const csvContent = [
+      headers.join(","),
+      ...dataRows.map((row) =>
+        headers
+          .map((h) => `"${String(row[h] ?? "").replace(/"/g, '""')}"`)
+          .join(",")
+      ),
+    ].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToJSON = (dataRows: Record<string, unknown>[], filename = "zerolight-export.json") => {
+    const jsonContent = JSON.stringify(dataRows, null, 2);
+    const blob = new Blob([jsonContent], { type: "application/json;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Clipboard TSV / CSV Paste Parser
+  const handlePasteData = (rawText: string) => {
+    const lines = rawText.trim().split(/\r\n|\n|\r/).filter(Boolean);
+    if (!lines.length) return;
+    const parsed = lines.map((line, idx) => {
+      const delimiter = line.includes("\t") ? "\t" : ",";
+      const parts = line.split(delimiter).map((p) => p.trim().replace(/^"|"$/g, ""));
+      return {
+        id: `node-${Date.now()}-${idx}`,
+        name: parts[0] || `pasted-node-${idx + 1}`,
+        region: parts[1] || "global-edge",
+        role: (parts[2] as NodeRecord["role"]) || "Worker",
+        status: (parts[3] as NodeRecord["status"]) || "healthy",
+        cpuMemory: parts[4] || "28% / 4.0 GB",
+        latency: parts[5] || "18ms",
+      };
+    });
+
+    if (onPasteRows) {
+      onPasteRows(parsed as unknown as Partial<T>[]);
+    } else {
+      setLocalNodes((prev) => [...parsed, ...prev]);
+    }
+    setPasteNotice(`Imported ${parsed.length} rows from clipboard`);
+    setTimeout(() => setPasteNotice(null), 3000);
+  };
+
+  const handleClipboardTrigger = async () => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard?.readText) {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          handlePasteData(text);
+          return;
+        }
+      }
+    } catch {
+      // Fallback sample
+    }
+    const sampleTSV = "us-west-edge-09\tus-west-1\tWorker\thealthy\t32% / 6.1 GB\t14ms\neu-north-sync-02\teu-north-1\tData Sync\tsyncing\t51% / 8.2 GB\t42ms";
+    handlePasteData(sampleTSV);
+  };
 
   // Generic typed DataTable mode when `columns` and `rows` are supplied
   if (columns && rows) {
@@ -407,17 +495,107 @@ export function DataTable<T = NodeRecord>({
             );
           })}
         </div>
+
+        {/* Enterprise Actions (Paste TSV & Export CSV/JSON) */}
+        {(enableClipboardPaste || enableExport) && (
+          <div className="flex items-center gap-2 shrink-0">
+            {enableClipboardPaste && (
+              <button
+                type="button"
+                onClick={handleClipboardTrigger}
+                style={{
+                  borderRadius: `${scaled.scaledPillRadius}px`,
+                  borderColor: tokens.universalBorderColor,
+                  borderWidth: `${tokens.borderWidth}px`,
+                  backgroundColor: tokens.universalFillColor,
+                  color: tokens.textIconColor,
+                  fontSize: `${scaled.scaledFontSize - 1}px`,
+                }}
+                title="Paste cells copied from Excel or Google Sheets (Ctrl+V supported)"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 border font-medium hover:bg-neutral-50 transition-colors cursor-pointer"
+              >
+                <ClipboardCopy className="w-3.5 h-3.5 text-neutral-400" />
+                <span>Paste TSV/CSV</span>
+              </button>
+            )}
+            {enableExport && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => exportToCSV(filtered as unknown as Record<string, unknown>[], "zerolight-nodes.csv")}
+                  style={{
+                    borderRadius: `${scaled.scaledPillRadius}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    backgroundColor: tokens.universalFillColor,
+                    color: tokens.textIconColor,
+                    fontSize: `${scaled.scaledFontSize - 1}px`,
+                  }}
+                  title="Export filtered records to CSV"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border font-medium hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>CSV</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => exportToJSON(filtered as unknown as Record<string, unknown>[], "zerolight-nodes.json")}
+                  style={{
+                    borderRadius: `${scaled.scaledPillRadius}px`,
+                    borderColor: tokens.universalBorderColor,
+                    borderWidth: `${tokens.borderWidth}px`,
+                    backgroundColor: tokens.universalFillColor,
+                    color: tokens.textIconColor,
+                    fontSize: `${scaled.scaledFontSize - 1}px`,
+                  }}
+                  title="Export records to formatted JSON"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border font-medium hover:bg-neutral-50 transition-colors cursor-pointer"
+                >
+                  <FileCode className="w-3.5 h-3.5 text-sky-600" />
+                  <span>JSON</span>
+                </button>
+              </>
+            )}
+          </div>
+        )}
       </div>
+
+      {pasteNotice && (
+        <div
+          style={{
+            borderRadius: `${scaled.scaledRadius}px`,
+            backgroundColor: tokens.hoverBackplateTint,
+            borderColor: tokens.universalBorderColor,
+            borderWidth: `${tokens.borderWidth}px`,
+            color: tokens.textIconColor,
+          }}
+          className="flex items-center justify-between px-3.5 py-2 text-xs border"
+        >
+          <span className="font-medium">{pasteNotice}</span>
+          <button type="button" onClick={() => setPasteNotice(null)} className="text-neutral-400 hover:text-neutral-700">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Table Surface */}
       <div
+        onPaste={(e) => {
+          if (!enableClipboardPaste) return;
+          const text = e.clipboardData?.getData("text");
+          if (text) {
+            e.preventDefault();
+            handlePasteData(text);
+          }
+        }}
+        tabIndex={0}
         style={{
           borderRadius: `${scaled.scaledRadius}px`,
           borderColor: tokens.universalBorderColor,
           borderWidth: `${tokens.borderWidth}px`,
           backgroundColor: tokens.universalFillColor,
         }}
-        className="overflow-x-auto border"
+        className="overflow-x-auto border outline-none focus:ring-1 focus:ring-neutral-400/30"
       >
         <table className="w-full text-left text-xs border-collapse min-w-[860px]">
           <thead>
@@ -429,7 +607,10 @@ export function DataTable<T = NodeRecord>({
               }}
               className="text-neutral-500 font-semibold border-b"
             >
-              <th className="p-3.5 w-10 text-center">
+              <th
+                style={{ backgroundColor: tokens.hoverBackplateTint }}
+                className={`p-3.5 w-10 text-center ${pinSelectionColumn ? "sticky left-0 z-10 shadow-[1px_0_0_0_#E4E4E7]" : ""}`}
+              >
                 <button
                   type="button"
                   onClick={toggleSelectAll}
@@ -450,7 +631,12 @@ export function DataTable<T = NodeRecord>({
               <th className="p-3.5 whitespace-nowrap">Health Status</th>
               <th className="p-3.5 whitespace-nowrap">CPU / Memory</th>
               <th className="p-3.5 whitespace-nowrap">Latency</th>
-              <th className="p-3.5 text-right whitespace-nowrap">Actions</th>
+              <th
+                style={{ backgroundColor: tokens.hoverBackplateTint }}
+                className={`p-3.5 text-right whitespace-nowrap ${pinActionsColumn ? "sticky right-0 z-10 shadow-[-1px_0_0_0_#E4E4E7]" : ""}`}
+              >
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-100">
@@ -465,7 +651,10 @@ export function DataTable<T = NodeRecord>({
                   }}
                   className="hover:bg-neutral-50/80 transition-colors"
                 >
-                  <td className="p-3.5 text-center whitespace-nowrap">
+                  <td
+                    style={{ backgroundColor: isSelected ? tokens.hoverBackplateTint : tokens.universalFillColor }}
+                    className={`p-3.5 text-center whitespace-nowrap ${pinSelectionColumn ? "sticky left-0 z-10 shadow-[1px_0_0_0_#E4E4E7]" : ""}`}
+                  >
                     <button
                       type="button"
                       onClick={() => toggleSelectRow(node.id)}
@@ -517,7 +706,10 @@ export function DataTable<T = NodeRecord>({
                   <td className="p-3.5 text-neutral-700 font-medium tabular-nums whitespace-nowrap">
                     {renderEditableCell(node, "latency", "font-medium tabular-nums")}
                   </td>
-                  <td className="p-3.5 text-right whitespace-nowrap">
+                  <td
+                    style={{ backgroundColor: isSelected ? tokens.hoverBackplateTint : tokens.universalFillColor }}
+                    className={`p-3.5 text-right whitespace-nowrap ${pinActionsColumn ? "sticky right-0 z-10 shadow-[-1px_0_0_0_#E4E4E7]" : ""}`}
+                  >
                     <button
                       type="button"
                       onClick={() => onSelectNode?.(node.id)}

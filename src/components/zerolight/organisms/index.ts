@@ -15,3 +15,4 @@ export * from "./page-layout";
 export * from "./geo-breakdown";
 export * from "./billing-portal";
 export * from "./team-permissions";
+export * from "./tenant-kit";

@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "bin": {
-    "zerolight": "./bin/cli.mjs"
+    "zerolight": "./bin/cli.mjs",
+    "zerolight-mcp": "./bin/zerolight-mcp.mjs"
   },
   "scripts": {
     "dev": "next dev",
@@ -11,6 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "node tests/zerolight.test.mjs",
+    "mcp": "node bin/zerolight-mcp.mjs",
     "registry": "node scripts/build-registry.mjs",
     "registry:add": "node scripts/add-component.mjs"
   },
