@@ -79,6 +79,15 @@ input[type="range"]::-moz-range-thumb {
   background: #A1A1AA;
 }
 
+/* ZeroLight Hidden Scrollbar Utility for Sidebar & Panels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* ZeroLight Scoped Polarity Adaptation (no !important so inline token styles always win) */
 [data-zl-polarity="dark"] .text-neutral-900,
 [data-zl-polarity="dark"] .text-neutral-800,
