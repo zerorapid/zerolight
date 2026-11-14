@@ -79,18 +79,21 @@ export function Button({
           backgroundColor: tokens.primaryButtonColor,
           color: scaled.primaryActionTextColor,
           borderColor: tokens.borderWidth > 0 ? tokens.primaryButtonColor : "transparent",
+          boxShadow: "0 1px 2px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.22)",
         };
       case "secondary":
         return {
           backgroundColor: tokens.hoverBackplateTint,
           color: tokens.textIconColor,
           borderColor: tokens.universalBorderColor,
+          boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.6)",
         };
       case "outline":
         return {
           backgroundColor: "transparent",
           color: tokens.textIconColor,
           borderColor: tokens.universalBorderColor,
+          boxShadow: "0 1px 2px rgba(0, 0, 0, 0.02)",
         };
       case "ghost":
         return {

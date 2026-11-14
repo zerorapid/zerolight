@@ -19,7 +19,7 @@
       "targetPath": "src/components/zerolight/types.ts",
       "dependencies": [],
       "registryDependencies": [],
-      "lines": 808,
+      "lines": 818,
       "registryUrl": "/registry/types.json"
     },
     {
@@ -146,7 +146,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 147,
+      "lines": 150,
       "registryUrl": "/registry/button.json"
     },
     {

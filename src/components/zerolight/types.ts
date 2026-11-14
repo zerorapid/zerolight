@@ -467,15 +467,25 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
   const isZeroBorder = tokens.borderWidth === 0;
   const elevationPreset = tokens.elevation || "soft";
 
-  // Elevation-driven card shadow with automatic atmospheric fallback when border is 0
+  const isDark = getContrastColor(tokens.universalFillColor) === "#FFFFFF";
+
+  // Elevation-driven card shadow with Apple-grade optical bevel (sub-pixel rim highlight)
   const cardShadow =
     elevationPreset === "flat"
-      ? "none"
+      ? isDark
+        ? "inset 0 1px 0 rgba(255, 255, 255, 0.05)"
+        : "inset 0 1px 0 rgba(255, 255, 255, 0.9)"
       : elevationPreset === "elevated"
-        ? "0 12px 32px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05)"
+        ? isDark
+          ? "0 14px 36px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+          : "0 12px 32px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9)"
         : isZeroBorder
-          ? "0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)"
-          : "0 1px 2px rgba(0, 0, 0, 0.02)";
+          ? isDark
+            ? "0 4px 20px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08)"
+            : "0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.85)"
+          : isDark
+            ? "0 1px 3px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.06)"
+            : "0 1px 2px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.85)";
 
   // Luminance stepping: when border is 0, inputs/controls step down to a soft neutral tint
   // so their boundary remains crisp against the white card backplate
