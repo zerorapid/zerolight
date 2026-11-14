@@ -163,6 +163,8 @@ import {
   TreeSelect,
   Cascader,
   WorldMap,
+  OrganizationSwitcher,
+  ApiKeyVault,
 } from "./molecules";
 import {
   DataTable,
@@ -930,7 +932,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
           {(
             [
               { key: "atoms", label: "Atoms", count: "20" },
-              { key: "molecules", label: "Molecules", count: "19" },
+              { key: "molecules", label: "Molecules", count: "21" },
               { key: "organisms", label: "Organisms", count: "14" },
               { key: "templates", label: "Templates", count: "5" },
               { key: "pages", label: "Pages", count: "6" },
@@ -3720,6 +3722,37 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                       { from: "IN", to: "SG" },
                     ]}
                   />
+                </div>
+
+                {/* ── 20. MULTI-TENANT ORGANIZATION SWITCHER ── */}
+                <div id="mol-org-switcher" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: tokens.universalBorderColor }}>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight">Organization & Tenant Switcher</h2>
+                      <p className="text-xs opacity-60 mt-0.5">
+                        Multi-tenant workspace switcher with role badges, enterprise tiers, and organization creation.
+                      </p>
+                    </div>
+                    <Badge variant="neutral">molecules/organization-switcher</Badge>
+                  </div>
+                  <div className="p-4 rounded-lg bg-black/[0.02] dark:bg-white/[0.02] flex items-center gap-4">
+                    <OrganizationSwitcher />
+                    <span className="text-xs opacity-50">Click to switch tenant workspaces or inspect enterprise roles</span>
+                  </div>
+                </div>
+
+                {/* ── 21. DEVELOPER API KEY VAULT ── */}
+                <div id="mol-api-key-vault" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
+                  <div className="flex items-start justify-between border-b pb-4" style={{ borderColor: tokens.universalBorderColor }}>
+                    <div>
+                      <h2 className="text-lg font-semibold tracking-tight">API Key & Secrets Vault</h2>
+                      <p className="text-xs opacity-60 mt-0.5">
+                        Developer authentication secrets with masking, one-click copy feedback, permission scopes, and revocation.
+                      </p>
+                    </div>
+                    <Badge variant="neutral">molecules/api-key-vault</Badge>
+                  </div>
+                  <ApiKeyVault />
                 </div>
               </>
             )}

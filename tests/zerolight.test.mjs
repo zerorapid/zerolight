@@ -1075,6 +1075,9 @@ test("Enterprise Security Headers, Zod Schema & SaaS Blueprints exist and functi
 
   const telemetryRoute = fs.readFileSync(path.join(rootDir, "src/app/api/telemetry/route.ts"), "utf8");
   assert.ok(telemetryRoute.includes("TelemetryEventSchema") && telemetryRoute.includes("safeParse"), "telemetry API route must validate requests with Zod schema");
+
+  const docsStudio = fs.readFileSync(path.join(rootDir, "src/components/zerolight/docs-studio.tsx"), "utf8");
+  assert.ok(docsStudio.includes("<OrganizationSwitcher") && docsStudio.includes("<ApiKeyVault"), "docs-studio.tsx must showcase OrganizationSwitcher and ApiKeyVault");
 });
 
 console.log("\n==================================================");
