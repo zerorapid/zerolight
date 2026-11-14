@@ -1,11 +1,11 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 113,
+  "totalCount": 115,
   "tiers": {
     "core": 3,
     "atoms": 42,
-    "molecules": 41,
+    "molecules": 43,
     "organisms": 15,
     "templates": 5,
     "views": 7
@@ -622,6 +622,21 @@
       "registryUrl": "/registry/alert-banner.json"
     },
     {
+      "name": "api-key-vault",
+      "title": "Api Key Vault",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/api-key-vault.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 217,
+      "registryUrl": "/registry/api-key-vault.json"
+    },
+    {
       "name": "area-chart",
       "title": "Area Chart",
       "type": "registry:ui",
@@ -955,6 +970,21 @@
       ],
       "lines": 103,
       "registryUrl": "/registry/list-row.json"
+    },
+    {
+      "name": "organization-switcher",
+      "title": "Organization Switcher",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/organization-switcher.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 172,
+      "registryUrl": "/registry/organization-switcher.json"
     },
     {
       "name": "pagination",

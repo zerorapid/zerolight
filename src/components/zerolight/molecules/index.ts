@@ -39,3 +39,5 @@ export * from "./popover";
 export * from "./toolbar";
 export * from "./file-card";
 export * from "./world-map";
+export * from "./organization-switcher";
+export * from "./api-key-vault";

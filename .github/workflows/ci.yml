@@ -34,3 +34,11 @@ jobs:
 
       - name: Production Next.js Build
         run: npm run build
+
+      - name: TruffleHog OSS Secret Scanner
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --debug --only-verified

@@ -1063,6 +1063,20 @@ test("ZeroLight Distribution CLI and Telemetry Pipeline exist and execute", () =
   assert.equal(pkg.bin?.zerolight, "./bin/cli.mjs", "package.json must declare zerolight binary");
 });
 
+test("Enterprise Security Headers, Zod Schema & SaaS Blueprints exist and function", () => {
+  const nextConfigContent = fs.readFileSync(path.join(rootDir, "next.config.mjs"), "utf8");
+  assert.ok(nextConfigContent.includes("X-Frame-Options") && nextConfigContent.includes("nosniff"), "next.config.mjs must declare security headers");
+
+  const ciContent = fs.readFileSync(path.join(rootDir, ".github/workflows/ci.yml"), "utf8");
+  assert.ok(ciContent.includes("trufflehog"), "CI must include TruffleHog secret scanning step");
+
+  const molIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/index.ts"), "utf8");
+  assert.ok(molIdx.includes("organization-switcher") && molIdx.includes("api-key-vault"), "molecules/index.ts must export OrganizationSwitcher and ApiKeyVault");
+
+  const telemetryRoute = fs.readFileSync(path.join(rootDir, "src/app/api/telemetry/route.ts"), "utf8");
+  assert.ok(telemetryRoute.includes("TelemetryEventSchema") && telemetryRoute.includes("safeParse"), "telemetry API route must validate requests with Zod schema");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");
