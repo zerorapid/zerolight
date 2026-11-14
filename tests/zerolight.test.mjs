@@ -1393,6 +1393,48 @@ test("SaaS Input Field Library: 44 interactive variants, 10 categories, zero nat
   assert.ok(dashboardContent.includes("sidebar-sub-pip"), "DashboardShell must implement kinetic sub-pip for sidebar submenus");
 });
 
+// -----------------------------------------------------------------
+// Test Suite 30: SaaS Selection Controls Library (26 Variants)
+// -----------------------------------------------------------------
+console.log("\n=== Suite 30: SaaS Selection Controls Library (26 Variants) ===");
+
+test("SaaS Selection Controls Library: 26 interactive variants across 6 categories", () => {
+  const selPath = path.join(rootDir, "src/components/zerolight/libraries/selection-library.tsx");
+  assert.ok(fs.existsSync(selPath), "selection-library.tsx must exist");
+  const selContent = fs.readFileSync(selPath, "utf8");
+
+  // Export check
+  assert.ok(selContent.includes("export function SaaSSelectionLibrary"), "must export SaaSSelectionLibrary");
+
+  // 6 Categories
+  assert.ok(selContent.includes("1. Checkboxes"), "must contain Checkboxes category");
+  assert.ok(selContent.includes("2. Radio Buttons"), "must contain Radio Buttons category");
+  assert.ok(selContent.includes("3. Toggle Switches"), "must contain Toggle Switches category");
+  assert.ok(selContent.includes("4. Selectable Cards"), "must contain Selectable Cards category");
+  assert.ok(selContent.includes("5. Custom Dropdowns"), "must contain Custom Dropdowns category");
+  assert.ok(selContent.includes("6. Permissions & Rating"), "must contain Permissions & Rating category");
+
+  // 3 Density Tiers
+  for (const tier of ["small", "medium", "large"]) {
+    assert.ok(selContent.includes(`"${tier}"`), `Selection library must support density ${tier}`);
+  }
+
+  // Key interactive features
+  assert.ok(selContent.includes("Select All Parent Checkbox"), "must implement tri-state indeterminate checkbox");
+  assert.ok(selContent.includes("Single-Choice Plan Cards"), "must implement single-choice pricing plan cards");
+  assert.ok(selContent.includes("Weekly Working Days Selector"), "must implement weekly working days selector");
+  assert.ok(selContent.includes("Role Permission Mini-Grid"), "must implement role permission grid");
+  assert.ok(selContent.includes("Star Rating Selector"), "must implement star rating selector");
+  assert.ok(selContent.includes("CustomCheckbox"), "must use custom checkboxes (zero native controls)");
+  assert.ok(selContent.includes("CustomRadio"), "must use custom radios (zero native controls)");
+  assert.ok(selContent.includes("CustomSwitch"), "must use custom switches (zero native controls)");
+
+  // Dashboard integration
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("SaaSSelectionLibrary"), "DashboardShell must integrate SaaSSelectionLibrary");
+  assert.ok(dashboardContent.includes("103 SaaS Pattern Variants Active"), "DashboardShell must synchronize 103 SaaS pattern variants active badge");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

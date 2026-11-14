@@ -47,13 +47,13 @@ import { useZeroLight } from "../context";
 import { ZeroLightStudio } from "../docs-studio";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
-import { SaaSButtonLibrary, SaaSInputFieldLibrary } from "../libraries";
+import { SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary } from "../libraries";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
 export type DashboardTab = "overview" | "ds-editor" | "docs" | "tools" | "settings";
-export type DocsSubView = "catalog" | "buttons" | "inputs";
+export type DocsSubView = "catalog" | "buttons" | "inputs" | "selections";
 export type SettingsSubTab = "general" | "security" | "mcp" | "api" | "compliance";
 
 export function DashboardShell() {
@@ -317,6 +317,7 @@ export function DashboardShell() {
                           { id: "catalog", label: "Catalog & Tokens", count: "119" },
                           { id: "buttons", label: "Button Library", count: "33" },
                           { id: "inputs", label: "Input Library", count: "44" },
+                          { id: "selections", label: "Selection Controls", count: "26" },
                         ].map((sub) => {
                           const isSubActive = activeTab === "docs" && docsSubView === sub.id;
                           return (
@@ -353,7 +354,7 @@ export function DashboardShell() {
 
                     {/* Collapsed Mode: Hover-Protected Flyout Popover */}
                     {isCollapsed && hoveredTab === item.id && (
-                      <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 p-2 rounded-xl bg-[#0B0F19]/95 backdrop-blur-xl border border-white/15 text-white shadow-[0_12px_30px_rgba(0,0,0,0.65)] whitespace-nowrap text-xs font-semibold animate-in fade-in zoom-in-95 duration-150 min-w-[160px]">
+                      <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 p-2 rounded-xl bg-[#0B0F19]/95 backdrop-blur-xl border border-white/15 text-white shadow-[0_12px_30px_rgba(0,0,0,0.65)] whitespace-nowrap text-xs font-semibold animate-in fade-in zoom-in-95 duration-150 min-w-[170px]">
                         <div className="flex items-center justify-between gap-2 px-1 py-0.5">
                           <span>{item.label}</span>
                           {item.badge && (
@@ -368,6 +369,7 @@ export function DashboardShell() {
                               { id: "catalog", label: "Catalog (119)" },
                               { id: "buttons", label: "Buttons (33)" },
                               { id: "inputs", label: "Inputs (44)" },
+                              { id: "selections", label: "Selections (26)" },
                             ].map((sub) => (
                               <button
                                 key={sub.id}
@@ -691,6 +693,7 @@ export function DashboardShell() {
                   { id: "catalog", label: "Component Catalog & Foundations", count: "119" },
                   { id: "buttons", label: "SaaS Button Library", count: "33" },
                   { id: "inputs", label: "SaaS Input Field Library", count: "44" },
+                  { id: "selections", label: "SaaS Selection Controls", count: "26" },
                 ].map((sub) => {
                   const active = docsSubView === sub.id;
                   return (
@@ -718,7 +721,7 @@ export function DashboardShell() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Badge variant="healthy">77 SaaS Pattern Variants Active</Badge>
+                <Badge variant="healthy">103 SaaS Pattern Variants Active</Badge>
               </div>
             </div>
 
@@ -730,6 +733,7 @@ export function DashboardShell() {
             )}
             {docsSubView === "buttons" && <SaaSButtonLibrary />}
             {docsSubView === "inputs" && <SaaSInputFieldLibrary />}
+            {docsSubView === "selections" && <SaaSSelectionLibrary />}
           </div>
         )}
 
