@@ -476,24 +476,7 @@ export function DashboardShell() {
             </div>
 
             <div className="rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-xs">
-              <WorldAtlasMap className="w-full min-h-[560px]" />
-            </div>
-
-            {/* Regional Ranked Telemetry Ingress */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-zinc-950">
-                    Regional Ingress & Global Telemetry
-                  </h3>
-                  <p className="text-xs text-zinc-500">
-                    Ranked country distribution with latency percentiles and delta progress bars.
-                  </p>
-                </div>
-                <Badge variant="neutral">Telemetry Feed</Badge>
-              </div>
-
-              <GeoBreakdown />
+              <WorldAtlasMap className="w-full min-h-[580px]" />
             </div>
           </div>
         )}
