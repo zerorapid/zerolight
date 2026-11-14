@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 3 Organism Library: SaaS Navigation, Breadcrumbs, Tabs, Steppers & Sidebars (20 Variants)</title>
+  <!-- Google Fonts: Inter Sans only (Zero Monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            popover: '0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --nav-py: 7px;
+      --nav-px: 12px;
+      --nav-font-size: 13px;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .nav-density-item {
+      padding-top: var(--nav-py);
+      padding-bottom: var(--nav-py);
+      padding-left: var(--nav-px);
+      padding-right: var(--nav-px);
+      font-size: var(--nav-font-size);
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Smooth sidebar transition */
+    .sidebar-transition {
+      transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1), padding 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-zinc-100 min-h-screen antialiased transition-colors duration-150">
+
+  <!-- =========================================================================
+       STICKY GLOBAL CONTROL BAR
+  ========================================================================= -->
+  <header class="sticky top-0 z-30 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 px-4 sm:px-6 py-3.5 space-y-3">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      
+      <!-- Left: L3 Badge, Title & Live Counter -->
+      <div class="flex items-center gap-3">
+        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+          L3
+        </span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
+              SaaS Navigation, Breadcrumbs & Sidebars
+            </h1>
+            <span id="variant-counter" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              20 Variants
+            </span>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">
+            Level 3 Organisms: Hierarchy trails, multi-step steppers, interactive pagers, and full application shells.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Search, Density, and Theme Toggle -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Instant Search -->
+        <div class="relative min-w-[210px]">
+          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Filter navigation variants..." 
+            oninput="handleSearch(this.value)"
+            class="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
+          />
+          <button 
+            type="button" 
+            id="clear-search-btn" 
+            onclick="clearSearch()" 
+            class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+          >
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+
+        <!-- 3 Density Toggles -->
+        <div class="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
+          <button 
+            type="button" 
+            onclick="setDensity('small')" 
+            id="density-small"
+            class="density-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer"
+          >
+            Small
+          </button>
+          <button 
+            type="button" 
+            onclick="setDensity('medium')" 
+            id="density-medium"
+            class="density-btn px-2.5 py-1 rounded-md font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer"
+          >
+            Medium
+          </button>
+          <button 
+            type="button" 
+            onclick="setDensity('large')" 
+            id="density-large"
+            class="density-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer"
+          >
+            Large
+          </button>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button 
+          type="button" 
+          onclick="toggleTheme()" 
+          title="Toggle Light/Dark Theme"
+          class="p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition cursor-pointer"
+        >
+          <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Category Filter Pill Rail -->
+    <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      <button 
+        type="button" 
+        onclick="setCategory('all')" 
+        id="cat-pill-all"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>All Navigation</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950">20</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-breadcrumbs')" 
+        id="cat-pill-cat-breadcrumbs"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Breadcrumbs & Hierarchy</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">4</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-tabs')" 
+        id="cat-pill-cat-tabs"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Tabs (Horizontal & Vertical)</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">4</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-pagination')" 
+        id="cat-pill-cat-pagination"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>List & Table Pagination</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-steppers')" 
+        id="cat-pill-cat-steppers"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Steppers & Onboarding</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-sidebars')" 
+        id="cat-pill-cat-sidebars"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>App Sidebars & Rails</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-topnav')" 
+        id="cat-pill-cat-topnav"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Top Navbars & Headers</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN SHOWCASE CONTAINER
+  ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+
+    <!-- Categories 1 through 5: 3-column Grid -->
+    <div id="standard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- =====================================================================
+           CATEGORY 1: BREADCRUMBS & HIERARCHY TRAILS (4 VARIANTS)
+      ====================================================================== -->
+
+      <!-- Variant 01: Chevron Breadcrumb Trail -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-breadcrumbs" data-title="Chevron Breadcrumb Trail">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#01</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Breadcrumb
+              </span>
+            </div>
+            <button onclick="openCodeModal('01 Chevron Breadcrumb Trail', snippet01)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Chevron Breadcrumb Trail</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Clean nested hierarchy path using hairline chevrons and interactive hover states.</p>
+          
+          <!-- Live Preview -->
+          <nav aria-label="Breadcrumb" class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <ol class="flex items-center gap-1.5 flex-wrap nav-density-item !p-0">
+              <li>
+                <a href="#workspace" class="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition font-medium">Workspace</a>
+              </li>
+              <li class="text-zinc-300 dark:text-zinc-600">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </li>
+              <li>
+                <a href="#invoices" class="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition font-medium">Invoices</a>
+              </li>
+              <li class="text-zinc-300 dark:text-zinc-600">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </li>
+              <li class="font-semibold text-zinc-900 dark:text-white font-sans tabular-nums" aria-current="page">
+                #INV-9042
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Hierarchy Depth: 3</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Interactive Trail</span>
+        </div>
+      </div>
+
+      <!-- Variant 02: Home Icon & Slash Breadcrumbs -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-breadcrumbs" data-title="Home Icon and Slash Breadcrumbs">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#02</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Breadcrumb
+              </span>
+            </div>
+            <button onclick="openCodeModal('02 Home Icon and Slash Breadcrumbs', snippet02)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Home Icon & Slash Breadcrumbs</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Slash-separated navigation route originating from a root home dashboard icon.</p>
+          
+          <!-- Live Preview -->
+          <nav aria-label="Breadcrumb" class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <ol class="flex items-center gap-2 flex-wrap nav-density-item !p-0">
+              <li>
+                <a href="#home" title="Root Dashboard" class="p-1 rounded text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition flex items-center">
+                  <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                </a>
+              </li>
+              <li class="text-zinc-300 dark:text-zinc-600 font-medium">/</li>
+              <li>
+                <a href="#clients" class="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition font-medium">Clients</a>
+              </li>
+              <li class="text-zinc-300 dark:text-zinc-600 font-medium">/</li>
+              <li class="font-semibold text-zinc-900 dark:text-white" aria-current="page">
+                Deccan Logistics
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Slash Separator</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Root Anchor</span>
+        </div>
+      </div>
+
+      <!-- Variant 03: Collapsed Overflow Breadcrumb -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-breadcrumbs" data-title="Collapsed Overflow Breadcrumb">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#03</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Breadcrumb
+              </span>
+            </div>
+            <button onclick="openCodeModal('03 Collapsed Overflow Breadcrumb', snippet03)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Collapsed Overflow Breadcrumb</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Deep folder path with interactive ellipsis disclosure revealing intermediate folders.</p>
+          
+          <!-- Live Preview -->
+          <nav aria-label="Breadcrumb" class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 relative">
+            <ol class="flex items-center gap-1.5 flex-wrap nav-density-item !p-0">
+              <li>
+                <a href="#files" class="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition font-medium">Files</a>
+              </li>
+              <li class="text-zinc-300 dark:text-zinc-600">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </li>
+              <!-- Ellipsis Toggle -->
+              <li class="relative">
+                <button 
+                  type="button" 
+                  id="ellipsis-toggle-btn"
+                  onclick="toggleBreadcrumbOverflow()" 
+                  class="px-1.5 py-0.5 rounded text-xs font-semibold bg-zinc-200/70 hover:bg-zinc-300 dark:bg-white/10 dark:hover:bg-white/20 text-zinc-700 dark:text-zinc-300 transition"
+                  title="Click to expand hidden folders"
+                >
+                  •••
+                </button>
+                <!-- Popover Disclosure -->
+                <div id="breadcrumb-overflow-popover" class="hidden absolute left-0 top-full mt-1.5 z-20 w-44 p-1.5 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-xl shadow-popover text-xs space-y-1">
+                  <a href="#q4" class="block px-2.5 py-1.5 rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 transition">2026_Q4_Audits</a>
+                  <a href="#compliance" class="block px-2.5 py-1.5 rounded-lg text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 transition">Tax_Compliance</a>
+                </div>
+              </li>
+              <li class="text-zinc-300 dark:text-zinc-600">
+                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+              </li>
+              <li class="font-semibold text-zinc-900 dark:text-white" aria-current="page">
+                Tax_Summary.pdf
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Click ••• to reveal</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Overflow Popover</span>
+        </div>
+      </div>
+
+      <!-- Variant 04: Back Button + Current Page Title -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-breadcrumbs" data-title="Back Button and Current Page Title">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#04</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Breadcrumb
+              </span>
+            </div>
+            <button onclick="openCodeModal('04 Back Button and Current Page Title', snippet04)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Back Button + Current Page Title</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Direct contextual escape link paired with high-clarity destination page heading.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-1">
+            <a href="#customers" class="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition font-medium">
+              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+              <span>Back to Customers</span>
+            </a>
+            <div class="flex items-center gap-2 pt-1">
+              <h4 class="text-base font-bold text-zinc-950 dark:text-white">Apex Retail Solutions</h4>
+              <span class="px-2 py-0.5 text-[10px] font-semibold rounded-md bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                Active Client
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Escape Route</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Contextual Anchor</span>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           CATEGORY 2: HORIZONTAL & VERTICAL TABS (4 VARIANTS)
+      ====================================================================== -->
+
+      <!-- Variant 05: Clean Underline Tabs -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-tabs" data-title="Clean Underline Tabs">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#05</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Tabs
+              </span>
+            </div>
+            <button onclick="openCodeModal('05 Clean Underline Tabs', snippet05)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Clean Underline Tabs</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Underline indicator tracking the active view with zero visual noise.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <div class="border-b border-zinc-200 dark:border-white/10 flex items-center gap-4">
+              <button type="button" onclick="setUnderlineTab(this, 'Overview')" class="underline-tab-btn pb-2.5 font-semibold text-zinc-950 dark:text-white border-b-2 border-zinc-950 dark:border-white transition nav-density-item !py-1 !px-0">
+                Overview
+              </button>
+              <button type="button" onclick="setUnderlineTab(this, 'Activity')" class="underline-tab-btn pb-2.5 font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 border-b-2 border-transparent transition nav-density-item !py-1 !px-0">
+                Activity
+              </button>
+              <button type="button" onclick="setUnderlineTab(this, 'Members')" class="underline-tab-btn pb-2.5 font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 border-b-2 border-transparent transition nav-density-item !py-1 !px-0">
+                Members
+              </button>
+              <button type="button" onclick="setUnderlineTab(this, 'Billing')" class="underline-tab-btn pb-2.5 font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 border-b-2 border-transparent transition nav-density-item !py-1 !px-0">
+                Billing
+              </button>
+            </div>
+            <div id="underline-tab-content" class="pt-3 text-xs text-zinc-500 dark:text-zinc-400">
+              Active tab view: <strong class="text-zinc-900 dark:text-zinc-100">Overview</strong>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Hairline Border</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Live Switch</span>
+        </div>
+      </div>
+
+      <!-- Variant 06: Segmented Pill Tabs -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-tabs" data-title="Segmented Pill Tabs">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#06</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Tabs
+              </span>
+            </div>
+            <button onclick="openCodeModal('06 Segmented Pill Tabs', snippet06)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Segmented Pill Tabs</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Tactile segmented pill container with solid background on active selection.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3">
+            <div class="inline-flex p-1 rounded-lg bg-zinc-200/60 dark:bg-white/10 border border-zinc-200/80 dark:border-white/5">
+              <button type="button" onclick="setPillTab(this, 'All Records')" class="pill-tab-btn rounded-md font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs transition nav-density-item">
+                All Records
+              </button>
+              <button type="button" onclick="setPillTab(this, 'Active')" class="pill-tab-btn rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition nav-density-item">
+                Active
+              </button>
+              <button type="button" onclick="setPillTab(this, 'Archived')" class="pill-tab-btn rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition nav-density-item">
+                Archived
+              </button>
+            </div>
+            <div id="pill-tab-content" class="text-xs text-zinc-500 dark:text-zinc-400">
+              Showing: <strong class="text-zinc-900 dark:text-zinc-100">All Records (248 Total)</strong>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Solid Inset Pill</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Segmented Control</span>
+        </div>
+      </div>
+
+      <!-- Variant 07: Tabs with Live Item Counters -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-tabs" data-title="Tabs with Live Item Counters">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#07</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Tabs
+              </span>
+            </div>
+            <button onclick="openCodeModal('07 Tabs with Live Item Counters', snippet07)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Tabs with Live Item Counters</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Navigational status tabs paired with dynamic tabular numeric counts.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3">
+            <div class="flex items-center gap-2 flex-wrap">
+              <button type="button" onclick="setCountTab(this, 'Unpaid', 14)" class="count-tab-btn rounded-lg font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs transition flex items-center gap-2 nav-density-item">
+                <span>Unpaid</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-white/20 dark:bg-black/20 text-white dark:text-black font-sans tabular-nums">14</span>
+              </button>
+              <button type="button" onclick="setCountTab(this, 'Paid', 86)" class="count-tab-btn rounded-lg font-medium bg-zinc-200/70 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-white/20 transition flex items-center gap-2 nav-density-item">
+                <span>Paid</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-zinc-300/80 dark:bg-white/10 font-sans tabular-nums">86</span>
+              </button>
+              <button type="button" onclick="setCountTab(this, 'Overdue', 3)" class="count-tab-btn rounded-lg font-medium bg-zinc-200/70 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-white/20 transition flex items-center gap-2 nav-density-item">
+                <span>Overdue</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-rose-200/80 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 font-sans tabular-nums">3</span>
+              </button>
+            </div>
+            <div id="count-tab-content" class="text-xs text-zinc-500 dark:text-zinc-400">
+              Filter: <strong class="text-zinc-900 dark:text-zinc-100">Unpaid Invoices (14 records require action)</strong>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Tabular Counters</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Status Filter</span>
+        </div>
+      </div>
+
+      <!-- Variant 08: Vertical Settings Navigation Tabs -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-tabs" data-title="Vertical Settings Navigation Tabs">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#08</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Tabs
+              </span>
+            </div>
+            <button onclick="openCodeModal('08 Vertical Settings Navigation Tabs', snippet08)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Vertical Settings Navigation Tabs</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Stacked vertical sidebar tabs with icon prefixes for settings & account consoles.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-1">
+            <button type="button" onclick="setVerticalTab(this, 'General Info')" class="vertical-tab-btn w-full flex items-center gap-2.5 rounded-lg text-left font-semibold bg-white dark:bg-white/10 text-zinc-950 dark:text-white shadow-xs transition nav-density-item">
+              <i data-lucide="user" class="w-4 h-4"></i>
+              <span>General Info</span>
+            </button>
+            <button type="button" onclick="setVerticalTab(this, 'Team & Roles')" class="vertical-tab-btn w-full flex items-center gap-2.5 rounded-lg text-left font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/5 transition nav-density-item">
+              <i data-lucide="users" class="w-4 h-4"></i>
+              <span>Team & Roles</span>
+            </button>
+            <button type="button" onclick="setVerticalTab(this, 'API & Webhooks')" class="vertical-tab-btn w-full flex items-center gap-2.5 rounded-lg text-left font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/5 transition nav-density-item">
+              <i data-lucide="key" class="w-4 h-4"></i>
+              <span>API & Webhooks</span>
+            </button>
+            <button type="button" onclick="setVerticalTab(this, 'Billing Plan')" class="vertical-tab-btn w-full flex items-center gap-2.5 rounded-lg text-left font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/5 transition nav-density-item">
+              <i data-lucide="credit-card" class="w-4 h-4"></i>
+              <span>Billing Plan</span>
+            </button>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Settings Layout</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Vertical Stack</span>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           CATEGORY 3: TABLE & LIST PAGINATION CONTROLS (3 VARIANTS)
+      ====================================================================== -->
+
+      <!-- Variant 09: Numbered Page Strip -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-pagination" data-title="Numbered Page Strip">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#09</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Pagination
+              </span>
+            </div>
+            <button onclick="openCodeModal('09 Numbered Page Strip', snippet09)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Numbered Page Strip</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Clickable numbered page strip with active pill highlight and prev/next chevron navigation.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3">
+            <div class="flex items-center justify-center gap-1">
+              <button type="button" onclick="changeNumberedPage(-1)" title="Previous Page" class="p-1.5 rounded-md hover:bg-zinc-200/60 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-400 transition">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <div id="page-strip-buttons" class="flex items-center gap-1 font-sans tabular-nums text-xs">
+                <!-- Injected via JS -->
+              </div>
+              <button type="button" onclick="changeNumberedPage(1)" title="Next Page" class="p-1.5 rounded-md hover:bg-zinc-200/60 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-400 transition">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+            <div id="page-strip-status" class="text-center text-xs text-zinc-500 font-sans tabular-nums">
+              Showing page 1 of 5
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Total: 5 Pages</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Interactive Buttons</span>
+        </div>
+      </div>
+
+      <!-- Variant 10: Compact Table Footer Pager -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-pagination" data-title="Compact Table Footer Pager">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#10</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Pagination
+              </span>
+            </div>
+            <button onclick="openCodeModal('10 Compact Table Footer Pager', snippet10)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Compact Table Footer Pager</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Standard SaaS table bottom bar pairing record range count with outline action buttons.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <div class="flex items-center justify-between gap-2 flex-wrap text-xs">
+              <span id="compact-pager-label" class="text-zinc-500 dark:text-zinc-400 font-sans tabular-nums">
+                Showing <strong>1–20</strong> of <strong>248</strong> results
+              </span>
+              <div class="flex items-center gap-1.5">
+                <button 
+                  type="button" 
+                  id="compact-prev-btn"
+                  onclick="changeCompactPage(-1)" 
+                  class="px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                >
+                  Previous
+                </button>
+                <button 
+                  type="button" 
+                  id="compact-next-btn"
+                  onclick="changeCompactPage(1)" 
+                  class="px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/10 transition"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>20 Items Per Page</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Table Standard</span>
+        </div>
+      </div>
+
+      <!-- Variant 11: Rows Per Page + Pager Bar -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-pagination" data-title="Rows Per Page and Pager Bar">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#11</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Pagination
+              </span>
+            </div>
+            <button onclick="openCodeModal('11 Rows Per Page and Pager Bar', snippet11)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Rows Per Page + Pager Bar</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Custom floating popover rows selector (zero native select) paired with page jump index.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <div class="flex items-center justify-between gap-2 flex-wrap text-xs">
+              <!-- Custom Rows Popover Selector -->
+              <div class="relative">
+                <button 
+                  type="button" 
+                  id="rows-select-btn" 
+                  onclick="toggleRowsDropdown()" 
+                  class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 font-medium text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/10 transition"
+                >
+                  <span id="current-rows-label" class="font-sans tabular-nums">25 rows</span>
+                  <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-zinc-400"></i>
+                </button>
+                <!-- Popover Menu -->
+                <div id="rows-dropdown-popover" class="hidden absolute left-0 bottom-full mb-1 z-20 w-28 p-1 bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-xl shadow-popover space-y-0.5 font-sans tabular-nums">
+                  <button type="button" onclick="selectRows(10)" class="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300">10 rows</button>
+                  <button type="button" onclick="selectRows(25)" class="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-zinc-100 dark:hover:bg-white/5 font-bold text-zinc-950 dark:text-white bg-zinc-100 dark:bg-white/10">25 rows</button>
+                  <button type="button" onclick="selectRows(50)" class="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300">50 rows</button>
+                  <button type="button" onclick="selectRows(100)" class="w-full text-left px-2 py-1.5 rounded-lg text-xs hover:bg-zinc-100 dark:hover:bg-white/5 text-zinc-700 dark:text-zinc-300">100 rows</button>
+                </div>
+              </div>
+
+              <!-- Page Indicator & Quick Prev/Next -->
+              <div class="flex items-center gap-2 font-sans tabular-nums">
+                <span class="text-zinc-500 dark:text-zinc-400">Page <strong>1</strong> of <strong>10</strong></span>
+                <div class="flex items-center gap-0.5">
+                  <button type="button" class="p-1 rounded hover:bg-zinc-200/60 dark:hover:bg-white/10 text-zinc-400 hover:text-zinc-800 transition">
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                  </button>
+                  <button type="button" class="p-1 rounded hover:bg-zinc-200/60 dark:hover:bg-white/10 text-zinc-700 dark:text-zinc-300 transition">
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Zero Native Dropdowns</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Custom Popover</span>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           CATEGORY 4: MULTI-STEP ONBOARDING & CHECKOUT STEPPERS (3 VARIANTS)
+      ====================================================================== -->
+
+      <!-- Variant 12: Interactive 3-Step Onboarding Wizard -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-steppers" data-title="Interactive 3-Step Onboarding Wizard">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#12</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Stepper
+              </span>
+            </div>
+            <button onclick="openCodeModal('12 Interactive 3-Step Onboarding Wizard', snippet12)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Interactive 3-Step Onboarding Wizard</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Complete horizontal process stepper with checkmarks, active numbers, and Next/Back buttons.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-4">
+            <!-- Stepper Indicators -->
+            <div class="flex items-center justify-between relative">
+              <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[2px] bg-zinc-200 dark:bg-white/10 z-0"></div>
+              
+              <!-- Step 1 -->
+              <div id="wizard-step-node-1" class="relative z-10 flex flex-col items-center gap-1">
+                <div class="w-7 h-7 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center font-sans tabular-nums shadow-xs">
+                  ✓
+                </div>
+                <span class="text-[11px] font-bold text-zinc-950 dark:text-white">Account</span>
+              </div>
+
+              <!-- Step 2 -->
+              <div id="wizard-step-node-2" class="relative z-10 flex flex-col items-center gap-1">
+                <div class="w-7 h-7 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center font-sans tabular-nums shadow-xs">
+                  2
+                </div>
+                <span class="text-[11px] font-bold text-zinc-950 dark:text-white">Workspace</span>
+              </div>
+
+              <!-- Step 3 -->
+              <div id="wizard-step-node-3" class="relative z-10 flex flex-col items-center gap-1">
+                <div class="w-7 h-7 rounded-full bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400 font-bold text-xs flex items-center justify-center font-sans tabular-nums">
+                  3
+                </div>
+                <span class="text-[11px] font-medium text-zinc-400">Invite</span>
+              </div>
+            </div>
+
+            <!-- Content Card -->
+            <div id="wizard-step-description" class="p-3 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/5 text-xs text-zinc-600 dark:text-zinc-400">
+              Configure production cluster subdomain and default regional currency.
+            </div>
+
+            <!-- Trigger Buttons -->
+            <div class="flex items-center justify-between pt-1">
+              <button 
+                type="button" 
+                id="wizard-prev-btn" 
+                onclick="changeWizardStep(-1)" 
+                class="px-3 py-1.5 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 transition"
+              >
+                Back
+              </button>
+              <button 
+                type="button" 
+                id="wizard-next-btn" 
+                onclick="changeWizardStep(1)" 
+                class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 shadow-xs transition"
+              >
+                Continue →
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Active Step: 2 of 3</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Stateful Stepper</span>
+        </div>
+      </div>
+
+      <!-- Variant 13: Vertical Setup Checklist Stepper -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-steppers" data-title="Vertical Setup Checklist Stepper">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#13</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Stepper
+              </span>
+            </div>
+            <button onclick="openCodeModal('13 Vertical Setup Checklist Stepper', snippet13)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Vertical Setup Checklist Stepper</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Vertical timeline layout ideal for onboarding guides, compliance audits, and server provisioning.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <div class="space-y-4 relative">
+              <!-- Connecting vertical line -->
+              <div class="absolute left-3 top-3 bottom-3 w-[2px] bg-zinc-200 dark:bg-white/10 z-0"></div>
+
+              <!-- Step 1: Completed -->
+              <div class="relative z-10 flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-xs">
+                  ✓
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Verify Organization Identity</h4>
+                  <p class="text-[11px] text-zinc-500">Corporate GSTIN and domain DNS records authenticated.</p>
+                </div>
+              </div>
+
+              <!-- Step 2: Current In Progress -->
+              <div class="relative z-10 flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 flex items-center justify-center text-xs font-bold font-sans tabular-nums shrink-0 shadow-xs ring-4 ring-zinc-200 dark:ring-white/10">
+                  2
+                </div>
+                <div>
+                  <h4 class="text-xs font-bold text-zinc-950 dark:text-white">Connect Payment Gateway</h4>
+                  <p class="text-[11px] text-zinc-500">Authorize automated recurring subscriptions via Razorpay / Stripe.</p>
+                </div>
+              </div>
+
+              <!-- Step 3: Upcoming -->
+              <div class="relative z-10 flex items-start gap-3 opacity-60">
+                <div class="w-6 h-6 rounded-full bg-zinc-200 dark:bg-white/10 text-zinc-500 flex items-center justify-center text-xs font-bold font-sans tabular-nums shrink-0">
+                  3
+                </div>
+                <div>
+                  <h4 class="text-xs font-medium text-zinc-700 dark:text-zinc-300">Deploy Production Cluster</h4>
+                  <p class="text-[11px] text-zinc-400">Provision dedicated Redis and database shards.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Checklist Format</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Vertical Timeline</span>
+        </div>
+      </div>
+
+      <!-- Variant 14: Segmented Bar Stepper -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-steppers" data-title="Segmented Bar Stepper">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#14</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Stepper
+              </span>
+            </div>
+            <button onclick="openCodeModal('14 Segmented Bar Stepper', snippet14)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Segmented Bar Stepper</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Multi-segment progress bar with current percentage counter and step name indicator.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <span id="bar-step-title" class="font-bold text-zinc-900 dark:text-zinc-100">Step 2 of 4 · Plan Selection</span>
+              <span id="bar-step-percent" class="font-bold font-sans tabular-nums text-zinc-900 dark:text-zinc-100">50%</span>
+            </div>
+            
+            <!-- 4 Segments -->
+            <div class="grid grid-cols-4 gap-1.5 h-1.5">
+              <div class="rounded-full bg-zinc-950 dark:bg-white"></div>
+              <div class="rounded-full bg-zinc-950 dark:bg-white"></div>
+              <div class="rounded-full bg-zinc-200 dark:bg-white/10"></div>
+              <div class="rounded-full bg-zinc-200 dark:bg-white/10"></div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+              <span class="text-[11px] text-zinc-400">Estimated: 1 min remaining</span>
+              <button 
+                type="button" 
+                onclick="simulateNextSegment()" 
+                class="px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-200/80 dark:bg-white/10 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300 dark:hover:bg-white/20 transition cursor-pointer"
+              >
+                Advance Step
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>4-Segment Metric</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Linear Bar</span>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           CATEGORY 5: COLLAPSIBLE APPLICATION SIDEBARS (3 VARIANTS)
+      ====================================================================== -->
+
+      <!-- Variant 15: Collapsible SaaS App Sidebar -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-sidebars" data-title="Collapsible SaaS App Sidebar">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#15</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Sidebar
+              </span>
+            </div>
+            <button onclick="openCodeModal('15 Collapsible SaaS App Sidebar', snippet15)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Collapsible SaaS App Sidebar</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Complete application navigation sidebar with working toggle button smoothly shrinking from 224px to 62px.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 overflow-hidden">
+            <div id="demo-sidebar-15" class="sidebar-transition w-[224px] bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl p-3 shadow-xs space-y-4">
+              <!-- Header -->
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <div class="w-7 h-7 rounded-lg bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center shrink-0">
+                    A
+                  </div>
+                  <span class="sidebar-label font-bold text-xs text-zinc-900 dark:text-zinc-100 truncate">
+                    Acme ERP
+                  </span>
+                </div>
+                <button 
+                  type="button" 
+                  id="sidebar-toggle-btn-15"
+                  onclick="toggleDemoSidebar15()" 
+                  title="Collapse/Expand Sidebar"
+                  class="p-1 rounded text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/5 transition shrink-0"
+                >
+                  <i data-lucide="panel-left-close" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <!-- Navigation links -->
+              <div class="space-y-1">
+                <a href="#dash" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 transition">
+                  <div class="flex items-center gap-2.5 overflow-hidden">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 shrink-0"></i>
+                    <span class="sidebar-label truncate">Dashboard</span>
+                  </div>
+                </a>
+                <a href="#invoices" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 transition">
+                  <div class="flex items-center gap-2.5 overflow-hidden">
+                    <i data-lucide="file-text" class="w-4 h-4 shrink-0"></i>
+                    <span class="sidebar-label truncate">Invoices</span>
+                  </div>
+                  <span class="sidebar-label text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-zinc-200 dark:bg-white/10 font-sans tabular-nums">12</span>
+                </a>
+                <a href="#customers" class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 transition">
+                  <div class="flex items-center gap-2.5 overflow-hidden">
+                    <i data-lucide="users" class="w-4 h-4 shrink-0"></i>
+                    <span class="sidebar-label truncate">Customers</span>
+                  </div>
+                </a>
+              </div>
+
+              <!-- User Footer -->
+              <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center gap-2.5 overflow-hidden">
+                <div class="w-7 h-7 rounded-full bg-zinc-200 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-bold text-xs flex items-center justify-center shrink-0">
+                  JS
+                </div>
+                <div class="sidebar-label overflow-hidden">
+                  <div class="text-[11px] font-bold text-zinc-900 dark:text-zinc-100 truncate">Sai Joshna</div>
+                  <div class="text-[10px] text-zinc-400 truncate">Admin Seat</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Click panel icon to collapse</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">224px ↔ 62px</span>
+        </div>
+      </div>
+
+      <!-- Variant 16: Grouped Section Sidebar with Sub-Items -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-sidebars" data-title="Grouped Section Sidebar with Sub-Items">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#16</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Sidebar
+              </span>
+            </div>
+            <button onclick="openCodeModal('16 Grouped Section Sidebar with Sub-Items', snippet16)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Grouped Section Sidebar with Sub-Items</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Categorized sections with collapsible parent headers and indented child navigation.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <div class="space-y-3 text-xs">
+              <!-- Section 1 -->
+              <div>
+                <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  Workspace
+                </div>
+                <div class="space-y-0.5 mt-1">
+                  <a href="#overview" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">
+                    <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+                    <span>Overview</span>
+                  </a>
+                  <a href="#projects" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/5">
+                    <i data-lucide="folder" class="w-3.5 h-3.5"></i>
+                    <span>Projects</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Section 2 -->
+              <div>
+                <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                  Finance
+                </div>
+                <div class="space-y-0.5 mt-1">
+                  <a href="#ledgers" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/5">
+                    <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                    <span>General Ledgers</span>
+                  </a>
+                  <a href="#tax" class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/5">
+                    <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+                    <span>Tax Returns</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Categorized Hierarchy</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Grouped Headers</span>
+        </div>
+      </div>
+
+      <!-- Variant 17: Icon-Only Mini Rail + Sub-Panel -->
+      <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-sidebars" data-title="Icon-Only Mini Rail and Sub-Panel">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#17</span>
+              <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                Sidebar
+              </span>
+            </div>
+            <button onclick="openCodeModal('17 Icon-Only Mini Rail and Sub-Panel', snippet17)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+          <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Icon-Only Mini Rail + Sub-Panel</h3>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">High-density dual column rail pairing a 50px icon bar with a contextual secondary pane.</p>
+          
+          <!-- Live Preview -->
+          <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+            <div class="flex rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] overflow-hidden shadow-xs h-36">
+              <!-- Left Mini Rail -->
+              <div class="w-12 bg-zinc-100/60 dark:bg-white/5 border-r border-zinc-200 dark:border-white/10 flex flex-col items-center py-2.5 gap-2 shrink-0">
+                <button type="button" class="p-2 rounded-lg bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs" title="Analytics">
+                  <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                </button>
+                <button type="button" class="p-2 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition" title="Settings">
+                  <i data-lucide="settings" class="w-4 h-4"></i>
+                </button>
+                <button type="button" class="p-2 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition" title="Team">
+                  <i data-lucide="users" class="w-4 h-4"></i>
+                </button>
+              </div>
+
+              <!-- Right Sub-Menu Panel -->
+              <div class="flex-1 p-2.5 space-y-1 overflow-y-auto text-xs">
+                <div class="font-bold text-[11px] text-zinc-400 uppercase tracking-wider px-2 py-0.5">
+                  Analytics
+                </div>
+                <a href="#revenue" class="block px-2.5 py-1.5 rounded-md font-semibold bg-zinc-100 dark:bg-white/10 text-zinc-950 dark:text-white">
+                  Revenue Telemetry
+                </a>
+                <a href="#usage" class="block px-2.5 py-1.5 rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5">
+                  API Quotas
+                </a>
+                <a href="#retention" class="block px-2.5 py-1.5 rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-white/5">
+                  Cohort Retention
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+          <span>Dual-Column Shell</span>
+          <span class="text-emerald-600 dark:text-emerald-400 font-medium">Mini Rail</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =========================================================================
+         CATEGORY 6: GLOBAL TOP NAVIGATION BARS (3 VARIANTS - 2-COLUMN GRID)
+    ========================================================================= -->
+    <div id="topnav-section" class="space-y-6 pt-4">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="panels-top-left" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          6. Global Top Navigation Bars (3 Variants)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Variant 18: Enterprise Top Navbar with Search & Profile -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-topnav" data-title="Enterprise Top Navbar with Search and Profile">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#18</span>
+                <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                  Top Navbar
+                </span>
+              </div>
+              <button onclick="openCodeModal('18 Enterprise Top Navbar with Search and Profile', snippet18)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Enterprise Top Navbar with Search & Profile</h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Complete full-width application header with product logo, menu links, ⌘K search pill, notification bell, and user avatar.</p>
+            
+            <!-- Live Preview -->
+            <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+              <header class="flex items-center justify-between gap-3 p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs">
+                <!-- Brand & Links -->
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-md bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center">
+                      A
+                    </div>
+                    <span class="font-bold text-xs text-zinc-900 dark:text-white">Acme Suite</span>
+                  </div>
+                  <nav class="hidden sm:flex items-center gap-3 text-xs">
+                    <a href="#dash" class="font-semibold text-zinc-950 dark:text-white">Dashboard</a>
+                    <a href="#projects" class="font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">Projects</a>
+                    <a href="#analytics" class="font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">Analytics</a>
+                  </nav>
+                </div>
+
+                <!-- Search Pill & Profile -->
+                <div class="flex items-center gap-2.5">
+                  <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/60 dark:border-white/10 text-xs text-zinc-400 cursor-pointer">
+                    <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                    <span>Search...</span>
+                    <span class="px-1 py-0.2 rounded bg-zinc-200/70 dark:bg-white/10 text-[10px] font-sans tabular-nums text-zinc-600 dark:text-zinc-300 font-bold">⌘K</span>
+                  </div>
+                  <!-- Notification with Red Dot -->
+                  <button type="button" class="relative p-1.5 rounded-lg text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500"></span>
+                  </button>
+                  <!-- Avatar -->
+                  <div class="w-7 h-7 rounded-full bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center justify-center text-xs font-bold font-sans">
+                    SJ
+                  </div>
+                </div>
+              </header>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Enterprise Global Shell</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Search + Notification + Avatar</span>
+          </div>
+        </div>
+
+        <!-- Variant 19: Contextual Page Header + Action Bar -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-topnav" data-title="Contextual Page Header and Action Bar">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#19</span>
+                <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                  Page Header
+                </span>
+              </div>
+              <button onclick="openCodeModal('19 Contextual Page Header and Action Bar', snippet19)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Contextual Page Header + Action Bar</h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Workspace page banner pairing breadcrumb navigation with primary create CTA and secondary export action.</p>
+            
+            <!-- Live Preview -->
+            <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+              <div class="p-3.5 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <div class="text-[11px] font-medium text-zinc-400 flex items-center gap-1">
+                    <span>Finance</span>
+                    <span>›</span>
+                    <span>Invoices</span>
+                  </div>
+                  <div class="flex items-center gap-2 pt-0.5">
+                    <h2 class="text-base font-bold text-zinc-950 dark:text-white">Client Invoices</h2>
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">
+                      124
+                    </span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button type="button" class="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/10 transition flex items-center gap-1.5">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Export</span>
+                  </button>
+                  <button type="button" class="px-3.5 py-1.5 rounded-lg bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 text-xs font-semibold hover:opacity-90 transition shadow-xs flex items-center gap-1.5">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>New Invoice</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Action Bar Pattern</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">1 Primary CTA Rule</span>
+          </div>
+        </div>
+
+        <!-- Variant 20: Focused Checkout / Wizard Top Header -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition lg:col-span-2" data-category="cat-topnav" data-title="Focused Checkout and Wizard Top Header">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#20</span>
+                <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
+                  Wizard Header
+                </span>
+              </div>
+              <button onclick="openCodeModal('20 Focused Checkout and Wizard Top Header', snippet20)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">Focused Checkout / Wizard Top Header</h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">Distraction-free top navigation bar for onboarding funnels, multi-step checkout, and compliance flows with escape button and support trigger.</p>
+            
+            <!-- Live Preview -->
+            <div class="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+              <header class="flex items-center justify-between gap-3 p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs">
+                <!-- Left: Save & Exit -->
+                <button type="button" class="text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition flex items-center gap-1.5">
+                  <i data-lucide="x" class="w-4 h-4"></i>
+                  <span>Save & Exit</span>
+                </button>
+
+                <!-- Center: Step Title -->
+                <div class="text-center">
+                  <div class="text-xs font-bold text-zinc-950 dark:text-white">Workspace Setup</div>
+                  <div class="text-[10px] text-zinc-400 font-sans tabular-nums">Step 2 of 3 · Billing Profile</div>
+                </div>
+
+                <!-- Right: Need Help? -->
+                <a href="#help" class="text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition flex items-center gap-1">
+                  <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+                  <span>Need Help?</span>
+                </a>
+              </header>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Distraction-Free Funnel</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Safe Exit + Support</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       CLEAN CODE MODAL
+  ========================================================================= -->
+  <div id="code-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
+        <h3 id="code-modal-title" class="text-sm font-bold text-zinc-950 dark:text-white">Code Snippet</h3>
+        <button type="button" onclick="closeCodeModal()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <pre class="p-4 rounded-xl bg-zinc-950 text-zinc-100 text-xs overflow-x-auto max-h-[360px] font-sans">
+        <code id="code-modal-content"></code>
+      </pre>
+
+      <div class="flex items-center justify-between pt-2">
+        <span class="text-xs text-zinc-500">Level 3 Organism Component</span>
+        <button 
+          type="button" 
+          id="copy-code-btn" 
+          onclick="copyModalCode()" 
+          class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+        >
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy HTML/CSS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       INTERACTIVE JAVASCRIPT LOGIC
+  ========================================================================= -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Density State
+    function setDensity(tier) {
+      document.querySelectorAll('.density-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        btn.classList.add('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      });
+      const active = document.getElementById(`density-${tier}`);
+      if (active) {
+        active.classList.add('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        active.classList.remove('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      }
+
+      const root = document.documentElement;
+      if (tier === 'small') {
+        root.style.setProperty('--nav-py', '5px');
+        root.style.setProperty('--nav-px', '9px');
+        root.style.setProperty('--nav-font-size', '12px');
+      } else if (tier === 'medium') {
+        root.style.setProperty('--nav-py', '7px');
+        root.style.setProperty('--nav-px', '12px');
+        root.style.setProperty('--nav-font-size', '13px');
+      } else if (tier === 'large') {
+        root.style.setProperty('--nav-py', '9px');
+        root.style.setProperty('--nav-px', '15px');
+        root.style.setProperty('--nav-font-size', '14px');
+      }
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        icon.setAttribute('data-lucide', 'sun');
+        localStorage.setItem('theme', 'dark');
+      }
+      lucide.createIcons();
+    }
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.setAttribute('data-lucide', 'sun');
+    }
+
+    // Search and Category Filtering
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    function handleSearch(query) {
+      currentSearch = query.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (currentSearch.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      applyFilters();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('search-input');
+      input.value = '';
+      currentSearch = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      applyFilters();
+    }
+
+    function setCategory(catId) {
+      currentCategory = catId;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.classList.remove('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        btn.classList.add('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        const badge = btn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400';
+        }
+      });
+
+      const activeBtn = document.getElementById(`cat-pill-${catId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        activeBtn.classList.add('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        const badge = activeBtn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950';
+        }
+      }
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.variant-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+
+        const matchCat = (currentCategory === 'all' || cat === currentCategory);
+        const matchSearch = (currentSearch === '' || title.includes(currentSearch));
+
+        if (matchCat && matchSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Show/hide topnav header section if category is selected
+      const topnavSection = document.getElementById('topnav-section');
+      if (currentCategory !== 'all' && currentCategory !== 'cat-topnav') {
+        topnavSection.classList.add('hidden');
+      } else {
+        topnavSection.classList.remove('hidden');
+      }
+
+      document.getElementById('variant-counter').textContent = `${visibleCount} of 20 Variants`;
+    }
+
+    // Interactive Demo 03: Breadcrumb Overflow Popover
+    function toggleBreadcrumbOverflow() {
+      const pop = document.getElementById('breadcrumb-overflow-popover');
+      pop.classList.toggle('hidden');
+    }
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('breadcrumb-overflow-popover');
+      const btn = document.getElementById('ellipsis-toggle-btn');
+      if (pop && btn && !pop.contains(e.target) && !btn.contains(e.target)) {
+        pop.classList.add('hidden');
+      }
+    });
+
+    // Interactive Demo 05: Underline Tabs
+    function setUnderlineTab(btn, tabName) {
+      document.querySelectorAll('.underline-tab-btn').forEach(b => {
+        b.className = 'underline-tab-btn pb-2.5 font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 border-b-2 border-transparent transition nav-density-item !py-1 !px-0';
+      });
+      btn.className = 'underline-tab-btn pb-2.5 font-semibold text-zinc-950 dark:text-white border-b-2 border-zinc-950 dark:border-white transition nav-density-item !py-1 !px-0';
+      document.getElementById('underline-tab-content').innerHTML = `Active tab view: <strong class="text-zinc-900 dark:text-zinc-100">${tabName}</strong>`;
+    }
+
+    // Interactive Demo 06: Segmented Pill Tabs
+    function setPillTab(btn, tabName) {
+      document.querySelectorAll('.pill-tab-btn').forEach(b => {
+        b.className = 'pill-tab-btn rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition nav-density-item';
+      });
+      btn.className = 'pill-tab-btn rounded-md font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs transition nav-density-item';
+      document.getElementById('pill-tab-content').innerHTML = `Showing: <strong class="text-zinc-900 dark:text-zinc-100">${tabName}</strong>`;
+    }
+
+    // Interactive Demo 07: Live Item Counter Tabs
+    function setCountTab(btn, tabName, count) {
+      document.querySelectorAll('.count-tab-btn').forEach(b => {
+        b.className = 'count-tab-btn rounded-lg font-medium bg-zinc-200/70 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-white/20 transition flex items-center gap-2 nav-density-item';
+      });
+      btn.className = 'count-tab-btn rounded-lg font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs transition flex items-center gap-2 nav-density-item';
+      document.getElementById('count-tab-content').innerHTML = `Filter: <strong class="text-zinc-900 dark:text-zinc-100">${tabName} Invoices (${count} records require action)</strong>`;
+    }
+
+    // Interactive Demo 08: Vertical Settings Tabs
+    function setVerticalTab(btn, tabName) {
+      document.querySelectorAll('.vertical-tab-btn').forEach(b => {
+        b.className = 'vertical-tab-btn w-full flex items-center gap-2.5 rounded-lg text-left font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-white/5 transition nav-density-item';
+      });
+      btn.className = 'vertical-tab-btn w-full flex items-center gap-2.5 rounded-lg text-left font-semibold bg-white dark:bg-white/10 text-zinc-950 dark:text-white shadow-xs transition nav-density-item';
+    }
+
+    // Interactive Demo 09: Numbered Page Strip
+    let currentNumberedPage = 1;
+    function renderNumberedPages() {
+      const container = document.getElementById('page-strip-buttons');
+      container.innerHTML = '';
+      for (let p = 1; p <= 5; p++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => { currentNumberedPage = p; renderNumberedPages(); };
+        btn.textContent = p;
+        if (p === currentNumberedPage) {
+          btn.className = 'w-7 h-7 rounded-md font-bold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs';
+        } else {
+          btn.className = 'w-7 h-7 rounded-md text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10 font-medium';
+        }
+        container.appendChild(btn);
+      }
+      document.getElementById('page-strip-status').textContent = `Showing page ${currentNumberedPage} of 5`;
+    }
+    function changeNumberedPage(delta) {
+      currentNumberedPage = Math.max(1, Math.min(5, currentNumberedPage + delta));
+      renderNumberedPages();
+    }
+    renderNumberedPages();
+
+    // Interactive Demo 10: Compact Pager
+    let currentCompactPage = 1;
+    function changeCompactPage(delta) {
+      currentCompactPage = Math.max(1, Math.min(13, currentCompactPage + delta));
+      const start = (currentCompactPage - 1) * 20 + 1;
+      const end = Math.min(248, currentCompactPage * 20);
+      document.getElementById('compact-pager-label').innerHTML = `Showing <strong>${start}–${end}</strong> of <strong>248</strong> results`;
+      document.getElementById('compact-prev-btn').disabled = (currentCompactPage === 1);
+      document.getElementById('compact-next-btn').disabled = (currentCompactPage === 13);
+    }
+
+    // Interactive Demo 11: Custom Rows Popover
+    function toggleRowsDropdown() {
+      document.getElementById('rows-dropdown-popover').classList.toggle('hidden');
+    }
+    function selectRows(count) {
+      document.getElementById('current-rows-label').textContent = `${count} rows`;
+      document.getElementById('rows-dropdown-popover').classList.add('hidden');
+    }
+    document.addEventListener('click', (e) => {
+      const pop = document.getElementById('rows-dropdown-popover');
+      const btn = document.getElementById('rows-select-btn');
+      if (pop && btn && !pop.contains(e.target) && !btn.contains(e.target)) {
+        pop.classList.add('hidden');
+      }
+    });
+
+    // Interactive Demo 12: Onboarding Wizard
+    let wizardStep = 2;
+    function changeWizardStep(delta) {
+      wizardStep = Math.max(1, Math.min(3, wizardStep + delta));
+      
+      const descriptions = [
+        "Create team username, primary administrator email, and cryptographic master key.",
+        "Configure production cluster subdomain and default regional currency.",
+        "Add collaborator email addresses and assign role permission tiers."
+      ];
+      document.getElementById('wizard-step-description').textContent = descriptions[wizardStep - 1];
+
+      for (let s = 1; s <= 3; s++) {
+        const node = document.getElementById(`wizard-step-node-${s}`);
+        const circle = node.querySelector('div');
+        const label = node.querySelector('span');
+
+        if (s < wizardStep) {
+          circle.className = 'w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow-xs';
+          circle.textContent = '✓';
+          label.className = 'text-[11px] font-semibold text-zinc-950 dark:text-white';
+        } else if (s === wizardStep) {
+          circle.className = 'w-7 h-7 rounded-full bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center font-sans tabular-nums shadow-xs';
+          circle.textContent = s;
+          label.className = 'text-[11px] font-bold text-zinc-950 dark:text-white';
+        } else {
+          circle.className = 'w-7 h-7 rounded-full bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400 font-bold text-xs flex items-center justify-center font-sans tabular-nums';
+          circle.textContent = s;
+          label.className = 'text-[11px] font-medium text-zinc-400';
+        }
+      }
+
+      document.getElementById('wizard-prev-btn').disabled = (wizardStep === 1);
+      document.getElementById('wizard-prev-btn').classList.toggle('opacity-40', wizardStep === 1);
+      document.getElementById('wizard-next-btn').textContent = (wizardStep === 3) ? 'Finish Setup' : 'Continue →';
+    }
+
+    // Interactive Demo 14: Advance Segmented Bar
+    let barStep = 2;
+    function simulateNextSegment() {
+      barStep = (barStep % 4) + 1;
+      const names = ["Account Setup", "Plan Selection", "Payment Integration", "Review & Launch"];
+      document.getElementById('bar-step-title').textContent = `Step ${barStep} of 4 · ${names[barStep - 1]}`;
+      document.getElementById('bar-step-percent').textContent = `${barStep * 25}%`;
+    }
+
+    // Interactive Demo 15: Collapsible Sidebar
+    let isSidebar15Collapsed = false;
+    function toggleDemoSidebar15() {
+      isSidebar15Collapsed = !isSidebar15Collapsed;
+      const sidebar = document.getElementById('demo-sidebar-15');
+      const labels = sidebar.querySelectorAll('.sidebar-label');
+      const toggleBtn = document.getElementById('sidebar-toggle-btn-15');
+
+      if (isSidebar15Collapsed) {
+        sidebar.style.width = '62px';
+        labels.forEach(l => l.classList.add('hidden'));
+        toggleBtn.innerHTML = '<i data-lucide="panel-left-open" class="w-4 h-4"></i>';
+      } else {
+        sidebar.style.width = '224px';
+        labels.forEach(l => l.classList.remove('hidden'));
+        toggleBtn.innerHTML = '<i data-lucide="panel-left-close" class="w-4 h-4"></i>';
+      }
+      lucide.createIcons();
+    }
+
+    // Code Modal Management
+    let currentCopiedSnippet = '';
+    function openCodeModal(title, snippet) {
+      document.getElementById('code-modal-title').textContent = title;
+      document.getElementById('code-modal-content').textContent = snippet;
+      currentCopiedSnippet = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copyModalCode() {
+      navigator.clipboard.writeText(currentCopiedSnippet);
+      const btn = document.getElementById('copy-code-btn');
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy HTML/CSS</span>';
+        lucide.createIcons();
+      }, 2000);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeCodeModal();
+    });
+
+    // Snippets for all 20 Variants
+    const snippet01 = `<!-- 01 Chevron Breadcrumb Trail -->\n<nav aria-label="Breadcrumb">\n  <ol class="flex items-center gap-1.5 text-xs">\n    <li><a href="#" class="text-zinc-500 hover:text-zinc-900">Workspace</a></li>\n    <li class="text-zinc-400">›</li>\n    <li><a href="#" class="text-zinc-500 hover:text-zinc-900">Invoices</a></li>\n    <li class="text-zinc-400">›</li>\n    <li class="font-semibold text-zinc-900">#INV-9042</li>\n  </ol>\n</nav>`;
+    const snippet02 = `<!-- 02 Home Icon and Slash Breadcrumbs -->\n<nav aria-label="Breadcrumb">\n  <ol class="flex items-center gap-2 text-xs">\n    <li><a href="#"><svg class="w-3.5 h-3.5 text-zinc-500"></svg></a></li>\n    <li class="text-zinc-400">/</li>\n    <li><a href="#" class="text-zinc-500 hover:text-zinc-900">Clients</a></li>\n    <li class="text-zinc-400">/</li>\n    <li class="font-semibold text-zinc-900">Deccan Logistics</li>\n  </ol>\n</nav>`;
+    const snippet03 = `<!-- 03 Collapsed Overflow Breadcrumb -->\n<nav aria-label="Breadcrumb" class="flex items-center gap-1.5 text-xs">\n  <a href="#" class="text-zinc-500">Files</a>\n  <span class="text-zinc-400">›</span>\n  <button class="px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-700 font-bold">•••</button>\n  <span class="text-zinc-400">›</span>\n  <span class="font-semibold text-zinc-900">Tax_Summary.pdf</span>\n</nav>`;
+    const snippet04 = `<!-- 04 Back Button + Current Page Title -->\n<div class="space-y-1">\n  <a href="#" class="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-900">\n    ← Back to Customers\n  </a>\n  <h2 class="text-base font-bold text-zinc-900">Apex Retail Solutions</h2>\n</div>`;
+    const snippet05 = `<!-- 05 Clean Underline Tabs -->\n<div class="border-b border-zinc-200 flex gap-4 text-xs">\n  <button class="pb-2 font-bold text-zinc-950 border-b-2 border-zinc-950">Overview</button>\n  <button class="pb-2 font-medium text-zinc-500 hover:text-zinc-800">Activity</button>\n  <button class="pb-2 font-medium text-zinc-500 hover:text-zinc-800">Members</button>\n</div>`;
+    const snippet06 = `<!-- 06 Segmented Pill Tabs -->\n<div class="inline-flex p-1 rounded-lg bg-zinc-200 text-xs">\n  <button class="px-3 py-1 rounded-md font-bold bg-white text-zinc-950 shadow-xs">All Records</button>\n  <button class="px-3 py-1 rounded-md font-medium text-zinc-600">Active</button>\n  <button class="px-3 py-1 rounded-md font-medium text-zinc-600">Archived</button>\n</div>`;
+    const snippet07 = `<!-- 07 Tabs with Live Item Counters -->\n<div class="flex gap-2 text-xs">\n  <button class="px-3 py-1.5 rounded-lg font-bold bg-zinc-950 text-white flex items-center gap-2">\n    <span>Unpaid</span>\n    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-white/20 tabular-nums">14</span>\n  </button>\n</div>`;
+    const snippet08 = `<!-- 08 Vertical Settings Navigation Tabs -->\n<div class="w-56 space-y-1 text-xs">\n  <button class="w-full text-left px-3 py-2 rounded-lg font-bold bg-zinc-100 text-zinc-950 flex items-center gap-2">\n    <span>General Info</span>\n  </button>\n  <button class="w-full text-left px-3 py-2 rounded-lg font-medium text-zinc-600 hover:bg-zinc-50 flex items-center gap-2">\n    <span>Team & Roles</span>\n  </button>\n</div>`;
+    const snippet09 = `<!-- 09 Numbered Page Strip -->\n<div class="flex items-center gap-1 text-xs tabular-nums">\n  <button class="p-1 rounded hover:bg-zinc-100">‹</button>\n  <button class="w-7 h-7 rounded-md font-bold bg-zinc-950 text-white">1</button>\n  <button class="w-7 h-7 rounded-md text-zinc-600 hover:bg-zinc-100">2</button>\n  <button class="p-1 rounded hover:bg-zinc-100">›</button>\n</div>`;
+    const snippet10 = `<!-- 10 Compact Table Footer Pager -->\n<div class="flex justify-between items-center text-xs tabular-nums">\n  <span class="text-zinc-500">Showing 1–20 of 248 results</span>\n  <div class="flex gap-1.5">\n    <button class="px-3 py-1.5 border rounded-lg bg-white font-semibold">Previous</button>\n    <button class="px-3 py-1.5 border rounded-lg bg-white font-semibold">Next</button>\n  </div>\n</div>`;
+    const snippet11 = `<!-- 11 Rows Per Page + Pager Bar -->\n<div class="flex justify-between items-center text-xs tabular-nums">\n  <div class="border px-2 py-1.5 rounded-lg bg-white">25 rows ▾</div>\n  <span>Page 1 of 10</span>\n</div>`;
+    const snippet12 = `<!-- 12 Interactive 3-Step Onboarding Wizard -->\n<div class="flex items-center justify-between text-xs">\n  <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-zinc-950 text-white flex items-center justify-center font-bold">1</div><span>Account</span></div>\n  <div class="flex items-center gap-2"><div class="w-7 h-7 rounded-full bg-zinc-200 text-zinc-600 flex items-center justify-center font-bold">2</div><span>Workspace</span></div>\n</div>`;
+    const snippet13 = `<!-- 13 Vertical Setup Checklist Stepper -->\n<div class="space-y-4 text-xs">\n  <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">✓</div><span>Verify Identity</span></div>\n  <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-zinc-950 text-white flex items-center justify-center font-bold">2</div><span>Connect Gateway</span></div>\n</div>`;
+    const snippet14 = `<!-- 14 Segmented Bar Stepper -->\n<div class="space-y-2 text-xs">\n  <div class="flex justify-between font-bold"><span>Step 2 of 4</span><span>50%</span></div>\n  <div class="grid grid-cols-4 gap-1 h-1.5"><div class="bg-zinc-950 rounded"></div><div class="bg-zinc-950 rounded"></div><div class="bg-zinc-200 rounded"></div><div class="bg-zinc-200 rounded"></div></div>\n</div>`;
+    const snippet15 = `<!-- 15 Collapsible SaaS App Sidebar -->\n<aside class="w-56 p-3 bg-white border-r space-y-4">\n  <div class="flex justify-between font-bold text-xs"><span>Acme ERP</span><button>⇥</button></div>\n  <nav class="space-y-1 text-xs"><a href="#" class="block p-2 bg-zinc-950 text-white rounded-lg">Dashboard</a></nav>\n</aside>`;
+    const snippet16 = `<!-- 16 Grouped Section Sidebar with Sub-Items -->\n<aside class="w-56 p-3 space-y-3 text-xs">\n  <div class="text-[10px] font-bold uppercase text-zinc-400">Workspace</div>\n  <a href="#" class="block p-2 rounded-lg bg-zinc-950 text-white font-semibold">Overview</a>\n</aside>`;
+    const snippet17 = `<!-- 17 Icon-Only Mini Rail + Sub-Panel -->\n<div class="flex border rounded-xl overflow-hidden h-36">\n  <div class="w-12 bg-zinc-100 flex flex-col items-center py-2 gap-2"><button class="p-2 bg-zinc-950 text-white rounded-lg">📊</button></div>\n  <div class="flex-1 p-2 space-y-1 text-xs"><a href="#" class="block p-1.5 font-bold">Revenue</a></div>\n</div>`;
+    const snippet18 = `<!-- 18 Enterprise Top Navbar with Search & Profile -->\n<header class="flex justify-between items-center p-3 bg-white border rounded-xl text-xs">\n  <div class="flex items-center gap-4"><span class="font-bold">Acme Suite</span><a href="#">Projects</a></div>\n  <div class="flex items-center gap-2"><div class="border px-2 py-1 rounded">Search ⌘K</div><div class="w-7 h-7 rounded-full bg-zinc-950 text-white flex items-center justify-center">SJ</div></div>\n</header>`;
+    const snippet19 = `<!-- 19 Contextual Page Header + Action Bar -->\n<div class="p-3 bg-white border rounded-xl flex justify-between items-center text-xs">\n  <div><div class="text-[11px] text-zinc-400">Finance › Invoices</div><h2 class="text-base font-bold">Client Invoices (124)</h2></div>\n  <div class="flex gap-2"><button class="border px-3 py-1.5 rounded-lg">Export</button><button class="bg-zinc-950 text-white px-3 py-1.5 rounded-lg font-bold">+ New Invoice</button></div>\n</div>`;
+    const snippet20 = `<!-- 20 Focused Checkout / Wizard Top Header -->\n<header class="flex justify-between items-center p-3 bg-white border rounded-xl text-xs">\n  <button class="text-zinc-500 font-semibold">× Save & Exit</button>\n  <div class="text-center font-bold"><span>Workspace Setup</span><div class="text-[10px] text-zinc-400 font-normal">Step 2 of 3</div></div>\n  <a href="#" class="text-zinc-500 font-semibold">Need Help?</a>\n</header>`;
+  </script>
+</body>
+</html>

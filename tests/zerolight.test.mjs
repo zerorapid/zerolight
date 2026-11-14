@@ -1432,7 +1432,7 @@ test("SaaS Selection Controls Library: 26 interactive variants across 6 categori
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSSelectionLibrary"), "DashboardShell must integrate SaaSSelectionLibrary");
-  assert.ok(dashboardContent.includes("211 SaaS Pattern Variants Active"), "DashboardShell must synchronize 211 SaaS pattern variants active badge");
+  assert.ok(dashboardContent.includes("231 SaaS Pattern Variants Active"), "DashboardShell must synchronize 231 SaaS pattern variants active badge");
 });
 
 // -----------------------------------------------------------------
@@ -1542,7 +1542,7 @@ test("SaaS Divider & Spacer Library: 22 interactive variants across 6 categories
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSDividerLibrary"), "DashboardShell must integrate SaaSDividerLibrary");
-  assert.ok(dashboardContent.includes("211 SaaS Pattern Variants Active"), "DashboardShell must synchronize 211 active variants badge");
+  assert.ok(dashboardContent.includes("231 SaaS Pattern Variants Active"), "DashboardShell must synchronize 231 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"dividers\""), "DashboardShell must render SaaSDividerLibrary on dividers tab");
 });
 
@@ -1616,7 +1616,7 @@ test("SaaS Tooltip & Popover Library: 22 interactive variants across 6 categorie
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSTooltipLibrary"), "DashboardShell must integrate SaaSTooltipLibrary");
-  assert.ok(dashboardContent.includes("211 SaaS Pattern Variants Active"), "DashboardShell must synchronize 211 active variants badge");
+  assert.ok(dashboardContent.includes("231 SaaS Pattern Variants Active"), "DashboardShell must synchronize 231 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"tooltips\""), "DashboardShell must render SaaSTooltipLibrary on tooltips tab");
 });
 
@@ -1680,7 +1680,7 @@ test("SaaS Feedback, Alerts & Empty States: 20 interactive variants across 5 cat
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSFeedbackLibrary"), "DashboardShell must integrate SaaSFeedbackLibrary");
-  assert.ok(dashboardContent.includes("211 SaaS Pattern Variants Active"), "DashboardShell must synchronize 211 active variants badge");
+  assert.ok(dashboardContent.includes("231 SaaS Pattern Variants Active"), "DashboardShell must synchronize 231 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"feedback\""), "DashboardShell must render SaaSFeedbackLibrary on feedback tab");
 });
 
@@ -1748,8 +1748,82 @@ test("Suite 35: SaaS Overlays, Modals, Drawers & ⌘K Command Palette (16 Varian
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSOverlaysLibrary"), "DashboardShell must integrate SaaSOverlaysLibrary");
-  assert.ok(dashboardContent.includes("211 SaaS Pattern Variants Active"), "DashboardShell must synchronize 211 active variants badge");
+  assert.ok(dashboardContent.includes("231 SaaS Pattern Variants Active"), "DashboardShell must synchronize 231 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"overlays\""), "DashboardShell must render SaaSOverlaysLibrary on overlays tab");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 36: Level 3 Organism Library - Navigation, Breadcrumbs, Tabs, Steppers & Sidebars (20 Variants)
+// -----------------------------------------------------------------
+test("Suite 36: SaaS Navigation, Breadcrumbs, Tabs, Steppers & Sidebars (20 Variants)", () => {
+  // Check Standalone Showcase HTML
+  const showcasePath = path.join(rootDir, "saas-navigation-showcase.html");
+  const publicShowcasePath = path.join(rootDir, "public/saas-navigation-showcase.html");
+  assert.ok(fs.existsSync(showcasePath), "saas-navigation-showcase.html must exist at root");
+  assert.ok(fs.existsSync(publicShowcasePath), "saas-navigation-showcase.html must exist in public/");
+
+  const htmlContent = fs.readFileSync(showcasePath, "utf8");
+  assert.ok(htmlContent.includes("SaaS Navigation, Breadcrumbs & Sidebars") || htmlContent.includes("SaaS Navigation, Breadcrumbs &amp; Sidebars"), "HTML must have proper title");
+  assert.ok(htmlContent.includes("20 Variants"), "HTML must indicate 20 variants");
+  assert.ok(htmlContent.includes("toggleDemoSidebar15"), "HTML must implement collapsible sidebar toggle");
+  assert.ok(htmlContent.includes("changeWizardStep"), "HTML must implement onboarding wizard steps");
+  assert.ok(htmlContent.includes("changeNumberedPage"), "HTML must implement numbered page strip");
+  assert.ok(htmlContent.includes("toggleRowsDropdown"), "HTML must implement custom rows popover");
+  assert.ok(htmlContent.includes("cdn.tailwindcss.com"), "HTML must include Tailwind CDN");
+  assert.ok(htmlContent.includes("lucide@latest"), "HTML must include Lucide Icons CDN");
+
+  // Check React Component
+  const navPath = path.join(rootDir, "src/components/zerolight/libraries/navigation-library.tsx");
+  assert.ok(fs.existsSync(navPath), "navigation-library.tsx must exist");
+  const navContent = fs.readFileSync(navPath, "utf8");
+
+  // Export check
+  assert.ok(navContent.includes("export function SaaSNavigationLibrary"), "must export SaaSNavigationLibrary");
+
+  // 6 Categories
+  assert.ok(navContent.includes("breadcrumbs"), "must contain Breadcrumbs category");
+  assert.ok(navContent.includes("tabs"), "must contain Tabs category");
+  assert.ok(navContent.includes("pagination"), "must contain Pagination category");
+  assert.ok(navContent.includes("steppers"), "must contain Steppers category");
+  assert.ok(navContent.includes("sidebars"), "must contain Sidebars category");
+  assert.ok(navContent.includes("topnav"), "must contain Topnav category");
+
+  // 3 Density Tiers
+  for (const tier of ["small", "medium", "large"]) {
+    assert.ok(navContent.includes(`"${tier}"`), `Navigation library must support density tier ${tier}`);
+  }
+
+  // Key interactive features
+  assert.ok(navContent.includes("Chevron Breadcrumb Trail"), "must implement chevron breadcrumbs");
+  assert.ok(navContent.includes("Home Icon & Slash Breadcrumbs"), "must implement slash breadcrumbs");
+  assert.ok(navContent.includes("Collapsed Overflow Breadcrumb"), "must implement collapsed overflow breadcrumbs");
+  assert.ok(navContent.includes("Back Button + Current Page Title"), "must implement back button title header");
+  assert.ok(navContent.includes("Clean Underline Tabs"), "must implement clean underline tabs");
+  assert.ok(navContent.includes("Segmented Pill Tabs"), "must implement segmented pill tabs");
+  assert.ok(navContent.includes("Tabs with Live Item Counters"), "must implement tabs with live item counters");
+  assert.ok(navContent.includes("Vertical Settings Navigation Tabs"), "must implement vertical settings tabs");
+  assert.ok(navContent.includes("Numbered Page Strip"), "must implement numbered page strip");
+  assert.ok(navContent.includes("Compact Table Footer Pager"), "must implement compact table pager");
+  assert.ok(navContent.includes("Rows Per Page + Pager Bar"), "must implement rows per page custom selector");
+  assert.ok(navContent.includes("Interactive 3-Step Onboarding Wizard"), "must implement 3-step onboarding wizard");
+  assert.ok(navContent.includes("Vertical Setup Checklist Stepper"), "must implement vertical checklist stepper");
+  assert.ok(navContent.includes("Segmented Bar Stepper"), "must implement segmented bar stepper");
+  assert.ok(navContent.includes("Collapsible SaaS App Sidebar"), "must implement collapsible sidebar");
+  assert.ok(navContent.includes("Grouped Section Sidebar with Sub-Items"), "must implement grouped section sidebar");
+  assert.ok(navContent.includes("Icon-Only Mini Rail + Sub-Panel"), "must implement icon mini rail dual column");
+  assert.ok(navContent.includes("Enterprise Top Navbar with Search & Profile"), "must implement enterprise top navbar");
+  assert.ok(navContent.includes("Contextual Page Header + Action Bar"), "must implement contextual page header");
+  assert.ok(navContent.includes("Focused Checkout / Wizard Top Header"), "must implement focused checkout wizard header");
+
+  // Export from libraries/index.ts
+  const libIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/index.ts"), "utf8");
+  assert.ok(libIdx.includes('export * from "./navigation-library";'), "libraries/index.ts must export navigation-library");
+
+  // Dashboard integration
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("SaaSNavigationLibrary"), "DashboardShell must integrate SaaSNavigationLibrary");
+  assert.ok(dashboardContent.includes("231 SaaS Pattern Variants Active"), "DashboardShell must synchronize 231 active variants badge");
+  assert.ok(dashboardContent.includes("docsSubView === \"navigation\""), "DashboardShell must render SaaSNavigationLibrary on navigation tab");
 });
 
 console.log("\n==================================================");
