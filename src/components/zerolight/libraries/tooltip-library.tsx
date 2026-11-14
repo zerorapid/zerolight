@@ -152,27 +152,29 @@ export function SaaSTooltipLibrary() {
 
   return (
     <div className={`space-y-6 ${previewOpen ? "preview-open-active" : ""}`}>
-      {/* Sticky Top Control Bar */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-3 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-zinc-200/80 space-y-3">
+      {/* Workspace Control Strip */}
+      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-zinc-200/80">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          {/* Brand & Counter */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-xs tracking-tight shadow-sm">
-              ZL
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-zinc-950 tracking-tight">SaaS Tooltip & Popover Library</h2>
-                <Badge variant="healthy">22 Variants</Badge>
-              </div>
-              <p className="text-[11px] text-zinc-500">
-                Directional hover tooltips, shortcut hints, quota popovers & safety confirmation dialogs.
-              </p>
-            </div>
+          {/* Category Filter Rail */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-xs ${
+                  activeCategory === cat.id
+                    ? "bg-zinc-950 text-white shadow-xs"
+                    : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/60"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
           </div>
 
           {/* Controls: Search, 3 Density Tiers, Preview Open */}
-          <div className="flex flex-wrap items-center gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
             {/* Live Search */}
             <div className="relative">
               <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -181,7 +183,7 @@ export function SaaSTooltipLibrary() {
                 placeholder="Search tooltips..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 transition w-44"
+                className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 transition w-36 sm:w-44"
               />
             </div>
 
@@ -192,7 +194,7 @@ export function SaaSTooltipLibrary() {
                   key={tier}
                   type="button"
                   onClick={() => setDensity(tier)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition cursor-pointer ${
+                  className={`px-2 py-1 rounded-lg text-xs font-semibold capitalize transition cursor-pointer ${
                     density === tier
                       ? "bg-white text-zinc-950 shadow-xs"
                       : "text-zinc-600 hover:text-zinc-950"
@@ -207,30 +209,12 @@ export function SaaSTooltipLibrary() {
             <button
               type="button"
               onClick={() => setPreviewOpen(!previewOpen)}
-              className="px-2.5 py-1.5 rounded-xl border border-zinc-200 bg-white text-zinc-800 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
+              className="px-2.5 py-1.5 rounded-xl border border-zinc-200 bg-white text-zinc-800 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer text-xs"
             >
               <span className={`w-2 h-2 rounded-full ${previewOpen ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
-              <span>Preview Open: {previewOpen ? "On" : "Off"}</span>
+              <span>Preview: {previewOpen ? "On" : "Off"}</span>
             </button>
           </div>
-        </div>
-
-        {/* Category Filter Rail */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap ${
-                activeCategory === cat.id
-                  ? "bg-zinc-950 text-white shadow-xs"
-                  : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/60"
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
         </div>
       </div>
 

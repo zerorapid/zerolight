@@ -793,50 +793,60 @@ export function DashboardShell() {
         {activeTab === "docs" && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Top Sub-Nav Switcher */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-200/80 dark:border-white/10">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                {/* Active Tier Breadcrumb & Badge */}
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Design System /</span>
-                  <span className="text-xs font-extrabold text-zinc-950 dark:text-white">{activeTierData.label}</span>
-                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-sans tabular-nums">
-                    {activeTierData.badge}
-                  </span>
+            <div className="space-y-4 pb-2 border-b border-zinc-200/80 dark:border-white/10">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                {/* Active Tier Breadcrumb & Title */}
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Design System /</span>
+                    <span className="text-sm font-extrabold text-zinc-950 dark:text-white">{activeTierData.label}</span>
+                    <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-sans tabular-nums">
+                      {activeTierData.badge}
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {activeTierData.id === "foundations" && "Core tokens, hairlines, dividers, and spring motion physics."}
+                    {activeTierData.id === "atoms" && "Foundational interactive controls, inputs, and status indicators."}
+                    {activeTierData.id === "molecules" && "Composite form fields, stat cards, alerts, and micro-charts."}
+                    {activeTierData.id === "organisms" && "Functional modules, data tables, navigation shells, and command palettes."}
+                    {activeTierData.id === "templates" && "Full-page structural blueprints and authenticated layout skeletons."}
+                    {activeTierData.id === "pages" && "Complete working SaaS destination applications with live workflows."}
+                  </p>
                 </div>
 
-                {/* Contextual Tier Tabs */}
-                <div className="flex flex-wrap items-center gap-1.5 p-1 bg-zinc-200/60 dark:bg-white/10 rounded-xl border border-zinc-300/40 dark:border-white/10 w-fit">
-                  {activeTierData.tabs.map((sub) => {
-                    const active = docsSubView === sub.id;
-                    return (
-                      <button
-                        key={sub.id}
-                        type="button"
-                        onClick={() => setDocsSubView(sub.id as DocsSubView)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
-                          active
-                            ? "bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs font-bold"
-                            : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/5"
-                        }`}
-                      >
-                        <span>{sub.label}</span>
-                        <span
-                          className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-md font-bold ${
-                            active
-                              ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
-                              : "bg-zinc-300/70 dark:bg-white/15 text-zinc-600 dark:text-zinc-300"
-                          }`}
-                        >
-                          {sub.count}
-                        </span>
-                      </button>
-                    );
-                  })}
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge variant="healthy">295 SaaS Pattern Variants Active</Badge>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <Badge variant="healthy">295 SaaS Pattern Variants Active</Badge>
+              {/* Full-width Single-Row Underline Tab Strip (Zero wrap) */}
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mb-[9px] pt-1">
+                {activeTierData.tabs.map((sub) => {
+                  const active = docsSubView === sub.id;
+                  return (
+                    <button
+                      key={sub.id}
+                      type="button"
+                      onClick={() => setDocsSubView(sub.id as DocsSubView)}
+                      className={`pb-3 px-3.5 text-xs font-semibold flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                        active
+                          ? "border-zinc-950 dark:border-white text-zinc-950 dark:text-white font-bold"
+                          : "border-transparent text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 hover:border-zinc-300 dark:hover:border-white/20"
+                      }`}
+                    >
+                      <span>{sub.label}</span>
+                      <span
+                        className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-full font-bold ${
+                          active
+                            ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
+                            : "bg-zinc-100 dark:bg-white/10 text-zinc-500 dark:text-zinc-400"
+                        }`}
+                      >
+                        {sub.count}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

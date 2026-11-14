@@ -338,26 +338,29 @@ export function SaaSSelectionLibrary() {
         </div>
       )}
 
-      {/* ── STICKY GLOBAL CONTROL BAR ── */}
-      <div className="sticky top-4 z-30 bg-white/95 backdrop-blur-xl border border-zinc-200/90 rounded-2xl p-4 shadow-sm space-y-3">
+      {/* ── WORKSPACE CONTROL STRIP ── */}
+      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-zinc-200/80">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-zinc-950 tracking-tight">SaaS Selection Controls</h2>
-                <Badge variant="healthy">26 Variants</Badge>
-              </div>
-              <p className="text-[11px] text-zinc-500">
-                Custom checkboxes, radios, switches, plan cards & permission grids with zero native browser pickers.
-              </p>
-            </div>
+          {/* Horizontal Category Filter Pill Rail */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
+            {categories.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setActiveCategory(c.id)}
+                className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 transition-all cursor-pointer whitespace-nowrap ${
+                  activeCategory === c.id
+                    ? "bg-zinc-950 text-white shadow-2xs"
+                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/80"
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
           </div>
 
           {/* Controls: Search, 3 Density Tiers, Global State Selector */}
-          <div className="flex flex-wrap items-center gap-2 text-xs">
+          <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
             {/* Live Search */}
             <div className="relative">
               <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -366,19 +369,19 @@ export function SaaSSelectionLibrary() {
                 placeholder="Search controls..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-950 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 w-36 sm:w-44"
+                className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-950 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 w-36 sm:w-44"
               />
             </div>
 
             {/* 3 Size Density Toggles */}
-            <div className="flex items-center bg-zinc-100 p-0.5 rounded-xl border border-zinc-200/60 font-sans">
+            <div className="flex items-center bg-zinc-200/70 p-0.5 rounded-xl border border-zinc-300/40 font-sans">
               {(["small", "medium", "large"] as const).map((tier) => (
                 <button
                   key={tier}
                   type="button"
                   onClick={() => setDensity(tier)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
-                    density === tier ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-500 hover:text-zinc-950"
+                  className={`px-2 py-1 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
+                    density === tier ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600 hover:text-zinc-950"
                   }`}
                 >
                   {tier}
@@ -391,7 +394,7 @@ export function SaaSSelectionLibrary() {
               <button
                 type="button"
                 onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
-                className="px-3 py-1.5 rounded-xl bg-zinc-50 border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-100 transition cursor-pointer"
+                className="px-2.5 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
               >
                 <span>State: <strong className="capitalize text-zinc-950">{globalState}</strong></span>
                 <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
@@ -418,24 +421,6 @@ export function SaaSSelectionLibrary() {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Horizontal Category Filter Pill Rail */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-zinc-100">
-          {categories.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => setActiveCategory(c.id)}
-              className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 transition-all cursor-pointer ${
-                activeCategory === c.id
-                  ? "bg-zinc-950 text-white shadow-2xs"
-                  : "bg-zinc-100 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/80"
-              }`}
-            >
-              {c.label}
-            </button>
-          ))}
         </div>
       </div>
 
