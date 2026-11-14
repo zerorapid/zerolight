@@ -2,10 +2,16 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, AlertCircle, Sparkles } from "lucide-react";
+import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, Sparkles } from "lucide-react";
+import { useZeroLight } from "../context";
 import { useAuth } from "./auth-context";
+import { Button } from "../atoms/button";
+import { Input } from "../atoms/input";
+import { AlertBanner } from "../molecules/alert-banner";
+import { Badge } from "../atoms/badge";
 
 export function SignInCard() {
+  const { tokens, scaled } = useZeroLight();
   const { login } = useAuth();
   const [username, setUsername] = useState("zerolight");
   const [password, setPassword] = useState("");
@@ -37,9 +43,15 @@ export function SignInCard() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-zinc-100 select-none font-sans relative overflow-hidden">
-      {/* Subtle Atmospheric Ambient Radial Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-gradient-to-tr from-emerald-500/10 via-zinc-400/5 to-transparent blur-3xl pointer-events-none rounded-full" />
+    <div
+      style={{
+        backgroundColor: tokens.universalFillColor === "#FFFFFF" ? "#FAFAFA" : tokens.universalFillColor,
+        fontFamily: scaled.resolvedFontFamily,
+      }}
+      className="min-h-screen w-full flex items-center justify-center p-4 text-zinc-900 select-none relative overflow-hidden"
+    >
+      {/* Subtle Atmospheric Ambient Glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[360px] bg-gradient-to-tr from-zinc-300/20 via-zinc-200/10 to-transparent blur-3xl pointer-events-none rounded-full" />
 
       <motion.div
         key={shakeKey}
@@ -50,102 +62,126 @@ export function SignInCard() {
           scale: 1,
           x: error ? [-8, 8, -6, 6, -3, 3, 0] : 0,
         }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        transition={scaled.motionConfig.spring}
         className="w-full max-w-sm relative z-10"
       >
-        {/* Floating Apple/Airbnb-grade Glassmorphic Card */}
-        <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-2xl border border-zinc-200/80 dark:border-zinc-800 rounded-3xl p-7 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)] space-y-6">
+        {/* Token-Bound Surface Card */}
+        <div
+          style={{
+            backgroundColor: tokens.universalFillColor,
+            borderColor: tokens.universalBorderColor,
+            borderRadius: `${scaled.scaledCardRadius}px`,
+            borderWidth: `${tokens.borderWidth}px`,
+            boxShadow: scaled.cardShadow,
+          }}
+          className="p-7 sm:p-8 space-y-6 backdrop-blur-xl"
+        >
           {/* Brand Header */}
           <div className="text-center space-y-2">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 shadow-md mx-auto">
+            <div
+              style={{
+                backgroundColor: tokens.primaryButtonColor,
+                borderRadius: `${scaled.scaledRadius}px`,
+              }}
+              className="inline-flex items-center justify-center w-12 h-12 text-white shadow-md mx-auto"
+            >
               {/* Minimalist Geometric ZeroLight Delta Mark */}
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="12 2 22 20 2 20 12 2" />
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-                ZeroLight Enterprise
-              </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Sign in to unlock the platform dashboard & design system
+              <div className="flex items-center justify-center gap-1.5">
+                <h1 className="text-xl font-bold tracking-tight text-zinc-950">
+                  ZeroLight OS
+                </h1>
+                <Badge variant="neutral" className="text-[10px] py-0 px-1.5">v2.0</Badge>
+              </div>
+              <p className="text-xs text-zinc-500 mt-1">
+                Enter credentials to unlock design system & platform console
               </p>
             </div>
           </div>
 
           {/* Error Banner */}
           {error && (
-            <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-xl text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-150">
-              <AlertCircle className="w-4 h-4 text-rose-500 shrink-0" />
-              <span>{error}</span>
-            </div>
+            <AlertBanner
+              severity="critical"
+              title="Access Denied"
+              description={error}
+              onDismiss={() => setError(null)}
+            />
           )}
 
-          {/* Form */}
+          {/* Form with ZeroLight Input Atoms */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-zinc-700">
                 Username
               </label>
               <div className="relative">
-                <input
+                <Input
                   type="text"
                   required
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="zerolight"
-                  className="w-full px-3.5 py-2.5 pl-10 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 transition-all font-sans"
+                  iconLeft={<User className="w-4 h-4 text-zinc-400" />}
+                  className="w-full"
                 />
-                <User className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3" />
               </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-semibold text-zinc-700">
                 Access PIN / Password
               </label>
               <div className="relative">
-                <input
+                <Input
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter 8-digit PIN..."
-                  className="w-full px-3.5 py-2.5 pl-10 pr-10 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-100 transition-all font-sans"
+                  iconLeft={<Lock className="w-4 h-4 text-zinc-400" />}
+                  iconRight={
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="text-zinc-400 hover:text-zinc-700 transition cursor-pointer"
+                      title={showPassword ? "Hide PIN" : "Show PIN"}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  }
+                  className="w-full"
                 />
-                <Lock className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3" />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-3.5 top-3 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
               </div>
             </div>
 
-            <button
+            {/* Submit Action using ZeroLight Button Atom */}
+            <Button
               type="submit"
+              variant="primary"
+              size="md"
               disabled={isSubmitting}
-              className="w-full py-2.5 px-4 bg-zinc-900 hover:bg-black dark:bg-zinc-100 dark:hover:bg-white text-white dark:text-zinc-900 rounded-xl text-xs font-semibold shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.985] disabled:opacity-60"
+              className="w-full justify-center"
+              iconRight={<ArrowRight className="w-3.5 h-3.5" />}
             >
-              {isSubmitting ? (
-                <span className="w-4 h-4 border-2 border-white/30 dark:border-zinc-900/30 border-t-white dark:border-t-zinc-900 rounded-full animate-spin" />
-              ) : (
-                <>
-                  <span>Sign In to Dashboard</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </>
-              )}
-            </button>
+              {isSubmitting ? "Verifying Token..." : "Sign In to Dashboard"}
+            </Button>
           </form>
 
           {/* Quick autofill pill for testing */}
-          <div className="pt-2 text-center">
+          <div className="pt-1 text-center">
             <button
               type="button"
               onClick={handleFillDemo}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 rounded-full bg-zinc-100 dark:bg-zinc-800/80 hover:bg-zinc-200 transition-colors cursor-pointer"
+              style={{
+                backgroundColor: tokens.hoverBackplateTint,
+                borderRadius: "9999px",
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1 text-[11px] font-medium text-zinc-600 hover:text-zinc-950 transition cursor-pointer"
             >
               <Sparkles className="w-3 h-3 text-amber-500" />
               <span>Autofill Credentials (zerolight / 22121997)</span>
@@ -153,8 +189,8 @@ export function SignInCard() {
           </div>
 
           {/* Security attestation */}
-          <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-center gap-1.5 text-[11px] text-zinc-400">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+          <div className="pt-3 border-t border-zinc-200/60 flex items-center justify-center gap-1.5 text-[11px] text-zinc-400">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>FIDO2 Hardware Key & Session Token Encrypted</span>
           </div>
         </div>
@@ -162,3 +198,5 @@ export function SignInCard() {
     </div>
   );
 }
+
+export default SignInCard;

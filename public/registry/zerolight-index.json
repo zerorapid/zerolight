@@ -11,14 +11,14 @@
     "context",
     "dashboard-shell",
     "docs-studio",
-    "geist-docs-portal",
     "sign-in-card",
-    "types"
+    "types",
+    "zerolight-docs-portal"
   ],
   "files": [
     {
       "path": "src/components/zerolight/index.ts",
-      "content": "export * from \"./types\";\nexport * from \"./context\";\nexport * from \"./atoms\";\nexport * from \"./molecules\";\nexport * from \"./organisms\";\nexport * from \"./templates\";\nexport * from \"./auth/auth-context\";\nexport * from \"./auth/sign-in-card\";\nexport * from \"./dashboard/dashboard-shell\";\nexport * from \"../WorldAtlasMap\";\nexport * from \"./docs/geist-docs-portal\";\nexport { ZeroLightStudio } from \"./docs-studio\";\n"
+      "content": "export * from \"./types\";\nexport * from \"./context\";\nexport * from \"./atoms\";\nexport * from \"./molecules\";\nexport * from \"./organisms\";\nexport * from \"./templates\";\nexport * from \"./auth/auth-context\";\nexport * from \"./auth/sign-in-card\";\nexport * from \"./dashboard/dashboard-shell\";\nexport * from \"../WorldAtlasMap\";\nexport * from \"./docs/zerolight-docs-portal\";\nexport { ZeroLightStudio } from \"./docs-studio\";\n"
     }
   ]
 }

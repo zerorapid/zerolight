@@ -252,7 +252,7 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
     <div
       ref={containerRef}
       className={`relative w-full select-none overflow-hidden rounded-2xl border border-zinc-200/80 bg-white font-sans text-zinc-900 shadow-sm transition-all duration-300 ${className}`}
-      style={{ minHeight: "520px" }}
+      style={{ minHeight: "440px" }}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
@@ -440,7 +440,7 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
               <div>
                 <div className="mb-1 flex justify-between font-semibold text-zinc-700">
                   <span>Element Scale</span>
-                  <span className="font-mono text-zinc-500">{Math.round(scale * 100)}%</span>
+                  <span className="font-sans tabular-nums text-zinc-500">{Math.round(scale * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -910,9 +910,9 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
             <div className="h-2 w-2 rounded-full bg-emerald-500" />
             <div className="flex items-center gap-1.5 text-xs">
               <span className="font-bold text-zinc-900">{activeInspectorCountry.name}</span>
-              <span className="font-mono text-[10px] text-zinc-400">({activeInspectorCountry.id})</span>
+              <span className="font-sans text-[10px] text-zinc-400">({activeInspectorCountry.id})</span>
               <span className="text-zinc-300">·</span>
-              <span className="font-mono text-[11px] text-zinc-600">
+              <span className="font-sans tabular-nums text-[11px] text-zinc-600">
                 {Math.round(18 + (activeInspectorCountry.id.charCodeAt(0) % 25))}ms edge latency
               </span>
             </div>

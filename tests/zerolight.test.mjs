@@ -1122,8 +1122,8 @@ test("Enterprise Authentication Gate and Floating Sidebar Dashboard Shell exist 
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("Home Dashboard"), "DashboardShell must have Home view");
   assert.ok(dashboardContent.includes("Visual Studio Dock"), "DashboardShell must have DS Editor trigger");
-  assert.ok(dashboardContent.includes("Design System (Geist+)"), "DashboardShell must have Geist+ Docs view");
-  assert.ok(dashboardContent.includes("Tools & Utilities"), "DashboardShell must have clean Tools view");
+  assert.ok(dashboardContent.includes("Design System"), "DashboardShell must have Design System Docs view");
+  assert.ok(dashboardContent.includes("Map Studio & Tools"), "DashboardShell must have Map Studio tools view");
   assert.ok(dashboardContent.includes("Settings & MCP"), "DashboardShell must have Settings view with MCP status");
 
   const homePage = fs.readFileSync(path.join(rootDir, "src/app/page.tsx"), "utf8");
@@ -1172,34 +1172,38 @@ test("WorldAtlasMap: 2D flat canvas, 6 customizable render styles, floating cont
 });
 
 // -----------------------------------------------------------------
-// Test Suite 26: Geist+ Documentation Portal & Logo Variations Manager
+// Test Suite 26: ZeroLight Design System Documentation & Logo Variations Manager
 // -----------------------------------------------------------------
-console.log("\n26. Geist+ Documentation Portal & Logo Variations Manager:");
+console.log("\n26. ZeroLight Design System Documentation & Logo Variations Manager:");
 
-test("GeistDocsPortal: Foundations, Brands, Components, Show code and Feedback capsule", () => {
-  const docsPath = path.join(rootDir, "src/components/zerolight/docs/geist-docs-portal.tsx");
-  assert.ok(fs.existsSync(docsPath), "src/components/zerolight/docs/geist-docs-portal.tsx must exist");
+test("ZeroLightDocsPortal: Visual Foundations, UI Components, Brand Assets & Zero Geist Clutter", () => {
+  const docsPath = path.join(rootDir, "src/components/zerolight/docs/zerolight-docs-portal.tsx");
+  assert.ok(fs.existsSync(docsPath), "src/components/zerolight/docs/zerolight-docs-portal.tsx must exist");
 
   const docsContent = fs.readFileSync(docsPath, "utf8");
-  assert.ok(docsContent.includes("export function GeistDocsPortal"), "must export GeistDocsPortal component");
-  assert.ok(docsContent.includes("GEIST_DOCS_NAV"), "must define complete navigation hierarchy");
+  assert.ok(docsContent.includes("export function ZeroLightDocsPortal"), "must export ZeroLightDocsPortal component");
+  assert.ok(docsContent.includes("ZEROLIGHT_DOCS_NAV"), "must define complete navigation hierarchy");
 
-  // Foundations & Brands
-  assert.ok(docsContent.includes("introduction") && docsContent.includes("colors") && docsContent.includes("materials"), "must support foundations");
-  assert.ok(docsContent.includes("brand-vercel") && docsContent.includes("brand-nextjs"), "must support brand pages");
-  assert.ok(docsContent.includes("Misuse") && docsContent.includes("Here are some examples of ways that you should not use the Vercel marks"), "must include trademark misuse rules");
+  // Zero Geist clutter
+  assert.ok(!docsContent.toLowerCase().includes("geist"), "docs portal must NOT use the word Geist");
+  assert.ok(!docsContent.includes("Vercel marks"), "docs portal must NOT copy Vercel marks");
 
-  // UI elements from Geist reference
+  // Foundations & Components
+  assert.ok(docsContent.includes("philosophy") && docsContent.includes("colors") && docsContent.includes("materials"), "must support visual foundations");
+  assert.ok(docsContent.includes("button") && docsContent.includes("input") && docsContent.includes("world-atlas-map"), "must support component library");
+
+  // UI elements
   assert.ok(docsContent.includes("Show code"), "must support collapsible Show code accordion");
   assert.ok(docsContent.includes("Give feedback"), "must include sentiment feedback capsule");
   assert.ok(docsContent.includes("⌘K"), "must support Cmd+K search shortcut");
 
   // Root export check
   const zlIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
-  assert.ok(zlIndex.includes("geist-docs-portal"), "src/components/zerolight/index.ts must export GeistDocsPortal");
+  assert.ok(zlIndex.includes("zerolight-docs-portal"), "src/components/zerolight/index.ts must export ZeroLightDocsPortal");
 
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
-  assert.ok(dashboardContent.includes("<GeistDocsPortal"), "DashboardShell must integrate GeistDocsPortal for geist-docs tab");
+  assert.ok(dashboardContent.includes("<ZeroLightDocsPortal"), "DashboardShell must integrate ZeroLightDocsPortal for docs tab");
+  assert.ok(dashboardContent.includes("Vector Map Studio & Asset Generator"), "DashboardShell must feature Map Studio in tools tab");
 });
 
 test("Visual Studio Logo Variations Manager & My Themes Persistence", () => {
@@ -1216,6 +1220,41 @@ test("Visual Studio Logo Variations Manager & My Themes Persistence", () => {
   assert.ok(themeContent.includes("STORAGE_CUSTOM_THEMES"), "must persist custom themes with localStorage");
   assert.ok(themeContent.includes("handleSaveCustomTheme"), "must support saving custom theme");
   assert.ok(themeContent.includes("handleDeleteCustomTheme"), "must support deleting custom theme");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 27: Geographic Accuracy & Tokenized SignInCard
+// -----------------------------------------------------------------
+console.log("\n27. Geographic Accuracy & Tokenized SignInCard:");
+
+test("world-map-data.ts: Zero antimeridian crossing horizontal lines for Russia and Landmass", () => {
+  const mapDataContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/world-map-data.ts"), "utf8");
+  
+  // Russia check
+  const ruMatch = mapDataContent.match(/\{\s*\"id\":\s*\"RU\"[\s\S]*?\"d\":\s*\"(.*?)\"/);
+  assert.ok(ruMatch, "Russia must exist in world-map-data.ts");
+  const ruSubpaths = ruMatch[1].split("Z");
+  ruSubpaths.forEach((sp, i) => {
+    const coords = (sp.match(/[\d\.]+,[\d\.]+/g) || []).map(c => c.split(',').map(Number));
+    if (coords.length > 0) {
+      const xs = coords.map(c => c[0]);
+      assert.ok(!(Math.min(...xs) < 20 && Math.max(...xs) > 780), `Russia subpath ${i} must not cross antimeridian directly`);
+    }
+  });
+
+  // Canonical WorldMap primitive
+  const worldMapContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/world-map.tsx"), "utf8");
+  assert.ok(worldMapContent.includes("WorldAtlasMap"), "world-map.tsx must wrap WorldAtlasMap as canonical primitive");
+});
+
+test("SignInCard strictly consumes ZeroLight tokens and native atoms", () => {
+  const signInPath = path.join(rootDir, "src/components/zerolight/auth/sign-in-card.tsx");
+  const signInContent = fs.readFileSync(signInPath, "utf8");
+  assert.ok(signInContent.includes("useZeroLight"), "SignInCard must consume useZeroLight");
+  assert.ok(signInContent.includes("<Button"), "SignInCard must use native Button atom");
+  assert.ok(signInContent.includes("<Input"), "SignInCard must use native Input atom");
+  assert.ok(signInContent.includes("<AlertBanner"), "SignInCard must use native AlertBanner");
+  assert.ok(signInContent.includes("tokens.universalFillColor"), "SignInCard must bind universalFillColor");
 });
 
 console.log("\n==================================================");

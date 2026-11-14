@@ -30,12 +30,12 @@ import { BillingPortal } from "../organisms/billing-portal";
 import { TeamPermissions } from "../organisms/team-permissions";
 import { GeoBreakdown } from "../organisms/geo-breakdown";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
-import { GeistDocsPortal } from "../docs/geist-docs-portal";
+import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
-export type DashboardTab = "home" | "ds-editor" | "geist-docs" | "tools" | "settings";
+export type DashboardTab = "home" | "ds-editor" | "docs" | "tools" | "settings";
 
 export function DashboardShell() {
   const { user, logout } = useAuth();
@@ -113,9 +113,9 @@ export function DashboardShell() {
           <nav className="space-y-1">
             {[
               { id: "home", label: "Home Dashboard", icon: <Home className="w-4 h-4" /> },
-              { id: "ds-editor", label: "Visual Studio Dock", icon: <SlidersHorizontal className="w-4 h-4" />, badge: "Live" },
-              { id: "geist-docs", label: "Design System (Geist+)", icon: <Layers className="w-4 h-4" />, badge: "118" },
-              { id: "tools", label: "Tools & Utilities", icon: <Wrench className="w-4 h-4" />, badge: "Empty" },
+              { id: "ds-editor", label: "Visual Studio Dock", icon: <SlidersHorizontal className="w-4 h-4" />, badge: "Tokens" },
+              { id: "docs", label: "Design System", icon: <Layers className="w-4 h-4" />, badge: "118" },
+              { id: "tools", label: "Map Studio & Tools", icon: <Wrench className="w-4 h-4" />, badge: "Vector" },
               { id: "settings", label: "Settings & MCP", icon: <Settings className="w-4 h-4" /> },
             ].map((item) => {
               const active = activeTab === item.id;
@@ -218,9 +218,9 @@ export function DashboardShell() {
                   variant="outline"
                   size="sm"
                   iconLeft={<Layers className="w-3.5 h-3.5" />}
-                  onClick={() => setActiveTab("geist-docs")}
+                  onClick={() => setActiveTab("docs")}
                 >
-                  Geist+ Design System
+                  Design System
                 </Button>
                 <Button
                   variant="primary"
@@ -303,38 +303,38 @@ export function DashboardShell() {
             {/* Quick Links to Core Organisms */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
               <div
-                onClick={() => setActiveTab("geist-docs")}
+                onClick={() => setActiveTab("docs")}
                 className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer shadow-xs group space-y-2"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Layers className="w-4 h-4 text-emerald-500" />
                     <span className="font-bold text-xs text-zinc-900 dark:text-zinc-100">
-                      Geist+ Design System Documentation
+                      ZeroLight Design System Documentation
                     </span>
                   </div>
                   <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors" />
                 </div>
                 <p className="text-xs text-zinc-500">
-                  Inspect Foundations, Brands, Atoms, Molecules, and Enterprise Organisms with live interactive playgrounds and CLI copy commands.
+                  Minimalist, developer-focused set of visual foundations, UI component primitives (Atoms, Molecules, Organisms), and brand assets.
                 </p>
               </div>
 
               <div
-                onClick={() => setActiveTab("settings")}
+                onClick={() => setActiveTab("tools")}
                 className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 transition-all cursor-pointer shadow-xs group space-y-2"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-indigo-500" />
+                    <Wrench className="w-4 h-4 text-indigo-500" />
                     <span className="font-bold text-xs text-zinc-900 dark:text-zinc-100">
-                      Security & MCP Agent Integrations
+                      Vector Map Studio & Asset Downloader
                     </span>
                   </div>
                   <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors" />
                 </div>
                 <p className="text-xs text-zinc-500">
-                  Manage profile credentials, hardware FIDO2 keys, and verify Model Context Protocol (MCP) server endpoints for Cursor, Claude, and Antigravity.
+                  Customize 6 pattern render styles, focus regions, and download standalone high-resolution SVG vector maps.
                 </p>
               </div>
             </div>
@@ -348,47 +348,34 @@ export function DashboardShell() {
           </div>
         )}
 
-        {/* TAB 3: DESIGN SYSTEM (GEIST+) SHOWCASE */}
-        {activeTab === "geist-docs" && (
+        {/* TAB 3: ZEROLIGHT DESIGN SYSTEM DOCUMENTATION */}
+        {activeTab === "docs" && (
           <div className="w-full -mt-6 -ml-6 -mr-6 md:-mt-8 md:-ml-8 md:-mr-8 -mb-8 animate-in fade-in duration-200">
-            <GeistDocsPortal />
+            <ZeroLightDocsPortal />
           </div>
         )}
 
-        {/* TAB 4: TOOLS & UTILITIES (CLEAN EMPTY STATE AS REQUESTED) */}
+        {/* TAB 4: TOOLS & VECTOR MAP ASSET GENERATOR */}
         {activeTab === "tools" && (
-          <div className="max-w-4xl mx-auto py-12 space-y-6 animate-in fade-in duration-200 text-center">
-            <div className="w-16 h-16 rounded-3xl bg-zinc-100 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-300 flex items-center justify-center mx-auto shadow-inner">
-              <Wrench className="w-7 h-7" />
+          <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-200/80">
+              <div>
+                <h1 className="text-xl font-bold tracking-tight text-zinc-950">
+                  Vector Map Studio & Asset Generator
+                </h1>
+                <p className="text-xs text-zinc-500">
+                  Interactive tool for styling 2D monochrome vector maps, regional focus, and downloading standalone SVG assets.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Badge variant="healthy">6 Styles Active</Badge>
+                <Badge variant="neutral">SVG Export Ready</Badge>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                ZeroLight Developer Tools & Extensibility Hub
-              </h2>
-              <p className="text-xs text-zinc-500 max-w-md mx-auto">
-                This workspace is currently staged clean. Future AI agent MCP server scripts, telemetry hooks, and workflow generators will be accessible here.
-              </p>
-            </div>
-
-            <div className="inline-flex items-center gap-2 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl text-xs">
-              <span className="px-3 py-1 font-semibold text-zinc-700 dark:text-zinc-300">
-                MCP Status: Standby
-              </span>
-              <span className="px-3 py-1 bg-white dark:bg-zinc-900 font-bold text-emerald-600 rounded-lg shadow-2xs">
-                Ready for Custom Modules
-              </span>
-            </div>
-
-            <div className="pt-4">
-              <Button
-                variant="outline"
-                size="sm"
-                iconLeft={<Plus className="w-3.5 h-3.5" />}
-                onClick={() => setToolsRegistered(true)}
-              >
-                {toolsRegistered ? "Custom Tool Registered" : "Register Custom Developer Tool"}
-              </Button>
+            <div className="rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-sm">
+              <WorldAtlasMap className="w-full min-h-[560px]" />
             </div>
           </div>
         )}

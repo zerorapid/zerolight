@@ -148,7 +148,7 @@ export function ApiKeyVault({
                           borderRadius: `${Math.max(3, scaled.scaledOptionRadius)}px`,
                           backgroundColor: tokens.hoverBackplateTint,
                         }}
-                        className="px-1.5 py-0.5 text-[10px] opacity-75 font-mono"
+                        className="px-1.5 py-0.5 text-[10px] opacity-75 font-sans tabular-nums"
                       >
                         {s}
                       </span>
@@ -169,7 +169,7 @@ export function ApiKeyVault({
                     backgroundColor: tokens.hoverBackplateTint,
                     borderColor,
                   }}
-                  className="px-2.5 py-1.5 font-mono text-[11px] border tracking-wider flex items-center gap-2 tabular-nums"
+                  className="px-2.5 py-1.5 font-sans text-[11px] border tracking-wider flex items-center gap-2 tabular-nums"
                 >
                   <span>{displayKey}</span>
                   <button

@@ -48,9 +48,9 @@
         "context",
         "dashboard-shell",
         "docs-studio",
-        "geist-docs-portal",
         "sign-in-card",
-        "types"
+        "types",
+        "zerolight-docs-portal"
       ],
       "lines": 13,
       "registryUrl": "/registry/zerolight-index.json"
@@ -1243,7 +1243,7 @@
       "targetPath": "src/components/zerolight/molecules/world-map-data.ts",
       "dependencies": [],
       "registryDependencies": [],
-      "lines": 1321,
+      "lines": 1298,
       "registryUrl": "/registry/world-map-data.json"
     },
     {
@@ -1252,14 +1252,12 @@
       "type": "registry:ui",
       "tier": "molecules",
       "targetPath": "src/components/zerolight/molecules/world-map.tsx",
-      "dependencies": [
-        "lucide-react"
-      ],
+      "dependencies": [],
       "registryDependencies": [
-        "context",
+        "WorldAtlasMap",
         "world-map-data"
       ],
-      "lines": 488,
+      "lines": 101,
       "registryUrl": "/registry/world-map.json"
     },
     {
