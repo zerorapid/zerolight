@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 4 Layout Library: SaaS Page Skeletons & Layout Blueprints (12 Templates)</title>
+  <!-- Google Fonts: Inter Sans only (Zero Monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            popover: '0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Responsive Frame Resizing */
+    .preview-frame {
+      transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .frame-desktop {
+      max-width: 100%;
+    }
+    .frame-tablet {
+      max-width: 768px;
+    }
+    .frame-mobile {
+      max-width: 390px;
+    }
+
+    /* Zone Blueprint Guides */
+    .zone-block {
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .zone-badge {
+      display: none;
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      z-index: 20;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #2563EB;
+      color: #FFFFFF;
+      letter-spacing: 0.02em;
+      pointer-events: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    .zone-guides-on .zone-block {
+      outline: 1.5px dashed rgba(37, 99, 235, 0.7) !important;
+      outline-offset: -1px;
+      background-image: repeating-linear-gradient(45deg, rgba(37, 99, 235, 0.03), rgba(37, 99, 235, 0.03) 8px, transparent 8px, transparent 16px) !important;
+    }
+    .zone-guides-on .zone-badge {
+      display: inline-flex !important;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-zinc-100 min-h-screen antialiased transition-colors duration-150">
+
+  <!-- =========================================================================
+       STICKY GLOBAL CONTROL BAR (RESPONSIVE & BLUEPRINT CONTROLS)
+  ========================================================================= -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 px-4 sm:px-6 py-3.5 space-y-3">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      
+      <!-- Left: L4 Badge, Title & Live Counter -->
+      <div class="flex items-center gap-3">
+        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+          L4
+        </span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
+              SaaS Page Skeletons & Layout Blueprints
+            </h1>
+            <span id="template-counter" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              12 Templates
+            </span>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">
+            Level 4 Layouts: App shells, executive grids, master-detail splits, settings forms, and onboarding steppers.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Search, Viewport Toggles, Blueprint Guides & Theme -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        
+        <!-- Instant Search Input -->
+        <div class="relative min-w-[210px]">
+          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Filter layout templates..." 
+            oninput="handleSearch(this.value)"
+            class="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
+          />
+          <button 
+            type="button" 
+            id="clear-search-btn" 
+            onclick="clearSearch()" 
+            class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+          >
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+
+        <!-- 3 Responsive Viewport Frame Toggles -->
+        <div class="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
+          <button 
+            type="button" 
+            onclick="setViewport('desktop')" 
+            id="viewport-desktop"
+            class="viewport-btn px-2.5 py-1 rounded-md font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer flex items-center gap-1.5"
+            title="Desktop 100% Full Width"
+          >
+            <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
+            <span>Desktop</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="setViewport('tablet')" 
+            id="viewport-tablet"
+            class="viewport-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer flex items-center gap-1.5"
+            title="Tablet 768px Width"
+          >
+            <i data-lucide="tablet" class="w-3.5 h-3.5"></i>
+            <span>Tablet</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="setViewport('mobile')" 
+            id="viewport-mobile"
+            class="viewport-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer flex items-center gap-1.5"
+            title="Mobile 390px Width"
+          >
+            <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+            <span>Mobile</span>
+          </button>
+        </div>
+
+        <!-- Blueprint Zone Guides Toggle -->
+        <button 
+          type="button" 
+          id="zone-guides-toggle-btn"
+          onclick="toggleZoneGuides()" 
+          class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+        >
+          <i data-lucide="layout-grid" class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"></i>
+          <span id="zone-guides-label">Zone Guides: Off</span>
+        </button>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button 
+          type="button" 
+          onclick="toggleTheme()" 
+          title="Toggle Light / Dark Mode"
+          class="p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+        >
+          <i data-lucide="moon" id="theme-icon" class="w-4 h-4"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Horizontal Category Filter Pill Rail -->
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-1.5 pt-1">
+      <button 
+        type="button" 
+        onclick="setCategory('all')" 
+        id="cat-pill-all"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs"
+      >
+        <span>All Layouts</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950">12</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('shells')" 
+        id="cat-pill-shells"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>App Shells</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('executive')" 
+        id="cat-pill-executive"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Executive Dashboards</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('splits')" 
+        id="cat-pill-splits"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Master-Detail Splits</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('settings')" 
+        id="cat-pill-settings"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Settings & Forms</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('auth')" 
+        id="cat-pill-auth"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Auth & Onboarding</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+
+      <button 
+        type="button" 
+        onclick="setCategory('landing')" 
+        id="cat-pill-landing"
+        class="cat-pill px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
+      >
+        <span>Landing & Starters</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER
+  ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-12">
+
+    <!-- =======================================================================
+         CATEGORY 1: AUTHENTICATED SAAS APP SHELLS (2 TEMPLATES)
+    ======================================================================= -->
+    <section data-section-category="shells" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>01. Authenticated SaaS App Shells</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">2 Templates</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Core navigation frames for logged-in enterprise and single-tenant applications with responsive reflow.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- TEMPLATE 01: Classic Left Sidebar + Top Bar App Shell -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="shells" data-title="Classic Left Sidebar + Top Bar App Shell">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">01</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Classic Left Sidebar + Top Bar App Shell</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                Standard enterprise SaaS framework: Persistent left navigation rail, contextual header bar, and scrollable KPI canvas.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('01 Classic Left Sidebar + Top Bar App Shell', snippet01)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-white dark:bg-[#09090B] shadow-sm">
+              <div class="flex h-[380px] w-full">
+                
+                <!-- Zone: Sidebar -->
+                <aside class="zone-block w-48 sm:w-56 border-r border-zinc-200/80 dark:border-white/10 p-3 flex flex-col justify-between shrink-0 bg-zinc-50/50 dark:bg-[#0E0E10]">
+                  <span class="zone-badge">Sidebar · w-56</span>
+                  <div class="space-y-4">
+                    <div class="flex items-center gap-2 px-2 py-1">
+                      <div class="w-5 h-5 rounded bg-zinc-950 dark:bg-white flex items-center justify-center text-white dark:text-zinc-950 text-[10px] font-bold">Z</div>
+                      <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100">ZeroLight Pro</span>
+                    </div>
+                    <nav class="space-y-1 text-xs">
+                      <button type="button" onclick="selectShell01Nav('Overview')" id="shell01-nav-Overview" class="w-full px-2.5 py-1.5 rounded-lg font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-2 cursor-pointer transition">
+                        <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+                        <span>Overview</span>
+                      </button>
+                      <button type="button" onclick="selectShell01Nav('Invoices')" id="shell01-nav-Invoices" class="w-full px-2.5 py-1.5 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 flex items-center gap-2 cursor-pointer transition">
+                        <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                        <span>Invoices</span>
+                      </button>
+                      <button type="button" onclick="selectShell01Nav('Customers')" id="shell01-nav-Customers" class="w-full px-2.5 py-1.5 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 flex items-center gap-2 cursor-pointer transition">
+                        <i data-lucide="users" class="w-3.5 h-3.5"></i>
+                        <span>Customers</span>
+                      </button>
+                      <button type="button" onclick="selectShell01Nav('Settings')" id="shell01-nav-Settings" class="w-full px-2.5 py-1.5 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 flex items-center gap-2 cursor-pointer transition">
+                        <i data-lucide="settings" class="w-3.5 h-3.5"></i>
+                        <span>Settings</span>
+                      </button>
+                    </nav>
+                  </div>
+                  <div class="pt-2 border-t border-zinc-200/60 dark:border-white/5 flex items-center gap-2 px-1">
+                    <div class="w-6 h-6 rounded-full bg-zinc-300 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold">SJ</div>
+                    <div class="truncate text-[11px]">
+                      <p class="font-semibold text-zinc-900 dark:text-zinc-100 truncate">Sai Joshna</p>
+                      <p class="text-zinc-400 truncate">Admin</p>
+                    </div>
+                  </div>
+                </aside>
+
+                <!-- Zone: Main Area (Header + Canvas) -->
+                <div class="flex-1 flex flex-col min-w-0">
+                  
+                  <!-- Zone: Top Bar -->
+                  <header class="zone-block h-12 border-b border-zinc-200/80 dark:border-white/10 px-4 flex items-center justify-between shrink-0 bg-white dark:bg-[#09090B]">
+                    <span class="zone-badge">Top Bar · h-12</span>
+                    <div class="flex items-center gap-2">
+                      <span id="shell01-current-view" class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Overview Dashboard</span>
+                      <span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">Live</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button type="button" class="p-1 text-zinc-400 hover:text-zinc-900 dark:hover:text-white">
+                        <i data-lucide="bell" class="w-3.5 h-3.5"></i>
+                      </button>
+                      <button type="button" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">
+                        + New Record
+                      </button>
+                    </div>
+                  </header>
+
+                  <!-- Zone: Main Canvas -->
+                  <main class="zone-block flex-1 p-4 overflow-y-auto space-y-4 bg-[#FAFAFA] dark:bg-[#09090B]">
+                    <span class="zone-badge">Main Canvas · flex-1 p-4</span>
+                    
+                    <!-- KPI Row -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div class="p-3 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs">
+                        <span class="text-[11px] text-zinc-400 font-medium">Monthly Recurring</span>
+                        <div class="text-lg font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-0.5">₹14.8L</div>
+                        <span class="text-[10px] text-emerald-600 font-bold font-sans tabular-nums">+12.4% vs last mo</span>
+                      </div>
+                      <div class="p-3 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs">
+                        <span class="text-[11px] text-zinc-400 font-medium">Active Accounts</span>
+                        <div class="text-lg font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-0.5">1,248</div>
+                        <span class="text-[10px] text-zinc-400 font-sans tabular-nums">98.2% retention</span>
+                      </div>
+                      <div class="p-3 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs">
+                        <span class="text-[11px] text-zinc-400 font-medium">Pending Approvals</span>
+                        <div class="text-lg font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-0.5">8 Invoices</div>
+                        <span class="text-[10px] text-amber-600 font-bold font-sans tabular-nums">Requires action</span>
+                      </div>
+                    </div>
+
+                    <!-- Content Table Card -->
+                    <div class="p-3 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs">
+                      <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5 text-xs">
+                        <span class="font-bold text-zinc-900 dark:text-zinc-100">Recent Ledger Activity</span>
+                        <span class="text-zinc-400 text-[11px]">Real-time stream</span>
+                      </div>
+                      <div class="divide-y divide-zinc-100 dark:divide-white/5 text-xs">
+                        <div class="py-2 flex items-center justify-between">
+                          <span>INV-9042 · Deccan Logistics</span>
+                          <span class="font-bold font-sans tabular-nums text-emerald-600">₹1,25,000 Paid</span>
+                        </div>
+                        <div class="py-2 flex items-center justify-between">
+                          <span>INV-9041 · Zerorapid Pay</span>
+                          <span class="font-bold font-sans tabular-nums text-amber-600">₹84,200 Pending</span>
+                        </div>
+                      </div>
+                    </div>
+                  </main>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- TEMPLATE 02: Top-Navigation Centered Container Shell -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="shells" data-title="Top-Navigation Centered Container Shell">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">02</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Top-Navigation Centered Container Shell</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                Full-width header bar with a focused, centered content container (max-w-3xl) for client portals, single tools, and documentation.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('02 Top-Navigation Centered Container Shell', snippet02)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-[#FAFAFA] dark:bg-[#09090B] shadow-sm">
+              <div class="h-[340px] flex flex-col">
+                
+                <!-- Zone: Full Width Top Bar -->
+                <header class="zone-block h-12 border-b border-zinc-200/80 dark:border-white/10 px-4 sm:px-6 flex items-center justify-between shrink-0 bg-white dark:bg-[#121215]">
+                  <span class="zone-badge">Top Nav Bar · full-width</span>
+                  <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                      <div class="w-5 h-5 rounded bg-zinc-950 dark:text-zinc-950 dark:bg-white flex items-center justify-center text-white text-[10px] font-bold">C</div>
+                      <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Client Portal</span>
+                    </div>
+                    <nav class="hidden sm:flex items-center gap-4 text-xs">
+                      <a href="javascript:void(0)" class="font-bold text-zinc-950 dark:text-white border-b-2 border-zinc-950 dark:border-white pb-3 pt-3">Projects</a>
+                      <a href="javascript:void(0)" class="font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white">Invoices</a>
+                      <a href="javascript:void(0)" class="font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white">Documents</a>
+                    </nav>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Hyderabad Hub</span>
+                    <div class="w-6 h-6 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold">HH</div>
+                  </div>
+                </header>
+
+                <!-- Zone: Centered Content Canvas -->
+                <main class="zone-block flex-1 p-4 sm:p-6 overflow-y-auto">
+                  <span class="zone-badge">Centered Container · max-w-3xl mx-auto</span>
+                  <div class="max-w-2xl mx-auto space-y-4">
+                    <div class="flex items-center justify-between pb-2 border-b border-zinc-200/80 dark:border-white/10">
+                      <div>
+                        <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Active Deliverables</h4>
+                        <p class="text-xs text-zinc-400">Quarterly reconciliation milestones for FY26-Q3</p>
+                      </div>
+                      <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 font-sans tabular-nums">4 Pending</span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs space-y-2 text-xs">
+                      <div class="flex items-center justify-between">
+                        <span class="font-semibold text-zinc-900 dark:text-zinc-100">1. GST Input Tax Credit Reconciled</span>
+                        <span class="text-emerald-600 font-bold">100% Completed</span>
+                      </div>
+                      <p class="text-zinc-500 dark:text-zinc-400 text-[11px]">84 ledgers matched against GSTR-2B filing records with zero discrepancy.</p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs space-y-2 text-xs">
+                      <div class="flex items-center justify-between">
+                        <span class="font-semibold text-zinc-900 dark:text-zinc-100">2. Foreign Inward Remittance Approval</span>
+                        <span class="text-amber-600 font-bold">Under Review</span>
+                      </div>
+                      <p class="text-zinc-500 dark:text-zinc-400 text-[11px]">Bank FIRC certificate generation pending compliance officer signoff.</p>
+                    </div>
+                  </div>
+                </main>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         CATEGORY 2: EXECUTIVE DASHBOARD GRID LAYOUTS (2 TEMPLATES)
+    ======================================================================= -->
+    <section data-section-category="executive" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>02. Executive Dashboard Grid Layouts</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">2 Templates</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          High-density analytics grids pairing executive KPI ribbons with asymmetrical charts and activity feeds.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- TEMPLATE 03: 4-KPI Top Row + 8/4 Chart & Activity Split -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="executive" data-title="4-KPI Top Row + 8/4 Chart & Activity Split">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">03</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">4-KPI Top Row + 8/4 Chart & Activity Split</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                4 equal metric cards above a 12-column asymmetric split pairing an 8-column Revenue Growth bar chart with a 4-column Live Feed.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('03 4-KPI Top Row + 8/4 Split', snippet03)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-[#FAFAFA] dark:bg-[#09090B] p-4 space-y-4 shadow-sm">
+              
+              <!-- Zone: 4-KPI Row -->
+              <div class="zone-block grid grid-cols-2 lg:grid-cols-4 gap-3 p-1">
+                <span class="zone-badge">4-KPI Ribbon · grid-cols-4</span>
+                <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs">
+                  <span class="text-[11px] text-zinc-400 font-medium">Net Revenue</span>
+                  <div class="text-base font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-0.5">₹48.2L</div>
+                  <span class="text-[10px] text-emerald-600 font-bold font-sans tabular-nums">+14.2%</span>
+                </div>
+                <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs">
+                  <span class="text-[11px] text-zinc-400 font-medium">Active Subs</span>
+                  <div class="text-base font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-0.5">3,480</div>
+                  <span class="text-[10px] text-emerald-600 font-bold font-sans tabular-nums">+8.1%</span>
+                </div>
+                <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs">
+                  <span class="text-[11px] text-zinc-400 font-medium">Avg Order Value</span>
+                  <div class="text-base font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-0.5">₹14,500</div>
+                  <span class="text-[10px] text-emerald-600 font-bold font-sans tabular-nums">+3.6%</span>
+                </div>
+                <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs">
+                  <span class="text-[11px] text-zinc-400 font-medium">Dispute Rate</span>
+                  <div class="text-base font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-0.5">0.04%</div>
+                  <span class="text-[10px] text-zinc-400 font-sans tabular-nums">Healthy</span>
+                </div>
+              </div>
+
+              <!-- Zone: 8 / 4 Asymmetric Split -->
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                
+                <!-- Zone: 8-Column Primary Chart -->
+                <div class="zone-block lg:col-span-8 p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs space-y-3">
+                  <span class="zone-badge">col-span-8 · Chart Canvas</span>
+                  <div class="flex items-center justify-between text-xs">
+                    <div>
+                      <h4 class="font-bold text-zinc-900 dark:text-zinc-100">Revenue Trajectory (H2 FY26)</h4>
+                      <p class="text-zinc-400 text-[11px]">Aggregated collection through Razorpay & NEFT</p>
+                    </div>
+                    <span class="font-bold font-sans tabular-nums text-xs">₹64.2L Total</span>
+                  </div>
+                  <!-- CSS 6-Bar Graph -->
+                  <div class="h-28 flex items-end justify-between gap-3 pt-3 border-b border-zinc-100 dark:border-white/5">
+                    <div class="flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-t h-[40%]"></div>
+                    <div class="flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-t h-[55%]"></div>
+                    <div class="flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-t h-[70%]"></div>
+                    <div class="flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-t h-[65%]"></div>
+                    <div class="flex-1 bg-zinc-200 dark:bg-zinc-800 rounded-t h-[85%]"></div>
+                    <div class="flex-1 bg-zinc-950 dark:bg-white rounded-t h-[100%]"></div>
+                  </div>
+                  <div class="flex justify-between text-[10px] text-zinc-400 font-medium">
+                    <span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span class="font-bold text-zinc-950 dark:text-white">Nov (Peak)</span>
+                  </div>
+                </div>
+
+                <!-- Zone: 4-Column Secondary Activity Feed -->
+                <div class="zone-block lg:col-span-4 p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs space-y-3">
+                  <span class="zone-badge">col-span-4 · Activity Feed</span>
+                  <div class="flex items-center justify-between text-xs pb-1 border-b border-zinc-100 dark:border-white/5">
+                    <h4 class="font-bold text-zinc-900 dark:text-zinc-100">Live Settlements</h4>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  </div>
+                  <div class="space-y-2 text-xs">
+                    <div class="p-2 rounded-lg bg-zinc-50 dark:bg-white/5">
+                      <div class="flex justify-between font-semibold">
+                        <span>Apex Retail</span>
+                        <span class="font-sans tabular-nums text-emerald-600">₹32,600</span>
+                      </div>
+                      <span class="text-[10px] text-zinc-400 font-sans tabular-nums">2 mins ago via UPI</span>
+                    </div>
+                    <div class="p-2 rounded-lg bg-zinc-50 dark:bg-white/5">
+                      <div class="flex justify-between font-semibold">
+                        <span>Kaveri Exports</span>
+                        <span class="font-sans tabular-nums text-emerald-600">₹2,10,000</span>
+                      </div>
+                      <span class="text-[10px] text-zinc-400 font-sans tabular-nums">14 mins ago via RTGS</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </article>
+
+        <!-- TEMPLATE 04: Bento Summary Grid (Hero Metric + Quick Actions) -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="executive" data-title="Bento Summary Grid (Hero Metric + Quick Actions)">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">04</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Bento Summary Grid (Hero Metric + Quick Actions)</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                2/3 width Available Settlement Balance hero card paired with a 1/3 width Quick Shortcuts card, followed by 3 sub-metrics.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('04 Bento Summary Grid', snippet04)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-[#FAFAFA] dark:bg-[#09090B] p-4 space-y-4 shadow-sm">
+              
+              <!-- Bento Top Row -->
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                
+                <!-- Zone: 8-Column Hero Card -->
+                <div class="zone-block lg:col-span-8 p-5 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs space-y-3 flex flex-col justify-between">
+                  <span class="zone-badge">col-span-8 · Bento Hero Card</span>
+                  <div>
+                    <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Available Settlement Balance</span>
+                    <div class="text-3xl font-bold text-zinc-950 dark:text-white font-sans tabular-nums mt-1">₹18,45,200</div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Scheduled for automatic payout to HDFC Current A/C ••8940 tomorrow at 06:00 AM.</p>
+                  </div>
+                  <div class="flex items-center gap-2 pt-2">
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Withdraw Early</button>
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300">View Statement</button>
+                  </div>
+                </div>
+
+                <!-- Zone: 4-Column Quick Actions -->
+                <div class="zone-block lg:col-span-4 p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs space-y-2 flex flex-col justify-between">
+                  <span class="zone-badge">col-span-4 · Quick Actions</span>
+                  <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Operational Shortcuts</span>
+                  <div class="space-y-1.5 text-xs">
+                    <button type="button" class="w-full p-2 rounded-lg bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 flex items-center justify-between text-left transition">
+                      <span class="font-medium">+ Create GST Invoice</span>
+                      <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-zinc-400"></i>
+                    </button>
+                    <button type="button" class="w-full p-2 rounded-lg bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 flex items-center justify-between text-left transition">
+                      <span class="font-medium">Sync Tally Prime</span>
+                      <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-zinc-400"></i>
+                    </button>
+                    <button type="button" class="w-full p-2 rounded-lg bg-zinc-50 dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 flex items-center justify-between text-left transition">
+                      <span class="font-medium">Invite Team Member</span>
+                      <i data-lucide="user-plus" class="w-3.5 h-3.5 text-zinc-400"></i>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Bento Bottom Row: 3 Equal Sub-Metrics -->
+              <div class="zone-block grid grid-cols-1 sm:grid-cols-3 gap-3 p-1">
+                <span class="zone-badge">3-Column Sub-Grid · grid-cols-3</span>
+                <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl text-xs space-y-1">
+                  <span class="text-zinc-400">Gross Margin</span>
+                  <div class="text-base font-bold font-sans tabular-nums">74.2%</div>
+                  <span class="text-[10px] text-emerald-600 font-bold">+2.1% efficiency</span>
+                </div>
+                <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl text-xs space-y-1">
+                  <span class="text-zinc-400">Customer Churn</span>
+                  <div class="text-base font-bold font-sans tabular-nums">0.82%</div>
+                  <span class="text-[10px] text-emerald-600 font-bold">Industry benchmark</span>
+                </div>
+                <div class="p-3 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl text-xs space-y-1">
+                  <span class="text-zinc-400">Server Latency</span>
+                  <div class="text-base font-bold font-sans tabular-nums">42ms</div>
+                  <span class="text-[10px] text-zinc-400">Mumbai AWS region</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         CATEGORY 3: MASTER-DETAIL & SPLIT-SCREEN LAYOUTS (2 TEMPLATES)
+    ======================================================================= -->
+    <section data-section-category="splits" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>03. Master-Detail & Split-Screen Layouts</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">2 Templates</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Dual-pane workspaces for managing large inventories, customer lists, CRM records, and filtered catalogs without modal interruptions.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- TEMPLATE 05: Interactive List-Detail Split View (Inbox / CRM Style) -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="splits" data-title="Interactive List-Detail Split View (Inbox / CRM Style)">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">05</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Interactive List-Detail Split View (Inbox / CRM Style)</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                5-column clickable client list paired with a 7-column Detail Inspector. Clicking any client updates the inspector's status badge, title, amount, and notes immediately.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('05 List-Detail Split View', snippet05)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-white dark:bg-[#09090B] shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-12 h-[360px] divide-y md:divide-y-0 md:divide-x divide-zinc-200/80 dark:divide-white/10">
+                
+                <!-- Zone: 5-Column Master List -->
+                <div class="zone-block md:col-span-5 p-3 flex flex-col justify-between overflow-y-auto bg-zinc-50/40 dark:bg-[#0E0E10]">
+                  <span class="zone-badge">Master List · col-span-5</span>
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between pb-2 border-b border-zinc-200/60 dark:border-white/5">
+                      <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Customer Records</span>
+                      <span class="text-[10px] text-zinc-400 font-sans tabular-nums">3 Selected</span>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                      
+                      <!-- Item 1 -->
+                      <button 
+                        type="button" 
+                        onclick="selectClientDetail('Zerorapid India Pvt Ltd', '₹1,25,000', 'Enterprise', 'Paid', 'Deccan logistics bridge operational. Annual support agreement signed.')"
+                        class="client-item-btn w-full p-2.5 rounded-lg text-left border border-zinc-950 dark:border-white bg-white dark:bg-[#121215] shadow-xs space-y-1 transition cursor-pointer"
+                      >
+                        <div class="flex justify-between font-bold">
+                          <span>Zerorapid India</span>
+                          <span class="font-sans tabular-nums">₹1,25,000</span>
+                        </div>
+                        <div class="flex justify-between text-[11px] text-zinc-400">
+                          <span>Enterprise Tier</span>
+                          <span class="text-emerald-600 font-bold">Paid</span>
+                        </div>
+                      </button>
+
+                      <!-- Item 2 -->
+                      <button 
+                        type="button" 
+                        onclick="selectClientDetail('Apex Retail Solutions', '₹32,600', 'Pro Growth', 'Pending', 'Point of sale synchronization in progress. Awaiting store manager clearance.')"
+                        class="client-item-btn w-full p-2.5 rounded-lg text-left border border-transparent hover:border-zinc-200 dark:hover:border-white/10 bg-white/60 dark:bg-white/5 space-y-1 transition cursor-pointer"
+                      >
+                        <div class="flex justify-between font-semibold">
+                          <span>Apex Retail</span>
+                          <span class="font-sans tabular-nums">₹32,600</span>
+                        </div>
+                        <div class="flex justify-between text-[11px] text-zinc-400">
+                          <span>Pro Growth</span>
+                          <span class="text-amber-600 font-bold">Pending</span>
+                        </div>
+                      </button>
+
+                      <!-- Item 3 -->
+                      <button 
+                        type="button" 
+                        onclick="selectClientDetail('Kaveri Global Exports', '₹2,10,000', 'Enterprise', 'Paid', 'Container export duty paid. GST input tax credit submitted to portal.')"
+                        class="client-item-btn w-full p-2.5 rounded-lg text-left border border-transparent hover:border-zinc-200 dark:hover:border-white/10 bg-white/60 dark:bg-white/5 space-y-1 transition cursor-pointer"
+                      >
+                        <div class="flex justify-between font-semibold">
+                          <span>Kaveri Exports</span>
+                          <span class="font-sans tabular-nums">₹2,10,000</span>
+                        </div>
+                        <div class="flex justify-between text-[11px] text-zinc-400">
+                          <span>Enterprise</span>
+                          <span class="text-emerald-600 font-bold">Paid</span>
+                        </div>
+                      </button>
+
+                    </div>
+                  </div>
+                  <div class="text-[10px] text-zinc-400 pt-2 border-t border-zinc-200/60 dark:border-white/5">
+                    Click any client row to inspect record live
+                  </div>
+                </div>
+
+                <!-- Zone: 7-Column Detail Pane -->
+                <div class="zone-block md:col-span-7 p-4 sm:p-5 flex flex-col justify-between overflow-y-auto bg-white dark:bg-[#09090B]">
+                  <span class="zone-badge">Detail Pane · col-span-7</span>
+                  <div class="space-y-4">
+                    <div class="flex items-start justify-between pb-3 border-b border-zinc-100 dark:border-white/5">
+                      <div>
+                        <div class="flex items-center gap-2">
+                          <h4 id="detail-title" class="text-sm font-bold text-zinc-950 dark:text-white">Zerorapid India Pvt Ltd</h4>
+                          <span id="detail-status" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">Paid</span>
+                        </div>
+                        <span id="detail-tier" class="text-xs text-zinc-400">Enterprise Tier</span>
+                      </div>
+                      <div class="text-right">
+                        <span class="text-[10px] text-zinc-400">Contract Value</span>
+                        <div id="detail-amount" class="text-base font-bold text-zinc-950 dark:text-white font-sans tabular-nums">₹1,25,000</div>
+                      </div>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                      <span class="font-bold text-zinc-900 dark:text-zinc-100">Operational Notes</span>
+                      <p id="detail-notes" class="text-zinc-600 dark:text-zinc-400 text-[12px] leading-relaxed p-3 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5">
+                        Deccan logistics bridge operational. Annual support agreement signed.
+                      </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                      <div class="p-2.5 rounded-lg border border-zinc-200/60 dark:border-white/5 bg-zinc-50/50 dark:bg-white/5">
+                        <span class="text-zinc-400 text-[11px]">Primary Contact</span>
+                        <p class="font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5">Rahul Verma</p>
+                      </div>
+                      <div class="p-2.5 rounded-lg border border-zinc-200/60 dark:border-white/5 bg-zinc-50/50 dark:bg-white/5">
+                        <span class="text-zinc-400 text-[11px]">Next Audit Date</span>
+                        <p class="font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 font-sans tabular-nums">15 Dec 2026</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-white/5">
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300">Download Invoice</button>
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Edit Dossier</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- TEMPLATE 06: Left Faceted Filter Rail + Main Records Table Layout -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="splits" data-title="Left Faceted Filter Rail + Main Records Table Layout">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">06</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Left Faceted Filter Rail + Main Records Table Layout</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                3-column checkbox filter rail with status chips paired with a 9-column filtered results table and bulk actions bar.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('06 Filter Rail + Table Layout', snippet06)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-white dark:bg-[#09090B] shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-12 h-[340px] divide-y md:divide-y-0 md:divide-x divide-zinc-200/80 dark:divide-white/10">
+                
+                <!-- Zone: 3-Column Faceted Filter Rail -->
+                <aside class="zone-block md:col-span-3 p-3 space-y-4 bg-zinc-50/50 dark:bg-[#0E0E10] overflow-y-auto">
+                  <span class="zone-badge">Filter Rail · col-span-3</span>
+                  <div>
+                    <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Filter Records</span>
+                    <p class="text-[10px] text-zinc-400">Narrow by payment state</p>
+                  </div>
+                  
+                  <div class="space-y-2 text-xs">
+                    <span class="text-[11px] font-semibold text-zinc-500">Status</span>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked class="rounded border-zinc-300 text-zinc-950 focus:ring-0">
+                      <span>Paid Invoices</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked class="rounded border-zinc-300 text-zinc-950 focus:ring-0">
+                      <span>Pending Verification</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" class="rounded border-zinc-300 text-zinc-950 focus:ring-0">
+                      <span>Overdue</span>
+                    </label>
+                  </div>
+
+                  <div class="space-y-2 text-xs pt-2 border-t border-zinc-200/60 dark:border-white/5">
+                    <span class="text-[11px] font-semibold text-zinc-500">Amount Tier</span>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked class="rounded border-zinc-300 text-zinc-950 focus:ring-0">
+                      <span>&gt; ₹1,00,000</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" class="rounded border-zinc-300 text-zinc-950 focus:ring-0">
+                      <span>&lt; ₹1,00,000</span>
+                    </label>
+                  </div>
+                </aside>
+
+                <!-- Zone: 9-Column Main Records Table -->
+                <main class="zone-block md:col-span-9 p-4 flex flex-col justify-between overflow-y-auto bg-white dark:bg-[#09090B]">
+                  <span class="zone-badge">Records Table · col-span-9</span>
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5 text-xs">
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold text-zinc-900 dark:text-zinc-100">Search Results</span>
+                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-zinc-100 dark:bg-white/10 font-sans tabular-nums">2 Records</span>
+                      </div>
+                      <button type="button" class="text-[11px] text-zinc-400 hover:text-zinc-900 dark:hover:text-white">Export CSV</button>
+                    </div>
+
+                    <table class="w-full text-left text-xs border-collapse">
+                      <thead>
+                        <tr class="border-b border-zinc-100 dark:border-white/5 text-zinc-400 text-[11px]">
+                          <th class="py-1.5 font-semibold">Invoice</th>
+                          <th class="py-1.5 font-semibold">Client</th>
+                          <th class="py-1.5 font-semibold">Amount</th>
+                          <th class="py-1.5 font-semibold text-right">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-zinc-100 dark:divide-white/5">
+                        <tr>
+                          <td class="py-2.5 font-sans tabular-nums font-bold">#INV-9042</td>
+                          <td class="py-2.5">Zerorapid India</td>
+                          <td class="py-2.5 font-sans tabular-nums font-bold">₹1,25,000</td>
+                          <td class="py-2.5 text-right"><span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700">Paid</span></td>
+                        </tr>
+                        <tr>
+                          <td class="py-2.5 font-sans tabular-nums font-bold">#INV-9039</td>
+                          <td class="py-2.5">Kaveri Global Exports</td>
+                          <td class="py-2.5 font-sans tabular-nums font-bold">₹2,10,000</td>
+                          <td class="py-2.5 text-right"><span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700">Paid</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="flex items-center justify-between pt-2 border-t border-zinc-100 dark:border-white/5 text-[11px] text-zinc-400">
+                    <span>Showing 2 of 18 total invoices</span>
+                    <div class="flex gap-1">
+                      <button type="button" class="px-2 py-0.5 rounded border border-zinc-200 dark:border-white/10">Prev</button>
+                      <button type="button" class="px-2 py-0.5 rounded border border-zinc-200 dark:border-white/10">Next</button>
+                    </div>
+                  </div>
+                </main>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         CATEGORY 4: SETTINGS, PROFILE & ACCOUNT LAYOUTS (2 TEMPLATES)
+    ======================================================================= -->
+    <section data-section-category="settings" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>04. Settings, Profile & Account Layouts</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">2 Templates</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Structured configuration screens for team administration, security keys, tax identifiers, and workspace preferences.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- TEMPLATE 07: Left Settings Menu + Stacked Card Sections -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="settings" data-title="Left Settings Menu + Stacked Card Sections">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">07</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Left Settings Menu + Stacked Card Sections</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                3-column settings navigation tabs paired with a 9-column Workspace Identity form card with save/cancel footer.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('07 Settings Menu + Stacked Cards', snippet07)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-white dark:bg-[#09090B] shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-12 h-[340px] divide-y md:divide-y-0 md:divide-x divide-zinc-200/80 dark:divide-white/10">
+                
+                <!-- Zone: 3-Column Settings Nav -->
+                <aside class="zone-block md:col-span-3 p-3 space-y-1 bg-zinc-50/50 dark:bg-[#0E0E10]">
+                  <span class="zone-badge">Settings Nav · col-span-3</span>
+                  <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block pb-2 px-2">Account Settings</span>
+                  <button type="button" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 text-left transition">
+                    General Identity
+                  </button>
+                  <button type="button" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 text-left transition">
+                    Team Members
+                  </button>
+                  <button type="button" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 text-left transition">
+                    Billing & Tax
+                  </button>
+                  <button type="button" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 text-left transition">
+                    API Tokens
+                  </button>
+                </aside>
+
+                <!-- Zone: 9-Column Settings Form Pane -->
+                <main class="zone-block md:col-span-9 p-4 sm:p-5 flex flex-col justify-between overflow-y-auto bg-white dark:bg-[#09090B]">
+                  <span class="zone-badge">Settings Card · col-span-9</span>
+                  <div class="space-y-4">
+                    <div>
+                      <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Workspace Identity</h4>
+                      <p class="text-xs text-zinc-400">Manage organization title and public GSTIN registration.</p>
+                    </div>
+
+                    <div class="space-y-3 text-xs">
+                      <div>
+                        <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Company Legal Name</label>
+                        <input type="text" value="Zerorapid India Pvt Ltd" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+                      </div>
+                      <div>
+                        <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Registered GSTIN</label>
+                        <input type="text" value="36AABCP1234F1Z5" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 font-sans tabular-nums">
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-end gap-2 pt-3 border-t border-zinc-100 dark:border-white/5">
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-medium border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300">Discard</button>
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Save Changes</button>
+                  </div>
+                </main>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- TEMPLATE 08: Two-Column Annotated Form Layout (Label Left, Card Right) -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="settings" data-title="Two-Column Annotated Form Layout (Label Left, Card Right)">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">08</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Two-Column Annotated Form Layout (Label Left, Card Right)</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                4-column explanatory title/description on the left paired with an 8-column Tax & Invoice Prefix form card on the right.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('08 Annotated Form Layout', snippet08)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-[#FAFAFA] dark:bg-[#09090B] p-4 sm:p-6 shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                
+                <!-- Zone: 4-Column Annotation Left -->
+                <div class="zone-block md:col-span-4 space-y-1 p-2">
+                  <span class="zone-badge">Annotation · col-span-4</span>
+                  <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Tax & Invoice Configuration</h4>
+                  <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    Set default Indian GST rates, reverse-charge flags, and custom series numbering for financial audits.
+                  </p>
+                </div>
+
+                <!-- Zone: 8-Column Form Card Right -->
+                <div class="zone-block md:col-span-8 p-4 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-xl shadow-xs space-y-3">
+                  <span class="zone-badge">Form Card · col-span-8</span>
+                  <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Invoice Prefix</label>
+                      <input type="text" value="INV-2026-" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 font-sans tabular-nums">
+                    </div>
+                    <div>
+                      <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Default GST Rate</label>
+                      <input type="text" value="18% (Standard)" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 font-sans tabular-nums">
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-white/5">
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Update Series</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         CATEGORY 5: AUTHENTICATION & ONBOARDING LAYOUTS (2 TEMPLATES)
+    ======================================================================= -->
+    <section data-section-category="auth" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>05. Authentication & Onboarding Layouts</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">2 Templates</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Conversion-tested sign-in pages and stepped onboarding flows designed for zero cognitive friction.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- TEMPLATE 09: Split-Screen Brand & Sign-In Layout -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="auth" data-title="Split-Screen Brand & Sign-In Layout">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">09</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Split-Screen Brand & Sign-In Layout</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                High-contrast customer testimonial panel on the left paired with a clean sign-in form on the right.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('09 Split-Screen Sign-In', snippet09)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-white dark:bg-[#09090B] shadow-sm">
+              <div class="grid grid-cols-1 md:grid-cols-12 min-h-[320px]">
+                
+                <!-- Zone: Left Brand Showcase -->
+                <div class="zone-block md:col-span-5 p-6 bg-zinc-950 text-white flex flex-col justify-between">
+                  <span class="zone-badge">Brand Panel · col-span-5</span>
+                  <div class="flex items-center gap-2">
+                    <div class="w-5 h-5 rounded bg-white text-zinc-950 flex items-center justify-center text-[10px] font-bold">Z</div>
+                    <span class="text-xs font-bold">ZeroLight Identity</span>
+                  </div>
+                  <blockquote class="space-y-2 text-xs leading-relaxed text-zinc-300">
+                    <p>"ZeroLight cut our Indian GST invoice turnaround time from 4 days to 30 seconds."</p>
+                    <footer class="text-[11px] font-semibold text-zinc-400">— CFO, Deccan Telecom</footer>
+                  </blockquote>
+                  <div class="text-[10px] text-zinc-500 font-sans tabular-nums">SOC2 Type II • ISO 27001 Certified</div>
+                </div>
+
+                <!-- Zone: Right Sign-In Form -->
+                <div class="zone-block md:col-span-7 p-6 flex flex-col justify-center max-w-sm mx-auto w-full space-y-3">
+                  <span class="zone-badge">Form Panel · col-span-7</span>
+                  <div>
+                    <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Welcome back</h4>
+                    <p class="text-xs text-zinc-400">Sign in to your enterprise organization</p>
+                  </div>
+                  <div class="space-y-2 text-xs">
+                    <div>
+                      <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Work Email</label>
+                      <input type="email" placeholder="name@company.com" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10">
+                    </div>
+                    <div>
+                      <label class="font-semibold block text-zinc-700 dark:text-zinc-300 mb-1">Password</label>
+                      <input type="password" value="••••••••••••" class="w-full px-3 py-1.5 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10">
+                    </div>
+                  </div>
+                  <button type="button" class="w-full py-2 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Continue with SSO →</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- TEMPLATE 10: Focused Centered Onboarding Stepper Layout -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="auth" data-title="Focused Centered Onboarding Stepper Layout">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">10</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Focused Centered Onboarding Stepper Layout</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                Distraction-free centered card with STEP 2 OF 3 · 66% progress bar, workspace name input, and directional actions.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('10 Onboarding Stepper Layout', snippet10)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-[#FAFAFA] dark:bg-[#09090B] p-6 shadow-sm">
+              <div class="max-w-md mx-auto zone-block p-5 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-md space-y-4">
+                <span class="zone-badge">Centered Stepper · max-w-md</span>
+                
+                <!-- Progress Header -->
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between text-[11px] text-zinc-400 font-bold uppercase tracking-wider">
+                    <span>STEP 2 OF 3</span>
+                    <span class="font-sans tabular-nums">66% Completed</span>
+                  </div>
+                  <div class="w-full h-1.5 rounded-full bg-zinc-100 dark:bg-white/10 overflow-hidden">
+                    <div class="h-full bg-zinc-950 dark:bg-white rounded-full" style="width: 66%"></div>
+                  </div>
+                </div>
+
+                <!-- Form Content -->
+                <div class="space-y-3 text-xs">
+                  <div>
+                    <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Name your workspace</h4>
+                    <p class="text-zinc-400 text-[11px]">Choose a title that your team members will recognize immediately.</p>
+                  </div>
+                  <input type="text" value="Hyderabad Logistics Hub" class="w-full px-3 py-2 rounded-lg bg-zinc-50 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100">
+                </div>
+
+                <!-- Footer CTAs -->
+                <div class="flex items-center justify-between pt-2">
+                  <button type="button" class="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white">← Back</button>
+                  <button type="button" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Next Step →</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         CATEGORY 6: PUBLIC LANDING & STARTERS (2 TEMPLATES)
+    ======================================================================= -->
+    <section data-section-category="landing" class="space-y-4">
+      <div class="border-b border-zinc-200 dark:border-white/10 pb-2">
+        <h2 class="text-sm font-bold text-zinc-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+          <span>06. Public Landing & Pricing Page Layouts</span>
+          <span class="text-[11px] font-medium text-zinc-400 font-sans tabular-nums">2 Templates</span>
+        </h2>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          Clean marketing hero skeletons and flexible blank starter canvases for visual builders.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- TEMPLATE 11: SaaS Hero + 3-Column Feature Grid Layout -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="landing" data-title="SaaS Hero + 3-Column Feature Grid Layout">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">11</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">SaaS Hero + 3-Column Feature Grid Layout</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                Public top navigation bar, centered hero headline/subheadline, and 3-column feature highlight cards.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('11 SaaS Hero + 3-Column Grid', snippet11)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-white dark:bg-[#09090B] p-6 space-y-6 shadow-sm">
+              
+              <!-- Zone: Public Hero Canvas -->
+              <div class="zone-block text-center max-w-xl mx-auto space-y-3 p-4">
+                <span class="zone-badge">Hero Section · text-center</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">ZeroLight Enterprise</span>
+                <h3 class="text-xl sm:text-2xl font-bold text-zinc-950 dark:text-white tracking-tight">The Monochrome Design System for Modern SaaS</h3>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400">Zero AI footprints. Built with 265 handcrafted UI patterns for Indian and global fintech teams.</p>
+                <div class="pt-2 flex justify-center gap-2">
+                  <button type="button" class="px-4 py-2 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950">Start Free Trial</button>
+                  <button type="button" class="px-4 py-2 rounded-lg text-xs font-medium border border-zinc-200 dark:border-white/10 text-zinc-700 dark:text-zinc-300">Explore Patterns</button>
+                </div>
+              </div>
+
+              <!-- Zone: 3-Column Feature Grid -->
+              <div class="zone-block grid grid-cols-1 sm:grid-cols-3 gap-3 p-1">
+                <span class="zone-badge">3-Column Grid · grid-cols-3</span>
+                <div class="p-4 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-white/5 space-y-1 text-xs">
+                  <span class="font-bold text-zinc-900 dark:text-zinc-100">1. Instant Tokens</span>
+                  <p class="text-zinc-400 text-[11px]">Strict mathematical scaling with sub-millisecond dynamic updates.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-white/5 space-y-1 text-xs">
+                  <span class="font-bold text-zinc-900 dark:text-zinc-100">2. GST Compliance</span>
+                  <p class="text-zinc-400 text-[11px]">Built-in Indian business patterns, ledgers, and Tally Prime sync.</p>
+                </div>
+                <div class="p-4 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-white/5 space-y-1 text-xs">
+                  <span class="font-bold text-zinc-900 dark:text-zinc-100">3. Zero Monospace</span>
+                  <p class="text-zinc-400 text-[11px]">Clean tabular-nums sans-serif typography for all numbers and IDs.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </article>
+
+        <!-- TEMPLATE 12: Empty / Blank Canvas Starter Layout -->
+        <article class="template-card bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden" data-category="landing" data-title="Empty / Blank Canvas Starter Layout">
+          <div class="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">12</span>
+                <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Empty / Blank Canvas Starter Layout</h3>
+              </div>
+              <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                Centered dashed starter canvas with + Add First Widget CTA for custom report builders, dashboard creators, and plugins.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              onclick="openCodeModal('12 Empty Canvas Starter Layout', snippet12)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
+            >
+              <i data-lucide="code" class="w-3.5 h-3.5"></i>
+              <span>Copy Layout Code</span>
+            </button>
+          </div>
+
+          <!-- Preview Container -->
+          <div class="p-4 sm:p-6 bg-zinc-50/70 dark:bg-white/[0.02]">
+            <div class="preview-frame frame-desktop overflow-hidden border border-zinc-200/80 dark:border-white/10 rounded-xl bg-[#FAFAFA] dark:bg-[#09090B] p-8 shadow-sm">
+              <div class="zone-block border-2 border-dashed border-zinc-300 dark:border-white/10 rounded-2xl p-10 text-center space-y-3 max-w-lg mx-auto">
+                <span class="zone-badge">Dashed Starter Canvas</span>
+                <div class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-white/10 mx-auto flex items-center justify-center text-zinc-400">
+                  <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Custom Analytics Canvas</h4>
+                  <p class="text-xs text-zinc-400">Drag or insert Level 3 organisms to build custom telemetry dashboards.</p>
+                </div>
+                <button type="button" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+                  + Add First Widget
+                </button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       CLEAN CODE MODAL
+  ========================================================================= -->
+  <div id="code-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+    <div class="w-full max-w-xl bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100 dark:border-white/10">
+        <h4 id="code-modal-title" class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Layout HTML Skeleton</h4>
+        <button type="button" onclick="closeCodeModal()" class="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-4 bg-zinc-950 text-zinc-100 font-sans text-xs overflow-x-auto max-h-[340px]">
+        <pre id="code-modal-content" class="whitespace-pre-wrap font-sans leading-relaxed"></pre>
+      </div>
+      <div class="flex justify-end gap-2 px-5 py-3 border-t border-zinc-100 dark:border-white/10 bg-zinc-50/50 dark:bg-white/5">
+        <button type="button" onclick="closeCodeModal()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 cursor-pointer">
+          Close
+        </button>
+        <button type="button" id="copy-code-btn" onclick="copyModalCode()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-1.5 cursor-pointer transition hover:opacity-90">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy Layout HTML</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       INTERACTIVE JAVASCRIPT LOGIC
+  ========================================================================= -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Template 01: Sidebar Navigation Switcher
+    function selectShell01Nav(item) {
+      document.querySelectorAll('[id^="shell01-nav-"]').forEach(btn => {
+        btn.className = 'w-full px-2.5 py-1.5 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/5 flex items-center gap-2 cursor-pointer transition';
+      });
+      const activeBtn = document.getElementById(`shell01-nav-${item}`);
+      if (activeBtn) {
+        activeBtn.className = 'w-full px-2.5 py-1.5 rounded-lg font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-2 cursor-pointer transition';
+      }
+      const title = document.getElementById('shell01-current-view');
+      if (title) {
+        title.textContent = `${item} Dashboard`;
+      }
+    }
+
+    // Template 05: Master Detail Client Selector
+    function selectClientDetail(title, amount, tier, status, notes) {
+      document.getElementById('detail-title').textContent = title;
+      document.getElementById('detail-amount').textContent = amount;
+      document.getElementById('detail-tier').textContent = tier;
+      document.getElementById('detail-notes').textContent = notes;
+      const statusBadge = document.getElementById('detail-status');
+      statusBadge.textContent = status;
+      if (status === 'Paid') {
+        statusBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300';
+      } else {
+        statusBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300';
+      }
+    }
+
+    // Viewport Width Resizing (Desktop / Tablet / Mobile)
+    let currentViewport = 'desktop';
+    function setViewport(vp) {
+      currentViewport = vp;
+      document.querySelectorAll('.viewport-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        btn.classList.add('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      });
+      const active = document.getElementById(`viewport-${vp}`);
+      if (active) {
+        active.classList.add('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        active.classList.remove('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      }
+
+      document.querySelectorAll('.preview-frame').forEach(frame => {
+        frame.classList.remove('frame-desktop', 'frame-tablet', 'frame-mobile');
+        frame.classList.add(`frame-${vp}`);
+      });
+    }
+
+    // Zone Guides Toggle
+    let zoneGuidesActive = false;
+    function toggleZoneGuides() {
+      zoneGuidesActive = !zoneGuidesActive;
+      const body = document.body;
+      const label = document.getElementById('zone-guides-label');
+      const btn = document.getElementById('zone-guides-toggle-btn');
+      if (zoneGuidesActive) {
+        body.classList.add('zone-guides-on');
+        label.textContent = 'Zone Guides: On';
+        btn.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-700', 'dark:bg-blue-950/40', 'dark:text-blue-300');
+      } else {
+        body.classList.remove('zone-guides-on');
+        label.textContent = 'Zone Guides: Off';
+        btn.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-700', 'dark:bg-blue-950/40', 'dark:text-blue-300');
+      }
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        icon.setAttribute('data-lucide', 'sun');
+        localStorage.setItem('theme', 'dark');
+      }
+      lucide.createIcons();
+    }
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.setAttribute('data-lucide', 'sun');
+    }
+
+    // Filtering & Instant Search
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    function handleSearch(query) {
+      currentSearch = query.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (currentSearch.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      applyFilters();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('search-input');
+      input.value = '';
+      currentSearch = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      applyFilters();
+    }
+
+    function setCategory(catId) {
+      currentCategory = catId;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.classList.remove('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        btn.classList.add('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        const badge = btn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400';
+        }
+      });
+
+      const activeBtn = document.getElementById(`cat-pill-${catId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        activeBtn.classList.add('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        const badge = activeBtn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950';
+        }
+      }
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.template-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+
+        const matchCat = (currentCategory === 'all' || cat === currentCategory);
+        const matchSearch = (currentSearch === '' || title.includes(currentSearch));
+
+        if (matchCat && matchSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      document.querySelectorAll('[data-section-category]').forEach(sec => {
+        const secCat = sec.getAttribute('data-section-category');
+        if (currentCategory !== 'all' && secCat !== currentCategory) {
+          sec.classList.add('hidden');
+        } else {
+          sec.classList.remove('hidden');
+        }
+      });
+
+      document.getElementById('template-counter').textContent = `${visibleCount} of 12 Templates`;
+    }
+
+    // Code Modal Management
+    let currentCopiedSnippet = '';
+    function openCodeModal(title, snippet) {
+      document.getElementById('code-modal-title').textContent = title;
+      document.getElementById('code-modal-content').textContent = snippet;
+      currentCopiedSnippet = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copyModalCode() {
+      navigator.clipboard.writeText(currentCopiedSnippet);
+      const btn = document.getElementById('copy-code-btn');
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy Layout HTML</span>';
+        lucide.createIcons();
+      }, 2000);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeCodeModal();
+    });
+
+    // Snippets for all 12 Templates
+    const snippet01 = `<!-- 01 Classic Left Sidebar + Top Bar App Shell -->\n<div class="flex h-screen bg-[#FAFAFA] dark:bg-[#09090B]">\n  <!-- Sidebar -->\n  <aside class="w-56 border-r border-zinc-200 dark:border-white/10 p-4">\n    <nav class="space-y-1">\n      <a href="#" class="block p-2 rounded-lg bg-zinc-950 text-white font-semibold">Overview</a>\n      <a href="#" class="block p-2 rounded-lg text-zinc-600 dark:text-zinc-400">Invoices</a>\n    </nav>\n  </aside>\n  <!-- Main Canvas -->\n  <div class="flex-1 flex flex-col min-w-0">\n    <header class="h-14 border-b border-zinc-200 dark:border-white/10 px-6 flex items-center justify-between">\n      <h1 class="text-sm font-bold">Overview</h1>\n    </header>\n    <main class="flex-1 p-6 overflow-y-auto">\n      <!-- Page Content -->\n    </main>\n  </div>\n</div>`;
+
+    const snippet02 = `<!-- 02 Top-Navigation Centered Container Shell -->\n<div class="min-h-screen bg-[#FAFAFA] dark:bg-[#09090B]">\n  <header class="h-14 border-b border-zinc-200 dark:border-white/10 px-6 flex items-center justify-between bg-white dark:bg-[#121215]">\n    <div class="font-bold">Client Portal</div>\n    <nav class="flex gap-4 text-xs font-medium"><a href="#">Projects</a><a href="#">Invoices</a></nav>\n  </header>\n  <main class="max-w-3xl mx-auto p-6 space-y-6">\n    <!-- Focused Content Container -->\n  </main>\n</div>`;
+
+    const snippet03 = `<!-- 03 4-KPI Top Row + 8/4 Asymmetric Split -->\n<div class="space-y-6">\n  <!-- 4-KPI Row -->\n  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">\n    <div class="p-4 bg-white border rounded-xl"><h3>Net Revenue</h3><p class="text-2xl font-bold font-sans tabular-nums">₹48.2L</p></div>\n    <div class="p-4 bg-white border rounded-xl"><h3>Active Subs</h3><p class="text-2xl font-bold font-sans tabular-nums">3,480</p></div>\n    <div class="p-4 bg-white border rounded-xl"><h3>AOV</h3><p class="text-2xl font-bold font-sans tabular-nums">₹14,500</p></div>\n    <div class="p-4 bg-white border rounded-xl"><h3>Dispute Rate</h3><p class="text-2xl font-bold font-sans tabular-nums">0.04%</p></div>\n  </div>\n  <!-- 8/4 Grid Split -->\n  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">\n    <div class="lg:col-span-8 p-6 bg-white border rounded-xl"><h4>Revenue Growth Chart</h4></div>\n    <div class="lg:col-span-4 p-6 bg-white border rounded-xl"><h4>Live Activity Feed</h4></div>\n  </div>\n</div>`;
+
+    const snippet04 = `<!-- 04 Bento Summary Grid (Hero Metric + Quick Actions) -->\n<div class="space-y-6">\n  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">\n    <div class="lg:col-span-8 p-6 bg-white border rounded-2xl"><h2>Available Balance</h2><p class="text-3xl font-bold font-sans tabular-nums">₹18,45,200</p></div>\n    <div class="lg:col-span-4 p-6 bg-white border rounded-2xl"><h3>Quick Shortcuts</h3></div>\n  </div>\n  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">\n    <div class="p-4 bg-white border rounded-xl">Gross Margin 74.2%</div>\n    <div class="p-4 bg-white border rounded-xl">Churn 0.82%</div>\n    <div class="p-4 bg-white border rounded-xl">Latency 42ms</div>\n  </div>\n</div>`;
+
+    const snippet05 = `<!-- 05 List-Detail Split View (Inbox / CRM Style) -->\n<div class="grid grid-cols-1 md:grid-cols-12 border rounded-2xl overflow-hidden divide-x divide-zinc-200">\n  <!-- Master List -->\n  <div class="md:col-span-5 p-4 space-y-2 overflow-y-auto">\n    <div class="p-3 border rounded-xl cursor-pointer"><strong>Zerorapid India</strong><p>₹1,25,000</p></div>\n    <div class="p-3 border rounded-xl cursor-pointer"><strong>Apex Retail</strong><p>₹32,600</p></div>\n  </div>\n  <!-- Detail Pane -->\n  <div class="md:col-span-7 p-6 space-y-4">\n    <h2>Customer Dossier</h2>\n    <p>Operational notes and contract details.</p>\n  </div>\n</div>`;
+
+    const snippet06 = `<!-- 06 Left Faceted Filter Rail + Records Table -->\n<div class="grid grid-cols-1 md:grid-cols-12 border rounded-2xl overflow-hidden divide-x divide-zinc-200">\n  <aside class="md:col-span-3 p-4 space-y-4">\n    <h4>Filters</h4>\n    <label class="flex items-center gap-2"><input type="checkbox" checked /> Paid Invoices</label>\n  </aside>\n  <main class="md:col-span-9 p-6">\n    <table class="w-full"><thead><tr><th>Invoice</th><th>Client</th><th>Amount</th></tr></thead></table>\n  </main>\n</div>`;
+
+    const snippet07 = `<!-- 07 Left Settings Menu + Stacked Card Sections -->\n<div class="grid grid-cols-1 md:grid-cols-12 border rounded-2xl overflow-hidden divide-x divide-zinc-200">\n  <aside class="md:col-span-3 p-4 space-y-1">\n    <button class="w-full text-left p-2 rounded-lg bg-zinc-950 text-white">General Identity</button>\n    <button class="w-full text-left p-2 rounded-lg text-zinc-500">Security</button>\n  </aside>\n  <main class="md:col-span-9 p-6 space-y-4">\n    <h3>Workspace Identity</h3>\n    <input placeholder="Company Name" class="border p-2 rounded-lg w-full" />\n  </main>\n</div>`;
+
+    const snippet08 = `<!-- 08 Two-Column Annotated Form Layout -->\n<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">\n  <div class="md:col-span-4 space-y-1">\n    <h3 class="text-sm font-bold">Tax & Invoice Configuration</h3>\n    <p class="text-xs text-zinc-500">Configure default GST rates and automated series prefixes.</p>\n  </div>\n  <div class="md:col-span-8 p-6 bg-white border rounded-xl space-y-4">\n    <input placeholder="Invoice Prefix (INV-)" class="border p-2 rounded-lg w-full" />\n    <button class="bg-zinc-950 text-white px-4 py-2 rounded-lg text-xs font-semibold">Save</button>\n  </div>\n</div>`;
+
+    const snippet09 = `<!-- 09 Split-Screen Brand & Sign-In Layout -->\n<div class="min-h-screen grid grid-cols-1 md:grid-cols-12">\n  <div class="md:col-span-5 p-12 bg-zinc-950 text-white flex flex-col justify-between">\n    <div class="font-bold">ZeroLight Identity</div>\n    <blockquote>"Turnaround time cut from 4 days to 30s."</blockquote>\n    <div>SOC2 Type II Certified</div>\n  </div>\n  <div class="md:col-span-7 p-12 flex items-center justify-center">\n    <form class="w-full max-w-sm space-y-4">\n      <h2 class="text-xl font-bold">Sign In</h2>\n      <input placeholder="Work Email" class="border p-2 rounded-lg w-full" />\n      <button class="w-full py-2 bg-zinc-950 text-white rounded-lg">Continue</button>\n    </form>\n  </div>\n</div>`;
+
+    const snippet10 = `<!-- 10 Focused Centered Onboarding Stepper Layout -->\n<div class="min-h-screen flex items-center justify-center p-6 bg-[#FAFAFA]">\n  <div class="w-full max-w-md p-8 bg-white border rounded-2xl shadow-md space-y-6">\n    <div class="text-xs font-bold text-zinc-400">STEP 2 OF 3 · 66%</div>\n    <h2 class="text-lg font-bold">Name your workspace</h2>\n    <input placeholder="e.g. Hyderabad Hub" class="border p-2.5 rounded-lg w-full" />\n    <div class="flex justify-between">\n      <button>Back</button>\n      <button class="bg-zinc-950 text-white px-4 py-2 rounded-lg">Next Step</button>\n    </div>\n  </div>\n</div>`;
+
+    const snippet11 = `<!-- 11 SaaS Hero + 3-Column Feature Grid Layout -->\n<div class="space-y-12 py-12">\n  <section class="text-center max-w-2xl mx-auto space-y-4">\n    <h1 class="text-3xl font-bold">The Monochrome Design System</h1>\n    <p class="text-sm text-zinc-500">265 handcrafted UI patterns for Indian & global SaaS.</p>\n    <button class="bg-zinc-950 text-white px-5 py-2.5 rounded-lg">Get Started</button>\n  </section>\n  <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">\n    <div class="p-6 border rounded-xl"><h3>Tokens</h3></div>\n    <div class="p-6 border rounded-xl"><h3>GST Bridge</h3></div>\n    <div class="p-6 border rounded-xl"><h3>Zero Monospace</h3></div>\n  </section>\n</div>`;
+
+    const snippet12 = `<!-- 12 Empty / Blank Canvas Starter Layout -->\n<div class="p-12 border-2 border-dashed border-zinc-300 rounded-2xl text-center space-y-4 max-w-xl mx-auto">\n  <div class="w-12 h-12 rounded-full bg-zinc-100 mx-auto flex items-center justify-center">+</div>\n  <h3 class="text-base font-bold">Custom Analytics Canvas</h3>\n  <p class="text-xs text-zinc-500">Insert widgets to assemble a custom telemetry view.</p>\n  <button class="bg-zinc-950 text-white px-4 py-2 rounded-lg text-xs font-semibold">+ Add First Widget</button>\n</div>`;
+  </script>
+</body>
+</html>
