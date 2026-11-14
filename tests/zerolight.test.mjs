@@ -1432,7 +1432,7 @@ test("SaaS Selection Controls Library: 26 interactive variants across 6 categori
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSSelectionLibrary"), "DashboardShell must integrate SaaSSelectionLibrary");
-  assert.ok(dashboardContent.includes("175 SaaS Pattern Variants Active"), "DashboardShell must synchronize 175 SaaS pattern variants active badge");
+  assert.ok(dashboardContent.includes("195 SaaS Pattern Variants Active"), "DashboardShell must synchronize 195 SaaS pattern variants active badge");
 });
 
 // -----------------------------------------------------------------
@@ -1542,7 +1542,7 @@ test("SaaS Divider & Spacer Library: 22 interactive variants across 6 categories
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSDividerLibrary"), "DashboardShell must integrate SaaSDividerLibrary");
-  assert.ok(dashboardContent.includes("175 SaaS Pattern Variants Active"), "DashboardShell must synchronize 175 active variants badge");
+  assert.ok(dashboardContent.includes("195 SaaS Pattern Variants Active"), "DashboardShell must synchronize 195 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"dividers\""), "DashboardShell must render SaaSDividerLibrary on dividers tab");
 });
 
@@ -1616,8 +1616,72 @@ test("SaaS Tooltip & Popover Library: 22 interactive variants across 6 categorie
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSTooltipLibrary"), "DashboardShell must integrate SaaSTooltipLibrary");
-  assert.ok(dashboardContent.includes("175 SaaS Pattern Variants Active"), "DashboardShell must synchronize 175 active variants badge");
+  assert.ok(dashboardContent.includes("195 SaaS Pattern Variants Active"), "DashboardShell must synchronize 195 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"tooltips\""), "DashboardShell must render SaaSTooltipLibrary on tooltips tab");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 34: SaaS Feedback, Alerts & Empty States Library (20 Variants)
+// -----------------------------------------------------------------
+console.log("\n=== Suite 34: SaaS Feedback, Alerts & Empty States Library (20 Variants) ===");
+
+test("SaaS Feedback, Alerts & Empty States: 20 interactive variants across 5 categories", () => {
+  // Check standalone HTML web applications
+  const htmlPath = path.join(rootDir, "public/saas-alerts-empty-states-showcase.html");
+  assert.ok(fs.existsSync(htmlPath), "public/saas-alerts-empty-states-showcase.html must exist");
+  const htmlContent = fs.readFileSync(htmlPath, "utf8");
+  assert.ok(htmlContent.includes("SaaS Feedback, Alerts & Empty States"), "HTML must have header title");
+  assert.ok(htmlContent.includes("20 Variants"), "HTML must indicate 20 variants");
+  assert.ok(htmlContent.includes("restoreAllDismissed"), "HTML must implement restore dismissed alerts");
+  assert.ok(htmlContent.includes("triggerLiveToast"), "HTML must implement live bottom-right toasts");
+  assert.ok(htmlContent.includes("cdn.tailwindcss.com"), "HTML must include Tailwind CDN");
+  assert.ok(htmlContent.includes("lucide@latest"), "HTML must include Lucide Icons CDN");
+
+  // Check React Component
+  const fbPath = path.join(rootDir, "src/components/zerolight/libraries/feedback-library.tsx");
+  assert.ok(fs.existsSync(fbPath), "feedback-library.tsx must exist");
+  const fbContent = fs.readFileSync(fbPath, "utf8");
+
+  // Export check
+  assert.ok(fbContent.includes("export function SaaSFeedbackLibrary"), "must export SaaSFeedbackLibrary");
+
+  // 5 Categories
+  assert.ok(fbContent.includes("1. Inline Page Alerts"), "must contain Inline Page Alerts category");
+  assert.ok(fbContent.includes("2. Top Banners"), "must contain Top Banners category");
+  assert.ok(fbContent.includes("3. Snackbars & Toasts"), "must contain Snackbars & Toasts category");
+  assert.ok(fbContent.includes("4. Empty States"), "must contain Empty States category");
+  assert.ok(fbContent.includes("5. Error & Locked States"), "must contain Error & Locked States category");
+
+  // 3 Density Tiers
+  for (const tier of ["small", "medium", "large"]) {
+    assert.ok(fbContent.includes(`"${tier}"`), `Feedback library must support tier ${tier}`);
+  }
+
+  // Key interactive features
+  assert.ok(fbContent.includes("Neutral Info Alert"), "must implement neutral info alert");
+  assert.ok(fbContent.includes("Success Confirmation Alert"), "must implement success confirmation alert");
+  assert.ok(fbContent.includes("Warning Alert with Action"), "must implement warning alert with action");
+  assert.ok(fbContent.includes("Danger Error Alert with Fix Button"), "must implement danger error alert");
+  assert.ok(fbContent.includes("Left-Accent Border Callout"), "must implement left-accent border callout");
+  assert.ok(fbContent.includes("Free Trial Countdown Banner"), "must implement trial countdown banner");
+  assert.ok(fbContent.includes("Failed Payment Action Banner"), "must implement failed payment banner");
+  assert.ok(fbContent.includes("Deleted Item with Undo Toast"), "must implement deleted item undo toast");
+  assert.ok(fbContent.includes("First-Time Empty Table State"), "must implement first-time empty state");
+  assert.ok(fbContent.includes("No Search Results Empty State"), "must implement no search results empty state");
+  assert.ok(fbContent.includes("Failed to Load with Retry Button"), "must implement failed to load retry state");
+  assert.ok(fbContent.includes("Permission Denied / Admin Only State"), "must implement permission denied state");
+  assert.ok(fbContent.includes("Pro Plan Locked Feature State"), "must implement pro plan locked state");
+  assert.ok(fbContent.includes("404 Page Not Found Card"), "must implement 404 page not found card");
+
+  // Export from libraries/index.ts
+  const libIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/index.ts"), "utf8");
+  assert.ok(libIdx.includes('export * from "./feedback-library";'), "libraries/index.ts must export feedback-library");
+
+  // Dashboard integration
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("SaaSFeedbackLibrary"), "DashboardShell must integrate SaaSFeedbackLibrary");
+  assert.ok(dashboardContent.includes("195 SaaS Pattern Variants Active"), "DashboardShell must synchronize 195 active variants badge");
+  assert.ok(dashboardContent.includes("docsSubView === \"feedback\""), "DashboardShell must render SaaSFeedbackLibrary on feedback tab");
 });
 
 console.log("\n==================================================");

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaaS Feedback, Alerts & Empty States Library (20 Variants)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --feedback-pad: 14px;
+      --feedback-text: 13px;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    .density-small {
+      --feedback-pad: 10px;
+      --feedback-text: 12px;
+    }
+    .density-medium {
+      --feedback-pad: 14px;
+      --feedback-text: 13px;
+    }
+    .density-large {
+      --feedback-pad: 18px;
+      --feedback-text: 14px;
+    }
+    .custom-feedback-card {
+      padding: var(--feedback-pad);
+      font-size: var(--feedback-text);
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spinning {
+      animation: spin-slow 0.8s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-[#09090B] dark:text-[#FAFAFA] antialiased min-h-screen transition-colors duration-200 density-medium">
+
+  <!-- Sticky Global Control Bar -->
+  <header class="sticky top-0 z-40 bg-[#FAFAFA]/90 dark:bg-[#09090B]/90 backdrop-blur-md border-b border-[#09090B]/[0.08] dark:border-white/[0.08] px-4 sm:px-6 py-3 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto space-y-3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <!-- Brand & Live Counter -->
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 flex items-center justify-center font-bold text-xs tracking-tight shadow-sm">
+            ZL
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-sm font-bold tracking-tight text-zinc-950 dark:text-white">SaaS Feedback, Alerts & Empty States</h1>
+              <span id="variant-counter-badge" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-zinc-200/80 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 tabular-nums">
+                20 Variants
+              </span>
+            </div>
+            <p class="text-[11px] text-zinc-500 dark:text-zinc-400">
+              Inline alerts, top announcement bars, undo toasts, empty records & recoverable error states.
+            </p>
+          </div>
+        </div>
+
+        <!-- Controls: Search, 3 Density Tiers, Restore Hidden, Theme -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <!-- Instant Search -->
+          <div class="relative min-w-[170px]">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+            <input
+              id="search-input"
+              type="text"
+              placeholder="Search feedback..."
+              class="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white transition"
+            />
+          </div>
+
+          <!-- 3 Global Size Density Toggles -->
+          <div class="flex items-center p-0.5 rounded-xl bg-zinc-200/70 dark:bg-zinc-800/80 border border-zinc-300/40 dark:border-zinc-700/50">
+            <button
+              type="button"
+              onclick="setDensityTier('small')"
+              id="tier-small"
+              class="tier-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+            >
+              Small
+            </button>
+            <button
+              type="button"
+              onclick="setDensityTier('medium')"
+              id="tier-medium"
+              class="tier-btn px-2.5 py-1 rounded-lg text-xs font-semibold bg-white dark:bg-[#121215] text-zinc-950 dark:text-white shadow-xs transition cursor-pointer"
+            >
+              Medium
+            </button>
+            <button
+              type="button"
+              onclick="setDensityTier('large')"
+              id="tier-large"
+              class="tier-btn px-2.5 py-1 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+            >
+              Large
+            </button>
+          </div>
+
+          <!-- Restore Hidden Button -->
+          <button
+            type="button"
+            id="restore-hidden-btn"
+            onclick="restoreAllDismissed()"
+            class="px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
+          >
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5 text-zinc-400"></i>
+            <span>Restore Hidden</span>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button
+            type="button"
+            onclick="toggleTheme()"
+            class="p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#121215] text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition cursor-pointer"
+            title="Toggle Light / Dark Mode"
+          >
+            <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+            <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal Category Filter Pill Rail -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
+        <button
+          type="button"
+          onclick="filterCategory('all')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-xs"
+          data-category="all"
+        >
+          All (20)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat1')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat1"
+        >
+          1. Inline Page Alerts (6)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat2')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat2"
+        >
+          2. Top Banners (3)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat3')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat3"
+        >
+          3. Snackbars & Toasts (3)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat4')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat4"
+        >
+          4. Empty States (4)
+        </button>
+        <button
+          type="button"
+          onclick="filterCategory('cat5')"
+          class="cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60"
+          data-category="cat5"
+        >
+          5. Error & Locked States (4)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="variant-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 1: INLINE PAGE ALERTS (6)             -->
+      <!-- ============================================== -->
+
+      <!-- Variant 01: Neutral Info Alert -->
+      <div id="card-wrap-01" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Neutral Info Alert">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">01</span>
+              Neutral Info Alert
+            </span>
+            <button onclick="openCodeModal('01 Neutral Info Alert', snippet01)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Subtle informative notice with dismiss button.
+          </p>
+          <div id="alert-item-01" class="custom-feedback-card rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-start justify-between gap-3 transition-all duration-200">
+            <div class="flex items-start gap-2.5">
+              <i data-lucide="info" class="w-4 h-4 text-zinc-600 dark:text-zinc-400 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <div class="font-bold text-zinc-900 dark:text-zinc-100">Automatic Tax Calculation</div>
+                <div class="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5">GST rates are synchronized dynamically based on client state jurisdiction.</div>
+              </div>
+            </div>
+            <button onclick="dismissAlert('alert-item-01')" class="p-1 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-zinc-800 cursor-pointer">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 02: Success Confirmation Alert -->
+      <div id="card-wrap-02" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Success Confirmation Alert">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">02</span>
+              Success Confirmation Alert
+            </span>
+            <button onclick="openCodeModal('02 Success Confirmation Alert', snippet02)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Soft emerald callout confirming verified business identity.
+          </p>
+          <div id="alert-item-02" class="custom-feedback-card rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 flex items-start justify-between gap-3 transition-all duration-200">
+            <div class="flex items-start gap-2.5">
+              <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <div class="font-bold text-emerald-950 dark:text-emerald-200">Bank Account Verified</div>
+                <div class="text-[11px] text-emerald-800 dark:text-emerald-400 mt-0.5">Automated penny-drop verification completed with HDFC Bank.</div>
+              </div>
+            </div>
+            <button onclick="dismissAlert('alert-item-02')" class="p-1 rounded-lg text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 cursor-pointer">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 03: Warning Alert with Action -->
+      <div id="card-wrap-03" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Warning Alert with Action">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">03</span>
+              Warning Alert with Action
+            </span>
+            <button onclick="openCodeModal('03 Warning Alert with Action', snippet03)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Seat capacity warning with inline expansion link.
+          </p>
+          <div id="alert-item-03" class="custom-feedback-card rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 flex items-start justify-between gap-3 transition-all duration-200">
+            <div class="flex items-start gap-2.5">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <div class="font-bold text-amber-950 dark:text-amber-200">90% of Monthly Seats Used</div>
+                <div class="text-[11px] text-amber-800 dark:text-amber-400 mt-0.5">45 of 50 team member seats are currently active.</div>
+                <a href="#add-seats" class="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-amber-950 dark:text-amber-300 hover:underline">
+                  Add more seats &rarr;
+                </a>
+              </div>
+            </div>
+            <button onclick="dismissAlert('alert-item-03')" class="p-1 rounded-lg text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-900/60 cursor-pointer">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 04: Danger Error Alert with Fix Button -->
+      <div id="card-wrap-04" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Danger Error Alert with Fix Button">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">04</span>
+              Danger Error Alert with Fix Button
+            </span>
+            <button onclick="openCodeModal('04 Danger Error Alert with Fix Button', snippet04)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Critical sync alert with prominent primary reconnect button.
+          </p>
+          <div id="alert-item-04" class="custom-feedback-card rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 flex items-start justify-between gap-3 transition-all duration-200">
+            <div class="flex items-start gap-2.5">
+              <i data-lucide="alert-octagon" class="w-4 h-4 text-rose-600 dark:text-rose-400 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <div class="font-bold text-rose-950 dark:text-rose-200">Invoice Sync Failed</div>
+                <div class="text-[11px] text-rose-800 dark:text-rose-400 mt-0.5">Zoho Books authentication token expired 14 minutes ago.</div>
+                <button onclick="simulateReconnect()" class="mt-2 px-2.5 py-1 rounded-lg bg-rose-600 text-white font-semibold text-xs shadow-xs hover:bg-rose-700 cursor-pointer">
+                  Reconnect Now
+                </button>
+              </div>
+            </div>
+            <button onclick="dismissAlert('alert-item-04')" class="p-1 rounded-lg text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-900/60 cursor-pointer">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 05: Left-Accent Border Callout -->
+      <div id="card-wrap-05" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Left-Accent Border Callout">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">05</span>
+              Left-Accent Border Callout
+            </span>
+            <button onclick="openCodeModal('05 Left-Accent Border Callout', snippet05)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Structured tips with thick high-visibility left border bar.
+          </p>
+          <div class="custom-feedback-card rounded-r-xl rounded-l-xs bg-zinc-50 dark:bg-zinc-900 border-l-4 border-l-zinc-950 dark:border-l-white border-y border-r border-zinc-200 dark:border-zinc-800">
+            <div class="font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-zinc-600"></i>
+              Tip: Use Keyboard Shortcuts
+            </div>
+            <div class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
+              Press <kbd class="px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-zinc-800 font-bold text-zinc-800 dark:text-zinc-200">⌘ + B</kbd> anywhere to toggle the obsidian navigation dock.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 06: Compact Single-Line Notice -->
+      <div id="card-wrap-06" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat1" data-title="Compact Single-Line Notice">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">06</span>
+              Compact Single-Line Notice
+            </span>
+            <button onclick="openCodeModal('06 Compact Single-Line Notice', snippet06)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Low-profile auto-save strip for content editors and settings pages.
+          </p>
+          <div class="px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span class="text-zinc-700 dark:text-zinc-300 font-medium">Auto-save is active for all changes</span>
+            </div>
+            <span class="text-[10px] text-zinc-400 tabular-nums">Just now</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 2: TOP BANNERS (3)                    -->
+      <!-- ============================================== -->
+
+      <!-- Variant 07: Free Trial Countdown Banner -->
+      <div id="card-wrap-07" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Free Trial Countdown Banner">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">07</span>
+              Free Trial Countdown Banner
+            </span>
+            <button onclick="openCodeModal('07 Free Trial Countdown Banner', snippet07)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            High-contrast top announcement bar for trial conversions.
+          </p>
+          <div id="alert-item-07" class="p-3 rounded-xl bg-[#0B0F19] text-white flex items-center justify-between gap-2 shadow-sm text-xs">
+            <div class="flex items-center gap-2">
+              <i data-lucide="clock" class="w-4 h-4 text-amber-400 flex-shrink-0"></i>
+              <span class="font-medium text-[11px]"><strong>4 days left</strong> in your Enterprise trial.</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button onclick="showToast('Opened Upgrade Billing Modal')" class="px-2.5 py-1 rounded-lg bg-white text-zinc-950 font-bold text-[11px] shadow-xs hover:bg-zinc-100 cursor-pointer">
+                Upgrade Now
+              </button>
+              <button onclick="dismissAlert('alert-item-07')" class="p-1 rounded-lg text-zinc-400 hover:text-white cursor-pointer">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 08: Failed Payment Action Banner -->
+      <div id="card-wrap-08" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="Failed Payment Action Banner">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">08</span>
+              Failed Payment Action Banner
+            </span>
+            <button onclick="openCodeModal('08 Failed Payment Action Banner', snippet08)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Urgent top bar alerting user to settle declined card invoice.
+          </p>
+          <div id="alert-item-08" class="p-3 rounded-xl bg-rose-600 text-white flex items-center justify-between gap-2 shadow-sm text-xs">
+            <div class="flex items-center gap-2">
+              <i data-lucide="credit-card" class="w-4 h-4 text-white flex-shrink-0"></i>
+              <span class="font-medium text-[11px]">Your last card payment failed. Access locks in 48h.</span>
+            </div>
+            <button onclick="showToast('Navigating to Payment Settings')" class="px-2.5 py-1 rounded-lg bg-white text-rose-700 font-bold text-[11px] shadow-xs hover:bg-rose-50 cursor-pointer">
+              Update Card
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 09: New Feature Release Banner -->
+      <div id="card-wrap-09" class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat2" data-title="New Feature Release Banner">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">09</span>
+              New Feature Release Banner
+            </span>
+            <button onclick="openCodeModal('09 New Feature Release Banner', snippet09)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Product announcement bar highlighting major software release.
+          </p>
+          <div id="alert-item-09" class="p-3 rounded-xl bg-zinc-900 text-white flex items-center justify-between gap-2 shadow-sm text-xs">
+            <div class="flex items-center gap-2">
+              <span class="px-1.5 py-0.5 rounded bg-emerald-500 text-zinc-950 font-bold text-[10px] uppercase">New</span>
+              <span class="text-[11px] text-zinc-200">Bulk GST invoice export is now live in ERP.</span>
+            </div>
+            <button onclick="dismissAlert('alert-item-09')" class="p-1 rounded-lg text-zinc-400 hover:text-white cursor-pointer">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 3: SNACKBARS & UNDO TOASTS (3)        -->
+      <!-- ============================================== -->
+
+      <!-- Variant 10: Deleted Item with Undo Toast -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Deleted Item with Undo Toast">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">10</span>
+              Deleted Item with Undo Toast
+            </span>
+            <button onclick="openCodeModal('10 Deleted Item with Undo Toast', snippet10)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Safety net toast allowing users to instantly reverse deletions.
+          </p>
+          <div class="space-y-3">
+            <div class="p-3 rounded-xl bg-zinc-900 text-white flex items-center justify-between text-xs">
+              <span>Invoice #1042 deleted</span>
+              <button class="font-bold text-amber-400 hover:underline">Undo</button>
+            </div>
+            <button onclick="triggerLiveToast('Invoice #1042 deleted', true)" class="w-full py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 transition cursor-pointer">
+              Trigger Live Undo Toast
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 11: Saved Confirmation Toast -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Saved Confirmation Toast">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">11</span>
+              Saved Confirmation Toast
+            </span>
+            <button onclick="openCodeModal('11 Saved Confirmation Toast', snippet11)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Affirmative notification upon successful settings persistence.
+          </p>
+          <div class="space-y-3">
+            <div class="p-3 rounded-xl bg-[#0B0F19] text-white flex items-center gap-2 text-xs">
+              <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+              <span>Workspace preferences saved</span>
+            </div>
+            <button onclick="triggerLiveToast('Workspace preferences saved', false)" class="w-full py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 transition cursor-pointer">
+              Trigger Live Save Toast
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 12: Background Export Ready Toast -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat3" data-title="Background Export Ready Toast">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">12</span>
+              Background Export Ready Toast
+            </span>
+            <button onclick="openCodeModal('12 Background Export Ready Toast', snippet12)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Completes async data worker pipeline with download trigger.
+          </p>
+          <div class="space-y-3">
+            <div class="p-3 rounded-xl bg-zinc-900 text-white flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2">
+                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-400"></i>
+                <span class="text-[11px]">Q4_Report.xlsx is ready</span>
+              </div>
+              <button class="font-bold text-white hover:underline flex items-center gap-1">Download</button>
+            </div>
+            <button onclick="triggerLiveToast('Q4_Report.xlsx is ready for download', false)" class="w-full py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-xs font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 transition cursor-pointer">
+              Trigger Live Export Toast
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 4: EMPTY STATES (4)                   -->
+      <!-- ============================================== -->
+
+      <!-- Variant 13: First-Time Empty Table State -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="First-Time Empty Table State">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">13</span>
+              First-Time Empty Table State
+            </span>
+            <button onclick="openCodeModal('13 First-Time Empty Table State', snippet13)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Onboarding zero-state guiding user to create first record.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-dashed border-zinc-300 dark:border-zinc-800 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-2 text-zinc-600 dark:text-zinc-400">
+              <i data-lucide="folder-plus" class="w-5 h-5"></i>
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">No projects yet</div>
+            <p class="text-[11px] text-zinc-500 mb-3 max-w-[200px] mx-auto">Get started by creating your first client workspace.</p>
+            <button onclick="showToast('Opened New Project Wizard')" class="px-3 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs shadow-xs hover:opacity-90 cursor-pointer">
+              + Create Project
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 14: No Search Results Empty State -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="No Search Results Empty State">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">14</span>
+              No Search Results Empty State
+            </span>
+            <button onclick="openCodeModal('14 No Search Results Empty State', snippet14)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Filter dead-end state with one-click filter reset action.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-2 text-zinc-600 dark:text-zinc-400">
+              <i data-lucide="search-x" class="w-5 h-5"></i>
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">No matching records</div>
+            <p class="text-[11px] text-zinc-500 mb-3">No invoices matched your selected search filters.</p>
+            <button onclick="showToast('Filters cleared')" class="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-xs shadow-xs hover:bg-zinc-100 cursor-pointer">
+              Clear All Filters
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 15: Import or Create Empty State -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="Import or Create Empty State">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">15</span>
+              Import or Create Empty State
+            </span>
+            <button onclick="openCodeModal('15 Import or Create Empty State', snippet15)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Dual onboarding choice: bulk CSV spreadsheet import or manual client entry.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-2 text-zinc-600 dark:text-zinc-400">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">No customers added</div>
+            <p class="text-[11px] text-zinc-500 mb-3">Bring your client list via CSV or create manually.</p>
+            <div class="flex items-center justify-center gap-2">
+              <button onclick="showToast('Opened CSV Import Drawer')" class="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-xs cursor-pointer shadow-xs">
+                Import CSV
+              </button>
+              <button onclick="showToast('Opened New Client Modal')" class="px-3 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs shadow-xs cursor-pointer">
+                + Add Client
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 16: Inbox Zero / All Caught Up State -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat4" data-title="Inbox Zero / All Caught Up State">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">16</span>
+              Inbox Zero / All Caught Up State
+            </span>
+            <button onclick="openCodeModal('16 Inbox Zero / All Caught Up State', snippet16)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Satisfying zero inbox notification state with emerald badge.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center mx-auto mb-2 text-emerald-600 dark:text-emerald-400">
+              <i data-lucide="check-check" class="w-5 h-5"></i>
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">All caught up!</div>
+            <p class="text-[11px] text-zinc-500 max-w-[200px] mx-auto">There are no pending approval requests or unread audit flags.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- CATEGORY 5: ERROR & LOCKED STATES (4)          -->
+      <!-- ============================================== -->
+
+      <!-- Variant 17: Failed to Load with Retry Button -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Failed to Load with Retry Button">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">17</span>
+              Failed to Load with Retry Button
+            </span>
+            <button onclick="openCodeModal('17 Failed to Load with Retry Button', snippet17)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Network recovery state with spinning retry feedback.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-rose-100 dark:bg-rose-950/50 flex items-center justify-center mx-auto mb-2 text-rose-600">
+              <i data-lucide="wifi-off" class="w-5 h-5"></i>
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">Couldn't load reports</div>
+            <p class="text-[11px] text-zinc-500 mb-3">Gateway timeout while fetching analytics data.</p>
+            <button id="retry-btn-17" onclick="simulateRetry()" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs flex items-center gap-1.5 mx-auto shadow-xs cursor-pointer">
+              <i id="retry-icon-17" data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+              <span id="retry-label-17">Try Again</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 18: Permission Denied / Admin Only State -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Permission Denied / Admin Only State">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">18</span>
+              Permission Denied / Admin Only State
+            </span>
+            <button onclick="openCodeModal('18 Permission Denied / Admin Only State', snippet18)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            RBAC wall protecting sensitive audit credentials and billing.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-2 text-zinc-600 dark:text-zinc-400">
+              <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">Admin Access Required</div>
+            <p class="text-[11px] text-zinc-500 mb-3 max-w-[200px] mx-auto">Only workspace owners can view and regenerate production API keys.</p>
+            <button onclick="showToast('Access request sent to workspace owner')" class="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-xs shadow-xs hover:bg-zinc-100 cursor-pointer">
+              Request Access
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 19: Pro Plan Locked Feature State -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="Pro Plan Locked Feature State">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">19</span>
+              Pro Plan Locked Feature State
+            </span>
+            <button onclick="openCodeModal('19 Pro Plan Locked Feature State', snippet19)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Contextual upgrade card gating automated SLA monitoring.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-center">
+            <div class="w-10 h-10 rounded-2xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center mx-auto mb-2 text-amber-600">
+              <i data-lucide="lock" class="w-5 h-5"></i>
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">Available on Pro Plan</div>
+            <p class="text-[11px] text-zinc-500 mb-3 max-w-[200px] mx-auto">Automated SLA health monitoring and Webhook replays require Pro tier.</p>
+            <button onclick="showToast('Opened Pro Tier Checkout')" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-semibold text-xs shadow-xs cursor-pointer">
+              Upgrade to Pro
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Variant 20: 404 Page Not Found Card -->
+      <div class="variant-card bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 shadow-xs flex flex-col justify-between"
+           data-category="cat5" data-title="404 Page Not Found Card">
+        <div>
+          <div class="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100 dark:border-zinc-800/50">
+            <span class="text-xs font-bold text-zinc-950 dark:text-white flex items-center gap-1.5">
+              <span class="text-zinc-400 dark:text-zinc-500 font-sans tabular-nums font-semibold">20</span>
+              404 Page Not Found Card
+            </span>
+            <button onclick="openCodeModal('20 404 Page Not Found Card', snippet20)" class="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition">
+              &lt;/&gt; Code
+            </button>
+          </div>
+          <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-4">
+            Tactile missing route fallback card keeping users in flow.
+          </p>
+          <div class="p-6 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 text-center">
+            <div class="inline-block px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-bold text-xs tabular-nums mb-2">
+              404
+            </div>
+            <div class="font-bold text-zinc-950 dark:text-white text-xs mb-1">Page not found</div>
+            <p class="text-[11px] text-zinc-500 mb-3">This link may have expired or been moved by an admin.</p>
+            <button onclick="showToast('Navigating back to Dashboard')" class="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-semibold text-xs shadow-xs hover:bg-zinc-100 cursor-pointer">
+              Back to Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Clean Code Modal -->
+  <div id="code-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200 dark:border-zinc-800">
+        <h3 id="modal-title" class="text-sm font-bold text-zinc-950 dark:text-white"></h3>
+        <button onclick="closeCodeModal()" class="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-5">
+        <div class="relative">
+          <pre id="modal-code" class="p-4 rounded-xl bg-zinc-900 text-zinc-100 text-xs overflow-x-auto font-sans leading-relaxed"></pre>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
+        <button onclick="closeCodeModal()" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white">
+          Close
+        </button>
+        <button id="copy-code-btn" onclick="copySnippetCode()" class="px-3.5 py-1.5 rounded-xl bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-xs font-semibold flex items-center gap-1.5 shadow-sm hover:opacity-90 transition">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy HTML/CSS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Real Interactive Bottom-Right Toast Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- JavaScript Engine -->
+  <script>
+    lucide.createIcons();
+
+    // Density Tier
+    function setDensityTier(tier) {
+      document.body.classList.remove('density-small', 'density-medium', 'density-large');
+      document.body.classList.add(`density-${tier}`);
+
+      document.querySelectorAll('.tier-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-[#121215]', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+        btn.classList.add('text-zinc-600', 'dark:text-zinc-400');
+      });
+      const activeBtn = document.getElementById(`tier-${tier}`);
+      activeBtn.classList.add('bg-white', 'dark:bg-[#121215]', 'text-zinc-950', 'dark:text-white', 'shadow-xs');
+      activeBtn.classList.remove('text-zinc-600', 'dark:text-zinc-400');
+    }
+
+    // Dismiss Alert
+    const dismissedAlerts = new Set();
+    function dismissAlert(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          el.classList.add('hidden');
+          dismissedAlerts.add(id);
+          showToast('Alert dismissed. Click "Restore Hidden" to bring back.');
+        }, 200);
+      }
+    }
+
+    // Restore All Dismissed
+    function restoreAllDismissed() {
+      dismissedAlerts.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('hidden');
+          el.style.opacity = '1';
+          el.style.transform = 'scale(1)';
+        }
+      });
+      dismissedAlerts.clear();
+      showToast('All dismissed alerts and banners restored.');
+    }
+
+    // Live Toast Generator
+    function triggerLiveToast(message, withUndo) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto bg-[#0B0F19] text-white px-4 py-3 rounded-2xl shadow-2xl border border-white/10 text-xs flex items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2 duration-150 min-w-[280px]';
+
+      let inner = `<span>${message}</span>`;
+      if (withUndo) {
+        inner += `<button onclick="this.parentElement.remove(); showToast('Deletion cancelled!')" class="font-bold text-amber-400 hover:underline">Undo</button>`;
+      }
+      toast.innerHTML = inner;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'scale(0.95)';
+        setTimeout(() => toast.remove(), 200);
+      }, 4000);
+    }
+
+    function showToast(msg) {
+      triggerLiveToast(msg, false);
+    }
+
+    // Simulate Reconnect
+    function simulateReconnect() {
+      showToast('Re-authenticating with Zoho Books OAuth...');
+    }
+
+    // Simulate Retry
+    function simulateRetry() {
+      const icon = document.getElementById('retry-icon-17');
+      const label = document.getElementById('retry-label-17');
+      icon.classList.add('spinning');
+      label.textContent = 'Retrying...';
+
+      setTimeout(() => {
+        icon.classList.remove('spinning');
+        label.textContent = 'Try Again';
+        showToast('Reports recovered successfully!');
+      }, 1200);
+    }
+
+    // Light / Dark Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        html.classList.add('light');
+      } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+      }
+    }
+
+    // Category Filtering
+    let currentCategory = 'all';
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-pill').forEach(pill => {
+        if (pill.getAttribute('data-category') === cat) {
+          pill.className = 'cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-xs';
+        } else {
+          pill.className = 'cat-pill px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60';
+        }
+      });
+      applyFilters();
+    }
+
+    // Search Filtering
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', () => {
+      applyFilters();
+    });
+
+    function applyFilters() {
+      const query = searchInput.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.variant-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+        const matchesCategory = currentCategory === 'all' || cat === currentCategory;
+        const matchesQuery = query === '' || title.includes(query);
+
+        if (matchesCategory && matchesQuery) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('variant-counter-badge').textContent = `${visibleCount} Variants`;
+    }
+
+    // Modal & Code Snippets
+    let currentCodeSnippet = '';
+    function openCodeModal(title, snippet) {
+      currentCodeSnippet = snippet;
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-code').textContent = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copySnippetCode() {
+      navigator.clipboard.writeText(currentCodeSnippet).then(() => {
+        const btn = document.getElementById('copy-code-btn');
+        btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy HTML/CSS</span>';
+          lucide.createIcons();
+        }, 1800);
+      });
+    }
+
+    // Snippets
+    const snippet01 = `<!-- 01 Neutral Info Alert -->\n<div class="p-3.5 rounded-xl bg-zinc-100 border border-zinc-200 flex items-start justify-between">\n  <div>\n    <div class="font-bold text-zinc-900">Automatic Tax Calculation</div>\n    <p class="text-xs text-zinc-600">GST rates synchronized dynamically.</p>\n  </div>\n  <button class="text-zinc-400 hover:text-zinc-700">×</button>\n</div>`;
+    const snippet02 = `<!-- 02 Success Confirmation Alert -->\n<div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start justify-between">\n  <div>\n    <div class="font-bold text-emerald-950">Bank Account Verified</div>\n    <p class="text-xs text-emerald-800">Penny-drop verification completed.</p>\n  </div>\n  <button class="text-emerald-600">×</button>\n</div>`;
+    const snippet03 = `<!-- 03 Warning Alert with Action -->\n<div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex items-start justify-between">\n  <div>\n    <div class="font-bold text-amber-950">90% of Monthly Seats Used</div>\n    <a href="#" class="font-bold text-amber-950 hover:underline">Add more seats →</a>\n  </div>\n  <button class="text-amber-600">×</button>\n</div>`;
+    const snippet04 = `<!-- 04 Danger Error Alert with Fix Button -->\n<div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 flex items-start justify-between">\n  <div>\n    <div class="font-bold text-rose-950">Invoice Sync Failed</div>\n    <button class="mt-2 bg-rose-600 text-white px-2.5 py-1 rounded-lg">Reconnect Now</button>\n  </div>\n  <button class="text-rose-600">×</button>\n</div>`;
+    const snippet05 = `<!-- 05 Left-Accent Border Callout -->\n<div class="p-3.5 rounded-r-xl border-l-4 border-l-zinc-950 bg-zinc-50 border-y border-r border-zinc-200">\n  <div class="font-bold">Tip: Use Keyboard Shortcuts</div>\n  <p class="text-xs text-zinc-500">Press ⌘B anywhere to toggle dock.</p>\n</div>`;
+    const snippet06 = `<!-- 06 Compact Single-Line Notice -->\n<div class="px-3 py-2 rounded-xl bg-zinc-100 border flex justify-between text-xs">\n  <span>Auto-save is active for all changes</span>\n  <span class="text-zinc-400">Just now</span>\n</div>`;
+    const snippet07 = `<!-- 07 Free Trial Countdown Banner -->\n<div class="p-3 rounded-xl bg-[#0B0F19] text-white flex justify-between text-xs">\n  <span>4 days left in your Enterprise trial.</span>\n  <button class="bg-white text-zinc-950 px-2.5 py-1 rounded-lg font-bold">Upgrade Now</button>\n</div>`;
+    const snippet08 = `<!-- 08 Failed Payment Action Banner -->\n<div class="p-3 rounded-xl bg-rose-600 text-white flex justify-between text-xs">\n  <span>Your last card payment failed. Access locks in 48h.</span>\n  <button class="bg-white text-rose-700 px-2.5 py-1 rounded-lg font-bold">Update Card</button>\n</div>`;
+    const snippet09 = `<!-- 09 New Feature Release Banner -->\n<div class="p-3 rounded-xl bg-zinc-900 text-white flex justify-between text-xs">\n  <div class="flex items-center gap-2"><span class="bg-emerald-500 px-1.5 py-0.5 rounded text-[10px]">New</span><span>Bulk GST invoice export is live.</span></div>\n  <button>×</button>\n</div>`;
+    const snippet10 = `<!-- 10 Deleted Item with Undo Toast -->\n<div class="p-3 rounded-xl bg-zinc-900 text-white flex justify-between text-xs">\n  <span>Invoice #1042 deleted</span>\n  <button class="font-bold text-amber-400">Undo</button>\n</div>`;
+    const snippet11 = `<!-- 11 Saved Confirmation Toast -->\n<div class="p-3 rounded-xl bg-[#0B0F19] text-white flex items-center gap-2 text-xs">\n  <span>✓ Workspace preferences saved</span>\n</div>`;
+    const snippet12 = `<!-- 12 Background Export Ready Toast -->\n<div class="p-3 rounded-xl bg-zinc-900 text-white flex justify-between text-xs">\n  <span>Q4_Report.xlsx is ready</span>\n  <button class="font-bold">Download</button>\n</div>`;
+    const snippet13 = `<!-- 13 First-Time Empty Table State -->\n<div class="p-6 rounded-xl border border-dashed text-center">\n  <div class="font-bold mb-1">No projects yet</div>\n  <p class="text-xs text-zinc-500 mb-3">Get started by creating your first workspace.</p>\n  <button class="bg-zinc-950 text-white px-3 py-1.5 rounded-xl">+ Create Project</button>\n</div>`;
+    const snippet14 = `<!-- 14 No Search Results Empty State -->\n<div class="p-6 rounded-xl border text-center">\n  <div class="font-bold mb-1">No matching records</div>\n  <button class="border px-3 py-1.5 rounded-xl text-xs">Clear All Filters</button>\n</div>`;
+    const snippet15 = `<!-- 15 Import or Create Empty State -->\n<div class="p-6 rounded-xl border text-center">\n  <div class="font-bold mb-1">No customers added</div>\n  <div class="flex justify-center gap-2"><button class="border px-3 py-1.5 rounded-xl">Import CSV</button><button class="bg-zinc-950 text-white px-3 py-1.5 rounded-xl">+ Add Client</button></div>\n</div>`;
+    const snippet16 = `<!-- 16 Inbox Zero / All Caught Up State -->\n<div class="p-6 rounded-xl border text-center">\n  <div class="font-bold mb-1">All caught up!</div>\n  <p class="text-xs text-zinc-500">There are no pending approval requests.</p>\n</div>`;
+    const snippet17 = `<!-- 17 Failed to Load with Retry Button -->\n<div class="p-6 rounded-xl border text-center">\n  <div class="font-bold mb-1">Couldn't load reports</div>\n  <button class="bg-zinc-950 text-white px-3.5 py-1.5 rounded-xl">Try Again</button>\n</div>`;
+    const snippet18 = `<!-- 18 Permission Denied / Admin Only State -->\n<div class="p-6 rounded-xl border text-center">\n  <div class="font-bold mb-1">Admin Access Required</div>\n  <button class="border px-3 py-1.5 rounded-xl">Request Access</button>\n</div>`;
+    const snippet19 = `<!-- 19 Pro Plan Locked Feature State -->\n<div class="p-6 rounded-xl border text-center">\n  <div class="font-bold mb-1">Available on Pro Plan</div>\n  <button class="bg-zinc-950 text-white px-3.5 py-1.5 rounded-xl">Upgrade to Pro</button>\n</div>`;
+    const snippet20 = `<!-- 20 404 Page Not Found Card -->\n<div class="p-6 rounded-xl border text-center">\n  <div class="font-bold mb-1">Page not found</div>\n  <button class="border px-3 py-1.5 rounded-xl">Back to Dashboard</button>\n</div>`;
+  </script>
+</body>
+</html>
