@@ -1314,6 +1314,85 @@ test("Goldmine 4: TenantKit organism exists with multi-tenant switcher and isola
   assert.ok(orgIdx.includes('export * from "./tenant-kit";'), "organisms/index.ts must export tenant-kit");
 });
 
+// -----------------------------------------------------------------
+// Test Suite 29: SaaS Button Library (33 Variants) & Input Library (44 Variants)
+// -----------------------------------------------------------------
+console.log("\n=== Suite 29: SaaS Button & Input Variant Libraries ===");
+
+test("SaaS Button Library: 33 interactive variants, 8 categories & sticky control bar", () => {
+  const btnPath = path.join(rootDir, "src/components/zerolight/libraries/button-library.tsx");
+  assert.ok(fs.existsSync(btnPath), "button-library.tsx must exist");
+  const btnContent = fs.readFileSync(btnPath, "utf8");
+
+  // Export check
+  assert.ok(btnContent.includes("export function SaaSButtonLibrary"), "must export SaaSButtonLibrary");
+
+  // 8 Categories
+  assert.ok(btnContent.includes("1. Main Action Styles"), "must contain Main Action Styles category");
+  assert.ok(btnContent.includes("2. Icons & Shortcuts"), "must contain Icons & Shortcuts category");
+  assert.ok(btnContent.includes("3. Split & Menus"), "must contain Split & Menus category");
+  assert.ok(btnContent.includes("4. Toggle & Views"), "must contain Toggle & Views category");
+  assert.ok(btnContent.includes("5. Loading & Progress"), "must contain Loading & Progress category");
+  assert.ok(btnContent.includes("6. Safety & Delete"), "must contain Safety & Delete category");
+  assert.ok(btnContent.includes("7. Compact Tools"), "must contain Compact Tools category");
+  assert.ok(btnContent.includes("8. Smart AI & Upgrade"), "must contain Smart AI & Upgrade category");
+
+  // 4 Density Tiers
+  for (const tier of ["28px", "36px", "42px", "48px"]) {
+    assert.ok(btnContent.includes(tier), `Button library must support density ${tier}`);
+  }
+
+  // Key interactive features
+  assert.ok(btnContent.includes("Two-Click Delete Confirm"), "must implement Two-Click Delete Confirm");
+  assert.ok(btnContent.includes("Click-to-Save Progress"), "must implement Click-to-Save Progress");
+  assert.ok(btnContent.includes("Toolbar Action Strip"), "must implement Toolbar Action Strip");
+  assert.ok(btnContent.includes("activeCodeModal"), "must support Code inspector modal");
+});
+
+test("SaaS Input Field Library: 44 interactive variants, 10 categories, zero native pickers", () => {
+  const inputPath = path.join(rootDir, "src/components/zerolight/libraries/input-library.tsx");
+  assert.ok(fs.existsSync(inputPath), "input-library.tsx must exist");
+  const inputContent = fs.readFileSync(inputPath, "utf8");
+
+  // Export check
+  assert.ok(inputContent.includes("export function SaaSInputFieldLibrary"), "must export SaaSInputFieldLibrary");
+
+  // 10 Categories
+  assert.ok(inputContent.includes("1. Basic & Login"), "must contain Basic & Login category");
+  assert.ok(inputContent.includes("2. Numbers & Money"), "must contain Numbers & Money category");
+  assert.ok(inputContent.includes("3. Prefixes & Dropdowns"), "must contain Prefixes & Dropdowns category");
+  assert.ok(inputContent.includes("4. Search & Tags"), "must contain Search & Tags category");
+  assert.ok(inputContent.includes("5. Date & Times"), "must contain Date & Times category");
+  assert.ok(inputContent.includes("6. Country & Address"), "must contain Country & Address category");
+  assert.ok(inputContent.includes("7. Multi-Line"), "must contain Multi-Line category");
+  assert.ok(inputContent.includes("8. AI Assistants"), "must contain AI Assistants category");
+  assert.ok(inputContent.includes("9. Files & Color"), "must contain Files & Color category");
+  assert.ok(inputContent.includes("10. Status Preview"), "must contain Status Preview category");
+
+  // Custom popovers (zero native select/date inputs)
+  assert.ok(inputContent.includes("data-dd-root"), "must use data-dd-root custom popovers");
+  assert.ok(inputContent.includes("Custom Calendar Date Picker"), "must implement custom calendar date picker");
+  assert.ok(inputContent.includes("Custom Date Range Picker"), "must implement custom date range picker");
+  assert.ok(inputContent.includes("Custom Time Slot Picker"), "must implement custom time picker");
+  assert.ok(inputContent.includes("Custom Country Code Phone"), "must implement custom dial code picker");
+
+  // 4 Density Tiers & 4 Label Layouts
+  for (const tier of ["28px", "36px", "44px", "52px"]) {
+    assert.ok(inputContent.includes(tier), `Input library must support density ${tier}`);
+  }
+  for (const layout of ["top", "small-top", "side", "hidden"]) {
+    assert.ok(inputContent.includes(`"${layout}"`), `Input library must support layout ${layout}`);
+  }
+
+  // Root and Dashboard wiring
+  const rootIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
+  assert.ok(rootIndex.includes("./libraries"), "src/components/zerolight/index.ts must export libraries");
+
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("SaaSButtonLibrary") && dashboardContent.includes("SaaSInputFieldLibrary"), "DashboardShell must integrate Button & Input libraries");
+  assert.ok(dashboardContent.includes("sidebar-sub-pip"), "DashboardShell must implement kinetic sub-pip for sidebar submenus");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

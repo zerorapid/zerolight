@@ -47,17 +47,20 @@ import { useZeroLight } from "../context";
 import { ZeroLightStudio } from "../docs-studio";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
+import { SaaSButtonLibrary, SaaSInputFieldLibrary } from "../libraries";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
 export type DashboardTab = "overview" | "ds-editor" | "docs" | "tools" | "settings";
+export type DocsSubView = "catalog" | "buttons" | "inputs";
 export type SettingsSubTab = "general" | "security" | "mcp" | "api" | "compliance";
 
 export function DashboardShell() {
   const { user, logout } = useAuth();
   const { tokens } = useZeroLight();
   const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
+  const [docsSubView, setDocsSubView] = useState<DocsSubView>("catalog");
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const leaveTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -307,14 +310,83 @@ export function DashboardShell() {
                       </AnimatePresence>
                     </button>
 
+                    {/* Submenu for Design System in Expanded Mode */}
+                    {item.id === "docs" && !isCollapsed && (
+                      <div className="ml-7 pl-3 py-1 my-1 border-l border-white/10 space-y-1 relative">
+                        {[
+                          { id: "catalog", label: "Catalog & Tokens", count: "119" },
+                          { id: "buttons", label: "Button Library", count: "33" },
+                          { id: "inputs", label: "Input Library", count: "44" },
+                        ].map((sub) => {
+                          const isSubActive = activeTab === "docs" && docsSubView === sub.id;
+                          return (
+                            <button
+                              key={sub.id}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveTab("docs");
+                                setDocsSubView(sub.id as DocsSubView);
+                              }}
+                              className={`w-full px-2 py-1.5 rounded-lg text-[11px] font-semibold flex items-center justify-between transition-colors cursor-pointer relative ${
+                                isSubActive
+                                  ? "text-white bg-white/10 font-bold"
+                                  : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
+                              }`}
+                            >
+                              {isSubActive && (
+                                <motion.div
+                                  layoutId="sidebar-sub-pip"
+                                  className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-1.5 h-3 rounded-full bg-white shadow-xs"
+                                  transition={{ type: "spring", stiffness: 450, damping: 30 }}
+                                />
+                              )}
+                              <span className="truncate">{sub.label}</span>
+                              <span className="text-[10px] font-sans tabular-nums text-zinc-500 font-bold">
+                                {sub.count}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
                     {/* Collapsed Mode: Hover-Protected Flyout Popover */}
                     {isCollapsed && hoveredTab === item.id && (
-                      <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 px-3 py-1.5 rounded-xl bg-[#0B0F19]/95 backdrop-blur-xl border border-white/15 text-white shadow-[0_12px_30px_rgba(0,0,0,0.65)] whitespace-nowrap text-xs font-semibold pointer-events-none flex items-center gap-2 animate-in fade-in zoom-in-95 duration-150">
-                        <span>{item.label}</span>
-                        {item.badge && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/15 text-zinc-300 font-bold">
-                            {item.badge}
-                          </span>
+                      <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 z-50 p-2 rounded-xl bg-[#0B0F19]/95 backdrop-blur-xl border border-white/15 text-white shadow-[0_12px_30px_rgba(0,0,0,0.65)] whitespace-nowrap text-xs font-semibold animate-in fade-in zoom-in-95 duration-150 min-w-[160px]">
+                        <div className="flex items-center justify-between gap-2 px-1 py-0.5">
+                          <span>{item.label}</span>
+                          {item.badge && (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded bg-white/15 text-zinc-300 font-bold">
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                        {item.id === "docs" && (
+                          <div className="pt-1.5 mt-1 border-t border-white/10 space-y-1">
+                            {[
+                              { id: "catalog", label: "Catalog (119)" },
+                              { id: "buttons", label: "Buttons (33)" },
+                              { id: "inputs", label: "Inputs (44)" },
+                            ].map((sub) => (
+                              <button
+                                key={sub.id}
+                                type="button"
+                                onClick={() => {
+                                  setActiveTab("docs");
+                                  setDocsSubView(sub.id as DocsSubView);
+                                  setHoveredTab(null);
+                                }}
+                                className={`w-full px-2 py-1 rounded-lg text-left text-xs font-medium cursor-pointer transition ${
+                                  activeTab === "docs" && docsSubView === sub.id
+                                    ? "bg-white/20 text-white font-bold"
+                                    : "text-zinc-300 hover:bg-white/10"
+                                }`}
+                              >
+                                {sub.label}
+                              </button>
+                            ))}
+                          </div>
                         )}
                       </div>
                     )}
@@ -609,10 +681,55 @@ export function DashboardShell() {
           </div>
         )}
 
-        {/* TAB 3: ZEROLIGHT DESIGN SYSTEM DOCUMENTATION */}
+        {/* TAB 3: ZEROLIGHT DESIGN SYSTEM DOCUMENTATION & LIBRARIES */}
         {activeTab === "docs" && (
-          <div className="w-full -mt-6 -ml-6 -mr-6 md:-mt-8 md:-ml-8 md:-mr-8 -mb-8 animate-in fade-in duration-200">
-            <ZeroLightDocsPortal />
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Top Sub-Nav Switcher */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-200/80">
+              <div className="flex items-center gap-1.5 p-1 bg-zinc-200/60 rounded-xl border border-zinc-300/40 w-fit">
+                {[
+                  { id: "catalog", label: "Component Catalog & Foundations", count: "119" },
+                  { id: "buttons", label: "SaaS Button Library", count: "33" },
+                  { id: "inputs", label: "SaaS Input Field Library", count: "44" },
+                ].map((sub) => {
+                  const active = docsSubView === sub.id;
+                  return (
+                    <button
+                      key={sub.id}
+                      type="button"
+                      onClick={() => setDocsSubView(sub.id as DocsSubView)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer ${
+                        active
+                          ? "bg-white text-zinc-950 shadow-xs font-bold"
+                          : "text-zinc-600 hover:text-zinc-950 hover:bg-white/50"
+                      }`}
+                    >
+                      <span>{sub.label}</span>
+                      <span
+                        className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-md font-bold ${
+                          active ? "bg-zinc-950 text-white" : "bg-zinc-300/70 text-zinc-600"
+                        }`}
+                      >
+                        {sub.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Badge variant="healthy">77 SaaS Pattern Variants Active</Badge>
+              </div>
+            </div>
+
+            {/* Sub-view Content */}
+            {docsSubView === "catalog" && (
+              <div className="w-full -mt-2 -ml-6 -mr-6 md:-mt-4 md:-ml-8 md:-mr-8 -mb-8">
+                <ZeroLightDocsPortal />
+              </div>
+            )}
+            {docsSubView === "buttons" && <SaaSButtonLibrary />}
+            {docsSubView === "inputs" && <SaaSInputFieldLibrary />}
           </div>
         )}
 

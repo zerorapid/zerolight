@@ -9,4 +9,5 @@ export * from "./auth/sign-in-card";
 export * from "./dashboard/dashboard-shell";
 export * from "../WorldAtlasMap";
 export * from "./docs/zerolight-docs-portal";
+export * from "./libraries";
 export { ZeroLightStudio } from "./docs-studio";

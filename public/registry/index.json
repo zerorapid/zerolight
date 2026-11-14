@@ -48,11 +48,12 @@
         "context",
         "dashboard-shell",
         "docs-studio",
+        "libraries",
         "sign-in-card",
         "types",
         "zerolight-docs-portal"
       ],
-      "lines": 13,
+      "lines": 14,
       "registryUrl": "/registry/zerolight-index.json"
     },
     {
