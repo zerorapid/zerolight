@@ -1432,7 +1432,57 @@ test("SaaS Selection Controls Library: 26 interactive variants across 6 categori
   // Dashboard integration
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("SaaSSelectionLibrary"), "DashboardShell must integrate SaaSSelectionLibrary");
-  assert.ok(dashboardContent.includes("103 SaaS Pattern Variants Active"), "DashboardShell must synchronize 103 SaaS pattern variants active badge");
+  assert.ok(dashboardContent.includes("131 SaaS Pattern Variants Active"), "DashboardShell must synchronize 131 SaaS pattern variants active badge");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 31: SaaS Status & Indicator Library (28 Variants)
+// -----------------------------------------------------------------
+console.log("\n=== Suite 31: SaaS Status & Indicator Library (28 Variants) ===");
+
+test("SaaS Status & Indicator Library: 28 interactive variants across 6 categories", () => {
+  const indPath = path.join(rootDir, "src/components/zerolight/libraries/indicator-library.tsx");
+  assert.ok(fs.existsSync(indPath), "indicator-library.tsx must exist");
+  const indContent = fs.readFileSync(indPath, "utf8");
+
+  // Export check
+  assert.ok(indContent.includes("export function SaaSIndicatorLibrary"), "must export SaaSIndicatorLibrary");
+
+  // 6 Categories
+  assert.ok(indContent.includes("1. Status Badges"), "must contain Status Badges category");
+  assert.ok(indContent.includes("2. Tags & Counters"), "must contain Tags & Counters category");
+  assert.ok(indContent.includes("3. Progress & Quotas"), "must contain Progress & Quotas category");
+  assert.ok(indContent.includes("4. Spinners & Loaders"), "must contain Spinners & Loaders category");
+  assert.ok(indContent.includes("5. Skeletons"), "must contain Skeletons category");
+  assert.ok(indContent.includes("6. Trackers & Timelines"), "must contain Trackers & Timelines category");
+
+  // 3 Density Tiers
+  for (const tier of ["small", "medium", "large"]) {
+    assert.ok(indContent.includes(`"${tier}"`), `Indicator library must support density ${tier}`);
+  }
+
+  // Speed controls
+  for (const speed of ["normal", "fast", "paused"]) {
+    assert.ok(indContent.includes(`"${speed}"`), `Indicator library must support animation speed ${speed}`);
+  }
+
+  // Key interactive features
+  assert.ok(indContent.includes("Click-to-Cycle Status Pill"), "must implement interactive click-to-cycle pill");
+  assert.ok(indContent.includes("Interactive Progress Simulator"), "must implement +25% progress simulator");
+  assert.ok(indContent.includes("Circular Progress Ring"), "must implement SVG circular progress ring");
+  assert.ok(indContent.includes("Audio & AI Wave Loader"), "must implement audio/AI wave loader");
+  assert.ok(indContent.includes("SLA Health Bar"), "must implement SLA health bar");
+  assert.ok(indContent.includes("speedDropdownOpen"), "must use custom speed dropdown popover");
+  assert.ok(indContent.includes("data-indicator-popover"), "must isolate indicator popover with data attribute");
+
+  // Export from libraries/index.ts
+  const libIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/libraries/index.ts"), "utf8");
+  assert.ok(libIdx.includes('export * from "./indicator-library";'), "libraries/index.ts must export indicator-library");
+
+  // Dashboard integration
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("SaaSIndicatorLibrary"), "DashboardShell must integrate SaaSIndicatorLibrary");
+  assert.ok(dashboardContent.includes("docsSubView === \"indicators\""), "DashboardShell must render SaaSIndicatorLibrary on indicators tab");
 });
 
 console.log("\n==================================================");
