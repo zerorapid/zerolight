@@ -259,7 +259,7 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
       {/* =========================================================================
           TOP FLOATING BAR (Search capsule + Style switcher + Advanced button)
          ========================================================================= */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center justify-between p-4 sm:p-5">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 p-3 sm:p-5">
         {/* Top-Left: Search Capsule */}
         <div className="pointer-events-auto relative">
           <div
@@ -267,10 +267,10 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
               setIsSearchOpen(true);
               setTimeout(() => searchInputRef.current?.focus(), 50);
             }}
-            className="flex cursor-pointer items-center gap-2.5 rounded-full border border-black/10 bg-white/85 px-4 py-2 text-sm text-zinc-600 shadow-lg backdrop-blur-xl transition hover:border-black/20 hover:bg-white"
+            className="flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-white/85 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-zinc-600 shadow-lg backdrop-blur-xl transition hover:border-black/20 hover:bg-white"
           >
-            <Search className="h-4 w-4 text-zinc-400" />
-            <span className="font-medium">
+            <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-zinc-400 shrink-0" />
+            <span className="font-medium truncate max-w-[110px] sm:max-w-none">
               {activeInspectorCountry ? activeInspectorCountry.name : "Select country..."}
             </span>
             <kbd className="hidden rounded bg-zinc-100 px-1.5 py-0.5 text-[11px] font-semibold text-zinc-400 sm:inline-block">
@@ -758,10 +758,10 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
             </pattern>
           </defs>
 
-          {/* BACKGROUND LAND SILHOUETTE (Subtle baseline underlay) */}
-          <path d={GLOBAL_LAND_PATH} fill="#F4F4F5" />
+          {/* SOFT ATMOSPHERIC BACKGROUND BASELINE (Apple/Airbnb Calm #F4F4F5) */}
+          <rect width="800" height="400" fill="#F4F4F5" opacity="0.3" rx="12" />
 
-          {/* 163 SOVEREIGN COUNTRY POLYGONS */}
+          {/* 160 SOVEREIGN COUNTRY POLYGONS (Zero horizontal streaks or antimeridian line jumps) */}
           <g id="world-atlas-countries">
             {REAL_WORLD_COUNTRIES.map((country) => {
               const isSelected = selectedIds.includes(country.id);
@@ -796,8 +796,8 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
                   id={`country-${country.id}`}
                   d={country.d}
                   fill={fillColor}
-                  stroke={borders ? "#FFFFFF" : "none"}
-                  strokeWidth={borders ? 0.6 : 0}
+                  stroke={isSelected ? "#09090B" : isHovered ? "#18181B" : borders ? "#CBD5E1" : "none"}
+                  strokeWidth={borders ? 0.65 : 0}
                   className="cursor-pointer transition-colors duration-150"
                   onClick={(e) => handleCountryClick(country.id, e)}
                   onMouseEnter={() => setHoveredCountryId(country.id)}

@@ -9,6 +9,7 @@ import { Button } from "../atoms/button";
 import { Input } from "../atoms/input";
 import { AlertBanner } from "../molecules/alert-banner";
 import { Badge } from "../atoms/badge";
+import { Kbd } from "../atoms/kbd";
 
 export function SignInCard() {
   const { tokens, scaled } = useZeroLight();
@@ -165,8 +166,13 @@ export function SignInCard() {
               variant="primary"
               size="md"
               disabled={isSubmitting}
-              className="w-full justify-center"
-              iconRight={<ArrowRight className="w-3.5 h-3.5" />}
+              className="w-full justify-between px-5"
+              iconRight={
+                <div className="flex items-center gap-2">
+                  <Kbd className="bg-white/20 text-white border-white/20 text-[10px]">↵</Kbd>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              }
             >
               {isSubmitting ? "Verifying Token..." : "Sign In to Dashboard"}
             </Button>

@@ -22,6 +22,11 @@ import {
   Plus,
   ArrowUpRight,
   Sparkles,
+  ChevronDown,
+  HelpCircle,
+  FileCode2,
+  CheckCircle2,
+  Lock,
 } from "lucide-react";
 import { useAuth } from "../auth/auth-context";
 import { useZeroLight } from "../context";
@@ -35,13 +40,14 @@ import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
-export type DashboardTab = "home" | "ds-editor" | "docs" | "tools" | "settings";
+export type DashboardTab = "overview" | "ds-editor" | "docs" | "tools" | "settings";
 
 export function DashboardShell() {
   const { user, logout } = useAuth();
   const { tokens, scaled, updateTokens } = useZeroLight();
-  const [activeTab, setActiveTab] = useState<DashboardTab>("home");
+  const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
   // Settings form states
   const [displayName, setDisplayName] = useState(user?.name || "ZeroLight Root Admin");
@@ -121,7 +127,7 @@ export function DashboardShell() {
           {/* Navigation Items */}
           <nav className="space-y-1">
             {[
-              { id: "home", label: "Home Dashboard", icon: <Home className="w-4 h-4" /> },
+              { id: "overview", label: "Overview", icon: <Home className="w-4 h-4" /> },
               { id: "ds-editor", label: "Visual Studio Dock", icon: <SlidersHorizontal className="w-4 h-4" />, badge: "Tokens" },
               { id: "docs", label: "Design System", icon: <Layers className="w-4 h-4" />, badge: "119" },
               { id: "tools", label: "Map Studio & Tools", icon: <Wrench className="w-4 h-4" />, badge: "Vector" },
@@ -208,8 +214,8 @@ export function DashboardShell() {
 
       {/* ── MAIN WORKSPACE CONTENT CANVAS ── */}
       <main className="flex-1 ml-72 p-6 md:p-8 min-h-screen bg-[#F8FAFC]">
-        {/* TAB 1: HOME DASHBOARD */}
-        {activeTab === "home" && (
+        {/* TAB 1: OVERVIEW DASHBOARD */}
+        {activeTab === "overview" && (
           <div className="max-w-7xl mx-auto space-y-7 animate-in fade-in duration-200">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-zinc-200/80">
@@ -242,71 +248,157 @@ export function DashboardShell() {
               </div>
             </div>
 
-            {/* Quick KPIs */}
+            {/* 4 Live Informational Trust Data Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
-                label="DESIGN PRIMITIVES"
-                value="119 Active"
-                delta="+2 Organisms"
+                label="TOTAL COMPONENTS ADDED"
+                value="119 Primitives"
+                delta="42 Atoms • 44 Molecules • 18 Organisms • 15 Blocks"
                 trend="up"
-                comparisonText="Registry index synced"
+                comparisonText="Zero-dependency registry synced"
               />
               <StatCard
-                label="ACTIVE SEATS"
-                value="38 / 50"
-                delta="76% occupied"
+                label="TOTAL SAAS TEMPLATES"
+                value="12 Templates"
+                delta="Production B2B & Fintech"
+                trend="up"
+                comparisonText="ZeroLight token-bound"
+              />
+              <StatCard
+                label="TOTAL NICHES COVERED"
+                value="8 Verticals"
+                delta="Fintech, DevTools, AI & Health"
                 trend="neutral"
-                comparisonText="12 licenses unallocated"
+                comparisonText="Enterprise domain spectrum"
               />
               <StatCard
-                label="API LATENCY (P99)"
-                value="18ms"
-                delta="-4.2ms drop"
+                label="TOTAL CLIENTS SERVED"
+                value="1,420+ Teams"
+                delta="99.98% Uptime"
                 trend="up"
-                comparisonText="Global edge CDN cached"
-              />
-              <StatCard
-                label="AUTOMATED TESTS"
-                value="173 Passed"
-                delta="0 Failures"
-                trend="up"
-                comparisonText="100% test integrity"
+                comparisonText="SOC2 Type II & HIPAA certified"
               />
             </div>
 
-            {/* Apple / Airbnb Monochrome World Atlas */}
-            <div className="space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            {/* Tools Section Preview Card */}
+            <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-zinc-950 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <Wrench className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-bold text-zinc-950 tracking-tight">
+                        Vector Map Studio & Asset Downloader
+                      </h3>
+                      <Badge variant="healthy">Tools Preview</Badge>
+                    </div>
+                    <p className="text-xs text-zinc-500 mt-1 max-w-2xl leading-relaxed">
+                      Interactive tool for customizing 6 monochrome render styles (Vector, Halftone Dots, Pixels, Architectural Crosses, Diamonds, and Hatching), projecting regional edge telemetry, and downloading standalone high-resolution SVG vector maps directly into your codebase.
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  iconRight={<ArrowUpRight className="w-3.5 h-3.5" />}
+                  onClick={() => setActiveTab("tools")}
+                  className="shrink-0"
+                >
+                  Launch Map Studio
+                </Button>
+              </div>
+
+              {/* Feature Highlights Pills */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-zinc-100">
+                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
+                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">RENDER MODES</span>
+                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">6 Pattern Styles</span>
+                </div>
+                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
+                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">EXPORT FORMAT</span>
+                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">Standalone SVG</span>
+                </div>
+                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
+                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">EXTERNAL DEPENDENCY</span>
+                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">Zero API Keys</span>
+                </div>
+                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
+                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">GEOMETRY ENGINE</span>
+                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">D3 Natural Earth</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Enterprise FAQ Section */}
+            <div className="space-y-4 pt-1">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                 <div>
-                  <h3 className="text-sm font-bold text-zinc-950">
-                    Monochrome World Atlas (Apple / Airbnb Studio)
+                  <h3 className="text-sm font-bold text-zinc-950 flex items-center gap-2">
+                    <HelpCircle className="w-4 h-4 text-zinc-600" />
+                    <span>Frequently Asked Questions & Architecture</span>
                   </h3>
                   <p className="text-xs text-zinc-500">
-                    Pure 2D flat canvas • 6 switchable render styles (Vector, Dots, Pixels, Crosses, Diamonds, Hatch) • Edge telemetry hubs.
+                    Enterprise answers on AI agent hallucination prevention, Tactile Calm rules, and light-mode baseline.
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="healthy">6 Styles Active</Badge>
-                  <Badge variant="neutral">SVG Export Ready</Badge>
-                </div>
+                <Badge variant="neutral">Architecture Spec</Badge>
               </div>
 
-              <WorldAtlasMap />
-            </div>
-
-            {/* Regional Ranked Breakdown */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-bold text-zinc-950">
-                    Regional Traffic & Ingress Distribution
-                  </h3>
-                  <p className="text-xs text-zinc-500">Ranked country telemetry with latency percentiles and delta progress bars.</p>
-                </div>
-                <Badge variant="neutral">Telemetry Feed</Badge>
+              <div className="space-y-2.5">
+                {[
+                  {
+                    q: "How does ZeroLight prevent AI agent hallucination during UI development?",
+                    a: "ZeroLight features a native Model Context Protocol (MCP) server located at bin/zerolight-mcp.mjs. AI coding agents (such as Cursor, Claude Code, and Antigravity) connect over JSON-RPC 2.0 to query the exact component registry, typed props, and token schemas directly from source files, preventing hallucinated hex colors, arbitrary CSS classes, and invalid props.",
+                  },
+                  {
+                    q: "What is the Tactile Calm design philosophy behind ZeroLight?",
+                    a: "Tactile Calm rejects decorative noise, gratuitous multi-stop gradients, glowing drop shadows, and cliché AI template copy. It prioritizes crisp 1px hairline borders (#E4E4E7), subtle luminance stepping, YIQ contrast-verified typography, and strict tabular-nums layout discipline.",
+                  },
+                  {
+                    q: "Can the theme tokens be exported or customized per tenant?",
+                    a: "Yes. The Visual Studio Dock provides a real-time token compiler. You can adjust universal fill colors, brand accents, border radii, and elevation profiles, saving them to isolated workspace presets or streaming them via MCP to your development environment.",
+                  },
+                  {
+                    q: "How does the World Atlas vector map operate without external API keys?",
+                    a: "Our geo-telemetry primitives (WorldAtlasMap and GeoBreakdown) render via client-side D3 spherical geometry and TopoJSON. They require zero third-party map SDKs (such as Mapbox, Google Maps, or Leaflet), guaranteeing zero third-party tracking, 0ms tile fetch latency, and zero billing surprises.",
+                  },
+                  {
+                    q: "Is light mode the permanent baseline in ZeroLight OS?",
+                    a: "Yes. ZeroLight OS is strictly engineered around an Apple/Airbnb-grade light mode baseline with crisp contrast ratios and quiet neutral backgrounds (#FFFFFF / #F8FAFC). While dark mode is supported via the user toggle in the sidebar, light mode is the first-class default and is protected against involuntary OS dark mode hijacking.",
+                  },
+                ].map((faq, index) => {
+                  const isOpen = expandedFaq === index;
+                  return (
+                    <div
+                      key={index}
+                      className="rounded-xl border border-zinc-200/90 bg-white overflow-hidden shadow-2xs transition-all"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setExpandedFaq(isOpen ? null : index)}
+                        className="w-full p-4 text-left flex items-center justify-between gap-4 hover:bg-zinc-50/60 transition cursor-pointer"
+                      >
+                        <span className="text-xs font-semibold text-zinc-900">
+                          {faq.q}
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-zinc-400 shrink-0 transition-transform duration-200 ${
+                            isOpen ? "rotate-180 text-zinc-900" : ""
+                          }`}
+                        />
+                      </button>
+                      {isOpen && (
+                        <div className="px-4 pb-4 pt-1 text-xs text-zinc-600 border-t border-zinc-100 bg-zinc-50/30 leading-relaxed animate-in fade-in duration-150">
+                          {faq.a}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-
-              <GeoBreakdown />
             </div>
 
             {/* Quick Links to Core Organisms */}
@@ -385,6 +477,23 @@ export function DashboardShell() {
 
             <div className="rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-xs">
               <WorldAtlasMap className="w-full min-h-[560px]" />
+            </div>
+
+            {/* Regional Ranked Telemetry Ingress */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-950">
+                    Regional Ingress & Global Telemetry
+                  </h3>
+                  <p className="text-xs text-zinc-500">
+                    Ranked country distribution with latency percentiles and delta progress bars.
+                  </p>
+                </div>
+                <Badge variant="neutral">Telemetry Feed</Badge>
+              </div>
+
+              <GeoBreakdown />
             </div>
           </div>
         )}
@@ -492,7 +601,7 @@ export function DashboardShell() {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <Button variant="outline" size="sm" type="button" onClick={() => setActiveTab("home")}>
+                <Button variant="outline" size="sm" type="button" onClick={() => setActiveTab("overview")}>
                   Cancel
                 </Button>
                 <Button variant="primary" size="sm" type="submit">

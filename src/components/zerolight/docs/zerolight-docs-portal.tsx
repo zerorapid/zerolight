@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import {
   Search,
   Command,
@@ -105,6 +106,12 @@ export function ZeroLightDocsPortal() {
   const [feedbackSent, setFeedbackSent] = useState<string | null>(null);
   const [toastVisible, setToastVisible] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>("");
+  const [demoCheckbox, setDemoCheckbox] = useState<boolean>(true);
+  const [demoSwitch, setDemoSwitch] = useState<boolean>(true);
+  const [demoSlider, setDemoSlider] = useState<number>(68);
+  const [demoMotionPreset, setDemoMotionPreset] = useState<string>("snappy");
+  const [motionTrigger, setMotionTrigger] = useState<number>(0);
+  const [activeLogoTheme, setActiveLogoTheme] = useState<"light" | "dark" | "outline" | "favicon">("light");
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   const activeItem = useMemo(() => {
@@ -571,43 +578,555 @@ toast("Your changes have been saved successfully.");`}
             </div>
           )}
 
-          {/* DEFAULT FALLBACK COMPONENT SHOWCASE */}
-          {activeId !== "philosophy" &&
-            activeId !== "colors" &&
-            activeId !== "button" &&
-            activeId !== "input" &&
-            activeId !== "world-atlas-map" &&
-            activeId !== "data-table" &&
-            activeId !== "tenant-kit" &&
-            activeId !== "toast" &&
-            activeId !== "brand-identity" && (
-              <div className="space-y-6">
-                <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white">
-                  <div className="p-8 flex items-center justify-center min-h-[160px] bg-zinc-50/50">
-                    <div className="text-center space-y-2">
-                      <div className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center mx-auto text-zinc-700">
-                        <Code2 className="w-5 h-5" />
-                      </div>
-                      <h4 className="text-sm font-bold text-zinc-950">
-                        {activeItem.title} Preview
-                      </h4>
-                      <p className="text-xs text-zinc-500 max-w-sm">
-                        {activeItem.description}
-                      </p>
+          {/* FOUNDATION: TYPOGRAPHY */}
+          {activeId === "typography" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-6">
+                <div className="space-y-1 border-b border-zinc-100 pb-4">
+                  <h4 className="text-sm font-bold text-zinc-950">Typography Hierarchy & Tabular Discipline</h4>
+                  <p className="text-xs text-zinc-500">ZeroLight strictly mandates font-sans tabular-nums for all numbers, metrics, currency, and charts.</p>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-zinc-100 pb-3">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider w-24">Display (36px)</span>
+                    <span className="text-3xl font-bold tracking-tight text-zinc-950 flex-1">Tactile Calm Engineering</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-zinc-100 pb-3">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider w-24">H1 (28px)</span>
+                    <span className="text-2xl font-bold tracking-tight text-zinc-950 flex-1">High Velocity UI Primitives</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-zinc-100 pb-3">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider w-24">H2 (22px)</span>
+                    <span className="text-xl font-semibold tracking-tight text-zinc-900 flex-1">Micro-Tenant Security Vault</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-zinc-100 pb-3">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider w-24">H3 (18px)</span>
+                    <span className="text-base font-semibold text-zinc-900 flex-1">Sovereign Node Telemetry</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-zinc-100 pb-3">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider w-24">Body (14px)</span>
+                    <span className="text-sm text-zinc-600 flex-1 leading-relaxed">
+                      Zero-dependency, accessible React primitives bound to unified mathematical tokens with 1px hairline borders.
+                    </span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 pt-1">
+                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider w-24">Tabular Numbers</span>
+                    <div className="flex flex-wrap items-center gap-4 flex-1 font-sans tabular-nums text-sm font-semibold text-zinc-900">
+                      <span>$1,420,891.00</span>
+                      <span className="text-zinc-300">•</span>
+                      <span>18.42ms (P99)</span>
+                      <span className="text-zinc-300">•</span>
+                      <span>+14.8% YoY</span>
                     </div>
                   </div>
-                  <CollapsibleCode
-                    code={`import { ${activeItem.title.replace(/[\s\(\)]+/g, "")} } from "@/components/zerolight";
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`// ZeroLight Rule 1: Tabular-nums with font-sans (never font-mono)
+<span className="font-sans tabular-nums text-sm font-semibold">
+  $1,420,891.00 USD
+</span>`}
+              />
+            </div>
+          )}
 
-export default function Example() {
-  return (
-    <${activeItem.title.replace(/[\s\(\)]+/g, "")} />
-  );
-}`}
+          {/* FOUNDATION: MATERIALS & ELEVATION */}
+          {activeId === "materials" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="p-5 rounded-2xl border border-zinc-200/90 bg-white space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-zinc-950">Flat Surface</span>
+                    <Badge variant="neutral">0px Shadow</Badge>
+                  </div>
+                  <p className="text-xs text-zinc-500">1px hairline border (#E4E4E7) with zero drop shadow for calm density.</p>
+                </div>
+
+                <div className="p-5 rounded-2xl border border-zinc-200/90 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-zinc-950">Soft Elevation</span>
+                    <Badge variant="neutral">Soft Shadow</Badge>
+                  </div>
+                  <p className="text-xs text-zinc-500">1px hairline border with gentle 4px ambient shadow for card layers.</p>
+                </div>
+
+                <div className="p-5 rounded-2xl border border-zinc-200/90 bg-white shadow-[0_12px_32px_rgba(0,0,0,0.08)] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-zinc-950">Elevated Modal</span>
+                    <Badge variant="healthy">16px Float</Badge>
+                  </div>
+                  <p className="text-xs text-zinc-500">Floating elevation with deep ambient blur for modals and drawers.</p>
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { useZeroLight } from "@/components/zerolight";
+
+const { tokens, scaled } = useZeroLight();
+// styled with scaled.cardShadow and tokens.universalBorderColor`}
+              />
+            </div>
+          )}
+
+          {/* FOUNDATION: MOTION PHYSICS */}
+          {activeId === "motion" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-950">Spring Physics Playground</h4>
+                    <p className="text-xs text-zinc-500">Test calibrated spring tension and damping profiles.</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-xl">
+                    {["snappy", "gentle", "bouncy", "stiff"].map((preset) => (
+                      <button
+                        key={preset}
+                        type="button"
+                        onClick={() => {
+                          setDemoMotionPreset(preset);
+                          setMotionTrigger((prev) => prev + 1);
+                        }}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition ${
+                          demoMotionPreset === preset ? "bg-white text-zinc-950 shadow-xs" : "text-zinc-500 hover:text-zinc-950"
+                        }`}
+                      >
+                        {preset}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="h-44 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-center relative overflow-hidden">
+                  <motion.div
+                    key={motionTrigger}
+                    initial={{ scale: 0.8, y: 15 }}
+                    animate={{ scale: 1, y: 0 }}
+                    transition={
+                      demoMotionPreset === "snappy"
+                        ? { type: "spring", stiffness: 400, damping: 28 }
+                        : demoMotionPreset === "gentle"
+                        ? { type: "spring", stiffness: 180, damping: 22 }
+                        : demoMotionPreset === "bouncy"
+                        ? { type: "spring", stiffness: 320, damping: 14 }
+                        : { type: "spring", stiffness: 500, damping: 40 }
+                    }
+                    className="p-5 rounded-2xl bg-zinc-950 text-white shadow-xl flex items-center gap-3 cursor-pointer"
+                    onClick={() => setMotionTrigger((prev) => prev + 1)}
+                  >
+                    <Activity className="w-5 h-5 text-emerald-400" />
+                    <div>
+                      <span className="text-xs font-bold block">Spring Physics Active</span>
+                      <span className="text-[10px] text-zinc-400 capitalize">Preset: {demoMotionPreset} (Click to re-trigger)</span>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { motion } from "framer-motion";
+import { useZeroLight } from "@/components/zerolight";
+
+const { scaled } = useZeroLight();
+<motion.div transition={scaled.motionConfig.spring} />`}
+              />
+            </div>
+          )}
+
+          {/* FOUNDATION: TERMINAL & MCP */}
+          {activeId === "terminal" && (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950 text-white overflow-hidden shadow-2xl">
+                <div className="px-4 py-3 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
+                    <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block" />
+                    <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block" />
+                    <span className="ml-2 text-xs font-semibold text-zinc-400">zerolight-cli — zsh</span>
+                  </div>
+                  <Badge variant="healthy">MCP Server Online</Badge>
+                </div>
+
+                <div className="p-5 space-y-4 text-xs font-sans">
+                  <div>
+                    <span className="text-emerald-400 font-bold">$ </span>
+                    <span className="text-zinc-200">npx zerolight add world-atlas-map</span>
+                    <div className="text-zinc-400 pl-4 mt-1">
+                      ✔ Resolved 119 registry components<br />
+                      ✔ Injected src/components/WorldAtlasMap.tsx with D3 Natural Earth projection<br />
+                      ✔ Synced zero-dependency token bindings
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-emerald-400 font-bold">$ </span>
+                    <span className="text-zinc-200">node bin/zerolight-mcp.mjs</span>
+                    <div className="text-zinc-400 pl-4 mt-1">
+                      [ZeroLight MCP] Initialized JSON-RPC 2.0 stdio server on port 3002<br />
+                      [ZeroLight MCP] Exposing tools: zerolight_list_components, zerolight_get_tokens
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`// Start ZeroLight MCP Server for Cursor & Claude Code
+node bin/zerolight-mcp.mjs`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: BADGE */}
+          {activeId === "badge" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-4">
+                <h4 className="text-sm font-bold text-zinc-950">Semantic Status Badges</h4>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Badge variant="healthy">Healthy (200 OK)</Badge>
+                  <Badge variant="info">Info / Syncing</Badge>
+                  <Badge variant="degraded">Degraded (High P99)</Badge>
+                  <Badge variant="critical">Critical Outage</Badge>
+                  <Badge variant="neutral">Neutral v2.4</Badge>
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { Badge } from "@/components/zerolight";
+
+<Badge variant="healthy">Healthy</Badge>
+<Badge variant="degraded">Degraded</Badge>
+<Badge variant="critical">Critical</Badge>`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: CHECKBOX */}
+          {activeId === "checkbox" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-4">
+                <h4 className="text-sm font-bold text-zinc-950">Interactive Tri-State Checkbox</h4>
+                <div className="space-y-3">
+                  <Checkbox
+                    checked={demoCheckbox}
+                    onChange={(checked) => setDemoCheckbox(checked)}
+                    label="Enforce FIDO2 Hardware Key for Root Admin"
+                  />
+                  <Checkbox
+                    checked={false}
+                    disabled
+                    label="Disabled Checkbox Option"
                   />
                 </div>
               </div>
-            )}
+              <CollapsibleCode
+                code={`import { Checkbox } from "@/components/zerolight";
+
+<Checkbox
+  checked={demoCheckbox}
+  onChange={(checked) => setDemoCheckbox(checked)}
+  label="Enforce Hardware Key"
+/>`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: SWITCH */}
+          {activeId === "switch" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-4">
+                <h4 className="text-sm font-bold text-zinc-950">Tactile Spring Switch</h4>
+                <div className="space-y-3">
+                  <Switch
+                    checked={demoSwitch}
+                    onChange={(checked) => setDemoSwitch(checked)}
+                    label="Real-time Webhook Edge Dispatcher"
+                  />
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { Switch } from "@/components/zerolight";
+
+<Switch
+  checked={demoSwitch}
+  onChange={(checked) => setDemoSwitch(checked)}
+  label="Edge Dispatcher"
+/>`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: SLIDER */}
+          {activeId === "slider" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-bold text-zinc-950">Continuous Range Slider</h4>
+                  <span className="text-xs font-semibold font-sans tabular-nums text-zinc-700">{demoSlider}%</span>
+                </div>
+                <Slider
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={demoSlider}
+                  onChange={(val) => setDemoSlider(val)}
+                />
+              </div>
+              <CollapsibleCode
+                code={`import { Slider } from "@/components/zerolight";
+
+<Slider
+  min={0}
+  max={100}
+  value={demoSlider}
+  onChange={(val) => setDemoSlider(val)}
+/>`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: PROGRESS BAR */}
+          {activeId === "progress-bar" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-5">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    <span>Tenant Ingress Quota</span>
+                    <span className="font-sans tabular-nums text-zinc-500">{demoSlider}%</span>
+                  </div>
+                  <ProgressBar value={demoSlider} />
+                </div>
+                <div className="space-y-2">
+                  <span className="text-xs font-semibold text-zinc-700 block">Edge Synchronization Cache</span>
+                  <ProgressBar value={84} label="CDN Replication" />
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { ProgressBar } from "@/components/zerolight";
+
+<ProgressBar value={76} label="Quota" />
+<ProgressBar value={84} label="CDN Replication" />`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: AVATAR */}
+          {activeId === "avatar" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-4">
+                <h4 className="text-sm font-bold text-zinc-950">Avatar Scales & Presence Indicators</h4>
+                <div className="flex items-center gap-6">
+                  <Avatar size="sm" initials="ZL" status="online" />
+                  <Avatar size="md" initials="AP" status="online" />
+                  <Avatar size="lg" initials="JD" status="offline" />
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { Avatar } from "@/components/zerolight";
+
+<Avatar size="md" initials="ZL" status="online" />`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: SKELETON */}
+          {activeId === "skeleton" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-4">
+                <h4 className="text-sm font-bold text-zinc-950">Shimmering Pulse Skeleton</h4>
+                <div className="flex items-center gap-4">
+                  <Skeleton className="w-12 h-12 rounded-full shrink-0" />
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-3/4 rounded-md" />
+                    <Skeleton className="h-3 w-1/2 rounded-md" />
+                  </div>
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { Skeleton } from "@/components/zerolight";
+
+<Skeleton className="h-4 w-3/4 rounded-md" />`}
+              />
+            </div>
+          )}
+
+          {/* ATOM: KBD */}
+          {activeId === "kbd" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-4">
+                <h4 className="text-sm font-bold text-zinc-950">Keyboard Shortcuts (Kbd)</h4>
+                <p className="text-xs text-zinc-500">Rendered in crisp font-sans (never monospace) for human-crafted aesthetics.</p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-700">
+                    <span>Search Command:</span>
+                    <Kbd>⌘K</Kbd>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-700">
+                    <span>Multi-Select:</span>
+                    <Kbd>⇧ Shift + Click</Kbd>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-700">
+                    <span>Submit:</span>
+                    <Kbd>↵</Kbd>
+                  </div>
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { Kbd } from "@/components/zerolight";
+
+<Kbd>⌘K</Kbd>
+<Kbd>↵</Kbd>`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: STAT CARD */}
+          {activeId === "stat-card" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <StatCard
+                  label="API LATENCY (P99)"
+                  value="18.4ms"
+                  delta="-4.2ms drop"
+                  trend="up"
+                  comparisonText="Global edge CDN cached"
+                />
+                <StatCard
+                  label="TOTAL ENTERPRISE CLIENTS"
+                  value="1,420+"
+                  delta="+18% MoM"
+                  trend="up"
+                  comparisonText="Zero memory leaks verified"
+                />
+              </div>
+              <CollapsibleCode
+                code={`import { StatCard } from "@/components/zerolight";
+
+<StatCard
+  label="API LATENCY (P99)"
+  value="18.4ms"
+  delta="-4.2ms drop"
+  trend="up"
+  comparisonText="Global edge CDN cached"
+/>`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: ALERT BANNER */}
+          {activeId === "alert-banner" && (
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <AlertBanner
+                  severity="success"
+                  title="Cluster Health Verified"
+                  description="All 16 edge regions report 100% telemetry synchronicity."
+                />
+                <AlertBanner
+                  severity="warning"
+                  title="Traffic Spike Detected"
+                  description="Regional ingress into EU-Central exceeds 85% bandwidth baseline."
+                />
+                <AlertBanner
+                  severity="critical"
+                  title="Token HSM Revocation"
+                  description="Root admin cryptographic session expires in 12 minutes."
+                />
+              </div>
+              <CollapsibleCode
+                code={`import { AlertBanner } from "@/components/zerolight";
+
+<AlertBanner
+  severity="success"
+  title="Cluster Health Verified"
+  description="All regions operational."
+/>`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: TOOLTIP */}
+          {activeId === "tooltip" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-8 flex items-center justify-center gap-6">
+                <Tooltip content="Quick command trigger palette (⌘K)" position="top">
+                  <Button variant="outline" size="sm">Hover Me (Top)</Button>
+                </Tooltip>
+                <Tooltip content="ZeroLight mathematical token compiler" position="bottom">
+                  <Button variant="primary" size="sm">Hover Me (Bottom)</Button>
+                </Tooltip>
+              </div>
+              <CollapsibleCode
+                code={`import { Tooltip, Button } from "@/components/zerolight";
+
+<Tooltip content="Command palette (⌘K)" position="top">
+  <Button variant="outline">Hover Me</Button>
+</Tooltip>`}
+              />
+            </div>
+          )}
+
+          {/* BRAND: LOGO VARIATIONS */}
+          {activeId === "brand-variations" && (
+            <div className="space-y-6">
+              <div className="rounded-xl border border-zinc-200 overflow-hidden bg-white p-6 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-sm font-bold text-zinc-950">Multi-Tenant Brand Asset Variations</h4>
+                    <p className="text-xs text-zinc-500">Switch variations managed in Visual Studio.</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-xl">
+                    {(["light", "dark", "outline", "favicon"] as const).map((theme) => (
+                      <button
+                        key={theme}
+                        type="button"
+                        onClick={() => setActiveLogoTheme(theme)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold capitalize transition ${
+                          activeLogoTheme === theme ? "bg-white text-zinc-950 shadow-xs" : "text-zinc-500 hover:text-zinc-950"
+                        }`}
+                      >
+                        {theme}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-8 rounded-xl bg-zinc-50 border border-zinc-200 flex flex-col items-center justify-center space-y-3">
+                  <div
+                    className={`w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
+                      activeLogoTheme === "dark"
+                        ? "bg-zinc-950 text-white shadow-xl"
+                        : activeLogoTheme === "outline"
+                        ? "bg-white border-2 border-zinc-950 text-zinc-950"
+                        : activeLogoTheme === "favicon"
+                        ? "w-8 h-8 rounded-lg bg-zinc-950 text-white shadow-sm"
+                        : "bg-zinc-950 text-white shadow-md"
+                    }`}
+                  >
+                    <svg
+                      width={activeLogoTheme === "favicon" ? 16 : 28}
+                      height={activeLogoTheme === "favicon" ? 16 : 28}
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polygon points="12 2 22 20 2 20 12 2" />
+                    </svg>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-xs font-bold text-zinc-950 block capitalize">
+                      ZeroLight {activeLogoTheme} Variation
+                    </span>
+                    <span className="text-[11px] text-zinc-400">Pure SVG vector geometry</span>
+                  </div>
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`// Standalone SVG Logo Export
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+  <polygon points="12 2 22 20 2 20 12 2" />
+</svg>`}
+              />
+            </div>
+          )}
 
           {/* =========================================================================
               BOTTOM PAGINATION (Previous < / Give feedback / Next >)

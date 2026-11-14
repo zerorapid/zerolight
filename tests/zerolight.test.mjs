@@ -1118,9 +1118,16 @@ test("Enterprise Authentication Gate and Floating Sidebar Dashboard Shell exist 
   const signInContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/auth/sign-in-card.tsx"), "utf8");
   assert.ok(signInContent.includes("useAuth"), "SignInCard must bind to useAuth context");
   assert.ok(signInContent.includes("Password"), "SignInCard must have password field with toggle");
+  assert.ok(signInContent.includes("<Kbd"), "SignInCard must include Kbd keyboard shortcut accelerator");
 
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
-  assert.ok(dashboardContent.includes("Home Dashboard"), "DashboardShell must have Home view");
+  assert.ok(dashboardContent.includes("Overview"), "DashboardShell must have Overview view");
+  assert.ok(dashboardContent.includes("TOTAL COMPONENTS ADDED"), "DashboardShell Overview must feature total components metric");
+  assert.ok(dashboardContent.includes("TOTAL SAAS TEMPLATES"), "DashboardShell Overview must feature total SaaS templates metric");
+  assert.ok(dashboardContent.includes("TOTAL NICHES COVERED"), "DashboardShell Overview must feature total niches metric");
+  assert.ok(dashboardContent.includes("TOTAL CLIENTS SERVED"), "DashboardShell Overview must feature total clients metric");
+  assert.ok(dashboardContent.includes("Frequently Asked Questions & Architecture"), "DashboardShell Overview must feature FAQ section");
+  assert.ok(dashboardContent.includes("Vector Map Studio & Asset Downloader"), "DashboardShell Overview must feature Tools preview card");
   assert.ok(dashboardContent.includes("Visual Studio Dock"), "DashboardShell must have DS Editor trigger");
   assert.ok(dashboardContent.includes("Design System"), "DashboardShell must have Design System Docs view");
   assert.ok(dashboardContent.includes("Map Studio & Tools"), "DashboardShell must have Map Studio tools view");
