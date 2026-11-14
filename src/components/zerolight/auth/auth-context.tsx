@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
-      {hasHydrated ? children : null}
+      {children}
     </AuthContext.Provider>
   );
 }
