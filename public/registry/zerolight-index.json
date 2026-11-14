@@ -6,14 +6,17 @@
   "tier": "core",
   "dependencies": [],
   "registryDependencies": [
+    "auth-context",
     "context",
+    "dashboard-shell",
     "docs-studio",
+    "sign-in-card",
     "types"
   ],
   "files": [
     {
       "path": "src/components/zerolight/index.ts",
-      "content": "export * from \"./types\";\nexport * from \"./context\";\nexport * from \"./atoms\";\nexport * from \"./molecules\";\nexport * from \"./organisms\";\nexport * from \"./templates\";\nexport { ZeroLightStudio } from \"./docs-studio\";\n"
+      "content": "export * from \"./types\";\nexport * from \"./context\";\nexport * from \"./atoms\";\nexport * from \"./molecules\";\nexport * from \"./organisms\";\nexport * from \"./templates\";\nexport * from \"./auth/auth-context\";\nexport * from \"./auth/sign-in-card\";\nexport * from \"./dashboard/dashboard-shell\";\nexport { ZeroLightStudio } from \"./docs-studio\";\n"
     }
   ]
 }

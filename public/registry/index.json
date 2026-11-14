@@ -43,11 +43,14 @@
       "targetPath": "src/components/zerolight/index.ts",
       "dependencies": [],
       "registryDependencies": [
+        "auth-context",
         "context",
+        "dashboard-shell",
         "docs-studio",
+        "sign-in-card",
         "types"
       ],
-      "lines": 8,
+      "lines": 11,
       "registryUrl": "/registry/zerolight-index.json"
     },
     {

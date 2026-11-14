@@ -1107,6 +1107,29 @@ test("Enterprise BillingPortal and TeamPermissions organisms exist, export, and 
   assert.ok(registry.items.some((i) => i.name === "team-permissions"), "Registry must include team-permissions");
 });
 
+test("Enterprise Authentication Gate and Floating Sidebar Dashboard Shell exist and comply with specs", () => {
+  const rootIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
+  assert.ok(rootIndex.includes("auth-context") && rootIndex.includes("sign-in-card") && rootIndex.includes("dashboard-shell"), "root index must export AuthProvider, SignInCard, and DashboardShell");
+
+  const authContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/auth/auth-context.tsx"), "utf8");
+  assert.ok(authContent.includes("22121997") && authContent.includes("zerolight"), "auth-context must authenticate zerolight / 22121997");
+  assert.ok(authContent.includes("AUTH_STORAGE_KEY"), "auth-context must persist session tokens in storage");
+
+  const signInContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/auth/sign-in-card.tsx"), "utf8");
+  assert.ok(signInContent.includes("useAuth"), "SignInCard must bind to useAuth context");
+  assert.ok(signInContent.includes("Password"), "SignInCard must have password field with toggle");
+
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("Home Dashboard"), "DashboardShell must have Home view");
+  assert.ok(dashboardContent.includes("Visual Studio Dock"), "DashboardShell must have DS Editor trigger");
+  assert.ok(dashboardContent.includes("Design System (Geist+)"), "DashboardShell must have Geist+ Docs view");
+  assert.ok(dashboardContent.includes("Tools & Utilities"), "DashboardShell must have clean Tools view");
+  assert.ok(dashboardContent.includes("Settings & MCP"), "DashboardShell must have Settings view with MCP status");
+
+  const homePage = fs.readFileSync(path.join(rootDir, "src/app/page.tsx"), "utf8");
+  assert.ok(homePage.includes("AuthProvider") && homePage.includes("SignInCard") && homePage.includes("DashboardShell"), "home page must gate access via AuthProvider and SignInCard");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

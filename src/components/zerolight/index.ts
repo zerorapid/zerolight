@@ -4,4 +4,7 @@ export * from "./atoms";
 export * from "./molecules";
 export * from "./organisms";
 export * from "./templates";
+export * from "./auth/auth-context";
+export * from "./auth/sign-in-card";
+export * from "./dashboard/dashboard-shell";
 export { ZeroLightStudio } from "./docs-studio";
