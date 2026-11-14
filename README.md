@@ -1,218 +1,117 @@
 # ZeroLight ⚡
 
-> **A proprietary, zero-dependency, ephemeral design system and runtime engine tailored strictly for B2B SaaS micro-actions.**
+> **The Enterprise-Grade, Self-Evolving B2B SaaS UI & Design Engine.**  
+> Crafted from first principles with TypeScript strict mode, reactive design tokens, and pure SVG telemetry. Zero third-party charting bloat, zero runtime baggage.
 
-ZeroLight is engineered from first principles using native HTML5 elements, TypeScript strict mode, and high-density Tailwind CSS utility classes. **It has zero external UI dependencies** (no shadcn/ui, no Radix, no framer-motion).
-
----
-
-## 💡 The Core Philosophy: Ephemeral Forms
-
-Traditional B2B SaaS forms clutter interfaces and persist indefinitely. In ZeroLight:
-
-1. **Active State**: High-density interactive controls exist **only during decision time**.
-2. **Settled / Trace State**: The moment the operator authorizes or signs, the form dissolves into a single-line, immutable, audited trace receipt with an active status dot, timestamp, summary, and a subtle "Modify" trigger to re-open if needed.
-3. **Monotonic Audit Bus**: Every settled micro-action emits a strongly-typed delta payload to the downstream event ledger.
+[![CI & Registry Integrity](https://github.com/zerorapid/zerolight/actions/workflows/ci.yml/badge.svg)](https://github.com/zerorapid/zerolight/actions/workflows/ci.yml)
+[![Tests Passing](https://img.shields.io/badge/tests-163%20passed-10B981)](https://github.com/zerorapid/zerolight)
+[![Primitives Count](https://img.shields.io/badge/primitives-115%20verified-3B82F6)](https://github.com/zerorapid/zerolight)
+[![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
 ---
 
-## 🤖 How You or Any AI Can Build a ZeroLight Form
+## 💎 Why ZeroLight?
 
-ZeroLight is designed to be **100% LLM-friendly**. Any AI (Claude, ChatGPT, Gemini, Cursor, v0, Windsurf) can generate new SaaS micro-action forms instantly using the blueprint below.
+Most SaaS UI libraries force a painful trade-off: either install heavy, monolithic npm packages that break when your design drifts, or copy messy AI-generated code full of glowing gradients, dead buttons, and layout shifts.
 
-### The Universal Prompt for Any AI
-
-Copy and paste this into any AI assistant:
-
-```text
-Act as a Principal Frontend Engineer. Using the ZeroLight architecture, build a new compound micro-action component for: [DESCRIBE YOUR USE CASE, e.g. "Refund Approval" or "API Key Scope Rotation"].
-
-RULES:
-1. Wrap the component with `<Aperture<T>>` from '@/components/zerolight/aperture'.
-2. Use ZeroLight atoms from '@/components/zerolight/atoms' (MonoValue, SegmentPill, ApertureSlider, ApertureSwitch, ApertureAction, TraceDot, KeyBadge, etc.).
-3. DO NOT import shadcn/ui, Radix, or external animation libraries.
-4. Active state must display high-density native controls and a "Sign & Collapse" or "Authorize" commit button.
-5. On commit, call `settle(summary, delta)` so the form dissolves into an immutable single-line receipt.
-```
+**ZeroLight is different:**
+- **Zero AI Footprints**: Handcrafted, restrained, and calm UI. Hairline 1px borders, crisp YIQ contrast, and strict `tabular-nums` alignment.
+- **Copy-and-Own CLI (`npx zerolight`)**: Pull 115+ production primitives directly into any Next.js, Vite, or Remix project with recursive dependency resolution.
+- **Self-Improving Learning Agent (`.agents/`)**: Drop a screenshot of Stripe, Linear, or Datadog; the system deconstructs spatial hierarchy, writes persistent rules, and refines primitives.
+- **Telemetry & AI Training Feed**: Built-in telemetry engine (`/api/telemetry`) logs every generation brief, active token state, and human modification for fine-tuning your team's models.
 
 ---
 
-### Step-by-Step Code Example: Building a Form
+## ⚡ Quick Start: Add Components to Any Project
 
-Here is the exact pattern to create any form (e.g. `RefundApproval`):
-
-```tsx
-"use client";
-
-import React, { useState } from "react";
-import { Aperture } from "@/components/zerolight/aperture";
-import {
-  MonoValue,
-  SegmentPill,
-  ApertureSlider,
-  ApertureSwitch,
-  ApertureAction,
-  KeyBadge,
-} from "@/components/zerolight/atoms";
-
-export interface RefundDelta {
-  refundId: string;
-  orderId: string;
-  originalAmount: number;
-  refundPercentage: number;
-  refundAmount: number;
-  restockFeeWaived: boolean;
-  reason: string;
-  timestamp: string;
-}
-
-export function RefundApproval({
-  id,
-  orderId,
-  originalAmount,
-  onSettled,
-}: {
-  id: string;
-  orderId: string;
-  originalAmount: number;
-  onSettled?: (delta: RefundDelta) => void;
-}) {
-  const [percentage, setPercentage] = useState<number>(50);
-  const [reason, setReason] = useState<string>("Damaged in Transit");
-  const [waiveRestock, setWaiveRestock] = useState<boolean>(true);
-
-  const refundAmount = Math.round((originalAmount * (percentage / 100)) * 100) / 100;
-
-  return (
-    <Aperture<RefundDelta>
-      id={id}
-      title="Refund Authorization"
-      badgeText={orderId}
-      badgeVariant="warning"
-      onSettle={(record) => onSettled?.(record.payload)}
-    >
-      {({ settle, dismiss }) => {
-        const handleCommit = () => {
-          const delta: RefundDelta = {
-            refundId: id,
-            orderId,
-            originalAmount,
-            refundPercentage: percentage,
-            refundAmount,
-            restockFeeWaived: waiveRestock,
-            reason,
-            timestamp: new Date().toISOString(),
-          };
-
-          const summary = `${orderId} • Refund $${refundAmount.toLocaleString()} (${percentage}%) • [${reason}]`;
-          settle(summary, delta);
-        };
-
-        return (
-          <div className="space-y-4">
-            {/* Real-time Math Display */}
-            <div className="flex justify-between items-center p-3 rounded bg-neutral-900 border border-neutral-800">
-              <span className="text-xs font-mono text-neutral-400">Approved Refund:</span>
-              <MonoValue
-                value={refundAmount}
-                previousValue={originalAmount}
-                prefix="$"
-                variant="success"
-                size="md"
-              />
-            </div>
-
-            {/* Slider */}
-            <ApertureSlider
-              label="Refund Concession"
-              unit="%"
-              min={10}
-              max={100}
-              value={percentage}
-              onChange={setPercentage}
-            />
-
-            {/* Pills */}
-            <div className="flex gap-2">
-              {["Damaged in Transit", "Late Delivery", "Customer Goodwill"].map((r) => (
-                <SegmentPill
-                  key={r}
-                  label={r}
-                  selected={reason === r}
-                  onSelect={() => setReason(r)}
-                />
-              ))}
-            </div>
-
-            {/* Toggle */}
-            <ApertureSwitch
-              checked={waiveRestock}
-              onChange={setWaiveRestock}
-              label="Waive 15% Restocking Fee"
-            />
-
-            {/* Actions */}
-            <div className="flex justify-end gap-2 pt-2 border-t border-neutral-800">
-              <ApertureAction label="Cancel" variant="ghost" onClick={dismiss} />
-              <ApertureAction label="Authorize & Collapse" variant="primary" onClick={handleCommit} />
-            </div>
-          </div>
-        );
-      }}
-    </Aperture>
-  );
-}
-```
-
----
-
-## 🧱 The 14 Indivisible Atoms
-
-Located in `src/components/zerolight/atoms/`:
-
-| Atom | Description |
-| :--- | :--- |
-| **`TraceDot`** | Operational status heartbeat with active pulse, settled emerald, staged gray, and fault rose states. |
-| **`MonoValue`** | Tabular numeric alignment with strike-through delta comparisons and hardware-accelerated value shimmer. |
-| **`SegmentPill`** | Compact operational mode pill with spring bounce (`active:scale-95`) and selection glow. |
-| **`ApertureSlider`** | Native range constraint actuator with embedded numeric telemetry badge. |
-| **`ApertureSwitch`** | Binary toggle with spring-damped sliding thumb physics and peripheral emerald glow. |
-| **`ApertureAction`** | Semantically distinct triggers: `primary` (commit), `ghost` (dismiss), and `undo` (modify). |
-| **`TrendDelta`** | Math delta badge (`+12%`, `-$40`) with inverse metric support (e.g. lower latency is green). |
-| **`CapacityMeter`** | Quota progress bar with smooth spring interpolation and 90% threshold critical pulsing. |
-| **`CopyTrigger`** | One-click clipboard copy with ripple burst and checkmark icon morph. |
-| **`AuditTimestamp`** | Monospace timestamp formatter supporting compact, ISO-8601, and pill views. |
-| **`EntityAvatar`** | Deterministic 2-letter fallback avatar with string-hash background tinting. |
-| **`MicroInput`** | Ultra-compact inline currency/rate field with prefix ($) and suffix (%). |
-| **`KeyBadge`** | Monospace compliance & entity tag badge (`neutral`, `emerald`, `amber`, `outline`). |
-| **`KbdShortcut`** | High-density keyboard chord keycap display (`⌘+K`, `Esc`). |
-
----
-
-## 🚀 Running Locally
+You don't need to clone this entire repo to use ZeroLight. Use our standalone distribution CLI:
 
 ```bash
-# Clone the repository
+# 1. Initialize ZeroLight core (tokens, context, utils)
+npx zerolight init
+
+# 2. List all 115 available enterprise primitives
+npx zerolight list
+
+# 3. Add components directly into your codebase
+npx zerolight add button stat-card data-table world-map organization-switcher api-key-vault
+```
+
+---
+
+## 🎨 Interactive Visual Studio & Token Engine
+
+ZeroLight ships with an interactive, draggable **Visual Studio Dock** on every page:
+
+- **Theme Polarity**: Instant switching between `Light`, `Dark`, `Slate`, and `Contrast` with automatic surface luminance stepping.
+- **Google Fonts Engine**: Dynamic on-demand Google Fonts injection (`Plus Jakarta Sans`, `Inter`, `Fraunces`, `Space Grotesk`, `DM Sans`, and curated SaaS pairings) with zero page reloads.
+- **Spatial Geometry**: Real-time corner radius (`0px`, `8px`, `16px`, `24px`, `Pill`), height density (`36px` to `52px`), and border widths.
+- **Motion Physics**: Restrained spring micro-interactions (`instant`, `snappy`, `damped`, `gentle`) with speed multipliers and live canvas simulation.
+- **Bi-Directional RTL**: 1-click Arabic / Hebrew Right-to-Left layout mirroring.
+- **Export Pipeline**: Copy clean CSS custom properties, Tailwind tokens, or JSON palettes in a single click.
+
+---
+
+## 🧱 The 115 Component Primitives Architecture
+
+ZeroLight is organized into 5 strict atomic tiers:
+
+```
+src/components/zerolight/
+├── atoms/          # 42 Pure Primitives (Button, Badge, Input, Switch, Slider, Kbd, Avatar...)
+├── molecules/      # 43 Compound Blocks (WorldMap, OrgSwitcher, ApiKeyVault, AreaChart, Tabs...)
+├── organisms/      # 15 Complex Systems (DataTable<T>, DetailDrawer, Modal, CommandPalette, AppShell...)
+├── templates/      # 5 Reusable Blueprints (Dashboard, ConsoleTable, SettingsForm, ChatWorkspace...)
+└── views/          # 7 Full Domain Pages (DevConsole, Billing, Donations, Finexy, Attendance...)
+```
+
+### High-Signal Highlights:
+1. **`WorldMap` & `GeoBreakdown`**: Zero-API-key, SSR-safe equirectangular SVG choropleth maps with continent zoom presets, flow arcs, and country ranking telemetry.
+2. **`DataTable<T>`**: High-density generic data table with inline spreadsheet cell editing, sorting, column visibility, and row selection.
+3. **`OrganizationSwitcher`**: Enterprise multi-tenant workspace switcher with role tags and plan badges.
+4. **`ApiKeyVault`**: Masked secret vaults with one-click copy feedback and permission scopes.
+5. **Data Visualization Family**: Pure SVG area, bar, horizontal bar, donut, gauge, sparkline, and heatmap matrices with zero third-party charting libraries.
+
+---
+
+## 🛡️ Enterprise Security & Quality Assurance
+
+- **163 Automated Invariant Tests**: Mathematically verifies contrast ratios, corner bounds, motion configs, and token propagation (`npm test`).
+- **Playwright Chromium E2E Rig**: End-to-end testing across all 9 live routes, mobile viewports (`390x844`), and token persistence.
+- **Production Headers**: Native clickjacking prevention (`X-Frame-Options: DENY`), MIME protection (`nosniff`), and strict referrer policies.
+- **Automated CI Scanning**: GitHub Actions pipeline equipped with **TruffleHog OSS** for secret leak prevention and TypeScript strict checking.
+- **Zod Schema Validation**: Client and server-side typed validation on all forms and `/api/telemetry` ingestion pipelines.
+
+---
+
+## 🏃 Running the Full Studio Locally
+
+```bash
+# 1. Clone the repository
 git clone https://github.com/zerorapid/zerolight.git
 cd zerolight
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Run the development server
-npm run dev
-
-# Or build and run production
+# 3. Build and test
+npm run registry
+npm test
 npm run build
-npm run start
+
+# 4. Start production server
+npm start
 ```
 
 Visit:
-- **`http://localhost:3000`** — Operational Workbench & Intent Dispatcher
-- **`http://localhost:3000/docs/atoms`** — Interactive Living Atomic Laboratory
+- **`http://localhost:3000/`** — Visual Studio & Atomic Laboratory
+- **`http://localhost:3000/docs/molecules`** — Molecules, World Maps & SaaS Controls
+- **`http://localhost:3000/docs/organisms`** — Data Tables, Drawers & Shells
+- **`http://localhost:3000/donations`** — Donations Enterprise Dashboard
+- **`http://localhost:3000/docs/pages`** — Full SaaS Workspaces
 
 ---
 
 ## 📜 License
 
-MIT License. Crafted from first principles.
+MIT License. Designed and engineered by the ZeroRapid team.
