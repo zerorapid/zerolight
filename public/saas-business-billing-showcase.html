@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 3 Organism Library: SaaS Business, Billing & Analytics (16 Modules)</title>
+  <!-- Google Fonts: Inter Sans only (Zero Monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            popover: '0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --module-pad: 16px;
+      --module-font-size: 13px;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .module-density-card {
+      padding: var(--module-pad);
+      font-size: var(--module-font-size);
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-zinc-100 min-h-screen antialiased transition-colors duration-150">
+
+  <!-- =========================================================================
+       STICKY GLOBAL CONTROL BAR
+  ========================================================================= -->
+  <header class="sticky top-0 z-30 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 px-4 sm:px-6 py-3.5 space-y-3">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      
+      <!-- Left: L3 Badge, Title & Live Counter -->
+      <div class="flex items-center gap-3">
+        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+          L3
+        </span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
+              SaaS Business, Billing & Analytics Modules
+            </h1>
+            <span id="variant-counter" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              16 Modules
+            </span>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">
+            Level 3 Organisms: Notification inboxes, @mention feeds, interactive 3-tier pricing, SVG analytics, and Tally Prime sync.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Search, Density, and Theme Toggle -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Instant Search -->
+        <div class="relative min-w-[210px]">
+          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Filter business modules..." 
+            oninput="handleSearch(this.value)"
+            class="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
+          />
+          <button 
+            type="button" 
+            id="clear-search-btn" 
+            onclick="clearSearch()" 
+            class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+          >
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+
+        <!-- 3 Density Toggles -->
+        <div class="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
+          <button 
+            type="button" 
+            onclick="setDensity('small')" 
+            id="density-small"
+            class="density-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer"
+          >
+            Small
+          </button>
+          <button 
+            type="button" 
+            onclick="setDensity('medium')" 
+            id="density-medium"
+            class="density-btn px-2.5 py-1 rounded-md font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer"
+          >
+            Medium
+          </button>
+          <button 
+            type="button" 
+            onclick="setDensity('large')" 
+            id="density-large"
+            class="density-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer"
+          >
+            Large
+          </button>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button 
+          type="button" 
+          onclick="toggleTheme()" 
+          title="Toggle Light/Dark Theme"
+          class="p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition cursor-pointer"
+        >
+          <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Category Filter Pill Rail -->
+    <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      <button 
+        type="button" 
+        onclick="setCategory('all')" 
+        id="cat-pill-all"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>All Modules</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950">16</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-collab')" 
+        id="cat-pill-cat-collab"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Inbox & Collaboration</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-pricing')" 
+        id="cat-pill-cat-pricing"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Pricing & Plans</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">1</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-billing')" 
+        id="cat-pill-cat-billing"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Usage & Billing</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-analytics')" 
+        id="cat-pill-cat-analytics"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Data Visualization</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">6</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-integrations')" 
+        id="cat-pill-cat-integrations"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Integrations & Workspaces</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN SHOWCASE CONTAINER
+  ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+
+    <!-- =======================================================================
+         SECTION 1: NOTIFICATION INBOX & COLLABORATION (3 MODULES)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-collab">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="bell" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          1. Notification Center & @Mention Collaboration (3 Modules)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Module 01: Notification Bell & Inbox Popover -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-collab" data-title="Notification Bell and Inbox Popover">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#01</span>
+              <button onclick="openCodeModal('01 Notification Inbox Popover', snippet01)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Notification Bell & Inbox Popover
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Bell trigger with live unread badge, popover tray, and working <strong class="text-zinc-900 dark:text-zinc-100">Mark all read</strong> button.
+            </p>
+
+            <!-- Live Preview -->
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3">
+              <div class="flex items-center justify-between pb-2 border-b border-zinc-200/80 dark:border-white/10 text-xs">
+                <div class="flex items-center gap-2">
+                  <div class="relative p-1.5 rounded-lg bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10">
+                    <i data-lucide="bell" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+                    <span id="notif-badge" class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-bold flex items-center justify-center font-sans tabular-nums">
+                      3
+                    </span>
+                  </div>
+                  <span class="font-bold text-zinc-900 dark:text-zinc-100">Inbox</span>
+                </div>
+                <button 
+                  type="button" 
+                  onclick="markAllNotificationsRead()" 
+                  class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition cursor-pointer"
+                >
+                  Mark all read
+                </button>
+              </div>
+
+              <!-- Notifications List -->
+              <div class="space-y-2 text-xs">
+                <div class="flex items-start gap-2 p-2 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5">
+                  <span id="unread-dot-1" class="w-2 h-2 rounded-full bg-blue-600 mt-1 shrink-0"></span>
+                  <div class="flex-1">
+                    <div class="font-semibold text-zinc-900 dark:text-zinc-100">Invoice #INV-9042 Paid</div>
+                    <div class="text-[10px] text-zinc-400 font-sans tabular-nums">₹1,25,000 received via HDFC wire</div>
+                  </div>
+                </div>
+                <div class="flex items-start gap-2 p-2 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5">
+                  <span id="unread-dot-2" class="w-2 h-2 rounded-full bg-blue-600 mt-1 shrink-0"></span>
+                  <div class="flex-1">
+                    <div class="font-semibold text-zinc-900 dark:text-zinc-100">API Key Regenerated</div>
+                    <div class="text-[10px] text-zinc-400 font-sans tabular-nums">Priya Sharma created sk_live_94a2</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Stateful Notification</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Interactive Clear</span>
+          </div>
+        </div>
+
+        <!-- Module 02: Interactive @Mention Comment Thread -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-collab" data-title="Interactive Mention Comment Thread">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#02</span>
+              <button onclick="openCodeModal('02 Mention Comment Thread', snippet02)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Interactive @Mention Comment Thread
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Inline team thread highlighting mentions with working reply input appending updates live.
+            </p>
+
+            <!-- Live Preview -->
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3">
+              <div id="comment-thread-list" class="space-y-2 max-h-40 overflow-y-auto pr-1 text-xs">
+                <div class="p-2.5 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-zinc-900 dark:text-zinc-100">Vikram Rao</span>
+                    <span class="text-[10px] text-zinc-400 font-sans tabular-nums">2h ago</span>
+                  </div>
+                  <p class="text-zinc-600 dark:text-zinc-300">
+                    Hey <span class="font-bold text-blue-600 dark:text-blue-400">@Rahul</span> please cross-check GST credit for the Hyderabad client invoice before EOD.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Input Row -->
+              <div class="flex items-center gap-1.5 pt-1">
+                <input 
+                  type="text" 
+                  id="new-comment-input" 
+                  placeholder="Type a reply or @mention..." 
+                  onkeydown="if(event.key==='Enter') postNewComment()"
+                  class="flex-1 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 text-xs text-zinc-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                />
+                <button 
+                  type="button" 
+                  onclick="postNewComment()" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition cursor-pointer shrink-0 shadow-xs"
+                >
+                  Post
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Collaborative Notes</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Real-time Append</span>
+          </div>
+        </div>
+
+        <!-- Module 03: In-App Support & Help Launcher Card -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-collab" data-title="In-App Support and Help Launcher Card">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#03</span>
+              <button onclick="openCodeModal('03 Help Launcher Card', snippet03)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              In-App Support & Help Launcher Card
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Contextual help drawer anchor with live engineering status and documentation pathways.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg bg-zinc-200 dark:bg-white/10 flex items-center justify-center">
+                    <i data-lucide="life-buoy" class="w-4 h-4 text-zinc-800 dark:text-zinc-200"></i>
+                  </div>
+                  <span class="font-bold text-zinc-900 dark:text-zinc-100">Need Guidance?</span>
+                </div>
+                <div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>Team Online</span>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Connect directly with enterprise support engineers or explore setup blueprints.
+              </p>
+              <div class="grid grid-cols-2 gap-2 pt-1">
+                <button type="button" class="px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 font-semibold text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-white/10 transition text-center">
+                  Start Live Chat
+                </button>
+                <button type="button" class="px-2.5 py-1.5 rounded-lg bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-semibold hover:opacity-90 transition text-center shadow-xs">
+                  Setup Guides
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>SLA: 5 Mins</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Presence Beacon</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SECTION 2: SAAS PRICING COMPARISON & PLAN SWITCHER (1 MODULE - FULL WIDTH)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-pricing">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="credit-card" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          2. SaaS Pricing Comparison & Plan Switcher (1 Module — 3-Tier Grid)
+        </h2>
+      </div>
+
+      <!-- Module 04: Interactive 3-Tier Pricing Table -->
+      <div class="variant-card p-6 rounded-2xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-6" data-category="cat-pricing" data-title="Interactive 3-Tier SaaS Pricing Table">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#04</span>
+              <h3 class="text-base font-bold text-zinc-950 dark:text-white tracking-tight">
+                Interactive 3-Tier SaaS Pricing Table
+              </h3>
+            </div>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Toggle between Monthly and Yearly billing to see automatic price updates with 20% discount across all 3 tiers.
+            </p>
+          </div>
+
+          <!-- Billing Period Switcher -->
+          <div class="flex items-center gap-2 self-start sm:self-auto">
+            <div class="inline-flex p-1 rounded-xl bg-zinc-100 dark:bg-white/10 border border-zinc-200/80 dark:border-white/5 text-xs">
+              <button 
+                type="button" 
+                id="billing-monthly-btn"
+                onclick="setBillingPeriod('monthly')" 
+                class="px-3 py-1 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 transition cursor-pointer"
+              >
+                Monthly
+              </button>
+              <button 
+                type="button" 
+                id="billing-yearly-btn"
+                onclick="setBillingPeriod('yearly')" 
+                class="px-3 py-1 rounded-lg font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Yearly</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">Save 20%</span>
+              </button>
+            </div>
+            <button onclick="openCodeModal('04 3-Tier Pricing Table', snippet04)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition px-2 py-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3-Tier Card Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          <!-- Tier 1: Starter -->
+          <div class="p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-[#09090B] space-y-4 flex flex-col justify-between">
+            <div class="space-y-2">
+              <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Starter</h4>
+              <p class="text-xs text-zinc-500">Essential tools for early founders and lean pods.</p>
+              <div class="pt-2">
+                <span id="price-starter" class="text-3xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">₹999</span>
+                <span class="text-xs text-zinc-400">/ user / mo</span>
+              </div>
+              <ul class="space-y-2 text-xs text-zinc-600 dark:text-zinc-300 pt-3 border-t border-zinc-200/80 dark:border-white/10">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Up to 5 Collaborator Seats</span></li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>10,000 Monthly API Calls</span></li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Standard Email Support</span></li>
+              </ul>
+            </div>
+            <button type="button" class="w-full py-2 rounded-lg text-xs font-semibold border border-zinc-300 dark:border-white/15 bg-white dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 transition cursor-pointer">
+              Choose Starter
+            </button>
+          </div>
+
+          <!-- Tier 2: Pro Growth (Highlighted) -->
+          <div class="relative p-5 rounded-xl border-2 border-zinc-950 dark:border-white bg-white dark:bg-[#121215] shadow-lg space-y-4 flex flex-col justify-between">
+            <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+              Most Popular
+            </span>
+            <div class="space-y-2">
+              <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Pro Growth</h4>
+              <p class="text-xs text-zinc-500">High-volume workflows, billing automation, and CRM sync.</p>
+              <div class="pt-2">
+                <span id="price-pro" class="text-3xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">₹2,499</span>
+                <span class="text-xs text-zinc-400">/ user / mo</span>
+              </div>
+              <ul class="space-y-2 text-xs text-zinc-600 dark:text-zinc-300 pt-3 border-t border-zinc-200/80 dark:border-white/10">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Unlimited Collaborative Workspaces</span></li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>100,000 Monthly API Calls</span></li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Tally Prime & Razorpay Webhooks</span></li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>1-Hour Priority SLA Channel</span></li>
+              </ul>
+            </div>
+            <button type="button" class="w-full py-2 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition shadow-xs cursor-pointer">
+              Upgrade to Pro
+            </button>
+          </div>
+
+          <!-- Tier 3: Enterprise -->
+          <div class="p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-50/50 dark:bg-[#09090B] space-y-4 flex flex-col justify-between">
+            <div class="space-y-2">
+              <h4 class="text-sm font-bold text-zinc-950 dark:text-white">Enterprise</h4>
+              <p class="text-xs text-zinc-500">Custom dedicated clusters, SSO, and SOC2 audit telemetry.</p>
+              <div class="pt-2">
+                <span id="price-enterprise" class="text-3xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">₹6,499</span>
+                <span class="text-xs text-zinc-400">/ user / mo</span>
+              </div>
+              <ul class="space-y-2 text-xs text-zinc-600 dark:text-zinc-300 pt-3 border-t border-zinc-200/80 dark:border-white/10">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Dedicated Redis & Database Shards</span></li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>SAML SSO, Okta, & Azure AD Sync</span></li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Custom Contract & Invoice Billing</span></li>
+              </ul>
+            </div>
+            <button type="button" class="w-full py-2 rounded-lg text-xs font-semibold border border-zinc-300 dark:border-white/15 bg-white dark:bg-white/5 hover:bg-zinc-100 dark:hover:bg-white/10 transition cursor-pointer">
+              Contact Sales
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =======================================================================
+         SECTION 3: USAGE METERS, PAYMENT CARDS & INVOICE HISTORY (3 MODULES)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-billing">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="receipt" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          3. Usage Quota Meters, Payment Cards & Invoice History (3 Modules)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Module 05: Plan Usage & Limit Meters -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-billing" data-title="Plan Usage and Limit Meters">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#05</span>
+              <button onclick="openCodeModal('05 Plan Usage Meters', snippet05)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Plan Usage & Limit Meters
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Real-time quota monitoring with amber threshold alert and reset date countdown.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3.5 text-xs">
+              <!-- Meter 1 -->
+              <div class="space-y-1.5">
+                <div class="flex justify-between items-center">
+                  <span class="font-medium text-zinc-700 dark:text-zinc-300">API Requests</span>
+                  <span class="font-bold text-zinc-950 dark:text-white font-sans tabular-nums">8,240 / 10,000</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-zinc-200 dark:bg-white/10 overflow-hidden">
+                  <div class="h-full bg-amber-500 rounded-full" style="width: 82.4%"></div>
+                </div>
+              </div>
+
+              <!-- Meter 2 -->
+              <div class="space-y-1.5">
+                <div class="flex justify-between items-center">
+                  <span class="font-medium text-zinc-700 dark:text-zinc-300">Active Team Seats</span>
+                  <span class="font-bold text-zinc-950 dark:text-white font-sans tabular-nums">18 / 25</span>
+                </div>
+                <div class="w-full h-1.5 rounded-full bg-zinc-200 dark:bg-white/10 overflow-hidden">
+                  <div class="h-full bg-zinc-950 dark:bg-white rounded-full" style="width: 72%"></div>
+                </div>
+              </div>
+
+              <div class="pt-1 flex items-center justify-between text-[11px] text-zinc-400 font-sans tabular-nums">
+                <span>Cycle resets in 16 days</span>
+                <span class="font-bold text-zinc-900 dark:text-zinc-100">Resets Dec 1</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Capacity Guard</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">82% Threshold</span>
+          </div>
+        </div>
+
+        <!-- Module 06: Saved Payment Method & Next Charge -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-billing" data-title="Saved Payment Method and Next Charge">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#06</span>
+              <button onclick="openCodeModal('06 Payment Method and Next Charge', snippet06)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Saved Payment Method & Next Charge
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Stored corporate card details with default tag and automatic recurring debit notification.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-6 rounded bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold text-[10px] flex items-center justify-center font-sans">
+                    VISA
+                  </div>
+                  <div>
+                    <div class="font-bold text-zinc-900 dark:text-zinc-100 font-sans tabular-nums">•••• 4242</div>
+                    <div class="text-[10px] text-zinc-400 font-sans tabular-nums">Expires 09/2029</div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-zinc-200 dark:bg-white/10 text-zinc-800 dark:text-zinc-200">
+                  Default
+                </span>
+              </div>
+
+              <div class="p-2.5 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5 flex items-center justify-between text-xs">
+                <div>
+                  <div class="text-[10px] text-zinc-400">Next Scheduled Charge</div>
+                  <div class="font-bold text-zinc-950 dark:text-white font-sans tabular-nums">₹2,499 on 15 Dec</div>
+                </div>
+                <button type="button" class="text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white underline">
+                  Change
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>PCI Vault Token</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Auto-Debit Ready</span>
+          </div>
+        </div>
+
+        <!-- Module 07: Billing Invoice History List -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-billing" data-title="Billing Invoice History List">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#07</span>
+              <button onclick="openCodeModal('07 Invoice History List', snippet07)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Billing Invoice History List
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Historical ledger of monthly subscription receipts with instant download actions.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5 font-sans tabular-nums">
+                <div>
+                  <div class="font-bold text-zinc-900 dark:text-zinc-100">#INV-2026-11</div>
+                  <div class="text-[10px] text-zinc-400">15 Nov 2026 · ₹2,499</div>
+                </div>
+                <button type="button" class="p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-400 transition" title="Download PDF">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5 font-sans tabular-nums">
+                <div>
+                  <div class="font-bold text-zinc-900 dark:text-zinc-100">#INV-2026-10</div>
+                  <div class="text-[10px] text-zinc-400">15 Oct 2026 · ₹2,499</div>
+                </div>
+                <button type="button" class="p-1.5 rounded hover:bg-zinc-100 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-400 transition" title="Download PDF">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Tax Compliance</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">PDF Receipts</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SECTION 4: DATA VISUALIZATION PANELS (6 MODULES - 3-COL GRID)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-analytics">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="pie-chart" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          4. Clean Bar, Line, Donut & Funnel Analytics Panels (6 Modules)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Module 08: Monthly Revenue Bar Chart Panel -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-analytics" data-title="Monthly Revenue Bar Chart Panel">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#08</span>
+              <button onclick="openCodeModal('08 Revenue Bar Chart', snippet08)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="flex justify-between items-baseline mb-2">
+              <div>
+                <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Monthly Revenue</span>
+                <h3 class="text-xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">₹64.2L</h3>
+              </div>
+              <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full font-sans tabular-nums">+18%</span>
+            </div>
+
+            <!-- 6-Month Bar Chart -->
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2">
+              <div class="flex items-end justify-between h-28 gap-2 pt-2 px-1">
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                  <div class="w-full bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-950 dark:hover:bg-white rounded-t transition-all cursor-pointer" style="height: 45%" title="Jun: ₹28.5L"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Jun</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                  <div class="w-full bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-950 dark:hover:bg-white rounded-t transition-all cursor-pointer" style="height: 55%" title="Jul: ₹35.0L"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Jul</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                  <div class="w-full bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-950 dark:hover:bg-white rounded-t transition-all cursor-pointer" style="height: 50%" title="Aug: ₹32.0L"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Aug</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                  <div class="w-full bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-950 dark:hover:bg-white rounded-t transition-all cursor-pointer" style="height: 70%" title="Sep: ₹45.0L"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Sep</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                  <div class="w-full bg-zinc-300 dark:bg-zinc-700 hover:bg-zinc-950 dark:hover:bg-white rounded-t transition-all cursor-pointer" style="height: 80%" title="Oct: ₹52.4L"></div>
+                  <span class="text-[10px] text-zinc-400 font-sans">Oct</span>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+                  <div class="w-full bg-zinc-950 dark:bg-white rounded-t transition-all cursor-pointer" style="height: 100%" title="Nov: ₹64.2L"></div>
+                  <span class="text-[10px] font-bold text-zinc-900 dark:text-white font-sans">Nov</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>6-Month Cadence</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Interactive Bars</span>
+          </div>
+        </div>
+
+        <!-- Module 09: Smooth Trend Line & Area Chart -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-analytics" data-title="Smooth Trend Line and Area Chart">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#09</span>
+              <button onclick="openCodeModal('09 Trend Line Area Chart', snippet09)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="flex justify-between items-baseline mb-2">
+              <div>
+                <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Active Daily Users</span>
+                <h3 class="text-xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">3,840</h3>
+              </div>
+              <span class="text-[11px] text-zinc-400 font-sans tabular-nums">Past 30 Days</span>
+            </div>
+
+            <!-- Inline SVG Area Chart -->
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+              <svg viewBox="0 0 300 90" class="w-full h-24 overflow-visible">
+                <defs>
+                  <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="currentColor" stop-opacity="0.18" class="text-zinc-950 dark:text-white" />
+                    <stop offset="100%" stop-color="currentColor" stop-opacity="0.0" class="text-zinc-950 dark:text-white" />
+                  </linearGradient>
+                </defs>
+                <!-- Area -->
+                <path d="M 0 70 Q 50 60, 100 45 T 200 30 T 300 10 L 300 90 L 0 90 Z" fill="url(#areaGrad)" />
+                <!-- Line -->
+                <path d="M 0 70 Q 50 60, 100 45 T 200 30 T 300 10" fill="none" stroke="currentColor" stroke-width="2.5" class="text-zinc-950 dark:text-white" />
+                <!-- End Node -->
+                <circle cx="300" cy="10" r="4" class="fill-zinc-950 dark:fill-white" />
+                <circle cx="300" cy="10" r="7" class="fill-none stroke-zinc-950/30 dark:stroke-white/30" stroke-width="2" />
+              </svg>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Inline Vector Geometry</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Zero-Dependency</span>
+          </div>
+        </div>
+
+        <!-- Module 10: Conversion Funnel Chart Panel -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-analytics" data-title="Conversion Funnel Chart Panel">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#10</span>
+              <button onclick="openCodeModal('10 Conversion Funnel Chart', snippet10)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Signup to Paid Funnel
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3">
+              Progressive conversion drop-off across marketing touchpoints.
+            </p>
+
+            <!-- Funnel Stages -->
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2 text-xs">
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-semibold">
+                  <span class="text-zinc-700 dark:text-zinc-300">1. Website Visitors</span>
+                  <span class="font-sans tabular-nums font-bold">12,400 (100%)</span>
+                </div>
+                <div class="w-full h-2 rounded bg-zinc-950 dark:bg-white"></div>
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-semibold">
+                  <span class="text-zinc-700 dark:text-zinc-300">2. Free Trial Starts</span>
+                  <span class="font-sans tabular-nums font-bold">2,480 (20.0%)</span>
+                </div>
+                <div class="w-full h-2 rounded bg-zinc-700 dark:bg-zinc-300" style="width: 65%"></div>
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-semibold">
+                  <span class="text-zinc-700 dark:text-zinc-300">3. Workspace Activated</span>
+                  <span class="font-sans tabular-nums font-bold">1,120 (9.0%)</span>
+                </div>
+                <div class="w-full h-2 rounded bg-zinc-500 dark:bg-zinc-500" style="width: 40%"></div>
+              </div>
+              <div class="space-y-1">
+                <div class="flex justify-between text-[11px] font-semibold">
+                  <span class="text-zinc-700 dark:text-zinc-300">4. Paid Conversion</span>
+                  <span class="font-sans tabular-nums font-bold text-emerald-600 dark:text-emerald-400">485 (3.9%)</span>
+                </div>
+                <div class="w-full h-2 rounded bg-emerald-600" style="width: 25%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Funnel Efficiency</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">3.9% Conversion</span>
+          </div>
+        </div>
+
+        <!-- Module 11: Donut Breakdown Chart Card -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-analytics" data-title="Donut Breakdown Chart Card">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#11</span>
+              <button onclick="openCodeModal('11 Donut Breakdown Chart', snippet11)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Customer Tier Ratio
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3">
+              Circular SVG ring with segmented percentage distribution.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 flex items-center justify-around gap-4">
+              <!-- SVG Donut Ring -->
+              <div class="relative w-24 h-24 shrink-0">
+                <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                  <!-- Background Track -->
+                  <circle cx="18" cy="18" r="15.915" fill="none" stroke-width="3.5" class="stroke-zinc-200 dark:stroke-white/10" />
+                  <!-- 66% Enterprise Arc -->
+                  <circle cx="18" cy="18" r="15.915" fill="none" stroke-width="3.8" stroke-dasharray="66 34" stroke-dashoffset="0" class="stroke-zinc-950 dark:stroke-white" />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center font-sans">
+                  <span class="text-base font-bold tabular-nums text-zinc-950 dark:text-white">66%</span>
+                  <span class="text-[9px] uppercase tracking-wider text-zinc-400">Enterprise</span>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="space-y-1.5 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-sm bg-zinc-950 dark:bg-white"></span>
+                  <span class="font-medium text-zinc-700 dark:text-zinc-300">Enterprise (66%)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-sm bg-zinc-300 dark:bg-zinc-700"></span>
+                  <span class="font-medium text-zinc-500 dark:text-zinc-400">Pro & Starter (34%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>SVG Circular Ring</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Clean Proportions</span>
+          </div>
+        </div>
+
+        <!-- Module 12: 7x4 Weekly Activity Heatmap Grid -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-analytics" data-title="Weekly Activity Heatmap Grid">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#12</span>
+              <button onclick="openCodeModal('12 Activity Heatmap Grid', snippet12)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              28-Day Activity Heatmap
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3">
+              7×4 intensity matrix measuring daily team deployments.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2">
+              <div class="grid grid-cols-7 gap-1.5">
+                <!-- 28 intensity cells -->
+                <div class="h-5 rounded-sm bg-zinc-200 dark:bg-white/10" title="Day 1: 2 events"></div>
+                <div class="h-5 rounded-sm bg-zinc-400 dark:bg-zinc-600" title="Day 2: 8 events"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white" title="Day 3: 18 events"></div>
+                <div class="h-5 rounded-sm bg-zinc-300 dark:bg-zinc-700"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-400 dark:bg-zinc-600"></div>
+                <div class="h-5 rounded-sm bg-zinc-200 dark:bg-white/10"></div>
+
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-300 dark:bg-zinc-700"></div>
+                <div class="h-5 rounded-sm bg-zinc-400 dark:bg-zinc-600"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-300 dark:bg-zinc-700"></div>
+                <div class="h-5 rounded-sm bg-zinc-200 dark:bg-white/10"></div>
+
+                <div class="h-5 rounded-sm bg-zinc-300 dark:bg-zinc-700"></div>
+                <div class="h-5 rounded-sm bg-zinc-400 dark:bg-zinc-600"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-400 dark:bg-zinc-600"></div>
+                <div class="h-5 rounded-sm bg-zinc-300 dark:bg-zinc-700"></div>
+                <div class="h-5 rounded-sm bg-zinc-200 dark:bg-white/10"></div>
+
+                <div class="h-5 rounded-sm bg-zinc-400 dark:bg-zinc-600"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+                <div class="h-5 rounded-sm bg-zinc-300 dark:bg-zinc-700"></div>
+                <div class="h-5 rounded-sm bg-zinc-200 dark:bg-white/10"></div>
+                <div class="h-5 rounded-sm bg-zinc-400 dark:bg-zinc-600"></div>
+                <div class="h-5 rounded-sm bg-zinc-950 dark:bg-white"></div>
+              </div>
+
+              <div class="flex items-center justify-between text-[10px] text-zinc-400 pt-1">
+                <span>Less Active</span>
+                <div class="flex items-center gap-1">
+                  <span class="w-2.5 h-2.5 rounded-xs bg-zinc-200 dark:bg-white/10"></span>
+                  <span class="w-2.5 h-2.5 rounded-xs bg-zinc-400 dark:bg-zinc-600"></span>
+                  <span class="w-2.5 h-2.5 rounded-xs bg-zinc-950 dark:bg-white"></span>
+                </div>
+                <span>Peak Load</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>28 Block Grid</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">CSS Matrix</span>
+          </div>
+        </div>
+
+        <!-- Module 13: Interactive Chart Period Switcher Card -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-analytics" data-title="Interactive Chart Period Switcher Card">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#13</span>
+              <button onclick="openCodeModal('13 Chart Period Switcher', snippet13)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Net Profit</span>
+              <div class="inline-flex p-0.5 rounded-lg bg-zinc-100 dark:bg-white/10 border border-zinc-200/80 dark:border-white/5 text-[10px] font-sans tabular-nums">
+                <button type="button" onclick="setChartPeriod('7D')" id="period-btn-7d" class="period-btn px-2 py-0.5 rounded font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition">7D</button>
+                <button type="button" onclick="setChartPeriod('30D')" id="period-btn-30d" class="period-btn px-2 py-0.5 rounded font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs transition">30D</button>
+                <button type="button" onclick="setChartPeriod('1Y')" id="period-btn-1y" class="period-btn px-2 py-0.5 rounded font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition">1Y</button>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2">
+              <div class="flex items-baseline justify-between">
+                <h3 id="period-amount" class="text-2xl font-bold font-sans tabular-nums text-zinc-950 dark:text-white">
+                  ₹18,45,000
+                </h3>
+                <span id="period-label" class="text-xs text-emerald-600 dark:text-emerald-400 font-bold font-sans tabular-nums">
+                  +12.8%
+                </span>
+              </div>
+              <p id="period-subtext" class="text-[11px] text-zinc-400 font-sans tabular-nums">
+                Generated across past 30 days
+              </p>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Dynamic Telemetry</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Live Metric Switch</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SECTION 5: INTEGRATIONS & WORKSPACE SWITCHER (3 MODULES - 3-COL GRID)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-integrations">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="layers" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          5. Integrations, API Keys & Workspace Switcher Modules (3 Modules)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Module 14: Connected Integration Card (Tally Prime Sync) -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-integrations" data-title="Connected Integration Card Tally Prime Sync">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#14</span>
+              <button onclick="openCodeModal('14 Tally Prime Integration Card', snippet14)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Tally Prime Accounting Sync
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Two-way enterprise connector automating GST ledgers and voucher reconciliation.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-lg bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center font-sans">
+                    TP
+                  </div>
+                  <div>
+                    <div class="font-bold text-zinc-900 dark:text-zinc-100">Tally Prime v4.1</div>
+                    <div class="text-[10px] text-zinc-400">Accounting & GST Telemetry</div>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                  Connected
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <span id="tally-sync-status" class="text-[11px] text-zinc-400 font-sans tabular-nums">Last sync: 4 mins ago</span>
+                <button 
+                  type="button" 
+                  onclick="triggerTallySync()" 
+                  id="tally-sync-btn"
+                  class="px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-200/80 dark:bg-white/10 hover:bg-zinc-300 dark:hover:bg-white/20 text-zinc-900 dark:text-white transition cursor-pointer flex items-center gap-1"
+                >
+                  <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                  <span>Sync Now</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Enterprise Connector</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Automatic Vouchers</span>
+          </div>
+        </div>
+
+        <!-- Module 15: API Key Management Row -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-integrations" data-title="API Key Management Row">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#15</span>
+              <button onclick="openCodeModal('15 API Key Management Row', snippet15)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Production API Secret Key
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Cryptographically masked token with instantaneous clipboard copy action.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2.5 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="key" class="w-4 h-4 text-zinc-700 dark:text-zinc-300"></i>
+                  <span class="font-bold text-zinc-900 dark:text-zinc-100">Live Server Secret</span>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400">
+                  Active
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5 font-sans tabular-nums">
+                <span class="text-zinc-600 dark:text-zinc-300 text-xs">sk_live_••••••••••••94a2</span>
+                <button 
+                  type="button" 
+                  id="api-copy-btn"
+                  onclick="copyApiKey()" 
+                  class="px-2 py-1 rounded text-xs font-semibold hover:bg-zinc-100 dark:hover:bg-white/10 text-zinc-700 dark:text-zinc-300 transition flex items-center gap-1 cursor-pointer"
+                >
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>RBAC Protected</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">One-Click Copy</span>
+          </div>
+        </div>
+
+        <!-- Module 16: Multi-Workspace Organization Switcher -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-integrations" data-title="Multi-Workspace Organization Switcher">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#16</span>
+              <button onclick="openCodeModal('16 Workspace Switcher', snippet16)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Multi-Workspace Organization Switcher
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Tenant context switcher for switching across regional hubs without full reload.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2.5 rounded-lg bg-white dark:bg-[#121215] border border-zinc-950 dark:border-white shadow-xs">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 font-bold text-xs flex items-center justify-center font-sans">
+                    HY
+                  </div>
+                  <div>
+                    <div class="font-bold text-zinc-900 dark:text-zinc-100">Hyderabad Head Office</div>
+                    <div class="text-[10px] text-zinc-400">Enterprise · 248 Members</div>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">✓ Active</span>
+              </div>
+
+              <div class="flex items-center justify-between p-2.5 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer">
+                <div class="flex items-center gap-2">
+                  <div class="w-6 h-6 rounded bg-zinc-200 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-bold text-xs flex items-center justify-center font-sans">
+                    BL
+                  </div>
+                  <div>
+                    <div class="font-bold text-zinc-800 dark:text-zinc-200">Bengaluru Retail Hub</div>
+                    <div class="text-[10px] text-zinc-400">Team Plan · 42 Members</div>
+                  </div>
+                </div>
+                <button type="button" class="text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white">
+                  Switch →
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Multi-Tenant</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Instant Context</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       CLEAN CODE MODAL
+  ========================================================================= -->
+  <div id="code-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
+        <h3 id="code-modal-title" class="text-sm font-bold text-zinc-950 dark:text-white">Code Snippet</h3>
+        <button type="button" onclick="closeCodeModal()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <pre class="p-4 rounded-xl bg-zinc-950 text-zinc-100 text-xs overflow-x-auto max-h-[360px] font-sans">
+        <code id="code-modal-content"></code>
+      </pre>
+
+      <div class="flex items-center justify-between pt-2">
+        <span class="text-xs text-zinc-500">Level 3 Organism Component</span>
+        <button 
+          type="button" 
+          id="copy-code-btn" 
+          onclick="copyModalCode()" 
+          class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+        >
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy HTML/CSS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       INTERACTIVE JAVASCRIPT LOGIC
+  ========================================================================= -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Module 01: Mark All Read
+    function markAllNotificationsRead() {
+      const badge = document.getElementById('notif-badge');
+      if (badge) badge.classList.add('hidden');
+      const dot1 = document.getElementById('unread-dot-1');
+      if (dot1) dot1.classList.add('opacity-0');
+      const dot2 = document.getElementById('unread-dot-2');
+      if (dot2) dot2.classList.add('opacity-0');
+    }
+
+    // Module 02: Post New Comment
+    function postNewComment() {
+      const input = document.getElementById('new-comment-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const container = document.getElementById('comment-thread-list');
+      const newComment = document.createElement('div');
+      newComment.className = 'p-2.5 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5 space-y-1 animate-in fade-in duration-150';
+      newComment.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-zinc-900 dark:text-zinc-100">Sai Joshna</span>
+          <span class="text-[10px] text-zinc-400 font-sans tabular-nums">Just now</span>
+        </div>
+        <p class="text-zinc-600 dark:text-zinc-300">${val}</p>
+      `;
+      container.appendChild(newComment);
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Module 04: Monthly / Yearly Pricing Switcher
+    function setBillingPeriod(period) {
+      const mBtn = document.getElementById('billing-monthly-btn');
+      const yBtn = document.getElementById('billing-yearly-btn');
+      const starter = document.getElementById('price-starter');
+      const pro = document.getElementById('price-pro');
+      const ent = document.getElementById('price-enterprise');
+
+      if (period === 'monthly') {
+        mBtn.className = 'px-3 py-1 rounded-lg font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer';
+        yBtn.className = 'px-3 py-1 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 transition cursor-pointer flex items-center gap-1.5';
+        starter.textContent = '₹1,299';
+        pro.textContent = '₹2,999';
+        ent.textContent = '₹7,999';
+      } else {
+        yBtn.className = 'px-3 py-1 rounded-lg font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer flex items-center gap-1.5';
+        mBtn.className = 'px-3 py-1 rounded-lg font-medium text-zinc-600 dark:text-zinc-400 transition cursor-pointer';
+        starter.textContent = '₹999';
+        pro.textContent = '₹2,499';
+        ent.textContent = '₹6,499';
+      }
+    }
+
+    // Module 13: Chart Period Switcher
+    function setChartPeriod(period) {
+      document.querySelectorAll('.period-btn').forEach(b => {
+        b.className = 'period-btn px-2 py-0.5 rounded font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition';
+      });
+      const active = document.getElementById(`period-btn-${period.toLowerCase()}`);
+      if (active) {
+        active.className = 'period-btn px-2 py-0.5 rounded font-bold bg-white dark:bg-zinc-900 text-zinc-950 dark:text-white shadow-xs transition';
+      }
+
+      const amount = document.getElementById('period-amount');
+      const label = document.getElementById('period-label');
+      const sub = document.getElementById('period-subtext');
+
+      if (period === '7D') {
+        amount.textContent = '₹4,12,000';
+        label.textContent = '+8.4%';
+        sub.textContent = 'Generated across past 7 days';
+      } else if (period === '30D') {
+        amount.textContent = '₹18,45,000';
+        label.textContent = '+12.8%';
+        sub.textContent = 'Generated across past 30 days';
+      } else if (period === '1Y') {
+        amount.textContent = '₹2,14,80,000';
+        label.textContent = '+24.6%';
+        sub.textContent = 'Generated across past 12 calendar months';
+      }
+    }
+
+    // Module 14: Tally Sync Simulation
+    function triggerTallySync() {
+      const btn = document.getElementById('tally-sync-btn');
+      const status = document.getElementById('tally-sync-status');
+      btn.innerHTML = '<i data-lucide="refresh-cw" class="w-3 h-3 animate-spin"></i><span>Syncing...</span>';
+      lucide.createIcons();
+
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="check" class="w-3 h-3 text-emerald-500"></i><span>Synced</span>';
+        status.textContent = 'Last sync: Just now';
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = '<i data-lucide="refresh-cw" class="w-3 h-3"></i><span>Sync Now</span>';
+          lucide.createIcons();
+        }, 2000);
+      }, 1000);
+    }
+
+    // Module 15: Copy API Key
+    function copyApiKey() {
+      navigator.clipboard.writeText('sk_live_94a298bf01ec49b9802');
+      const btn = document.getElementById('api-copy-btn');
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i><span>Copied!</span>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy</span>';
+        lucide.createIcons();
+      }, 2000);
+    }
+
+    // Density State
+    function setDensity(tier) {
+      document.querySelectorAll('.density-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        btn.classList.add('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      });
+      const active = document.getElementById(`density-${tier}`);
+      if (active) {
+        active.classList.add('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        active.classList.remove('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      }
+
+      const root = document.documentElement;
+      if (tier === 'small') {
+        root.style.setProperty('--module-pad', '12px');
+        root.style.setProperty('--module-font-size', '12px');
+      } else if (tier === 'medium') {
+        root.style.setProperty('--module-pad', '16px');
+        root.style.setProperty('--module-font-size', '13px');
+      } else if (tier === 'large') {
+        root.style.setProperty('--module-pad', '22px');
+        root.style.setProperty('--module-font-size', '14px');
+      }
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        icon.setAttribute('data-lucide', 'sun');
+        localStorage.setItem('theme', 'dark');
+      }
+      lucide.createIcons();
+    }
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.setAttribute('data-lucide', 'sun');
+    }
+
+    // Search and Category Filtering
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    function handleSearch(query) {
+      currentSearch = query.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (currentSearch.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      applyFilters();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('search-input');
+      input.value = '';
+      currentSearch = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      applyFilters();
+    }
+
+    function setCategory(catId) {
+      currentCategory = catId;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.classList.remove('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        btn.classList.add('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        const badge = btn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400';
+        }
+      });
+
+      const activeBtn = document.getElementById(`cat-pill-${catId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        activeBtn.classList.add('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        const badge = activeBtn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950';
+        }
+      }
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.variant-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+
+        const matchCat = (currentCategory === 'all' || cat === currentCategory);
+        const matchSearch = (currentSearch === '' || title.includes(currentSearch));
+
+        if (matchCat && matchSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      document.querySelectorAll('[data-section-category]').forEach(sec => {
+        const secCat = sec.getAttribute('data-section-category');
+        if (currentCategory !== 'all' && secCat !== currentCategory) {
+          sec.classList.add('hidden');
+        } else {
+          sec.classList.remove('hidden');
+        }
+      });
+
+      document.getElementById('variant-counter').textContent = `${visibleCount} of 16 Modules`;
+    }
+
+    // Code Modal Management
+    let currentCopiedSnippet = '';
+    function openCodeModal(title, snippet) {
+      document.getElementById('code-modal-title').textContent = title;
+      document.getElementById('code-modal-content').textContent = snippet;
+      currentCopiedSnippet = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copyModalCode() {
+      navigator.clipboard.writeText(currentCopiedSnippet);
+      const btn = document.getElementById('copy-code-btn');
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy HTML/CSS</span>';
+        lucide.createIcons();
+      }, 2000);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeCodeModal();
+    });
+
+    // Snippets for all 16 Modules
+    const snippet01 = `<!-- 01 Notification Inbox Popover -->\n<div class="p-3 bg-white border rounded-xl shadow-xs text-xs">\n  <div class="flex justify-between items-center pb-2 border-b">\n    <span class="font-bold">Inbox</span>\n    <button onclick="markAllRead()">Mark all read</button>\n  </div>\n</div>`;
+    const snippet02 = `<!-- 02 Mention Comment Thread -->\n<div class="p-3 bg-white border rounded-xl space-y-2 text-xs">\n  <p>Hey <span class="text-blue-600 font-bold">@Rahul</span> verify GST credit.</p>\n  <input placeholder="Reply or @mention..." class="border p-1.5 rounded-lg w-full" />\n</div>`;
+    const snippet03 = `<!-- 03 In-App Help Launcher -->\n<div class="p-4 bg-white border rounded-xl text-xs space-y-2">\n  <div class="flex justify-between font-bold"><span>Need Help?</span><span class="text-emerald-600">● Team Online</span></div>\n  <button class="bg-zinc-950 text-white w-full py-1.5 rounded-lg">Start Live Chat</button>\n</div>`;
+    const snippet04 = `<!-- 04 3-Tier Pricing Table -->\n<div class="grid grid-cols-3 gap-4">\n  <div class="border p-4 rounded-xl"><h4>Starter</h4><div class="text-2xl font-bold font-sans tabular-nums">₹999/mo</div></div>\n  <div class="border-2 border-zinc-950 p-4 rounded-xl"><h4>Pro Growth</h4><div class="text-2xl font-bold font-sans tabular-nums">₹2,499/mo</div></div>\n  <div class="border p-4 rounded-xl"><h4>Enterprise</h4><div class="text-2xl font-bold font-sans tabular-nums">₹6,499/mo</div></div>\n</div>`;
+    const snippet05 = `<!-- 05 Plan Usage Meters -->\n<div class="space-y-2 text-xs">\n  <div class="flex justify-between font-bold"><span>API Requests</span><span class="tabular-nums">8,240 / 10,000</span></div>\n  <div class="h-1.5 bg-zinc-200 rounded-full"><div class="h-full bg-amber-500 rounded-full" style="width: 82.4%"></div></div>\n</div>`;
+    const snippet06 = `<!-- 06 Payment Method & Next Charge -->\n<div class="p-3 bg-white border rounded-xl text-xs flex justify-between items-center">\n  <div><strong>VISA •••• 4242</strong><div class="text-zinc-400">Next charge: ₹2,499 on 15 Dec</div></div>\n  <button class="underline">Change</button>\n</div>`;
+    const snippet07 = `<!-- 07 Invoice History List -->\n<div class="p-2 border rounded-lg text-xs flex justify-between items-center font-sans tabular-nums">\n  <div><strong>#INV-2026-11</strong> - Paid ₹2,499</div>\n  <button><svg class="w-3.5 h-3.5"></svg></button>\n</div>`;
+    const snippet08 = `<!-- 08 Monthly Revenue Bar Chart -->\n<div class="flex items-end h-24 gap-2">\n  <div class="w-4 bg-zinc-300 rounded-t" style="height: 40%"></div>\n  <div class="w-4 bg-zinc-950 rounded-t" style="height: 100%"></div>\n</div>`;
+    const snippet09 = `<!-- 09 Trend Line Area Chart -->\n<svg viewBox="0 0 300 90" class="w-full h-20">\n  <path d="M 0 70 Q 150 20, 300 10 L 300 90 L 0 90 Z" fill="rgba(0,0,0,0.1)" />\n  <path d="M 0 70 Q 150 20, 300 10" fill="none" stroke="#09090B" stroke-width="2" />\n</svg>`;
+    const snippet10 = `<!-- 10 Conversion Funnel Chart -->\n<div class="space-y-1 text-xs">\n  <div class="h-2 rounded bg-zinc-950 w-full"></div>\n  <div class="h-2 rounded bg-zinc-700 w-2/3"></div>\n  <div class="h-2 rounded bg-emerald-600 w-1/4"></div>\n</div>`;
+    const snippet11 = `<!-- 11 Donut Breakdown Chart -->\n<svg viewBox="0 0 36 36" class="w-20 h-20 -rotate-90">\n  <circle cx="18" cy="18" r="15.915" fill="none" stroke="#e4e4e7" stroke-width="3.5"/>\n  <circle cx="18" cy="18" r="15.915" fill="none" stroke="#09090b" stroke-width="3.8" stroke-dasharray="66 34"/>\n</svg>`;
+    const snippet12 = `<!-- 12 7x4 Activity Heatmap -->\n<div class="grid grid-cols-7 gap-1">\n  <div class="h-4 bg-zinc-200 rounded-xs"></div>\n  <div class="h-4 bg-zinc-950 rounded-xs"></div>\n</div>`;
+    const snippet13 = `<!-- 13 Interactive Chart Period Switcher -->\n<div class="flex justify-between items-center text-xs">\n  <h3 class="text-xl font-bold tabular-nums">₹18,45,000</h3>\n  <div class="flex gap-1"><button>7D</button><button class="font-bold">30D</button><button>1Y</button></div>\n</div>`;
+    const snippet14 = `<!-- 14 Tally Prime Sync Card -->\n<div class="p-3 bg-white border rounded-xl text-xs flex justify-between items-center">\n  <div><strong>Tally Prime v4.1</strong><div class="text-zinc-400">Connected</div></div>\n  <button onclick="sync()">Sync Now</button>\n</div>`;
+    const snippet15 = `<!-- 15 API Key Row -->\n<div class="p-2 border rounded-lg text-xs flex justify-between items-center font-sans tabular-nums">\n  <span>sk_live_••••••••••••94a2</span>\n  <button onclick="copy()">Copy</button>\n</div>`;
+    const snippet16 = `<!-- 16 Multi-Workspace Switcher -->\n<div class="p-2 border rounded-lg text-xs flex justify-between items-center">\n  <div><strong>Hyderabad Head Office</strong> (248 Members)</div>\n  <button>Switch →</button>\n</div>`;
+  </script>
+</body>
+</html>
