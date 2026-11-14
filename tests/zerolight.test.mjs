@@ -1046,6 +1046,23 @@ test("Design System Learning Agent (.agents) skill, rules, AI footprints guide, 
   assert.ok(Array.isArray(parsed.rulesAdded) && parsed.rulesAdded.length > 0, "Evolution log must record learned rules");
 });
 
+test("ZeroLight Distribution CLI and Telemetry Pipeline exist and execute", () => {
+  const cliPath = path.join(rootDir, "bin/cli.mjs");
+  assert.ok(fs.existsSync(cliPath), "CLI executable bin/cli.mjs must exist");
+
+  const ciPath = path.join(rootDir, ".github/workflows/ci.yml");
+  assert.ok(fs.existsSync(ciPath), "GitHub Actions CI workflow must exist");
+
+  const telemetryPath = path.join(rootDir, "src/components/zerolight/telemetry/collector.ts");
+  assert.ok(fs.existsSync(telemetryPath), "Telemetry collector must exist");
+
+  const apiPath = path.join(rootDir, "src/app/api/telemetry/route.ts");
+  assert.ok(fs.existsSync(apiPath), "Telemetry API endpoint must exist");
+
+  const pkg = JSON.parse(fs.readFileSync(path.join(rootDir, "package.json"), "utf8"));
+  assert.equal(pkg.bin?.zerolight, "./bin/cli.mjs", "package.json must declare zerolight binary");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

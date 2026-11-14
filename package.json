@@ -2,6 +2,9 @@
   "name": "zerolight",
   "version": "0.1.0",
   "private": true,
+  "bin": {
+    "zerolight": "./bin/cli.mjs"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
