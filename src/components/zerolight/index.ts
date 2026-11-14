@@ -7,4 +7,5 @@ export * from "./templates";
 export * from "./auth/auth-context";
 export * from "./auth/sign-in-card";
 export * from "./dashboard/dashboard-shell";
+export * from "../WorldAtlasMap";
 export { ZeroLightStudio } from "./docs-studio";

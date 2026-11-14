@@ -29,6 +29,7 @@ import { ZeroLightStudio } from "../docs-studio";
 import { BillingPortal } from "../organisms/billing-portal";
 import { TeamPermissions } from "../organisms/team-permissions";
 import { GeoBreakdown } from "../organisms/geo-breakdown";
+import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
@@ -263,16 +264,36 @@ export function DashboardShell() {
               />
             </div>
 
-            {/* Live Natural Earth Geo Telemetry */}
+            {/* Apple / Airbnb Monochrome World Atlas */}
             <div className="space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                    Monochrome World Atlas (Apple / Airbnb Studio)
+                  </h3>
+                  <p className="text-xs text-zinc-500">
+                    Pure 2D flat canvas • 6 switchable render styles (Vector, Dots, Pixels, Crosses, Diamonds, Hatch) • Edge telemetry hubs.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="healthy">6 Styles Active</Badge>
+                  <Badge variant="neutral">SVG Export Ready</Badge>
+                </div>
+              </div>
+
+              <WorldAtlasMap />
+            </div>
+
+            {/* Regional Ranked Breakdown */}
+            <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-                    Live Global Edge Ingress & Telemetry
+                    Regional Traffic & Ingress Distribution
                   </h3>
-                  <p className="text-xs text-zinc-500">Natural Earth continuous vector topography with real sovereign boundaries.</p>
+                  <p className="text-xs text-zinc-500">Ranked country telemetry with latency percentiles and delta progress bars.</p>
                 </div>
-                <Badge variant="healthy">Live Telemetry</Badge>
+                <Badge variant="neutral">Telemetry Feed</Badge>
               </div>
 
               <GeoBreakdown />

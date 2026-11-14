@@ -43,6 +43,7 @@
       "targetPath": "src/components/zerolight/index.ts",
       "dependencies": [],
       "registryDependencies": [
+        "WorldAtlasMap",
         "auth-context",
         "context",
         "dashboard-shell",
@@ -50,7 +51,7 @@
         "sign-in-card",
         "types"
       ],
-      "lines": 11,
+      "lines": 12,
       "registryUrl": "/registry/zerolight-index.json"
     },
     {

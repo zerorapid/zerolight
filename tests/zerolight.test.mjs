@@ -1130,6 +1130,47 @@ test("Enterprise Authentication Gate and Floating Sidebar Dashboard Shell exist 
   assert.ok(homePage.includes("AuthProvider") && homePage.includes("SignInCard") && homePage.includes("DashboardShell"), "home page must gate access via AuthProvider and SignInCard");
 });
 
+// -----------------------------------------------------------------
+// Test Suite 25: Apple/Airbnb Monochrome WorldAtlasMap Component
+// -----------------------------------------------------------------
+console.log("\n25. Apple/Airbnb Monochrome WorldAtlasMap Component:");
+
+test("WorldAtlasMap: 2D flat canvas, 6 customizable render styles, floating controls & SVG export", () => {
+  const mapPath = path.join(rootDir, "src/components/WorldAtlasMap.tsx");
+  assert.ok(fs.existsSync(mapPath), "src/components/WorldAtlasMap.tsx must exist");
+
+  const mapContent = fs.readFileSync(mapPath, "utf8");
+  assert.ok(mapContent.includes("export const WorldAtlasMap"), "must export WorldAtlasMap component");
+  
+  // 6 render styles
+  const styles = ["vector", "dots", "pixels", "crosses", "diamonds", "hatch"];
+  for (const s of styles) {
+    assert.ok(mapContent.includes(`"${s}"`), `WorldAtlasMap must support ${s} render style`);
+  }
+
+  // Monochrome palette
+  assert.ok(mapContent.includes("#09090B"), "must use #09090B for active selection");
+  assert.ok(mapContent.includes("#18181B"), "must use #18181B for hover state");
+  assert.ok(mapContent.includes("#E4E4E7"), "must use #E4E4E7 for default landmass");
+  assert.ok(mapContent.includes("#F4F4F5"), "must use #F4F4F5 for background baseline");
+
+  // Floating controls & shortcuts
+  assert.ok(mapContent.includes("Select country..."), "must include search capsule with placeholder");
+  assert.ok(mapContent.includes("handleExportSVG"), "must include SVG snapshot export handler");
+  assert.ok(mapContent.includes("GLOBAL_EDGE_HUBS"), "must support telemetry edge hub pulse markers");
+  assert.ok(mapContent.includes("patternConfig"), "must compute hardware-accelerated SVG pattern definitions");
+
+  // Root export check
+  const rootIndex = fs.readFileSync(path.join(rootDir, "src/components/index.ts"), "utf8");
+  assert.ok(rootIndex.includes("WorldAtlasMap"), "src/components/index.ts must export WorldAtlasMap");
+
+  const zlIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
+  assert.ok(zlIndex.includes("WorldAtlasMap"), "src/components/zerolight/index.ts must export WorldAtlasMap");
+
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("<WorldAtlasMap"), "DashboardShell must integrate WorldAtlasMap");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");
