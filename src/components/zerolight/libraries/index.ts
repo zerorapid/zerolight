@@ -7,6 +7,7 @@ export * from "./tooltip-library";
 export * from "./feedback-library";
 export * from "./overlays-library";
 export * from "./navigation-library";
+export * from "./data-library";
 
 
 

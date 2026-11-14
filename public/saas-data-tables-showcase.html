@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 3 Organism Library: SaaS Data, Tables, Filters & Kanban (18 Variants)</title>
+  <!-- Google Fonts: Inter Sans only (Zero Monospace) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          boxShadow: {
+            xs: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+            popover: '0 10px 30px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            bulk: '0 12px 32px -4px rgba(9, 9, 11, 0.2)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --cell-py: 10px;
+      --cell-px: 14px;
+      --table-font-size: 13px;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+    .table-density-cell {
+      padding-top: var(--cell-py);
+      padding-bottom: var(--cell-py);
+      padding-left: var(--cell-px);
+      padding-right: var(--cell-px);
+      font-size: var(--table-font-size);
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    /* Custom Checkbox */
+    .custom-checkbox {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #d4d4d8;
+      border-radius: 4px;
+      background-color: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .dark .custom-checkbox {
+      border-color: #3f3f46;
+    }
+    .custom-checkbox:checked {
+      background-color: #09090b;
+      border-color: #09090b;
+    }
+    .dark .custom-checkbox:checked {
+      background-color: #ffffff;
+      border-color: #ffffff;
+    }
+    .custom-checkbox:checked::after {
+      content: "";
+      width: 4px;
+      height: 8px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg) translate(-0.5px, -1px);
+    }
+    .dark .custom-checkbox:checked::after {
+      border-color: #09090b;
+    }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-zinc-100 min-h-screen antialiased transition-colors duration-150">
+
+  <!-- =========================================================================
+       STICKY GLOBAL CONTROL BAR
+  ========================================================================= -->
+  <header class="sticky top-0 z-30 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 px-4 sm:px-6 py-3.5 space-y-3">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      
+      <!-- Left: L3 Badge, Title & Live Counter -->
+      <div class="flex items-center gap-3">
+        <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
+          L3
+        </span>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
+              SaaS Data Tables, KPIs, Filters & Kanban
+            </h1>
+            <span id="variant-counter" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              18 Variants
+            </span>
+          </div>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">
+            Level 3 Organisms: Metric stat cards, interactive invoice grids, faceted filters, deal pipelines, and import cards.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: Search, Density, and Theme Toggle -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Instant Search -->
+        <div class="relative min-w-[210px]">
+          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Filter data modules..." 
+            oninput="handleSearch(this.value)"
+            class="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
+          />
+          <button 
+            type="button" 
+            id="clear-search-btn" 
+            onclick="clearSearch()" 
+            class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+          >
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+
+        <!-- 3 Density Toggles -->
+        <div class="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
+          <button 
+            type="button" 
+            onclick="setDensity('compact')" 
+            id="density-compact"
+            class="density-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer"
+          >
+            Compact
+          </button>
+          <button 
+            type="button" 
+            onclick="setDensity('default')" 
+            id="density-default"
+            class="density-btn px-2.5 py-1 rounded-md font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs transition cursor-pointer"
+          >
+            Default
+          </button>
+          <button 
+            type="button" 
+            onclick="setDensity('relaxed')" 
+            id="density-relaxed"
+            class="density-btn px-2.5 py-1 rounded-md font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 transition cursor-pointer"
+          >
+            Relaxed
+          </button>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button 
+          type="button" 
+          onclick="toggleTheme()" 
+          title="Toggle Light/Dark Theme"
+          class="p-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition cursor-pointer"
+        >
+          <i id="theme-icon" data-lucide="moon" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Category Filter Pill Rail -->
+    <div class="max-w-7xl mx-auto flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      <button 
+        type="button" 
+        onclick="setCategory('all')" 
+        id="cat-pill-all"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>All Data Patterns</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950">18</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-kpi')" 
+        id="cat-pill-cat-kpi"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>KPI & Metrics</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">6</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-tables')" 
+        id="cat-pill-cat-tables"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Interactive Data Tables</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-filters')" 
+        id="cat-pill-cat-filters"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Filters & Saved Views</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">4</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-kanban')" 
+        id="cat-pill-cat-kanban"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Kanban Pipeline</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">1</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-audit')" 
+        id="cat-pill-cat-audit"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>Audit & Activity</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">2</span>
+      </button>
+      <button 
+        type="button" 
+        onclick="setCategory('cat-files')" 
+        id="cat-pill-cat-files"
+        class="cat-pill px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+      >
+        <span>File Upload & Import</span>
+        <span class="text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400">3</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN SHOWCASE CONTAINER
+  ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+
+    <!-- =======================================================================
+         SECTION 1: KPI STAT CARDS & METRICS (6 VARIANTS - 3-COL GRID)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-kpi">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="bar-chart-2" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          1. KPI Stat Cards & Summary Metrics (6 Variants)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Variant 01: KPI Stat Card with Trend Pill -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-kpi" data-title="KPI Stat Card with Trend Pill">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#01</span>
+              <button onclick="openCodeModal('01 KPI Stat Card with Trend Pill', snippet01)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="space-y-1">
+              <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Monthly Revenue</span>
+              <div class="flex items-baseline justify-between gap-2 pt-1">
+                <h3 class="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white font-sans tabular-nums">
+                  ₹48,20,000
+                </h3>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40 font-sans tabular-nums">
+                  <i data-lucide="trending-up" class="w-3 h-3"></i>
+                  <span>+14.2%</span>
+                </span>
+              </div>
+              <p class="text-[11px] text-zinc-400 pt-1 font-sans tabular-nums">vs. ₹42,20,500 last month</p>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Primary Metric</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Auto-Formatting</span>
+          </div>
+        </div>
+
+        <!-- Variant 02: KPI Card with Mini Sparkline Bar -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-kpi" data-title="KPI Card with Mini Sparkline Bar">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#02</span>
+              <button onclick="openCodeModal('02 KPI Card with Mini Sparkline Bar', snippet02)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="space-y-1">
+              <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Active Customers</span>
+              <div class="flex items-end justify-between gap-2 pt-1">
+                <h3 class="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white font-sans tabular-nums">
+                  1,428
+                </h3>
+                <!-- 7-bar mini sparkline -->
+                <div class="flex items-end gap-1 h-8">
+                  <div class="w-1.5 h-3 rounded-xs bg-zinc-300 dark:bg-zinc-700"></div>
+                  <div class="w-1.5 h-4 rounded-xs bg-zinc-300 dark:bg-zinc-700"></div>
+                  <div class="w-1.5 h-3.5 rounded-xs bg-zinc-300 dark:bg-zinc-700"></div>
+                  <div class="w-1.5 h-5 rounded-xs bg-zinc-400 dark:bg-zinc-600"></div>
+                  <div class="w-1.5 h-6 rounded-xs bg-zinc-500 dark:bg-zinc-500"></div>
+                  <div class="w-1.5 h-7 rounded-xs bg-zinc-700 dark:bg-zinc-300"></div>
+                  <div class="w-1.5 h-8 rounded-xs bg-zinc-950 dark:bg-white"></div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-400 pt-1 font-sans tabular-nums">Last 7 days daily active users</p>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>7-Day Histogram</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">SVG-Free CSS</span>
+          </div>
+        </div>
+
+        <!-- Variant 03: Quota & Target Goal Stat Card -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-kpi" data-title="Quota and Target Goal Stat Card">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#03</span>
+              <button onclick="openCodeModal('03 Quota and Target Goal Stat Card', snippet03)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-semibold text-zinc-500 dark:text-zinc-400">Quarterly Sales Goal</span>
+                <span class="font-bold text-zinc-950 dark:text-white font-sans tabular-nums">82%</span>
+              </div>
+              <h3 class="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white font-sans tabular-nums">
+                ₹82.0L <span class="text-xs font-normal text-zinc-400">/ ₹1.0 Cr</span>
+              </h3>
+              <!-- Progress bar -->
+              <div class="w-full h-2 rounded-full bg-zinc-100 dark:bg-white/10 overflow-hidden">
+                <div class="h-full bg-zinc-950 dark:bg-white rounded-full" style="width: 82%"></div>
+              </div>
+              <p class="text-[11px] text-zinc-400 pt-0.5 font-sans tabular-nums">₹18.0L remaining · 14 days left</p>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Target Tracking</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Linear Gauge</span>
+          </div>
+        </div>
+
+        <!-- Variant 04: Multi-Metric Summary Strip -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-kpi" data-title="Multi-Metric Summary Strip">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#04</span>
+              <button onclick="openCodeModal('04 Multi-Metric Summary Strip', snippet04)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="space-y-1">
+              <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Billing Overview</span>
+              <div class="grid grid-cols-3 gap-2 pt-2 divide-x divide-zinc-200 dark:divide-white/10">
+                <div>
+                  <div class="text-[10px] text-zinc-400">Total</div>
+                  <div class="text-lg font-bold font-sans tabular-nums text-zinc-950 dark:text-white">248</div>
+                </div>
+                <div class="pl-2">
+                  <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">Paid</div>
+                  <div class="text-lg font-bold font-sans tabular-nums text-emerald-600 dark:text-emerald-400">214</div>
+                </div>
+                <div class="pl-2">
+                  <div class="text-[10px] text-rose-600 dark:text-rose-400 font-semibold">Overdue</div>
+                  <div class="text-lg font-bold font-sans tabular-nums text-rose-600 dark:text-rose-400">11</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Segmented Metrics</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">3-in-1 Strip</span>
+          </div>
+        </div>
+
+        <!-- Variant 05: Key-Value Record Summary List -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition" data-category="cat-kpi" data-title="Key-Value Record Summary List">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#05</span>
+              <button onclick="openCodeModal('05 Key-Value Record Summary List', snippet05)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="space-y-2">
+              <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Account Dossier</span>
+              <dl class="space-y-1.5 text-xs pt-1">
+                <div class="flex justify-between py-1 border-b border-zinc-100 dark:border-white/5">
+                  <dt class="text-zinc-500 dark:text-zinc-400">Client GSTIN</dt>
+                  <dd class="font-bold text-zinc-950 dark:text-white font-sans tabular-nums">36AAACZ1234F1Z5</dd>
+                </div>
+                <div class="flex justify-between py-1 border-b border-zinc-100 dark:border-white/5">
+                  <dt class="text-zinc-500 dark:text-zinc-400">Payment Terms</dt>
+                  <dd class="font-semibold text-zinc-900 dark:text-zinc-100">Net 30 Days</dd>
+                </div>
+                <div class="flex justify-between py-1">
+                  <dt class="text-zinc-500 dark:text-zinc-400">Account Owner</dt>
+                  <dd class="font-semibold text-zinc-900 dark:text-zinc-100">Vikram Rao (Admin)</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Metadata Inspection</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Key-Value Pairs</span>
+          </div>
+        </div>
+
+        <!-- Variant 06: Alert KPI Card -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-amber-200/80 dark:border-amber-950/40 bg-amber-50/30 dark:bg-amber-950/10 shadow-xs hover:border-amber-300 dark:hover:border-amber-900/60 transition" data-category="cat-kpi" data-title="Alert KPI Card">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-amber-600 dark:text-amber-500 font-sans tabular-nums">#06</span>
+              <button onclick="openCodeModal('06 Alert KPI Card', snippet06)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-semibold text-xs">
+                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                <span>Pending Approvals</span>
+              </div>
+              <div class="flex items-baseline justify-between pt-1">
+                <h3 class="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white font-sans tabular-nums">
+                  9 Invoices
+                </h3>
+                <span class="text-xs text-amber-700 dark:text-amber-400 font-bold font-sans tabular-nums">₹14.8L Total</span>
+              </div>
+              <p class="text-[11px] text-zinc-500 dark:text-zinc-400 pt-1">Requires dual-signoff before bank dispatch.</p>
+            </div>
+          </div>
+          <div class="pt-3 mt-4 border-t border-amber-200/60 dark:border-amber-950/30 flex items-center justify-between text-xs">
+            <span class="text-[11px] text-amber-700/80 dark:text-amber-400/80">SLA: 2 Hours</span>
+            <button type="button" class="px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition">
+              Review Queue →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SECTION 2: INTERACTIVE DATA TABLES (2 VARIANTS - FULL WIDTH)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-tables">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="table" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          2. Interactive Enterprise Data Tables (2 Variants)
+        </h2>
+      </div>
+
+      <!-- Variant 07: Full Interactive Invoice Data Table + Bulk Action Bar -->
+      <div class="variant-card p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-4" data-category="cat-tables" data-title="Full Interactive Invoice Data Table with Bulk Action Bar">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#07</span>
+              <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight">
+                Full Interactive Invoice Data Table + Bulk Action Bar
+              </h3>
+            </div>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Live instant search filtering, row selection highlighting, numerical amount sorting, and high-contrast bulk action bar.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <!-- Search Filter -->
+            <div class="relative min-w-[200px]">
+              <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+              <input 
+                type="text" 
+                id="table-search-input" 
+                placeholder="Filter client or invoice..." 
+                oninput="handleTableSearch(this.value)"
+                class="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              />
+            </div>
+            <!-- Sort Amount Toggle -->
+            <button 
+              type="button" 
+              onclick="toggleAmountSort()" 
+              id="sort-amount-btn"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/10 transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="arrow-up-down" class="w-3.5 h-3.5"></i>
+              <span>Sort Amount</span>
+            </button>
+            <button onclick="openCodeModal('07 Interactive Invoice Data Table', snippet07)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition px-2 py-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Code</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Floating Bulk Action Bar (Revealed when rows are selected) -->
+        <div id="bulk-action-bar" class="hidden flex items-center justify-between p-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 rounded-xl shadow-bulk transition-all animate-in fade-in duration-150 text-xs">
+          <div class="flex items-center gap-3">
+            <span id="bulk-selected-count" class="font-bold font-sans tabular-nums pl-1">2 selected</span>
+            <span class="text-zinc-400">|</span>
+            <button type="button" onclick="exportSelected()" class="hover:underline font-semibold flex items-center gap-1">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>Export CSV</span>
+            </button>
+            <button type="button" onclick="markSelectedPaid()" class="hover:underline font-semibold flex items-center gap-1">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+              <span>Mark Paid</span>
+            </button>
+          </div>
+          <button type="button" onclick="clearRowSelection()" class="text-zinc-400 hover:text-white dark:hover:text-zinc-950 text-xs pr-1">
+            Clear Selection
+          </button>
+        </div>
+
+        <!-- Table Element -->
+        <div class="overflow-x-auto rounded-xl border border-zinc-200/80 dark:border-white/10">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-zinc-100/70 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10 text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+              <tr>
+                <th class="table-density-cell w-10">
+                  <input type="checkbox" id="master-checkbox" onchange="toggleSelectAll(this.checked)" class="custom-checkbox" title="Select all rows" />
+                </th>
+                <th class="table-density-cell">Invoice</th>
+                <th class="table-density-cell">Client Company</th>
+                <th class="table-density-cell">Status</th>
+                <th class="table-density-cell text-right">Amount</th>
+                <th class="table-density-cell">Date</th>
+                <th class="table-density-cell text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="invoice-table-body" class="divide-y divide-zinc-200/60 dark:divide-white/5 text-xs">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Variant 08: Inline Editable Spreadsheet Grid Row -->
+      <div class="variant-card p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-4" data-category="cat-tables" data-title="Inline Editable Spreadsheet Grid Row">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#08</span>
+              <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight">
+                Inline Editable Spreadsheet Grid Row
+              </h3>
+            </div>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Live input fields that dynamically recalculate the line item total upon changing Unit Price or Quantity.
+            </p>
+          </div>
+          <button onclick="openCodeModal('08 Inline Editable Spreadsheet Row', snippet08)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Code</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-zinc-200/80 dark:border-white/10">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-zinc-100/70 dark:bg-white/5 border-b border-zinc-200/80 dark:border-white/10 font-semibold text-zinc-600 dark:text-zinc-400">
+              <tr>
+                <th class="table-density-cell">Item Description</th>
+                <th class="table-density-cell w-36">Unit Price (₹)</th>
+                <th class="table-density-cell w-28">Qty</th>
+                <th class="table-density-cell text-right w-40">Line Total</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-200/60 dark:divide-white/5">
+              <tr>
+                <td class="table-density-cell font-medium text-zinc-900 dark:text-zinc-100">
+                  Cloud Infrastructure Engine v2.4 (Dedicated Cluster)
+                </td>
+                <td class="table-density-cell">
+                  <input 
+                    type="number" 
+                    id="calc-unit-price" 
+                    value="18500" 
+                    oninput="recalculateLineTotal()"
+                    class="w-full px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-white/5 text-zinc-900 dark:text-white font-sans tabular-nums focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                  />
+                </td>
+                <td class="table-density-cell">
+                  <input 
+                    type="number" 
+                    id="calc-qty" 
+                    value="4" 
+                    min="1"
+                    oninput="recalculateLineTotal()"
+                    class="w-full px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-white/5 text-zinc-900 dark:text-white font-sans tabular-nums focus:outline-none focus:ring-1 focus:ring-zinc-400"
+                  />
+                </td>
+                <td class="table-density-cell text-right font-bold text-zinc-950 dark:text-white font-sans tabular-nums text-sm">
+                  <span id="calc-line-total">₹74,000.00</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =======================================================================
+         SECTION 3: SAVED VIEWS & FILTER BARS (4 VARIANTS - 2-COL GRID)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-filters">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="filter" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          3. Saved Views, Filter Bars & Bulk Action Strips (4 Variants)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Variant 09: Saved Views Tab Bar + Save View Trigger -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-filters" data-title="Saved Views Tab Bar with Save View Trigger">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#09</span>
+              <button onclick="openCodeModal('09 Saved Views Tab Bar', snippet09)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Saved Views Tab Bar + Save View Trigger
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Preset views with tabular record counts and quick-save modal button.
+            </p>
+
+            <!-- Live View -->
+            <div class="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 flex items-center gap-2 overflow-x-auto">
+              <button type="button" class="px-2.5 py-1 rounded-md text-xs font-bold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs flex items-center gap-1.5 whitespace-nowrap">
+                <span>All Invoices</span>
+                <span class="text-[10px] font-sans tabular-nums opacity-80">248</span>
+              </button>
+              <button type="button" class="px-2.5 py-1 rounded-md text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap">
+                <span>Overdue Bills</span>
+                <span class="text-[10px] font-sans tabular-nums px-1 rounded bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 font-bold">11</span>
+              </button>
+              <button type="button" class="px-2.5 py-1 rounded-md text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10 transition flex items-center gap-1.5 whitespace-nowrap">
+                <span>Hyderabad VIPs</span>
+                <span class="text-[10px] font-sans tabular-nums opacity-80">34</span>
+              </button>
+              <button type="button" class="px-2 py-1 rounded-md text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition flex items-center gap-1 whitespace-nowrap">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Save View</span>
+              </button>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Query Bookmarks</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Quick Recall</span>
+          </div>
+        </div>
+
+        <!-- Variant 10: Faceted Filter Bar + Active Chips -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-filters" data-title="Faceted Filter Bar with Removable Active Chips">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#10</span>
+              <button onclick="openCodeModal('10 Faceted Filter Bar with Active Chips', snippet10)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Faceted Filter Bar + Active Chips
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Dropdown filter triggers paired with dismissible pill chips.
+            </p>
+
+            <!-- Live View -->
+            <div class="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2.5">
+              <div class="flex items-center gap-2 flex-wrap">
+                <button type="button" class="px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                  <span>Status: All</span>
+                  <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-400"></i>
+                </button>
+                <button type="button" class="px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                  <span>City: 2 Selected</span>
+                  <i data-lucide="chevron-down" class="w-3 h-3 text-zinc-400"></i>
+                </button>
+              </div>
+              <!-- Active chips -->
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-200/80 dark:bg-white/10 text-xs text-zinc-800 dark:text-zinc-200 font-medium">
+                  <span>City: Hyderabad</span>
+                  <button type="button" onclick="this.parentElement.remove()" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white">×</button>
+                </span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-zinc-200/80 dark:bg-white/10 text-xs text-zinc-800 dark:text-zinc-200 font-medium">
+                  <span>Amount &gt; ₹50,000</span>
+                  <button type="button" onclick="this.parentElement.remove()" class="text-zinc-500 hover:text-zinc-900 dark:hover:text-white">×</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Compound Filter</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Dismissible Chips</span>
+          </div>
+        </div>
+
+        <!-- Variant 11: Floating Bulk Selection Action Bar -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-filters" data-title="Floating Bulk Selection Action Bar">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#11</span>
+              <button onclick="openCodeModal('11 Floating Bulk Selection Action Bar', snippet11)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Floating Bulk Selection Action Bar
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Centered floating banner appearing at bottom of viewport upon selecting multi-row batches.
+            </p>
+
+            <!-- Live View -->
+            <div class="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+              <div class="p-2.5 bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 rounded-xl flex items-center justify-between gap-2 shadow-bulk text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="font-bold font-sans tabular-nums">3 items selected</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" class="px-2 py-1 rounded bg-white/10 dark:bg-black/10 hover:bg-white/20 font-semibold transition">
+                    Assign
+                  </button>
+                  <button type="button" class="px-2 py-1 rounded bg-white/10 dark:bg-black/10 hover:bg-white/20 font-semibold transition">
+                    Export
+                  </button>
+                  <button type="button" class="px-2 py-1 rounded bg-rose-600 hover:bg-rose-700 text-white font-semibold transition">
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>High-Contrast Pill</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Safe Batch Ops</span>
+          </div>
+        </div>
+
+        <!-- Variant 12: Faceted Sidebar Filter Group -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-filters" data-title="Faceted Sidebar Filter Group">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#12</span>
+              <button onclick="openCodeModal('12 Faceted Sidebar Filter Group', snippet12)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Faceted Sidebar Filter Group
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Nested multi-select checklist column for e-commerce, CRM, or document catalogs.
+            </p>
+
+            <!-- Live View -->
+            <div class="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2 text-xs">
+              <div class="font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider text-[10px]">
+                Branch Locations
+              </div>
+              <div class="space-y-1.5">
+                <label class="flex items-center justify-between cursor-pointer">
+                  <div class="flex items-center gap-2">
+                    <input type="checkbox" checked class="custom-checkbox" />
+                    <span class="font-medium text-zinc-800 dark:text-zinc-200">Hyderabad Hub</span>
+                  </div>
+                  <span class="text-[10px] text-zinc-400 font-sans tabular-nums">142</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                  <div class="flex items-center gap-2">
+                    <input type="checkbox" checked class="custom-checkbox" />
+                    <span class="font-medium text-zinc-800 dark:text-zinc-200">Bengaluru Fleet</span>
+                  </div>
+                  <span class="text-[10px] text-zinc-400 font-sans tabular-nums">84</span>
+                </label>
+                <label class="flex items-center justify-between cursor-pointer">
+                  <div class="flex items-center gap-2">
+                    <input type="checkbox" class="custom-checkbox" />
+                    <span class="font-medium text-zinc-600 dark:text-zinc-400">Mumbai Central</span>
+                  </div>
+                  <span class="text-[10px] text-zinc-400 font-sans tabular-nums">22</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Checklist Taxonomy</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Live Item Counts</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SECTION 4: KANBAN WORKFLOW BOARDS (1 VARIANT - FULL WIDTH)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-kanban">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="trello" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          4. Kanban Workflow Boards & Pipeline Columns (1 Variant)
+        </h2>
+      </div>
+
+      <!-- Variant 13: Interactive 3-Stage SaaS Deal Pipeline Board -->
+      <div class="variant-card p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-4" data-category="cat-kanban" data-title="Interactive 3-Stage SaaS Deal Pipeline Board">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#13</span>
+              <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight">
+                Interactive 3-Stage SaaS Deal Pipeline Board
+              </h3>
+            </div>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Click <strong class="text-zinc-900 dark:text-zinc-100">Move Next →</strong> on any deal tile to transition it live across columns with updating stage counters.
+            </p>
+          </div>
+          <button onclick="openCodeModal('13 Kanban Pipeline Board', snippet13)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Code</span>
+          </button>
+        </div>
+
+        <!-- 3 Columns Kanban Container -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Column 1: New Leads -->
+          <div class="p-3.5 rounded-xl bg-zinc-100/60 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1.5 font-bold text-zinc-900 dark:text-white">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span>New Leads</span>
+              </div>
+              <span id="kanban-col-count-1" class="px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-white/10 text-[10px] font-bold font-sans tabular-nums text-zinc-600 dark:text-zinc-300">
+                2
+              </span>
+            </div>
+            <div id="kanban-col-1" class="space-y-2.5">
+              <!-- Deal card 1 -->
+              <div id="deal-card-1" class="p-3 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs space-y-2 text-xs">
+                <div class="flex items-center justify-between font-bold text-zinc-950 dark:text-white">
+                  <span>Deccan Telecom</span>
+                  <span class="font-sans tabular-nums text-emerald-600 dark:text-emerald-400">₹8,50,000</span>
+                </div>
+                <p class="text-[11px] text-zinc-500">50 Enterprise Seats · SLA Gold</p>
+                <div class="flex justify-end pt-1">
+                  <button type="button" onclick="advanceKanbanCard('deal-card-1', 1)" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/20 text-zinc-900 dark:text-white transition cursor-pointer">
+                    Move Next →
+                  </button>
+                </div>
+              </div>
+
+              <!-- Deal card 2 -->
+              <div id="deal-card-2" class="p-3 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs space-y-2 text-xs">
+                <div class="flex items-center justify-between font-bold text-zinc-950 dark:text-white">
+                  <span>Apex Logistics</span>
+                  <span class="font-sans tabular-nums text-emerald-600 dark:text-emerald-400">₹4,20,000</span>
+                </div>
+                <p class="text-[11px] text-zinc-500">Fleet Tracking Telemetry API</p>
+                <div class="flex justify-end pt-1">
+                  <button type="button" onclick="advanceKanbanCard('deal-card-2', 1)" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/20 text-zinc-900 dark:text-white transition cursor-pointer">
+                    Move Next →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Proposal Sent -->
+          <div class="p-3.5 rounded-xl bg-zinc-100/60 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1.5 font-bold text-zinc-900 dark:text-white">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>Proposal Sent</span>
+              </div>
+              <span id="kanban-col-count-2" class="px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-white/10 text-[10px] font-bold font-sans tabular-nums text-zinc-600 dark:text-zinc-300">
+                1
+              </span>
+            </div>
+            <div id="kanban-col-2" class="space-y-2.5">
+              <!-- Deal card 3 -->
+              <div id="deal-card-3" class="p-3 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 shadow-xs space-y-2 text-xs">
+                <div class="flex items-center justify-between font-bold text-zinc-950 dark:text-white">
+                  <span>Zerorapid Payments</span>
+                  <span class="font-sans tabular-nums text-emerald-600 dark:text-emerald-400">₹14,00,000</span>
+                </div>
+                <p class="text-[11px] text-zinc-500">Custom Payment Gateway Integration</p>
+                <div class="flex justify-end pt-1">
+                  <button type="button" onclick="advanceKanbanCard('deal-card-3', 2)" class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/20 text-zinc-900 dark:text-white transition cursor-pointer">
+                    Move Next →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 3: Closed Won -->
+          <div class="p-3.5 rounded-xl bg-zinc-100/60 dark:bg-white/5 border border-zinc-200/60 dark:border-white/5 space-y-3">
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1.5 font-bold text-zinc-900 dark:text-white">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Closed Won</span>
+              </div>
+              <span id="kanban-col-count-3" class="px-1.5 py-0.2 rounded bg-zinc-200 dark:bg-white/10 text-[10px] font-bold font-sans tabular-nums text-zinc-600 dark:text-zinc-300">
+                1
+              </span>
+            </div>
+            <div id="kanban-col-3" class="space-y-2.5">
+              <!-- Deal card 4 -->
+              <div id="deal-card-4" class="p-3 rounded-lg bg-white dark:bg-[#121215] border border-emerald-200 dark:border-emerald-950/40 shadow-xs space-y-2 text-xs">
+                <div class="flex items-center justify-between font-bold text-zinc-950 dark:text-white">
+                  <span>Global Finserve</span>
+                  <span class="font-sans tabular-nums text-emerald-600 dark:text-emerald-400">₹22,50,000</span>
+                </div>
+                <p class="text-[11px] text-zinc-500">Contract Signed · Billed Annually</p>
+                <div class="flex justify-end pt-1">
+                  <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                    ✓ Closed Deal
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =======================================================================
+         SECTION 5: AUDIT LOGS & TIMELINES (2 VARIANTS - 2-COL GRID)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-audit">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="clock" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          5. Audit Logs & Activity Timelines (2 Variants)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Variant 14: Workspace Audit Log Feed -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-audit" data-title="Workspace Audit Log Feed">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#14</span>
+              <button onclick="openCodeModal('14 Workspace Audit Log Feed', snippet14)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Workspace Audit Log Feed
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Chronological ledger of security changes, tax exports, and member permissions.
+            </p>
+
+            <div class="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-3 text-xs">
+              <div class="flex items-start gap-2.5">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></div>
+                <div>
+                  <div class="text-zinc-900 dark:text-zinc-100">
+                    <strong>Priya Sharma</strong> generated GST Tax Report for Oct 2026.
+                  </div>
+                  <div class="text-[10px] text-zinc-400 font-sans tabular-nums">12 mins ago · IP 182.74.20.14</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
+                <div>
+                  <div class="text-zinc-900 dark:text-zinc-100">
+                    <strong>Vikram Rao</strong> approved Invoice #INV-9042 (₹1,25,000).
+                  </div>
+                  <div class="text-[10px] text-zinc-400 font-sans tabular-nums">48 mins ago · IP 49.37.112.9</div>
+                </div>
+              </div>
+              <div class="flex items-start gap-2.5">
+                <div class="w-2 h-2 rounded-full bg-zinc-400 mt-1.5 shrink-0"></div>
+                <div>
+                  <div class="text-zinc-900 dark:text-zinc-100">
+                    System automated nocturnal backup completed successfully.
+                  </div>
+                  <div class="text-[10px] text-zinc-400 font-sans tabular-nums">3 hours ago · Automated Daemon</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>SOC2 Compliance</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Immutable Trail</span>
+          </div>
+        </div>
+
+        <!-- Variant 15: Compact Order Tracking List -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-audit" data-title="Compact Order Tracking List">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#15</span>
+              <button onclick="openCodeModal('15 Compact Order Tracking List', snippet15)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Compact Order Tracking List
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Dense tracking tile pairing purchase IDs with state badges and courier delivery dates.
+            </p>
+
+            <div class="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2 text-xs">
+              <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5">
+                <div>
+                  <div class="font-bold text-zinc-900 dark:text-zinc-100 font-sans tabular-nums">#ORD-412</div>
+                  <div class="text-[10px] text-zinc-400">Delhivery Express · Hyderabad</div>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400">
+                  Delivered
+                </span>
+              </div>
+              <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#121215] border border-zinc-200/60 dark:border-white/5">
+                <div>
+                  <div class="font-bold text-zinc-900 dark:text-zinc-100 font-sans tabular-nums">#ORD-411</div>
+                  <div class="text-[10px] text-zinc-400">Blue Dart Air · Bengaluru</div>
+                </div>
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
+                  In Transit
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Logistics Overview</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Status Sync</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         SECTION 6: CSV & FILE IMPORT CARDS (3 VARIANTS - 3-COL GRID)
+    ======================================================================== -->
+    <div class="space-y-4" data-section-category="cat-files">
+      <div class="flex items-center gap-2 border-b border-zinc-200/80 dark:border-white/10 pb-2">
+        <i data-lucide="file-up" class="w-4 h-4 text-zinc-600 dark:text-zinc-400"></i>
+        <h2 class="text-sm font-bold uppercase tracking-wider text-zinc-950 dark:text-white">
+          6. CSV / Excel File Upload & Import Cards (3 Variants)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Variant 16: CSV / Excel Bulk Import Dropzone -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-files" data-title="CSV and Excel Bulk Import Dropzone">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#16</span>
+              <button onclick="openCodeModal('16 CSV Import Dropzone', snippet16)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              CSV / Excel Bulk Import Dropzone
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Real interactive dropzone connected to an invisible file selector.
+            </p>
+
+            <input type="file" id="real-file-input" accept=".csv,.xlsx" class="hidden" onchange="handleFileSelected(this)" />
+            <div 
+              onclick="document.getElementById('real-file-input').click()"
+              class="p-5 rounded-xl border-2 border-dashed border-zinc-200 dark:border-white/15 hover:border-zinc-400 dark:hover:border-white/30 bg-zinc-50 dark:bg-[#09090B] text-center cursor-pointer transition space-y-1.5"
+            >
+              <i data-lucide="upload-cloud" class="w-6 h-6 mx-auto text-zinc-400"></i>
+              <div class="text-xs font-semibold text-zinc-900 dark:text-zinc-100">
+                Click to browse or drop CSV / Excel
+              </div>
+              <div class="text-[11px] text-zinc-400 font-sans tabular-nums">
+                Supports .CSV, .XLSX up to 25 MB
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span id="dropzone-status">Ready for upload</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Native Picker</span>
+          </div>
+        </div>
+
+        <!-- Variant 17: Active Upload Progress Card -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-files" data-title="Active Upload Progress Card">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#17</span>
+              <button onclick="openCodeModal('17 Active Upload Progress Card', snippet17)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Active Upload Progress Card
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Real-time parsing and validation status with percentage bar.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 space-y-2.5 text-xs">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span class="font-bold text-zinc-900 dark:text-zinc-100 truncate">Customers_Nov2026.csv</span>
+                </div>
+                <span class="font-bold font-sans tabular-nums text-zinc-900 dark:text-zinc-100">68%</span>
+              </div>
+              <div class="w-full h-1.5 rounded-full bg-zinc-200 dark:bg-white/10 overflow-hidden">
+                <div class="h-full bg-emerald-600 rounded-full" style="width: 68%"></div>
+              </div>
+              <div class="flex justify-between text-[11px] text-zinc-400 font-sans tabular-nums">
+                <span>Validating row 1,640 of 2,410...</span>
+                <span>1.4 MB / 2.1 MB</span>
+              </div>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Client-Side Parse</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">In Progress</span>
+          </div>
+        </div>
+
+        <!-- Variant 18: Attached Invoice PDF Card -->
+        <div class="variant-card flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs space-y-3" data-category="cat-files" data-title="Attached Invoice PDF Card">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">#18</span>
+              <button onclick="openCodeModal('18 Attached Invoice PDF Card', snippet18)" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 text-xs flex items-center gap-1 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span>Code</span>
+              </button>
+            </div>
+            <h3 class="text-sm font-bold text-zinc-950 dark:text-white tracking-tight mb-1">
+              Attached Invoice PDF Card
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+              Clean receipt preview with verification status, file size, and download button.
+            </p>
+
+            <div class="p-3.5 rounded-xl bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2.5 overflow-hidden">
+                <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 shrink-0">
+                  <i data-lucide="file-text" class="w-4 h-4"></i>
+                </div>
+                <div class="overflow-hidden">
+                  <div class="font-bold text-zinc-900 dark:text-zinc-100 truncate">Tax_Invoice_9042.pdf</div>
+                  <div class="text-[10px] text-zinc-400 font-sans tabular-nums">1.8 MB · Digitally Signed</div>
+                </div>
+              </div>
+              <button type="button" class="p-2 rounded-lg hover:bg-zinc-200/60 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-400 transition" title="Download Document">
+                <i data-lucide="download" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+          <div class="pt-3 border-t border-zinc-100 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+            <span>Receipt Attachment</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-medium">Verified PDF</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================================================================
+       CLEAN CODE MODAL
+  ========================================================================= -->
+  <div id="code-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="w-full max-w-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
+        <h3 id="code-modal-title" class="text-sm font-bold text-zinc-950 dark:text-white">Code Snippet</h3>
+        <button type="button" onclick="closeCodeModal()" class="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <pre class="p-4 rounded-xl bg-zinc-950 text-zinc-100 text-xs overflow-x-auto max-h-[360px] font-sans">
+        <code id="code-modal-content"></code>
+      </pre>
+
+      <div class="flex items-center justify-between pt-2">
+        <span class="text-xs text-zinc-500">Level 3 Organism Component</span>
+        <button 
+          type="button" 
+          id="copy-code-btn" 
+          onclick="copyModalCode()" 
+          class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
+        >
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+          <span>Copy HTML/CSS</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       INTERACTIVE JAVASCRIPT LOGIC
+  ========================================================================= -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Table Data Set
+    let invoiceData = [
+      { id: "INV-9042", client: "Zerorapid India Pvt Ltd", amount: 125000, status: "Paid", date: "15 Nov 2026", selected: false },
+      { id: "INV-9041", client: "Deccan Logistics Hub", amount: 84200, status: "Pending", date: "14 Nov 2026", selected: false },
+      { id: "INV-9040", client: "Apex Retail Solutions", amount: 32600, status: "Overdue", date: "10 Nov 2026", selected: false },
+      { id: "INV-9039", client: "Kaveri Global Exports", amount: 210000, status: "Paid", date: "08 Nov 2026", selected: false },
+      { id: "INV-9038", client: "Bangalore Silicon Labs", amount: 65400, status: "Paid", date: "05 Nov 2026", selected: false },
+    ];
+    let sortAscending = true;
+
+    function renderInvoiceTable(dataToRender = invoiceData) {
+      const tbody = document.getElementById('invoice-table-body');
+      tbody.innerHTML = '';
+
+      dataToRender.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-zinc-50/80 dark:hover:bg-white/5 transition ${row.selected ? 'bg-zinc-100/70 dark:bg-white/10 font-medium' : ''}`;
+
+        const statusBadge = row.status === 'Paid'
+          ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">Paid</span>'
+          : row.status === 'Pending'
+          ? '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">Pending</span>'
+          : '<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">Overdue</span>';
+
+        tr.innerHTML = `
+          <td class="table-density-cell">
+            <input type="checkbox" ${row.selected ? 'checked' : ''} onchange="toggleRowSelection('${row.id}', this.checked)" class="custom-checkbox" />
+          </td>
+          <td class="table-density-cell font-bold text-zinc-950 dark:text-white font-sans tabular-nums">${row.id}</td>
+          <td class="table-density-cell font-medium text-zinc-800 dark:text-zinc-200">${row.client}</td>
+          <td class="table-density-cell">${statusBadge}</td>
+          <td class="table-density-cell text-right font-bold text-zinc-950 dark:text-white font-sans tabular-nums">₹${row.amount.toLocaleString('en-IN')}</td>
+          <td class="table-density-cell text-zinc-500 font-sans tabular-nums">${row.date}</td>
+          <td class="table-density-cell text-right">
+            <button type="button" class="px-2 py-1 rounded text-zinc-500 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-white/10 transition">
+              View
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      updateBulkBar();
+    }
+
+    // Toggle Row Selection
+    function toggleRowSelection(id, checked) {
+      const item = invoiceData.find(r => r.id === id);
+      if (item) item.selected = checked;
+      renderInvoiceTable();
+    }
+
+    // Master Checkbox
+    function toggleSelectAll(checked) {
+      invoiceData.forEach(r => r.selected = checked);
+      renderInvoiceTable();
+    }
+
+    function clearRowSelection() {
+      invoiceData.forEach(r => r.selected = false);
+      const master = document.getElementById('master-checkbox');
+      if (master) master.checked = false;
+      renderInvoiceTable();
+    }
+
+    function updateBulkBar() {
+      const selected = invoiceData.filter(r => r.selected);
+      const bar = document.getElementById('bulk-action-bar');
+      const countLabel = document.getElementById('bulk-selected-count');
+      const master = document.getElementById('master-checkbox');
+
+      if (selected.length > 0) {
+        bar.classList.remove('hidden');
+        countLabel.textContent = `${selected.length} selected`;
+      } else {
+        bar.classList.add('hidden');
+      }
+
+      if (master) {
+        master.checked = (selected.length === invoiceData.length && invoiceData.length > 0);
+      }
+    }
+
+    function exportSelected() {
+      const count = invoiceData.filter(r => r.selected).length;
+      alert(`Exporting ${count} invoices to CSV...`);
+    }
+
+    function markSelectedPaid() {
+      invoiceData.forEach(r => {
+        if (r.selected) {
+          r.status = 'Paid';
+          r.selected = false;
+        }
+      });
+      renderInvoiceTable();
+    }
+
+    // Sort Amount
+    function toggleAmountSort() {
+      sortAscending = !sortAscending;
+      invoiceData.sort((a, b) => sortAscending ? a.amount - b.amount : b.amount - a.amount);
+      const btn = document.getElementById('sort-amount-btn');
+      btn.innerHTML = `<i data-lucide="arrow-up-down" class="w-3.5 h-3.5"></i><span>Sort: ${sortAscending ? 'Low to High' : 'High to Low'}</span>`;
+      lucide.createIcons();
+      renderInvoiceTable();
+    }
+
+    // Search Filter
+    function handleTableSearch(query) {
+      const q = query.toLowerCase().trim();
+      if (!q) {
+        renderInvoiceTable(invoiceData);
+        return;
+      }
+      const filtered = invoiceData.filter(r => 
+        r.id.toLowerCase().includes(q) || 
+        r.client.toLowerCase().includes(q) || 
+        r.status.toLowerCase().includes(q)
+      );
+      renderInvoiceTable(filtered);
+    }
+
+    // Interactive Demo 08: Spreadsheet Math
+    function recalculateLineTotal() {
+      const price = parseFloat(document.getElementById('calc-unit-price').value) || 0;
+      const qty = parseInt(document.getElementById('calc-qty').value) || 0;
+      const total = price * qty;
+      document.getElementById('calc-line-total').textContent = `₹${total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+    }
+
+    // Interactive Demo 13: Kanban Pipeline
+    function advanceKanbanCard(cardId, currentStage) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+
+      if (currentStage === 1) {
+        document.getElementById('kanban-col-2').appendChild(card);
+        const btn = card.querySelector('button');
+        if (btn) {
+          btn.setAttribute('onclick', `advanceKanbanCard('${cardId}', 2)`);
+        }
+      } else if (currentStage === 2) {
+        document.getElementById('kanban-col-3').appendChild(card);
+        const actionArea = card.querySelector('.flex.justify-end');
+        if (actionArea) {
+          actionArea.innerHTML = `<span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">✓ Closed Deal</span>`;
+        }
+      }
+
+      // Update Column Counts
+      document.getElementById('kanban-col-count-1').textContent = document.getElementById('kanban-col-1').children.length;
+      document.getElementById('kanban-col-count-2').textContent = document.getElementById('kanban-col-2').children.length;
+      document.getElementById('kanban-col-count-3').textContent = document.getElementById('kanban-col-3').children.length;
+    }
+
+    // Interactive Demo 16: File Dropzone
+    function handleFileSelected(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById('dropzone-status').textContent = `Selected: ${input.files[0].name} (${(input.files[0].size / 1024).toFixed(1)} KB)`;
+      }
+    }
+
+    // Density State
+    function setDensity(tier) {
+      document.querySelectorAll('.density-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        btn.classList.add('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      });
+      const active = document.getElementById(`density-${tier}`);
+      if (active) {
+        active.classList.add('bg-white', 'dark:bg-white/15', 'text-zinc-950', 'dark:text-white', 'shadow-xs', 'font-semibold');
+        active.classList.remove('font-medium', 'text-zinc-600', 'dark:text-zinc-400');
+      }
+
+      const root = document.documentElement;
+      if (tier === 'compact') {
+        root.style.setProperty('--cell-py', '6px');
+        root.style.setProperty('--cell-px', '10px');
+        root.style.setProperty('--table-font-size', '12px');
+      } else if (tier === 'default') {
+        root.style.setProperty('--cell-py', '10px');
+        root.style.setProperty('--cell-px', '14px');
+        root.style.setProperty('--table-font-size', '13px');
+      } else if (tier === 'relaxed') {
+        root.style.setProperty('--cell-py', '14px');
+        root.style.setProperty('--cell-px', '18px');
+        root.style.setProperty('--table-font-size', '14px');
+      }
+    }
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const icon = document.getElementById('theme-icon');
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        icon.setAttribute('data-lucide', 'moon');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        icon.setAttribute('data-lucide', 'sun');
+        localStorage.setItem('theme', 'dark');
+      }
+      lucide.createIcons();
+    }
+    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      const icon = document.getElementById('theme-icon');
+      if (icon) icon.setAttribute('data-lucide', 'sun');
+    }
+
+    // Search and Category Filtering
+    let currentCategory = 'all';
+    let currentSearch = '';
+
+    function handleSearch(query) {
+      currentSearch = query.trim().toLowerCase();
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (currentSearch.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      applyFilters();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('search-input');
+      input.value = '';
+      currentSearch = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      applyFilters();
+    }
+
+    function setCategory(catId) {
+      currentCategory = catId;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.classList.remove('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        btn.classList.add('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        const badge = btn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400';
+        }
+      });
+
+      const activeBtn = document.getElementById(`cat-pill-${catId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-zinc-100/80', 'dark:bg-white/5', 'text-zinc-600', 'dark:text-zinc-400');
+        activeBtn.classList.add('bg-zinc-950', 'text-white', 'dark:bg-white', 'dark:text-zinc-950', 'shadow-xs');
+        const badge = activeBtn.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950';
+        }
+      }
+
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.variant-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-category');
+        const title = card.getAttribute('data-title').toLowerCase();
+
+        const matchCat = (currentCategory === 'all' || cat === currentCategory);
+        const matchSearch = (currentSearch === '' || title.includes(currentSearch));
+
+        if (matchCat && matchSearch) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Show/hide section containers if category filter is active
+      document.querySelectorAll('[data-section-category]').forEach(sec => {
+        const secCat = sec.getAttribute('data-section-category');
+        if (currentCategory !== 'all' && secCat !== currentCategory) {
+          sec.classList.add('hidden');
+        } else {
+          sec.classList.remove('hidden');
+        }
+      });
+
+      document.getElementById('variant-counter').textContent = `${visibleCount} of 18 Variants`;
+    }
+
+    // Code Modal Management
+    let currentCopiedSnippet = '';
+    function openCodeModal(title, snippet) {
+      document.getElementById('code-modal-title').textContent = title;
+      document.getElementById('code-modal-content').textContent = snippet;
+      currentCopiedSnippet = snippet;
+      document.getElementById('code-modal').classList.remove('hidden');
+    }
+    function closeCodeModal() {
+      document.getElementById('code-modal').classList.add('hidden');
+    }
+    function copyModalCode() {
+      navigator.clipboard.writeText(currentCopiedSnippet);
+      const btn = document.getElementById('copy-code-btn');
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i><span>Copied!</span>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = '<i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Copy HTML/CSS</span>';
+        lucide.createIcons();
+      }, 2000);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeCodeModal();
+    });
+
+    // Snippets for 18 Variants
+    const snippet01 = `<!-- 01 KPI Stat Card with Trend Pill -->\n<div class="p-5 rounded-xl border bg-white shadow-xs">\n  <span class="text-xs text-zinc-500 font-semibold">Monthly Revenue</span>\n  <div class="flex justify-between items-baseline pt-1">\n    <h3 class="text-2xl font-bold font-sans tabular-nums">₹48,20,000</h3>\n    <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">+14.2%</span>\n  </div>\n</div>`;
+    const snippet02 = `<!-- 02 KPI Card with Mini Sparkline Bar -->\n<div class="p-5 rounded-xl border bg-white shadow-xs">\n  <span class="text-xs text-zinc-500 font-semibold">Active Customers</span>\n  <div class="flex justify-between items-end pt-1">\n    <h3 class="text-2xl font-bold font-sans tabular-nums">1,428</h3>\n    <div class="flex items-end gap-1 h-8"><div class="w-1.5 h-4 bg-zinc-300"></div><div class="w-1.5 h-8 bg-zinc-950"></div></div>\n  </div>\n</div>`;
+    const snippet03 = `<!-- 03 Quota & Target Goal Stat Card -->\n<div class="p-5 rounded-xl border bg-white shadow-xs space-y-2">\n  <div class="flex justify-between text-xs"><span>Quarterly Sales Goal</span><span class="font-bold">82%</span></div>\n  <h3 class="text-2xl font-bold font-sans tabular-nums">₹82.0L <span class="text-xs text-zinc-400 font-normal">/ ₹1.0 Cr</span></h3>\n  <div class="h-2 rounded-full bg-zinc-100 overflow-hidden"><div class="h-full bg-zinc-950 rounded-full" style="width: 82%"></div></div>\n</div>`;
+    const snippet04 = `<!-- 04 Multi-Metric Summary Strip -->\n<div class="p-5 rounded-xl border bg-white shadow-xs">\n  <span class="text-xs text-zinc-500">Billing Overview</span>\n  <div class="grid grid-cols-3 gap-2 pt-2 divide-x">\n    <div><div class="text-[10px]">Total</div><div class="text-lg font-bold tabular-nums">248</div></div>\n    <div class="pl-2"><div class="text-[10px] text-emerald-600">Paid</div><div class="text-lg font-bold text-emerald-600 tabular-nums">214</div></div>\n    <div class="pl-2"><div class="text-[10px] text-rose-600">Overdue</div><div class="text-lg font-bold text-rose-600 tabular-nums">11</div></div>\n  </div>\n</div>`;
+    const snippet05 = `<!-- 05 Key-Value Record Summary List -->\n<dl class="space-y-1 text-xs">\n  <div class="flex justify-between py-1 border-b"><dt>Client GSTIN</dt><dd class="font-bold tabular-nums">36AAACZ1234F1Z5</dd></div>\n  <div class="flex justify-between py-1 border-b"><dt>Payment Terms</dt><dd class="font-semibold">Net 30 Days</dd></div>\n</dl>`;
+    const snippet06 = `<!-- 06 Alert KPI Card -->\n<div class="p-5 rounded-xl border border-amber-200 bg-amber-50/30">\n  <div class="text-amber-700 font-semibold text-xs">Pending Approvals</div>\n  <h3 class="text-2xl font-bold tabular-nums">9 Invoices</h3>\n</div>`;
+    const snippet07 = `<!-- 07 Interactive Invoice Data Table -->\n<table class="w-full text-left text-xs border-collapse">\n  <thead class="bg-zinc-100 border-b"><tr><th><input type="checkbox"/></th><th>Invoice</th><th>Client</th><th>Amount</th></tr></thead>\n  <tbody><tr><td><input type="checkbox"/></td><td class="font-bold tabular-nums">#INV-9042</td><td>Zerorapid India</td><td class="font-bold tabular-nums">₹1,25,000</td></tr></tbody>\n</table>`;
+    const snippet08 = `<!-- 08 Inline Editable Spreadsheet Grid Row -->\n<tr>\n  <td>Cloud Infrastructure v2.4</td>\n  <td><input type="number" value="18500" class="border p-1 rounded font-sans tabular-nums" /></td>\n  <td><input type="number" value="4" class="border p-1 rounded font-sans tabular-nums" /></td>\n  <td class="font-bold tabular-nums text-right">₹74,000.00</td>\n</tr>`;
+    const snippet09 = `<!-- 09 Saved Views Tab Bar -->\n<div class="flex gap-2 text-xs">\n  <button class="px-3 py-1 rounded-md font-bold bg-zinc-950 text-white">All Invoices (248)</button>\n  <button class="px-3 py-1 rounded-md text-zinc-600">Overdue (11)</button>\n</div>`;
+    const snippet10 = `<!-- 10 Faceted Filter Bar + Active Chips -->\n<div class="flex items-center gap-2 text-xs">\n  <button class="border px-2 py-1 rounded">City: 2 Selected ▾</button>\n  <span class="bg-zinc-200 px-2 py-0.5 rounded">City: Hyderabad ×</span>\n</div>`;
+    const snippet11 = `<!-- 11 Floating Bulk Selection Action Bar -->\n<div class="p-3 bg-zinc-950 text-white rounded-xl shadow-2xl flex justify-between text-xs">\n  <span class="font-bold">3 items selected</span>\n  <div class="flex gap-2"><button>Assign</button><button>Export</button><button class="text-rose-500">Delete</button></div>\n</div>`;
+    const snippet12 = `<!-- 12 Faceted Sidebar Filter Group -->\n<div class="space-y-1 text-xs">\n  <label class="flex justify-between"><div class="flex gap-2"><input type="checkbox"/><span>Hyderabad Hub</span></div><span>142</span></label>\n</div>`;
+    const snippet13 = `<!-- 13 Kanban Pipeline Board -->\n<div class="grid grid-cols-3 gap-4">\n  <div class="p-3 bg-zinc-100 rounded-xl"><h4 class="font-bold text-xs">New Leads (2)</h4><div class="p-3 bg-white rounded-lg shadow-xs mt-2">Deccan Telecom</div></div>\n</div>`;
+    const snippet14 = `<!-- 14 Workspace Audit Log Feed -->\n<div class="space-y-2 text-xs">\n  <div class="flex gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500 mt-1"></div><div>Priya Sharma generated GST Tax Report. <span class="text-zinc-400">12 mins ago</span></div></div>\n</div>`;
+    const snippet15 = `<!-- 15 Compact Order Tracking List -->\n<div class="flex justify-between p-2 border rounded-lg text-xs font-sans tabular-nums">\n  <div><strong>#ORD-412</strong> - Delhivery Express</div>\n  <span class="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded">Delivered</span>\n</div>`;
+    const snippet16 = `<!-- 16 CSV Bulk Import Dropzone -->\n<div class="border-2 border-dashed p-6 rounded-xl text-center text-xs">\n  <p class="font-bold">Click to browse or drop CSV / Excel</p>\n  <p class="text-zinc-400">Supports .CSV, .XLSX up to 25 MB</p>\n</div>`;
+    const snippet17 = `<!-- 17 Active Upload Progress Card -->\n<div class="p-3 border rounded-xl text-xs space-y-2">\n  <div class="flex justify-between"><strong>Customers_Nov2026.csv</strong><span>68%</span></div>\n  <div class="h-1.5 bg-zinc-200 rounded-full"><div class="h-full bg-emerald-600 rounded-full" style="width: 68%"></div></div>\n</div>`;
+    const snippet18 = `<!-- 18 Attached Invoice PDF Card -->\n<div class="p-3 border rounded-xl flex justify-between items-center text-xs">\n  <div><strong>Tax_Invoice_9042.pdf</strong><div class="text-zinc-400">1.8 MB · Digitally Signed</div></div>\n  <button>Download</button>\n</div>`;
+
+    // Initialize Table Render on Load
+    renderInvoiceTable();
+  </script>
+</body>
+</html>
