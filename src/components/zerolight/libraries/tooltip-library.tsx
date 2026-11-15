@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useZeroLight } from "../context";
 import { Badge } from "../atoms/badge";
+import { CodeModal, LibraryHeader } from "./common";
 
 export type TooltipDensity = "small" | "medium" | "large";
 
@@ -38,7 +39,6 @@ export function SaaSTooltipLibrary() {
 
   // Code Modal State
   const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
-  const [codeCopied, setCodeCopied] = useState(false);
 
   // Active Popover State (for click-to-open variants)
   const [activePopover, setActivePopover] = useState<string | null>(null);
@@ -95,12 +95,6 @@ export function SaaSTooltipLibrary() {
     { id: "cat6", label: "6. Quick-Edit & Notes" },
   ];
 
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCodeCopied(true);
-    setTimeout(() => setCodeCopied(false), 1800);
-  };
-
   // Helper Card
   const Card = ({
     number,
@@ -152,43 +146,23 @@ export function SaaSTooltipLibrary() {
   return (
     <div className={`space-y-6 ${previewOpen ? "preview-open-active" : ""}`}>
       {/* Workspace Control Strip */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 dark:bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h2 className="text-sm font-bold text-zinc-950 dark:text-white">
-              SaaS Tooltip & Popover Library
-            </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              22 directional hints, keyboard keycaps, quota cards, and safety confirmation popovers.
-            </p>
-          </div>
-
-          {/* Controls: Search & Preview Open */}
-          <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
-            {/* Live Search */}
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search tooltips..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white/20 transition w-36 sm:w-44"
-              />
-            </div>
-
-            {/* Preview Open Toggle */}
-            <button
-              type="button"
-              onClick={() => setPreviewOpen(!previewOpen)}
-              className="px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer text-xs"
-            >
-              <span className={`w-2 h-2 rounded-full ${previewOpen ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
-              <span>Preview: {previewOpen ? "On" : "Off"}</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <LibraryHeader
+        countText="22 Patterns"
+        description="22 directional hints, keyboard keycaps, quota cards, and safety confirmation popovers."
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search tooltips..."
+        action={
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(!previewOpen)}
+            className="px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer text-xs"
+          >
+            <span className={`w-2 h-2 rounded-full ${previewOpen ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
+            <span>Preview: {previewOpen ? "On" : "Off"}</span>
+          </button>
+        }
+      />
 
       {/* ── 1. DIRECTIONAL HOVER TOOLTIPS ── */}
       <section className="space-y-3">
@@ -1023,46 +997,10 @@ export function SaaSTooltipLibrary() {
       </section>
 
       {/* Code Modal */}
-      {activeCodeModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-zinc-200 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200">
-              <h3 className="text-sm font-bold text-zinc-950">{activeCodeModal.title}</h3>
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="p-1 rounded-lg hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="p-5">
-              <div className="relative">
-                <pre className="p-4 rounded-xl bg-zinc-900 text-zinc-100 text-xs overflow-x-auto font-sans leading-relaxed">
-                  {activeCodeModal.code}
-                </pre>
-              </div>
-            </div>
-            <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-600 hover:text-zinc-950 cursor-pointer"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCopyCode(activeCodeModal.code)}
-                className="px-3.5 py-1.5 rounded-xl bg-zinc-950 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm hover:opacity-90 transition cursor-pointer"
-              >
-                {codeCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{codeCopied ? "Copied!" : "Copy Code"}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CodeModal
+        modal={activeCodeModal}
+        onClose={() => setActiveCodeModal(null)}
+      />
 
       {/* Toast Notification */}
       {toastMessage && (

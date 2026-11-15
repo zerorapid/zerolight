@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useZeroLight } from "../context";
 import { Badge } from "../atoms/badge";
+import { LibraryHeader, CodeModal } from "./common";
 
 export type FeedbackDensity = "small" | "medium" | "large";
 
@@ -39,7 +40,6 @@ export function SaaSFeedbackLibrary() {
 
   // Code Modal State
   const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
-  const [codeCopied, setCodeCopied] = useState(false);
 
   // Dismissed Alerts Set
   const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
@@ -90,12 +90,6 @@ export function SaaSFeedbackLibrary() {
       setIsRetrying(false);
       spawnToast("Analytics reports reconnected successfully!", false);
     }, 1200);
-  };
-
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCodeCopied(true);
-    setTimeout(() => setCodeCopied(false), 1800);
   };
 
   // Helper Card
@@ -150,51 +144,23 @@ export function SaaSFeedbackLibrary() {
   return (
     <div className="space-y-6">
       {/* Sticky Top Control Bar (Slimmed Utility Bar) */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 dark:bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          {/* Left: Summary Counter */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-              20 Variants Active
-            </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
-              Inline alerts, top announcement bars, undo toasts, empty records & recovery states.
-            </span>
-          </div>
-
-          {/* Right: Search & Restore Hidden */}
-          <div className="flex items-center gap-2 text-xs">
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search feedback..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-7 py-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition w-44"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={handleRestoreAll}
-              className="px-2.5 py-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-zinc-500" />
-              <span>Restore Hidden</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <LibraryHeader
+        countText="20 Variants Active"
+        description="Inline alerts, top announcement bars, undo toasts, empty records & recovery states."
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search feedback..."
+        action={
+          <button
+            type="button"
+            onClick={handleRestoreAll}
+            className="px-2.5 py-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
+          >
+            <RotateCcw className="w-3.5 h-3.5 text-zinc-500" />
+            <span>Restore Hidden</span>
+          </button>
+        }
+      />
 
       <div className="space-y-8">
         {/* ── 1. INLINE PAGE ALERTS ── */}
@@ -826,46 +792,10 @@ export function SaaSFeedbackLibrary() {
       </div>
 
       {/* Code Modal */}
-      {activeCodeModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-zinc-200 rounded-2xl w-full max-w-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-200">
-              <h3 className="text-sm font-bold text-zinc-950">{activeCodeModal.title}</h3>
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="p-1 rounded-lg hover:bg-zinc-100 text-zinc-500 hover:text-zinc-900 transition cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="p-5">
-              <div className="relative">
-                <pre className="p-4 rounded-xl bg-zinc-900 text-zinc-100 text-xs overflow-x-auto font-sans leading-relaxed">
-                  {activeCodeModal.code}
-                </pre>
-              </div>
-            </div>
-            <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-200 bg-zinc-50">
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-zinc-600 hover:text-zinc-950 cursor-pointer"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => handleCopyCode(activeCodeModal.code)}
-                className="px-3.5 py-1.5 rounded-xl bg-zinc-950 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm hover:opacity-90 transition cursor-pointer"
-              >
-                {codeCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{codeCopied ? "Copied!" : "Copy Code"}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CodeModal
+        modal={activeCodeModal}
+        onClose={() => setActiveCodeModal(null)}
+      />
 
       {/* Real Interactive Floating Toasts */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none">

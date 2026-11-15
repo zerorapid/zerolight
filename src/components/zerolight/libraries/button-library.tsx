@@ -41,6 +41,7 @@ import {
 import { useZeroLight } from "../context";
 import { Kbd } from "../atoms/kbd";
 import { Badge } from "../atoms/badge";
+import { LibraryHeader, CodeModal } from "./common";
 
 export type ButtonDensityTier = "28px" | "36px" | "42px" | "48px";
 export type ButtonGlobalState = "ready" | "saving" | "saved" | "disabled";
@@ -57,7 +58,6 @@ export function SaaSButtonLibrary() {
 
   // Modal Code State
   const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
-  const [codeCopied, setCodeCopied] = useState(false);
 
   // Interactive Variant States
   const [splitSaveOpen, setSplitSaveOpen] = useState(false);
@@ -115,13 +115,6 @@ export function SaaSButtonLibrary() {
     { id: "tools", label: "7. Compact Tools" },
     { id: "ai", label: "8. Smart AI & Upgrade" },
   ];
-
-  const handleCopyCode = () => {
-    if (!activeCodeModal) return;
-    navigator.clipboard?.writeText(activeCodeModal.code);
-    setCodeCopied(true);
-    setTimeout(() => setCodeCopied(false), 2000);
-  };
 
   const handleSaveProgressClick = () => {
     if (savingProgress !== "idle") return;
@@ -220,65 +213,45 @@ export function SaaSButtonLibrary() {
       )}
 
       {/* ── WORKSPACE CONTROL STRIP ── */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 dark:bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div>
-            <h2 className="text-sm font-bold text-zinc-950 dark:text-white">
-              SaaS Action Triggers & Button System
-            </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              33 interactive button variants with spring feedback, status transitions, and keyboard shortcuts.
-            </p>
+      <LibraryHeader
+        countText="33 Button Variants Active"
+        description="Spring feedback, status transitions, and keyboard shortcuts."
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search buttons..."
+        action={
+          <div className="relative" data-button-popover>
+            <button
+              type="button"
+              onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
+              className="px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-200/60 dark:hover:bg-white/10 transition cursor-pointer"
+            >
+              <span>State: <strong className="capitalize text-zinc-950 dark:text-white">{globalState}</strong></span>
+              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+            </button>
+
+            {stateDropdownOpen && (
+              <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                {(["ready", "saving", "saved", "disabled"] as const).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => {
+                      setGlobalState(s);
+                      setStateDropdownOpen(false);
+                    }}
+                    className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
+                      globalState === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-
-          {/* Controls: Search & State Dropdown */}
-          <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
-            {/* Live Search */}
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search buttons..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-950 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white/20 w-36 sm:w-44"
-              />
-            </div>
-
-            {/* Custom State Dropdown */}
-            <div className="relative" data-button-popover>
-              <button
-                type="button"
-                onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
-                className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
-              >
-                <span>State: <strong className="capitalize text-zinc-950 dark:text-white">{globalState}</strong></span>
-                <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-              </button>
-
-              {stateDropdownOpen && (
-                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
-                  {(["ready", "saving", "saved", "disabled"] as const).map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => {
-                        setGlobalState(s);
-                        setStateDropdownOpen(false);
-                      }}
-                      className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                        globalState === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* ── 1. MAIN ACTION STYLES ── */}
       <section className="space-y-3">
@@ -1207,49 +1180,10 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── CODE MODAL ── */}
-      {activeCodeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-lg rounded-2xl bg-zinc-950 border border-white/10 text-white p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <Code2 className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-bold text-white tracking-tight">
-                  {activeCodeModal.title} TSX Snippet
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="p-1 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <pre className="p-4 rounded-xl bg-black/50 border border-white/10 font-sans tabular-nums text-xs text-zinc-300 overflow-x-auto leading-relaxed">
-              <code>{activeCodeModal.code}</code>
-            </pre>
-
-            <div className="flex justify-end gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition cursor-pointer"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={handleCopyCode}
-                className="px-4 py-2 rounded-xl bg-white text-zinc-950 text-xs font-semibold hover:bg-zinc-200 transition flex items-center gap-1.5 cursor-pointer"
-              >
-                {codeCopied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{codeCopied ? "Copied" : "Copy TSX Code"}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CodeModal
+        modal={activeCodeModal}
+        onClose={() => setActiveCodeModal(null)}
+      />
     </div>
   );
 }

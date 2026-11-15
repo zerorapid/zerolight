@@ -22,6 +22,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useZeroLight } from "../context";
+import { LibraryHeader, CodeModal } from "./common";
 
 export type ViewportMode = "desktop" | "tablet" | "mobile";
 
@@ -35,7 +36,6 @@ export function SaaSLayoutLibrary() {
 
   // Code Modal State
   const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
-  const [codeCopied, setCodeCopied] = useState(false);
 
   // Template 01 State: Active Nav Item
   const [shell01Nav, setShell01Nav] = useState("Overview");
@@ -182,57 +182,27 @@ export function SaaSLayoutLibrary() {
       {/* =========================================================================
            STICKY GLOBAL CONTROL BAR (RESPONSIVE & BLUEPRINT CONTROLS)
       ========================================================================= */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3.5 space-y-3">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-          {/* Left: Live Counter & Description */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-              {filteredTemplates.length} Templates Active
-            </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
-              Production layouts: App shells, executive grids, master-detail splits, settings & steppers.
-            </span>
-          </div>
-
-          {/* Right: Search & Blueprint Guides */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Search Input */}
-            <div className="relative min-w-[210px]">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Filter layout templates..."
-                className="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-
-            {/* Blueprint Zone Guides Toggle */}
-            <button
-              type="button"
-              onClick={() => setZoneGuides(!zoneGuides)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer flex items-center gap-1.5 shadow-xs ${
-                zoneGuides
-                  ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-                  : "border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-white/10"
-              }`}
-            >
-              <LayoutGrid className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-              <span>{zoneGuides ? "Zone Guides: On" : "Zone Guides: Off"}</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <LibraryHeader
+        countText={`${filteredTemplates.length} Templates Active`}
+        description="Production layouts: App shells, executive grids, master-detail splits, settings & steppers."
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Filter layout templates..."
+        action={
+          <button
+            type="button"
+            onClick={() => setZoneGuides(!zoneGuides)}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer flex items-center gap-1.5 shadow-xs ${
+              zoneGuides
+                ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
+                : "border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-white/10"
+            }`}
+          >
+            <LayoutGrid className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>{zoneGuides ? "Zone Guides: On" : "Zone Guides: Off"}</span>
+          </button>
+        }
+      />
 
       {/* =========================================================================
            TEMPLATES LIST
@@ -701,55 +671,10 @@ export function SaaSLayoutLibrary() {
       {/* =========================================================================
            CODE MODAL
       ========================================================================= */}
-      {activeCodeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100 dark:border-white/10">
-              <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">{activeCodeModal.title}</h4>
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="p-4 bg-zinc-950 text-zinc-100 font-sans text-xs overflow-x-auto max-h-[340px]">
-              <pre className="whitespace-pre-wrap font-sans leading-relaxed">{activeCodeModal.code}</pre>
-            </div>
-            <div className="flex justify-end gap-2 px-5 py-3 border-t border-zinc-100 dark:border-white/10 bg-zinc-50/50 dark:bg-white/5">
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 cursor-pointer"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(activeCodeModal.code);
-                  setCodeCopied(true);
-                  setTimeout(() => setCodeCopied(false), 2000);
-                }}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-1.5 cursor-pointer transition hover:opacity-90"
-              >
-                {codeCopied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy Layout HTML</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CodeModal
+        modal={activeCodeModal}
+        onClose={() => setActiveCodeModal(null)}
+      />
     </div>
   );
 }

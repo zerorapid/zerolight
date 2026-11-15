@@ -426,24 +426,21 @@ export function DashboardShell() {
                                   setDocsSubView(tier.defaultTab);
                                 }
                               }}
-                              className={`w-full px-2.5 py-1.5 rounded-lg text-[11px] font-medium flex items-center justify-between transition-colors cursor-pointer relative ${
+                              className={`w-full px-3 py-1.5 rounded-lg text-[11px] font-medium flex items-center justify-between transition-colors cursor-pointer relative z-0 ${
                                 isTierActive
-                                  ? "text-white bg-white/15 font-bold shadow-xs"
+                                  ? "text-white font-semibold"
                                   : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
                               }`}
                             >
-                              <div className="flex items-center gap-2 min-w-0">
-                                {isTierActive ? (
-                                  <motion.div
-                                    layoutId="sidebar-sub-pip"
-                                    className="w-1 h-3 rounded-full bg-white shadow-xs shrink-0"
-                                    transition={{ type: "spring", stiffness: 450, damping: 30 }}
-                                  />
-                                ) : (
-                                  <div className="w-1 h-3 shrink-0 opacity-0" />
-                                )}
-                                <span className="truncate">{tier.label}</span>
-                              </div>
+                              {/* Smooth kinetic background glider without awkward floating capsule */}
+                              {isTierActive && (
+                                <motion.div
+                                  layoutId="sidebar-sub-pip"
+                                  className="absolute inset-0 rounded-lg bg-white/[0.14] border border-white/10 shadow-xs -z-10"
+                                  transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                                />
+                              )}
+                              <span className="truncate">{tier.label}</span>
                               <span className="text-[10px] font-sans tabular-nums text-zinc-400 font-bold ml-2 shrink-0">
                                 {tier.count}
                               </span>

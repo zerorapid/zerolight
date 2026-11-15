@@ -28,6 +28,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useZeroLight } from "../context";
+import { LibraryHeader, CodeModal } from "./common";
 
 export type BusinessDensity = "small" | "medium" | "large";
 
@@ -41,7 +42,6 @@ export function SaaSBusinessLibrary() {
 
   // Code Modal State
   const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
-  const [codeCopied, setCodeCopied] = useState(false);
 
   // Module 01: Notification Popover
   const [hasUnreadNotifs, setHasUnreadNotifs] = useState(true);
@@ -278,42 +278,13 @@ export function SaaSBusinessLibrary() {
       {/* =========================================================================
            STICKY GLOBAL CONTROL BAR (SLIMMED UTILITY BAR)
       ========================================================================= */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2.5 transition-colors">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          {/* Left: Summary Counter */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-              {filteredVariants.length} of 16 Modules Active
-            </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
-              Inboxes, @mentions, pricing tiers, usage limits, SVG analytics & Tally sync.
-            </span>
-          </div>
-
-          {/* Right: Search */}
-          <div className="flex items-center gap-2.5">
-            <div className="relative min-w-[220px]">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Filter business modules..."
-                className="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      <LibraryHeader
+        countText={`${filteredVariants.length} of 16 Modules Active`}
+        description="Inboxes, @mentions, pricing tiers, usage limits, SVG analytics & Tally sync."
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Filter business modules..."
+      />
 
       <div className="space-y-8">
         {/* ── 1. NOTIFICATIONS & @MENTIONS ── */}
@@ -1681,55 +1652,10 @@ export function SaaSBusinessLibrary() {
       {/* =========================================================================
            CODE MODAL
       ========================================================================= */}
-      {activeCodeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-white dark:bg-[#121215] rounded-2xl border border-zinc-200 dark:border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100 dark:border-white/10">
-              <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">{activeCodeModal.title}</h4>
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 p-1"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="p-4 bg-zinc-950 text-zinc-100 font-sans text-xs overflow-x-auto max-h-[300px]">
-              <pre className="whitespace-pre-wrap font-sans">{activeCodeModal.code}</pre>
-            </div>
-            <div className="flex justify-end gap-2 px-4 py-3 border-t border-zinc-100 dark:border-white/10 bg-zinc-50/50 dark:bg-white/5">
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 cursor-pointer"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(activeCodeModal.code);
-                  setCodeCopied(true);
-                  setTimeout(() => setCodeCopied(false), 2000);
-                }}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 flex items-center gap-1.5 cursor-pointer transition hover:opacity-90"
-              >
-                {codeCopied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy HTML/CSS</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CodeModal
+        modal={activeCodeModal}
+        onClose={() => setActiveCodeModal(null)}
+      />
     </div>
   );
 }

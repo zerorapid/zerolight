@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { useZeroLight } from "../context";
 import { Badge } from "../atoms/badge";
+import { LibraryHeader, CodeModal } from "./common";
 
 export type OverlaySize = "small" | "medium" | "large";
 
@@ -46,7 +47,6 @@ export function SaaSOverlaysLibrary() {
 
   // Code Modal State
   const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
-  const [codeCopied, setCodeCopied] = useState(false);
 
   // Active Interactive Overlay State
   const [activeOverlayId, setActiveOverlayId] = useState<string | null>(null);
@@ -517,56 +517,26 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
       {/* =========================================================================
            STICKY TOP CONTROL BAR (SLIMMED UTILITY BAR)
       ========================================================================= */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-6 px-6 py-2.5 transition-colors">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          {/* Left: Summary Counter */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-              {filteredVariants.length} of 16 Variants Active
+      <LibraryHeader
+        countText={`${filteredVariants.length} of 16 Variants Active`}
+        description="Dialogs, slide-over sheets, ⌘K command palettes, context menus & wizards."
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Filter overlays..."
+        action={
+          <button
+            type="button"
+            onClick={() => setActiveOverlayId("v11")}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
+          >
+            <Command className="w-3.5 h-3.5" />
+            <span>Launch Command Bar</span>
+            <span className="text-[10px] bg-white/20 dark:bg-black/10 px-1 py-0.2 rounded font-sans tabular-nums">
+              ⌘K
             </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
-              Dialogs, slide-over sheets, ⌘K command palettes, context menus & wizards.
-            </span>
-          </div>
-
-          {/* Right: Quick Launch & Search */}
-          <div className="flex items-center gap-2.5">
-            {/* Quick Launch ⌘K */}
-            <button
-              type="button"
-              onClick={() => setActiveOverlayId("v11")}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
-            >
-              <Command className="w-3.5 h-3.5" />
-              <span>Launch Command Bar</span>
-              <span className="text-[10px] bg-white/20 dark:bg-black/10 px-1 py-0.2 rounded font-sans tabular-nums">
-                ⌘K
-              </span>
-            </button>
-
-            {/* Instant Search */}
-            <div className="relative min-w-[200px]">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-              <input
-                type="text"
-                placeholder="Filter overlays..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+          </button>
+        }
+      />
 
       {/* =========================================================================
           IN-PAGE GROUPED SECTIONS (6 SECTIONS, 16 OVERLAYS)
@@ -1515,61 +1485,10 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
       {/* =========================================================================
           CODE MODAL
       ========================================================================= */}
-      {activeCodeModal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/50 backdrop-blur-xs transition-opacity animate-in fade-in duration-150"
-          onClick={() => setActiveCodeModal(null)}
-        >
-          <div
-            className="w-full max-w-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl p-6 space-y-4 animate-in zoom-in-95 duration-150"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
-              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-                TSX Implementation: {activeCodeModal.title}
-              </h3>
-              <button
-                type="button"
-                onClick={() => setActiveCodeModal(null)}
-                className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <pre className="p-4 rounded-xl bg-zinc-950 text-zinc-100 text-xs overflow-x-auto max-h-[360px] font-sans">
-              <code>{activeCodeModal.code}</code>
-            </pre>
-
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-xs text-zinc-500">
-                Level 3 Organism Component
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(activeCodeModal.code);
-                  setCodeCopied(true);
-                  setTimeout(() => setCodeCopied(false), 2000);
-                }}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
-              >
-                {codeCopied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy TSX</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <CodeModal
+        modal={activeCodeModal}
+        onClose={() => setActiveCodeModal(null)}
+      />
     </div>
   );
 }
