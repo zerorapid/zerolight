@@ -428,19 +428,23 @@ export function DashboardShell() {
                               }}
                               className={`w-full px-2.5 py-1.5 rounded-lg text-[11px] font-medium flex items-center justify-between transition-colors cursor-pointer relative ${
                                 isTierActive
-                                  ? "text-white bg-white/15 font-bold shadow-xs pl-3"
+                                  ? "text-white bg-white/15 font-bold shadow-xs"
                                   : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
                               }`}
                             >
-                              {isTierActive && (
-                                <motion.div
-                                  layoutId="sidebar-sub-pip"
-                                  className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-3 rounded-full bg-white shadow-xs"
-                                  transition={{ type: "spring", stiffness: 450, damping: 30 }}
-                                />
-                              )}
-                              <span className="truncate">{tier.label}</span>
-                              <span className="text-[10px] font-sans tabular-nums text-zinc-400 font-bold">
+                              <div className="flex items-center gap-2 min-w-0">
+                                {isTierActive ? (
+                                  <motion.div
+                                    layoutId="sidebar-sub-pip"
+                                    className="w-1 h-3 rounded-full bg-white shadow-xs shrink-0"
+                                    transition={{ type: "spring", stiffness: 450, damping: 30 }}
+                                  />
+                                ) : (
+                                  <div className="w-1 h-3 shrink-0 opacity-0" />
+                                )}
+                                <span className="truncate">{tier.label}</span>
+                              </div>
+                              <span className="text-[10px] font-sans tabular-nums text-zinc-400 font-bold ml-2 shrink-0">
                                 {tier.count}
                               </span>
                             </button>
