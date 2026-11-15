@@ -7,9 +7,6 @@ import {
   Check,
   X,
   LayoutGrid,
-  Monitor,
-  Tablet,
-  Smartphone,
   Code,
   ArrowRight,
   RefreshCw,
@@ -33,7 +30,6 @@ export function SaaSLayoutLibrary() {
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewport, setViewport] = useState<ViewportMode>("desktop");
   const [zoneGuides, setZoneGuides] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
@@ -175,11 +171,7 @@ export function SaaSLayoutLibrary() {
   });
 
   // Frame width class
-  const frameWidthClass = {
-    desktop: "max-w-full",
-    tablet: "max-w-[768px] mx-auto",
-    mobile: "max-w-[390px] mx-auto",
-  }[viewport];
+  const frameWidthClass = "max-w-full";
 
   const zoneGuideClasses = zoneGuides
     ? "outline-dashed outline-1.5 outline-blue-600/70 dark:outline-blue-400/70 -outline-offset-1 bg-[repeating-linear-gradient(45deg,rgba(37,99,235,0.03),rgba(37,99,235,0.03)_8px,transparent_8px,transparent_16px)]"
@@ -203,16 +195,16 @@ export function SaaSLayoutLibrary() {
                   SaaS Page Skeletons & Layout Blueprints
                 </h2>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-                  {filteredTemplates.length} of 12 Templates
+                  {filteredTemplates.length} Templates Active
                 </span>
               </div>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Level 4 Layouts: App shells, executive grids, master-detail splits, settings forms, and onboarding steppers.
+                Production Layouts: App shells, executive grids, master-detail splits, settings forms, and onboarding steppers.
               </p>
             </div>
           </div>
 
-          {/* Right: Search, Viewport Toggles, Blueprint Guides */}
+          {/* Right: Search & Blueprint Guides */}
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Search Input */}
             <div className="relative min-w-[210px]">
@@ -235,49 +227,6 @@ export function SaaSLayoutLibrary() {
               )}
             </div>
 
-            {/* 3 Responsive Viewport Frame Toggles */}
-            <div className="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
-              <button
-                type="button"
-                onClick={() => setViewport("desktop")}
-                className={`px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1.5 ${
-                  viewport === "desktop"
-                    ? "font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs"
-                    : "font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
-                }`}
-                title="Desktop 100% Full Width"
-              >
-                <Monitor className="w-3.5 h-3.5" />
-                <span>Desktop</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewport("tablet")}
-                className={`px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1.5 ${
-                  viewport === "tablet"
-                    ? "font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs"
-                    : "font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
-                }`}
-                title="Tablet 768px Width"
-              >
-                <Tablet className="w-3.5 h-3.5" />
-                <span>Tablet</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewport("mobile")}
-                className={`px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1.5 ${
-                  viewport === "mobile"
-                    ? "font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs"
-                    : "font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
-                }`}
-                title="Mobile 390px Width"
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span>Mobile</span>
-              </button>
-            </div>
-
             {/* Blueprint Zone Guides Toggle */}
             <button
               type="button"
@@ -292,36 +241,6 @@ export function SaaSLayoutLibrary() {
               <span>{zoneGuides ? "Zone Guides: On" : "Zone Guides: Off"}</span>
             </button>
           </div>
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          {categories.map((c) => {
-            const isActive = activeCategory === c.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setActiveCategory(c.id)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 ${
-                  isActive
-                    ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs"
-                    : "bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
-                }`}
-              >
-                <span>{c.label}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold ${
-                    isActive
-                      ? "bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950"
-                      : "bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400"
-                  }`}
-                >
-                  {c.count}
-                </span>
-              </button>
-            );
-          })}
         </div>
       </div>
 

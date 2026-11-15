@@ -76,15 +76,13 @@ export type SettingsSubTab = "general" | "security" | "mcp" | "api" | "complianc
 export const DOCS_TIERS: {
   id: DocsTier;
   label: string;
-  badge: string;
   count: string;
   defaultTab: DocsSubView;
   tabs: { id: DocsSubView; label: string; count: string; desc: string }[];
 }[] = [
   {
     id: "foundations",
-    label: "Foundations (L0)",
-    badge: "L0",
+    label: "Foundations",
     count: "34",
     defaultTab: "catalog",
     tabs: [
@@ -95,8 +93,7 @@ export const DOCS_TIERS: {
   },
   {
     id: "atoms",
-    label: "Atoms (L1)",
-    badge: "L1",
+    label: "Atoms",
     count: "153",
     defaultTab: "buttons",
     tabs: [
@@ -109,8 +106,7 @@ export const DOCS_TIERS: {
   },
   {
     id: "molecules",
-    label: "Molecules (L2)",
-    badge: "L2",
+    label: "Molecules",
     count: "20",
     defaultTab: "feedback",
     tabs: [
@@ -120,8 +116,7 @@ export const DOCS_TIERS: {
   },
   {
     id: "organisms",
-    label: "Organisms (L3)",
-    badge: "L3",
+    label: "Organisms",
     count: "70",
     defaultTab: "overlays",
     tabs: [
@@ -133,8 +128,7 @@ export const DOCS_TIERS: {
   },
   {
     id: "templates",
-    label: "Templates (L4)",
-    badge: "L4",
+    label: "Templates",
     count: "12",
     defaultTab: "layouts",
     tabs: [
@@ -143,8 +137,7 @@ export const DOCS_TIERS: {
   },
   {
     id: "pages",
-    label: "Pages (L5)",
-    badge: "L5",
+    label: "Pages",
     count: "6",
     defaultTab: "screens",
     tabs: [
@@ -419,7 +412,7 @@ export function DashboardShell() {
 
                     {/* Submenu for Design System in Expanded Mode: 6 Atomic Tiers */}
                     {item.id === "docs" && !isCollapsed && (
-                      <div className="ml-7 pl-3 py-1 my-1 border-l border-white/10 space-y-1 relative">
+                      <div className="mx-2 my-2 p-1.5 rounded-xl bg-white/[0.06] border border-white/10 space-y-1 shadow-inner">
                         {DOCS_TIERS.map((tier) => {
                           const isTierActive = activeTab === "docs" && docsTier === tier.id;
                           return (
@@ -434,16 +427,16 @@ export function DashboardShell() {
                                   setDocsSubView(tier.defaultTab);
                                 }
                               }}
-                              className={`w-full px-2 py-1.5 rounded-lg text-[11px] font-semibold flex items-center justify-between transition-colors cursor-pointer relative ${
+                              className={`w-full px-2.5 py-1.5 rounded-lg text-[11px] font-medium flex items-center justify-between transition-colors cursor-pointer relative ${
                                 isTierActive
-                                  ? "text-white bg-white/10 font-bold"
+                                  ? "text-white bg-white/15 font-bold shadow-xs pl-3"
                                   : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
                               }`}
                             >
                               {isTierActive && (
                                 <motion.div
                                   layoutId="sidebar-sub-pip"
-                                  className="absolute -left-[14px] top-1/2 -translate-y-1/2 w-1.5 h-3 rounded-full bg-white shadow-xs"
+                                  className="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-3 rounded-full bg-white shadow-xs"
                                   transition={{ type: "spring", stiffness: 450, damping: 30 }}
                                 />
                               )}
@@ -792,17 +785,14 @@ export function DashboardShell() {
         {/* TAB 3: ZEROLIGHT DESIGN SYSTEM DOCUMENTATION & LIBRARIES */}
         {activeTab === "docs" && (
           <div className="space-y-6 animate-in fade-in duration-200">
-            {/* Top Sub-Nav Switcher */}
-            <div className="space-y-4 pb-2 border-b border-zinc-200/80 dark:border-white/10">
+            {/* Top Sub-Nav Switcher inside Big Container Card */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/10 shadow-xs space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 {/* Active Tier Breadcrumb & Title */}
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Design System /</span>
-                    <span className="text-sm font-extrabold text-zinc-950 dark:text-white">{activeTierData.label}</span>
-                    <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 font-sans tabular-nums">
-                      {activeTierData.badge}
-                    </span>
+                    <span className="text-base font-extrabold text-zinc-950 dark:text-white tracking-tight">{activeTierData.label}</span>
                   </div>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
                     {activeTierData.id === "foundations" && "Core tokens, hairlines, dividers, and spring motion physics."}
@@ -819,8 +809,8 @@ export function DashboardShell() {
                 </div>
               </div>
 
-              {/* Full-width Single-Row Underline Tab Strip (Zero wrap) */}
-              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mb-[9px] pt-1">
+              {/* Sub-menu Tabs Container */}
+              <div className="p-1.5 rounded-xl bg-zinc-100/90 dark:bg-white/[0.06] border border-zinc-200/60 dark:border-white/10 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
                 {activeTierData.tabs.map((sub) => {
                   const active = docsSubView === sub.id;
                   return (
@@ -828,10 +818,10 @@ export function DashboardShell() {
                       key={sub.id}
                       type="button"
                       onClick={() => setDocsSubView(sub.id as DocsSubView)}
-                      className={`pb-3 px-3.5 text-xs font-semibold flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                         active
-                          ? "border-zinc-950 dark:border-white text-zinc-950 dark:text-white font-bold"
-                          : "border-transparent text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 hover:border-zinc-300 dark:hover:border-white/20"
+                          ? "bg-white dark:bg-white/20 text-zinc-950 dark:text-white shadow-xs font-bold"
+                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/[0.08]"
                       }`}
                     >
                       <span>{sub.label}</span>
@@ -839,7 +829,7 @@ export function DashboardShell() {
                         className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-full font-bold ${
                           active
                             ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
-                            : "bg-zinc-100 dark:bg-white/10 text-zinc-500 dark:text-zinc-400"
+                            : "bg-zinc-200/80 dark:bg-white/10 text-zinc-600 dark:text-zinc-400"
                         }`}
                       >
                         {sub.count}

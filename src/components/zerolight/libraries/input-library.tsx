@@ -258,7 +258,6 @@ export function SaaSInputFieldLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
-    if (activeCategory !== "all" && activeCategory !== category) return null;
     if (searchQuery.trim() && !title.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
     return (
@@ -310,27 +309,18 @@ export function SaaSInputFieldLibrary() {
       )}
 
       {/* ── WORKSPACE CONTROL STRIP ── */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-zinc-200/80">
+      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 dark:bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          {/* Horizontal Category Filter Pill Rail */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setActiveCategory(c.id)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 transition-all cursor-pointer whitespace-nowrap ${
-                  activeCategory === c.id
-                    ? "bg-zinc-950 text-white shadow-2xs"
-                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/80"
-                }`}
-              >
-                {c.label}
-              </button>
-            ))}
+          <div>
+            <h2 className="text-sm font-bold text-zinc-950 dark:text-white">
+              SaaS Input Field & Form Controls Library
+            </h2>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              44 high-fidelity form fields with live validation, conjoined prefixes, and keyboard navigation.
+            </p>
           </div>
 
-          {/* Controls: Search, 4 Density Tiers, State Selector, Label Layout */}
+          {/* Controls: Search, State Selector, Label Layout */}
           <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
             {/* Live Search */}
             <div className="relative">
@@ -340,24 +330,8 @@ export function SaaSInputFieldLibrary() {
                 placeholder="Search inputs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-950 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 w-36 sm:w-44"
+                className="pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-950 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white/20 w-36 sm:w-44"
               />
-            </div>
-
-            {/* 4 Density Tiers */}
-            <div className="flex items-center bg-zinc-200/70 p-0.5 rounded-xl border border-zinc-300/40 font-sans tabular-nums">
-              {(["28px", "36px", "44px", "52px"] as const).map((tier) => (
-                <button
-                  key={tier}
-                  type="button"
-                  onClick={() => setDensity(tier)}
-                  className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    density === tier ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600 hover:text-zinc-950"
-                  }`}
-                >
-                  {tier}
-                </button>
-              ))}
             </div>
 
             {/* Global State Selector (Custom Popover) */}
@@ -368,14 +342,14 @@ export function SaaSInputFieldLibrary() {
                   setStateDropdownOpen(!stateDropdownOpen);
                   setLayoutDropdownOpen(false);
                 }}
-                className="px-2.5 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
+                className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
               >
-                <span>State: <strong className="capitalize text-zinc-950">{globalState}</strong></span>
+                <span>State: <strong className="capitalize text-zinc-950 dark:text-white">{globalState}</strong></span>
                 <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
               </button>
 
               {stateDropdownOpen && (
-                <div className="absolute right-0 mt-1.5 w-40 rounded-xl bg-white border border-zinc-200 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                <div className="absolute right-0 mt-1.5 w-40 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
                   {(["idle", "checking", "verified", "warning", "error", "disabled", "readonly"] as const).map((s) => (
                     <button
                       key={s}
@@ -385,7 +359,7 @@ export function SaaSInputFieldLibrary() {
                         setStateDropdownOpen(false);
                       }}
                       className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                        globalState === s ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                        globalState === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
                       }`}
                     >
                       {s}
@@ -403,14 +377,14 @@ export function SaaSInputFieldLibrary() {
                   setLayoutDropdownOpen(!layoutDropdownOpen);
                   setStateDropdownOpen(false);
                 }}
-                className="px-2.5 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
+                className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
               >
-                <span>Label: <strong className="capitalize text-zinc-950">{labelLayout}</strong></span>
+                <span>Label: <strong className="capitalize text-zinc-950 dark:text-white">{labelLayout}</strong></span>
                 <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
               </button>
 
               {layoutDropdownOpen && (
-                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white border border-zinc-200 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
                   {(["top", "small-top", "side", "hidden"] as const).map((l) => (
                     <button
                       key={l}
@@ -420,7 +394,7 @@ export function SaaSInputFieldLibrary() {
                         setLayoutDropdownOpen(false);
                       }}
                       className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                        labelLayout === l ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                        labelLayout === l ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
                       }`}
                     >
                       {l}
@@ -433,11 +407,17 @@ export function SaaSInputFieldLibrary() {
         </div>
       </div>
 
-      {/* ── 3-COLUMN RESPONSIVE INPUT GRID ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* ========================================================================= */}
-        {/* 1. BASIC TEXT & LOGIN INPUTS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 1. BASIC TEXT & LOGIN INPUTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            1. Basic Text & Login Inputs
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Single-line text, email validation, password masks, and authentication fields.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="01"
           title="Simple Text Box"
@@ -596,10 +576,20 @@ export function SaaSInputFieldLibrary() {
             </button>
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 2. NUMBERS, MONEY & TAX INPUTS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 2. NUMBERS, MONEY & TAX INPUTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            2. Numbers, Money & Tax Inputs
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Currency formats, decimal precision, numeric steppers, and tax percentages.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="07"
           title="Stepper Counter"
@@ -781,10 +771,20 @@ export function SaaSInputFieldLibrary() {
             />
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 3. ICONS, PREFIXES & CUSTOM DROPDOWN INPUTS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 3. ICONS, PREFIXES & CUSTOM DROPDOWN INPUTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            3. Icons, Prefixes & Custom Dropdowns
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Domain URL pre-fills, leading icon triggers, and currency selectors.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="13"
           title="Email with Left Icon"
@@ -981,10 +981,20 @@ export function SaaSInputFieldLibrary() {
             />
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 4. SEARCH BARS & TAG INPUTS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 4. SEARCH BARS & TAG INPUTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            4. Search Bars & Tag Inputs
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Filter inputs, tokenizers, auto-complete search, and multi-tag fields.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="19"
           title="Quick Command Search"
@@ -1149,10 +1159,20 @@ export function SaaSInputFieldLibrary() {
             </button>
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 5. CUSTOM DATE, CALENDAR & TIME PICKERS (5 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 5. CUSTOM DATE, CALENDAR & TIME PICKERS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            5. Custom Date, Calendar & Time Pickers
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Date selection, calendar popups, range spans, and time scheduling.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="25"
           title="Custom Calendar Date Picker"
@@ -1388,10 +1408,20 @@ export function SaaSInputFieldLibrary() {
             )}
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 6. COUNTRY CODE, ADDRESS & CONTACT INPUTS (5 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 6. COUNTRY CODE, ADDRESS & CONTACT INPUTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            6. Country Code, Address & Contact Inputs
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            International phone codes, street address fields, and postal codes.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="30"
           title="Custom Country Code Phone"
@@ -1538,10 +1568,20 @@ export function SaaSInputFieldLibrary() {
             />
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 7. MULTI-LINE NOTES & TEXT EDITORS (3 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 7. MULTI-LINE NOTES & TEXT EDITORS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            7. Multi-Line Notes & Text Editors
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Expanding textareas, Markdown text blocks, and structured notes.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="35"
           title="Auto-Growing Note Box"
@@ -1621,10 +1661,20 @@ export function SaaSInputFieldLibrary() {
             />
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 8. SMART AI & ASSISTANT INPUTS (3 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 8. SMART AI & ASSISTANT INPUTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            8. Smart AI & Assistant Inputs
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Prompt drafting fields, token streaming indicators, and AI commands.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="38"
           title="AI Prompt Box"
@@ -1695,10 +1745,20 @@ export function SaaSInputFieldLibrary() {
             </button>
           </div>
         </InputCard>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 9. FILE UPLOAD & COLOR INPUTS (3 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 9. FILE UPLOAD & COLOR INPUTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            9. File Upload & Color Inputs
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Drag-and-drop dropzones, file attachments, and hex color selectors.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <InputCard
           number="41"
           title="File Upload Box"
@@ -1792,7 +1852,8 @@ export function SaaSInputFieldLibrary() {
             </span>
           </div>
         </InputCard>
-      </div>
+        </div>
+      </section>
 
       {/* ── CODE MODAL ── */}
       {activeCodeModal && (

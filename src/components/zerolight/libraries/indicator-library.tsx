@@ -147,7 +147,6 @@ export function SaaSIndicatorLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
-    if (activeCategory !== "all" && activeCategory !== category) return null;
     if (searchQuery.trim() && !title.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
     return (
@@ -183,27 +182,18 @@ export function SaaSIndicatorLibrary() {
       )}
 
       {/* ── WORKSPACE CONTROL STRIP ── */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-zinc-200/80">
+      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 dark:bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          {/* Horizontal Category Filter Pill Rail */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setActiveCategory(c.id)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 transition-all cursor-pointer whitespace-nowrap ${
-                  activeCategory === c.id
-                    ? "bg-zinc-950 text-white shadow-2xs"
-                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/80"
-                }`}
-              >
-                {c.label}
-              </button>
-            ))}
+          <div>
+            <h2 className="text-sm font-bold text-zinc-950 dark:text-white">
+              SaaS Status & Telemetry Indicators Library
+            </h2>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              28 accessible status badges, radar pulse dots, telemetry gauges, and shimmer skeletons.
+            </p>
           </div>
 
-          {/* Controls: Search, 3 Density Tiers, Animation Speed Selector */}
+          {/* Controls: Search & Animation Speed Dropdown */}
           <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
             {/* Live Search */}
             <div className="relative">
@@ -213,24 +203,8 @@ export function SaaSIndicatorLibrary() {
                 placeholder="Search indicators..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-950 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 w-36 sm:w-44"
+                className="pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-950 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white/20 w-36 sm:w-44"
               />
-            </div>
-
-            {/* 3 Size Density Toggles */}
-            <div className="flex items-center bg-zinc-200/70 p-0.5 rounded-xl border border-zinc-300/40 font-sans">
-              {(["small", "medium", "large"] as const).map((tier) => (
-                <button
-                  key={tier}
-                  type="button"
-                  onClick={() => setDensity(tier)}
-                  className={`px-2 py-1 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
-                    density === tier ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600 hover:text-zinc-950"
-                  }`}
-                >
-                  {tier}
-                </button>
-              ))}
             </div>
 
             {/* Custom Speed Dropdown */}
@@ -238,14 +212,14 @@ export function SaaSIndicatorLibrary() {
               <button
                 type="button"
                 onClick={() => setSpeedDropdownOpen(!speedDropdownOpen)}
-                className="px-2.5 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
+                className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
               >
-                <span>Speed: <strong className="capitalize text-zinc-950">{animSpeed}</strong></span>
+                <span>Speed: <strong className="capitalize text-zinc-950 dark:text-white">{animSpeed}</strong></span>
                 <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
               </button>
 
               {speedDropdownOpen && (
-                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white border border-zinc-200 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
                   {(["normal", "fast", "paused"] as const).map((s) => (
                     <button
                       key={s}
@@ -255,7 +229,7 @@ export function SaaSIndicatorLibrary() {
                         setSpeedDropdownOpen(false);
                       }}
                       className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                        animSpeed === s ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                        animSpeed === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
                       }`}
                     >
                       {s}
@@ -268,11 +242,17 @@ export function SaaSIndicatorLibrary() {
         </div>
       </div>
 
-      {/* ── 3-COLUMN RESPONSIVE INDICATOR GRID ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* ========================================================================= */}
-        {/* 1. STATUS BADGES — ACTIVE, PENDING & ALERTS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 1. STATUS BADGES & HEALTH PILLS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            1. Status Badges & Health Pills
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            High-visibility status tags, verification pills, and warning chips.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="01"
           title="Soft Status Pills"
@@ -397,10 +377,20 @@ export function SaaSIndicatorLibrary() {
             </span>
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 2. PLAN, FEATURE & FILTER TAGS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 2. PLAN, FEATURE & FILTER TAGS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            2. Plan, Feature & Filter Tags
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Subscription tier tags, removable filter chips, and count badges.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="07"
           title="Plan & Release Badges"
@@ -533,10 +523,20 @@ export function SaaSIndicatorLibrary() {
             <span>Smart Auto-Fill</span>
           </span>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 3. PROGRESS BARS & USAGE METERS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 3. PROGRESS BARS & USAGE METERS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            3. Progress Bars & Usage Meters
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Linear fill bars, storage quota gauges, and multi-segment meters.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="13"
           title="Simple Progress Bar with Percent"
@@ -688,10 +688,20 @@ export function SaaSIndicatorLibrary() {
             </div>
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 4. SPINNERS & LIVE LOADERS (4 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 4. SPINNERS & LIVE LOADERS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            4. Spinners & Live Loaders
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Circular spinners, buffered rings, radar pulses, and pulsing beacons.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="19"
           title="Clean Ring Spinner"
@@ -768,10 +778,20 @@ export function SaaSIndicatorLibrary() {
             <span>Saving changes...</span>
           </button>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 5. LOADING PLACEHOLDERS — SKELETONS (3 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 5. LOADING PLACEHOLDERS & SHIMMER SKELETONS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            5. Loading Placeholders & Shimmer Skeletons
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Table row placeholders, card shimmers, and avatar loading skeletons.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="23"
           title="User Row Loading Placeholder"
@@ -820,10 +840,20 @@ export function SaaSIndicatorLibrary() {
             <div className="h-5 bg-zinc-200 rounded-md w-1/2" />
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 6. STEP TRACKERS & ORDER TIMELINES (3 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 6. STEP TRACKERS & ORDER TIMELINES ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            6. Step Trackers & Order Timelines
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Sequential multi-step progress bars and audit checkpoint timelines.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="26"
           title="Horizontal 3-Step Indicator"
@@ -902,7 +932,8 @@ export function SaaSIndicatorLibrary() {
             </div>
           </div>
         </Card>
-      </div>
+        </div>
+      </section>
 
       {/* ── CODE MODAL ── */}
       {activeCodeModal && (

@@ -117,13 +117,12 @@ export function SaaSTooltipLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
-    const matchesCategory = activeCategory === "all" || activeCategory === category;
     const matchesSearch =
       searchQuery === "" ||
       title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    if (!matchesCategory || !matchesSearch) return null;
+    if (!matchesSearch) return null;
 
     return (
       <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-xs flex flex-col justify-between transition-all hover:border-zinc-300">
@@ -153,27 +152,18 @@ export function SaaSTooltipLibrary() {
   return (
     <div className={`space-y-6 ${previewOpen ? "preview-open-active" : ""}`}>
       {/* Workspace Control Strip */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-zinc-200/80">
+      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 dark:bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          {/* Category Filter Rail */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer whitespace-nowrap text-xs ${
-                  activeCategory === cat.id
-                    ? "bg-zinc-950 text-white shadow-xs"
-                    : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/60"
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+          <div>
+            <h2 className="text-sm font-bold text-zinc-950 dark:text-white">
+              SaaS Tooltip & Popover Library
+            </h2>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              22 directional hints, keyboard keycaps, quota cards, and safety confirmation popovers.
+            </p>
           </div>
 
-          {/* Controls: Search, 3 Density Tiers, Preview Open */}
+          {/* Controls: Search & Preview Open */}
           <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
             {/* Live Search */}
             <div className="relative">
@@ -183,33 +173,15 @@ export function SaaSTooltipLibrary() {
                 placeholder="Search tooltips..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 transition w-36 sm:w-44"
+                className="pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-xs text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white/20 transition w-36 sm:w-44"
               />
-            </div>
-
-            {/* Density Tiers */}
-            <div className="flex items-center p-0.5 rounded-xl bg-zinc-200/70 border border-zinc-300/40">
-              {(["small", "medium", "large"] as const).map((tier) => (
-                <button
-                  key={tier}
-                  type="button"
-                  onClick={() => setDensity(tier)}
-                  className={`px-2 py-1 rounded-lg text-xs font-semibold capitalize transition cursor-pointer ${
-                    density === tier
-                      ? "bg-white text-zinc-950 shadow-xs"
-                      : "text-zinc-600 hover:text-zinc-950"
-                  }`}
-                >
-                  {tier}
-                </button>
-              ))}
             </div>
 
             {/* Preview Open Toggle */}
             <button
               type="button"
               onClick={() => setPreviewOpen(!previewOpen)}
-              className="px-2.5 py-1.5 rounded-xl border border-zinc-200 bg-white text-zinc-800 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer text-xs"
+              className="px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer text-xs"
             >
               <span className={`w-2 h-2 rounded-full ${previewOpen ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
               <span>Preview: {previewOpen ? "On" : "Off"}</span>
@@ -218,12 +190,17 @@ export function SaaSTooltipLibrary() {
         </div>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {/* ============================================== */}
-        {/* CATEGORY 1: DIRECTIONAL HOVER TOOLTIPS (4)     */}
-        {/* ============================================== */}
-
+      {/* ── 1. DIRECTIONAL HOVER TOOLTIPS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            1. Directional Hover Tooltips
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Micro directional hint bubbles positioned around interactive anchors.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <Card
           number="01"
           title="Top Hover Tooltip"
@@ -312,11 +289,20 @@ export function SaaSTooltipLibrary() {
             </div>
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ============================================== */}
-        {/* CATEGORY 2: SHORTCUT, LIGHT & STATUS (4)       */}
-        {/* ============================================== */}
-
+      {/* ── 2. SHORTCUTS, LIGHT & STATUS TOOLTIPS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            2. Shortcuts, Light & Status Tooltips
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Keyboard keycap shortcuts, live presence indicators, and health monitors.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <Card
           number="05"
           title="Keyboard Shortcut Tooltip"
@@ -421,11 +407,20 @@ export function SaaSTooltipLibrary() {
             </div>
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ============================================== */}
-        {/* CATEGORY 3: TOOLBAR & ICON HELP (4)           */}
-        {/* ============================================== */}
-
+      {/* ── 3. TOOLBAR & ICON CONTEXT HINTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            3. Toolbar & Icon Context Hints
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Quick formatting toolbars, table column metrics, and copy feedback.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <Card
           number="09"
           title="Icon Action Bar with Tooltips"
@@ -536,11 +531,20 @@ export function SaaSTooltipLibrary() {
             </div>
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ============================================== */}
-        {/* CATEGORY 4: RICH INFO & PROFILE POPOVERS (4)   */}
-        {/* ============================================== */}
-
+      {/* ── 4. RICH PROFILE & QUOTA POPOVERS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            4. Rich Profile & Quota Popovers
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            User presence profiles, plan quota usages, and notification feeds.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <Card
           number="13"
           title="Feature Info Card Popover"
@@ -702,11 +706,20 @@ export function SaaSTooltipLibrary() {
             )}
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ============================================== */}
-        {/* CATEGORY 5: CONFIRMATION & WARNING POPOVERS (3)*/}
-        {/* ============================================== */}
-
+      {/* ── 5. SAFETY CONFIRMATION & WARNING POPOVERS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            5. Safety Confirmation & Warning Popovers
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Two-step confirmation dialogs, permanent action locks, and danger zones.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <Card
           number="17"
           title="Delete Confirmation Popover"
@@ -844,11 +857,20 @@ export function SaaSTooltipLibrary() {
             )}
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ============================================== */}
-        {/* CATEGORY 6: QUICK-EDIT & SHARE POPOVERS (3)   */}
-        {/* ============================================== */}
-
+      {/* ── 6. QUICK-EDIT & IN-CONTEXT NOTES ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            6. Quick-Edit & In-Context Notes
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Inline cell annotations, workspace tags, and collaborative notes.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         <Card
           number="20"
           title="Share Link & Access Popover"
@@ -997,7 +1019,8 @@ export function SaaSTooltipLibrary() {
             )}
           </div>
         </Card>
-      </div>
+        </div>
+      </section>
 
       {/* Code Modal */}
       {activeCodeModal && (

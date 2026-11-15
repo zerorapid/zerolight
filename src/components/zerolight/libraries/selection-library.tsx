@@ -198,7 +198,6 @@ export function SaaSSelectionLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
-    if (activeCategory !== "all" && activeCategory !== category) return null;
     if (searchQuery.trim() && !title.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
     return (
@@ -339,27 +338,18 @@ export function SaaSSelectionLibrary() {
       )}
 
       {/* ── WORKSPACE CONTROL STRIP ── */}
-      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-zinc-200/80">
+      <div className="sticky top-0 z-30 -mx-6 px-6 py-2.5 bg-[#FAFAFA]/95 dark:bg-[#09090B]/95 backdrop-blur-md border-b border-zinc-200/80 dark:border-white/10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          {/* Horizontal Category Filter Pill Rail */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setActiveCategory(c.id)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 transition-all cursor-pointer whitespace-nowrap ${
-                  activeCategory === c.id
-                    ? "bg-zinc-950 text-white shadow-2xs"
-                    : "bg-zinc-100 text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200/80"
-                }`}
-              >
-                {c.label}
-              </button>
-            ))}
+          <div>
+            <h2 className="text-sm font-bold text-zinc-950 dark:text-white">
+              SaaS Selection Controls & Toggles Library
+            </h2>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              26 accessible switches, custom segmented controls, radio groups, and selectable plan cards.
+            </p>
           </div>
 
-          {/* Controls: Search, 3 Density Tiers, Global State Selector */}
+          {/* Controls: Search & Custom State Dropdown */}
           <div className="flex flex-wrap items-center gap-2 text-xs shrink-0">
             {/* Live Search */}
             <div className="relative">
@@ -369,24 +359,8 @@ export function SaaSSelectionLibrary() {
                 placeholder="Search controls..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-950 text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 w-36 sm:w-44"
+                className="pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-950 dark:text-white text-xs focus:outline-none focus:ring-1 focus:ring-zinc-950 dark:focus:ring-white/20 w-36 sm:w-44"
               />
-            </div>
-
-            {/* 3 Size Density Toggles */}
-            <div className="flex items-center bg-zinc-200/70 p-0.5 rounded-xl border border-zinc-300/40 font-sans">
-              {(["small", "medium", "large"] as const).map((tier) => (
-                <button
-                  key={tier}
-                  type="button"
-                  onClick={() => setDensity(tier)}
-                  className={`px-2 py-1 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
-                    density === tier ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600 hover:text-zinc-950"
-                  }`}
-                >
-                  {tier}
-                </button>
-              ))}
             </div>
 
             {/* Custom State Dropdown */}
@@ -394,14 +368,14 @@ export function SaaSSelectionLibrary() {
               <button
                 type="button"
                 onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
-                className="px-2.5 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
+                className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
               >
-                <span>State: <strong className="capitalize text-zinc-950">{globalState}</strong></span>
+                <span>State: <strong className="capitalize text-zinc-950 dark:text-white">{globalState}</strong></span>
                 <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
               </button>
 
               {stateDropdownOpen && (
-                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white border border-zinc-200 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
                   {(["ready", "error", "disabled"] as const).map((s) => (
                     <button
                       key={s}
@@ -411,7 +385,7 @@ export function SaaSSelectionLibrary() {
                         setStateDropdownOpen(false);
                       }}
                       className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                        globalState === s ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                        globalState === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
                       }`}
                     >
                       {s}
@@ -424,11 +398,17 @@ export function SaaSSelectionLibrary() {
         </div>
       </div>
 
-      {/* ── 3-COLUMN RESPONSIVE SELECTION GRID ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* ========================================================================= */}
-        {/* 1. CHECKBOXES & MULTI-SELECT LISTS (6 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 1. CHECKBOXES & MULTI-SELECT LISTS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            1. Checkboxes & Multi-Select Lists
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Standard checkboxes, indeterminate states, and inline helper labels.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="01"
           title="Simple Checkbox"
@@ -566,10 +546,20 @@ export function SaaSSelectionLibrary() {
             </span>
           </label>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 2. RADIO BUTTONS — PICK ONE OPTION (5 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 2. RADIO BUTTONS — PICK ONE OPTION ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            2. Radio Buttons — Pick One Option
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Stacked radio options, horizontal inline groups, and descriptive radio lists.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="07"
           title="Vertical Radio List"
@@ -701,10 +691,20 @@ export function SaaSSelectionLibrary() {
             ))}
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 3. TOGGLE SWITCHES — ON / OFF CONTROLS (5 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 3. TOGGLE SWITCHES — ON / OFF CONTROLS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            3. Toggle Switches — On / Off Controls
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Accessible toggle switches with icon glyphs and persistent states.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="12"
           title="Simple Toggle Switch"
@@ -791,10 +791,20 @@ export function SaaSSelectionLibrary() {
             <CustomSwitch active={switch5} onChange={() => setSwitch5(!switch5)} />
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 4. SELECTABLE CARDS & PLAN BOXES (4 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 4. SELECTABLE CARDS & PLAN BOXES ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            4. Selectable Cards & Plan Boxes
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Pricing tier cards, feature selectors, and checkmarked selection boxes.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="17"
           title="Single-Choice Plan Cards"
@@ -933,10 +943,20 @@ export function SaaSSelectionLibrary() {
             })}
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 5. CUSTOM SELECT & MULTI-SELECT BOXES (3 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 5. CUSTOM SELECT & MULTI-SELECT BOXES ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            5. Custom Select & Multi-Select Boxes
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Searchable dropdown selectors, tag pickers, and multi-select filters.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="21"
           title="Single Choice Select Box"
@@ -1078,10 +1098,20 @@ export function SaaSSelectionLibrary() {
             )}
           </div>
         </Card>
+        </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* 6. PERMISSION MATRIX & DAY PICKERS (3 VARIANTS) */}
-        {/* ========================================================================= */}
+      {/* ── 6. PERMISSION MATRIX & DAY PICKERS ── */}
+      <section className="space-y-3">
+        <div>
+          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+            6. Permission Matrix & Day Pickers
+          </h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Role permission matrices, week-day multi-selectors, and schedule switches.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card
           number="24"
           title="Weekly Working Days Selector"
@@ -1204,7 +1234,8 @@ export function SaaSSelectionLibrary() {
             </span>
           </div>
         </Card>
-      </div>
+        </div>
+      </section>
 
       {/* ── CODE MODAL ── */}
       {activeCodeModal && (

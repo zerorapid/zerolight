@@ -242,13 +242,12 @@ export function SaaSDataLibrary() {
 
   // Filtering
   const filteredVariants = variants.filter((v) => {
-    const matchesCat = activeCategory === "all" || v.cat === activeCategory;
     const matchesQuery =
       searchQuery.trim() === "" ||
       v.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       v.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
       v.type.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCat && matchesQuery;
+    return matchesQuery;
   });
 
   // Table Helpers
@@ -357,53 +356,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               )}
             </div>
 
-            <div className="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-xs">
-              {(["compact", "default", "relaxed"] as DataDensity[]).map((sz) => (
-                <button
-                  key={sz}
-                  type="button"
-                  onClick={() => setDensity(sz)}
-                  className={`px-2.5 py-1 rounded-md capitalize transition cursor-pointer ${
-                    density === sz
-                      ? "bg-white dark:bg-white/20 text-zinc-950 dark:text-white shadow-xs font-semibold"
-                      : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200 font-medium"
-                  }`}
-                >
-                  {sz}
-                </button>
-              ))}
-            </div>
           </div>
-        </div>
-
-        {/* Filter Pill Rail */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
-                  isActive
-                    ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs"
-                    : "bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10"
-                }`}
-              >
-                <span>{cat.label}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold ${
-                    isActive
-                      ? "bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950"
-                      : "bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400"
-                  }`}
-                >
-                  {cat.count}
-                </span>
-              </button>
-            );
-          })}
         </div>
       </div>
 
