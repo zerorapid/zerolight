@@ -319,126 +319,8 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
 }`;
   };
 
-  return (
-    <div className="space-y-6">
-      {/* =========================================================================
-          STICKY TOP CONTROL BAR
-      ========================================================================= */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-6 px-6 py-3.5 space-y-3 transition-colors">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-          {/* Title & Live Variant Counter Badge */}
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-900 text-white dark:bg-white dark:text-zinc-950">
-              Level 3
-            </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-base font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
-                  SaaS Overlays, Modals, Drawers & ⌘K
-                </h1>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums">
-                  {filteredVariants.length} of 16 Variants
-                </span>
-              </div>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Organism-level dialogs, slide-over sheets, floating command launchers, and micro-overlays.
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Launch & Global Width Controls */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Quick Launch ⌘K */}
-            <button
-              type="button"
-              onClick={() => setActiveOverlayId("v11")}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer"
-            >
-              <Command className="w-3.5 h-3.5" />
-              <span>Launch Command Bar</span>
-              <span className="text-[10px] bg-white/20 dark:bg-black/10 px-1 py-0.2 rounded font-sans tabular-nums">
-                ⌘K
-              </span>
-            </button>
-
-            {/* Instant Search */}
-            <div className="relative min-w-[200px]">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-              <input
-                type="text"
-                placeholder="Filter overlays..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-
-            {/* Global Overlay Width Toggles */}
-            <div className="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-xs">
-              {(["small", "medium", "large"] as OverlaySize[]).map((sz) => (
-                <button
-                  key={sz}
-                  type="button"
-                  onClick={() => setOverlaySize(sz)}
-                  className={`px-2.5 py-1 rounded-md font-medium capitalize transition cursor-pointer ${
-                    overlaySize === sz
-                      ? "bg-white dark:bg-white/20 text-zinc-950 dark:text-white shadow-xs font-semibold"
-                      : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
-                  }`}
-                >
-                  {sz}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Horizontal Category Filter Rail */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          {categories.map((cat) => {
-            const isActive = activeCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 ${
-                  isActive
-                    ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 shadow-xs"
-                    : "bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/70 dark:hover:bg-white/10"
-                }`}
-              >
-                <span>{cat.label}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold ${
-                    isActive
-                      ? "bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950"
-                      : "bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400"
-                  }`}
-                >
-                  {cat.count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* =========================================================================
-          VARIANTS GRID (16 OVERLAYS)
-      ========================================================================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filteredVariants.map((v) => (
-          <div
+  const renderOverlayCard = (v: typeof variants[0]) => (
+    <div
             key={v.id}
             className="group relative flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition"
           >
@@ -447,7 +329,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               <div className="flex items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-bold text-zinc-400 dark:text-zinc-500 font-sans tabular-nums">
-                    #{v.num}
+                    {v.num}
                   </span>
                   <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 border border-zinc-200/60 dark:border-white/5">
                     {v.type}
@@ -628,7 +510,96 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               </button>
             </div>
           </div>
-        ))}
+  );
+
+  return (
+    <div className="space-y-6">
+      {/* =========================================================================
+           STICKY TOP CONTROL BAR (SLIMMED UTILITY BAR)
+      ========================================================================= */}
+      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-6 px-6 py-2.5 transition-colors">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Left: Summary Counter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              {filteredVariants.length} of 16 Variants Active
+            </span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
+              Dialogs, slide-over sheets, ⌘K command palettes, context menus & wizards.
+            </span>
+          </div>
+
+          {/* Right: Quick Launch & Search */}
+          <div className="flex items-center gap-2.5">
+            {/* Quick Launch ⌘K */}
+            <button
+              type="button"
+              onClick={() => setActiveOverlayId("v11")}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
+            >
+              <Command className="w-3.5 h-3.5" />
+              <span>Launch Command Bar</span>
+              <span className="text-[10px] bg-white/20 dark:bg-black/10 px-1 py-0.2 rounded font-sans tabular-nums">
+                ⌘K
+              </span>
+            </button>
+
+            {/* Instant Search */}
+            <div className="relative min-w-[200px]">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <input
+                type="text"
+                placeholder="Filter overlays..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          IN-PAGE GROUPED SECTIONS (6 SECTIONS, 16 OVERLAYS)
+      ========================================================================= */}
+      <div className="space-y-8">
+        {[
+          { id: "confirmations", title: "1. Dialogs & Confirmations", desc: "Compact alert dialogs for destructive, verification, and critical actions." },
+          { id: "modals", title: "2. Form & Creation Modals", desc: "Centered modal dialogs with form validation, billing upgrades, and team invites." },
+          { id: "drawers", title: "3. Slide-Over Drawers", desc: "Full-height right side drawers for deep inspection and progressive disclosure." },
+          { id: "commands", title: "4. Command Palettes & ⌘K", desc: "Fast global keyboard navigators with fuzzy query matching and quick jumps." },
+          { id: "context-menus", title: "5. Context & Micro-Overlays", desc: "Positioned dropdowns, popover filters, and right-click context menus." },
+          { id: "wizards", title: "6. Steppers & Multi-Step Wizards", desc: "Sequential workflow wizards with step tracking, back, and finish actions." },
+        ].map((sec) => {
+          const secVariants = filteredVariants.filter((v) => v.cat === sec.id);
+          if (secVariants.length === 0) return null;
+
+          return (
+            <section key={sec.id} className="space-y-3">
+              <div>
+                <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+                  {sec.title}
+                </h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                  {sec.desc}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {secVariants.map(renderOverlayCard)}
+              </div>
+            </section>
+          );
+        })}
       </div>
 
       {/* =========================================================================

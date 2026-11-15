@@ -276,33 +276,22 @@ export function SaaSBusinessLibrary() {
   return (
     <div className="space-y-6">
       {/* =========================================================================
-           STICKY GLOBAL CONTROL BAR
+           STICKY GLOBAL CONTROL BAR (SLIMMED UTILITY BAR)
       ========================================================================= */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3.5 space-y-3">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-          {/* Left: L3 Badge, Title & Live Counter */}
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
-              L3
+      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-2.5 transition-colors">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Left: Summary Counter */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              {filteredVariants.length} of 16 Modules Active
             </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
-                  SaaS Business, Billing & Analytics Modules
-                </h2>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-                  {filteredVariants.length} of 16 Modules
-                </span>
-              </div>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Level 3 Organisms: Notification inboxes, @mention feeds, interactive 3-tier pricing, SVG analytics, and Tally Prime sync.
-              </p>
-            </div>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
+              Inboxes, @mentions, pricing tiers, usage limits, SVG analytics & Tally sync.
+            </span>
           </div>
 
-          {/* Right: Search & Density */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Search Input */}
+          {/* Right: Search */}
+          <div className="flex items-center gap-2.5">
             <div className="relative min-w-[220px]">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
               <input
@@ -322,63 +311,23 @@ export function SaaSBusinessLibrary() {
                 </button>
               )}
             </div>
-
-            {/* Density Toggles */}
-            <div className="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
-              {(["small", "medium", "large"] as BusinessDensity[]).map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  onClick={() => setDensity(d)}
-                  className={`px-2.5 py-1 rounded-md capitalize transition cursor-pointer ${
-                    density === d
-                      ? "font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs"
-                      : "font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200"
-                  }`}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
           </div>
-        </div>
-
-        {/* Category Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-1">
-          {categories.map((c) => {
-            const isActive = activeCategory === c.id;
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setActiveCategory(c.id)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 ${
-                  isActive
-                    ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs"
-                    : "bg-zinc-100/80 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/60 dark:hover:bg-white/10"
-                }`}
-              >
-                <span>{c.label}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-sans tabular-nums font-bold ${
-                    isActive
-                      ? "bg-white/20 dark:bg-zinc-950/20 text-white dark:text-zinc-950"
-                      : "bg-zinc-200 dark:bg-white/10 text-zinc-500 dark:text-zinc-400"
-                  }`}
-                >
-                  {c.count}
-                </span>
-              </button>
-            );
-          })}
         </div>
       </div>
 
-      {/* =========================================================================
-           MODULES GRID
-      ========================================================================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* VARIANT 01: Notification Inbox Popover */}
+      <div className="space-y-8">
+        {/* ── 1. NOTIFICATIONS & @MENTIONS ── */}
+        <section className="space-y-3">
+          <div>
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+              1. Notifications & @Mentions
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Notification inboxes, collaborative mention feeds, and in-app support launchers.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* VARIANT 01: Notification Inbox Popover */}
         {filteredVariants.some((v) => v.id === "v01") && (
           <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
             <div className={densityConfig.pad}>
@@ -605,7 +554,21 @@ export function SaaSBusinessLibrary() {
           </div>
         )}
 
-        {/* VARIANT 04: Interactive 3-Tier SaaS Pricing Table */}
+                  </div>
+        </section>
+
+        {/* ── 2. SAAS PRICING & PLANS ── */}
+        <section className="space-y-3">
+          <div>
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+              2. SaaS Pricing & Plans
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Multi-tier subscription matrix with annual discounts, feature lists, and checkout buttons.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-6">
+            {/* VARIANT 04: Interactive 3-Tier SaaS Pricing Table */}
         {filteredVariants.some((v) => v.id === "v04") && (
           <div className="md:col-span-2 bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
             <div className={densityConfig.pad}>
@@ -791,7 +754,21 @@ export function SaaSBusinessLibrary() {
           </div>
         )}
 
-        {/* VARIANT 05: Plan Usage & Limit Meters */}
+                  </div>
+        </section>
+
+        {/* ── 3. USAGE, LIMITS & BILLING ── */}
+        <section className="space-y-3">
+          <div>
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+              3. Usage, Limits & Billing
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Seat utilization meters, saved card credentials, and downloadable GST invoice history.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* VARIANT 05: Plan Usage & Limit Meters */}
         {filteredVariants.some((v) => v.id === "v05") && (
           <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
             <div className={densityConfig.pad}>
@@ -995,7 +972,21 @@ export function SaaSBusinessLibrary() {
           </div>
         )}
 
-        {/* VARIANT 08: Monthly Revenue Bar Chart Panel */}
+                  </div>
+        </section>
+
+        {/* ── 4. SVG ANALYTICS PANELS ── */}
+        <section className="space-y-3">
+          <div>
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+              4. SVG Analytics Panels
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Zero-dependency SVG revenue charts, conversion funnels, donut shares & weekly activity heatmaps.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* VARIANT 08: Monthly Revenue Bar Chart Panel */}
         {filteredVariants.some((v) => v.id === "v08") && (
           <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
             <div className={densityConfig.pad}>
@@ -1462,7 +1453,21 @@ export function SaaSBusinessLibrary() {
           </div>
         )}
 
-        {/* VARIANT 14: Connected Integration Card (Tally Prime) */}
+                  </div>
+        </section>
+
+        {/* ── 5. INTEGRATIONS & WORKSPACES ── */}
+        <section className="space-y-3">
+          <div>
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+              5. Integrations & Workspaces
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Tally Prime accounting connectors, API key secret management & multi-tenant org switchers.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* VARIANT 14: Connected Integration Card (Tally Prime) */}
         {filteredVariants.some((v) => v.id === "v14") && (
           <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
             <div className={densityConfig.pad}>
@@ -1669,6 +1674,8 @@ export function SaaSBusinessLibrary() {
             </div>
           </div>
         )}
+          </div>
+        </section>
       </div>
 
       {/* =========================================================================

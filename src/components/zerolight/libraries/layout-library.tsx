@@ -184,24 +184,14 @@ export function SaaSLayoutLibrary() {
       ========================================================================= */}
       <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-4 sm:-mx-6 px-4 sm:px-6 py-3.5 space-y-3">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-          {/* Left: L4 Badge, Title & Live Counter */}
-          <div className="flex items-center gap-3">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
-              L4
+          {/* Left: Live Counter & Description */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
+              {filteredTemplates.length} Templates Active
             </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
-                  SaaS Page Skeletons & Layout Blueprints
-                </h2>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-                  {filteredTemplates.length} Templates Active
-                </span>
-              </div>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Production Layouts: App shells, executive grids, master-detail splits, settings forms, and onboarding steppers.
-              </p>
-            </div>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
+              Production layouts: App shells, executive grids, master-detail splits, settings & steppers.
+            </span>
           </div>
 
           {/* Right: Search & Blueprint Guides */}

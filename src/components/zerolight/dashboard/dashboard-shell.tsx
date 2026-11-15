@@ -47,7 +47,7 @@ import { useZeroLight } from "../context";
 import { ZeroLightStudio } from "../docs-studio";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
-import { SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary, SaaSTooltipLibrary, SaaSFeedbackLibrary, SaaSOverlaysLibrary, SaaSNavigationLibrary, SaaSDataLibrary, SaaSBusinessLibrary, SaaSLayoutLibrary, SaaSAppScreensLibrary, SaaSEdgeCasesLibrary } from "../libraries";
+import { SaaSTokensLibrary, SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary, SaaSTooltipLibrary, SaaSFeedbackLibrary, SaaSOverlaysLibrary, SaaSNavigationLibrary, SaaSDataLibrary, SaaSBusinessLibrary, SaaSLayoutLibrary, SaaSAppScreensLibrary, SaaSEdgeCasesLibrary } from "../libraries";
 import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
@@ -111,7 +111,6 @@ export const DOCS_TIERS: {
     defaultTab: "feedback",
     tabs: [
       { id: "feedback", label: "Feedback & Alerts", count: "20", desc: "Inline notice bars, floating toasts, empty states & recovery cards" },
-      { id: "catalog-molecules", label: "Molecules Catalog", count: "44", desc: "StatCards, input groups, date pickers & micro data charts" },
     ],
   },
   {
@@ -810,7 +809,7 @@ export function DashboardShell() {
               </div>
 
               {/* Sub-menu Tabs Container */}
-              <div className="p-1.5 rounded-xl bg-zinc-100/90 dark:bg-white/[0.06] border border-zinc-200/60 dark:border-white/10 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+              <div className="inline-flex max-w-fit p-1 rounded-xl bg-zinc-100/90 dark:bg-white/[0.06] border border-zinc-200/60 dark:border-white/10 items-center gap-1 overflow-x-auto no-scrollbar">
                 {activeTierData.tabs.map((sub) => {
                   const active = docsSubView === sub.id;
                   return (
@@ -841,11 +840,8 @@ export function DashboardShell() {
             </div>
 
             {/* Sub-view Content */}
-            {docsSubView === "catalog" && (
-              <div className="w-full -mt-2 -ml-6 -mr-6 md:-mt-4 md:-ml-8 md:-mr-8 -mb-8">
-                <ZeroLightDocsPortal />
-              </div>
-            )}
+            {docsSubView === "catalog" && <SaaSTokensLibrary />}
+            {false && <ZeroLightDocsPortal />}
             {docsSubView === "buttons" && <SaaSButtonLibrary />}
             {docsSubView === "inputs" && <SaaSInputFieldLibrary />}
             {docsSubView === "selections" && <SaaSSelectionLibrary />}
@@ -853,11 +849,6 @@ export function DashboardShell() {
             {docsSubView === "dividers" && <SaaSDividerLibrary />}
             {docsSubView === "tooltips" && <SaaSTooltipLibrary />}
             {docsSubView === "feedback" && <SaaSFeedbackLibrary />}
-            {docsSubView === "catalog-molecules" && (
-              <div className="w-full -mt-2 -ml-6 -mr-6 md:-mt-4 md:-ml-8 md:-mr-8 -mb-8">
-                <ZeroLightDocsPortal />
-              </div>
-            )}
             {docsSubView === "overlays" && <SaaSOverlaysLibrary />}
             {docsSubView === "navigation" && <SaaSNavigationLibrary />}
             {docsSubView === "data" && <SaaSDataLibrary />}
