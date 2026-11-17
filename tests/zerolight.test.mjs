@@ -2195,6 +2195,45 @@ test("Atomic Hierarchy: 6 clean sidebar tiers (Foundations, Atoms, Molecules, Or
   assert.ok(inputLib.includes("<Plus"), "input-library must use Lucide Plus icon in counter stepper");
 });
 
+// -----------------------------------------------------------------
+// Test Suite 43: Architectural Landmark & Context Invariants
+// -----------------------------------------------------------------
+console.log("\n=== Suite 43: Architectural Landmark & Context Invariants ===");
+
+test("Architectural Atlas: root ATLAS.md & AGENTS.md exist, adhere to strict 150-line limit, and validate paths", () => {
+  const atlasPath = path.join(rootDir, "ATLAS.md");
+  assert.ok(fs.existsSync(atlasPath), "ATLAS.md must exist at project root");
+  const atlasContent = fs.readFileSync(atlasPath, "utf8");
+  const lines = atlasContent.split("\n");
+  assert.ok(lines.length <= 150, `ATLAS.md must stay under 150 lines to prevent AI context bloat (currently ${lines.length} lines)`);
+
+  const agentsPath = path.join(rootDir, "AGENTS.md");
+  assert.ok(fs.existsSync(agentsPath), "AGENTS.md must exist at root for universal AI tool discovery");
+
+  // Validate that all landmark paths referenced in ATLAS.md physically exist on disk (prevents documentation drift)
+  const landmarkPaths = [
+    "src/components/zerolight/types.ts",
+    "src/components/zerolight/context.tsx",
+    "src/components/zerolight/atoms",
+    "src/components/zerolight/molecules",
+    "src/components/zerolight/organisms",
+    "src/components/zerolight/templates",
+    "src/components/zerolight/views",
+    "src/components/zerolight/libraries",
+    "src/components/zerolight/libraries/common",
+    "src/components/zerolight/dashboard",
+    "bin/cli.mjs",
+    "bin/zerolight-mcp.mjs",
+    "scripts/build-registry.mjs",
+    "public/registry",
+  ];
+
+  for (const relPath of landmarkPaths) {
+    const fullPath = path.join(rootDir, relPath);
+    assert.ok(fs.existsSync(fullPath), `Landmark path in ATLAS.md must exist on disk: ${relPath}`);
+  }
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");
