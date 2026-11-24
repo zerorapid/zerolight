@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "breadcrumbs",
+  "type": "registry:component",
+  "title": "Breadcrumbs",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/breadcrumbs.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { ChevronRight } from \"lucide-react\";\nimport Link from \"next/link\";\n\nexport interface BreadcrumbItem {\n  label: string;\n  href?: string;\n}\n\nexport interface BreadcrumbsProps {\n  items: BreadcrumbItem[];\n  className?: string;\n}\n\nexport function Breadcrumbs({ items, className = \"\" }: BreadcrumbsProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <nav aria-label=\"Breadcrumb\" className={`flex items-center gap-1.5 select-none overflow-x-auto whitespace-nowrap scrollbar-none ${className}`}>\n      {items.map((item, idx) => {\n        const isLast = idx === items.length - 1;\n        return (\n          <React.Fragment key={item.label}>\n            {idx > 0 && <ChevronRight className=\"w-3.5 h-3.5 text-neutral-400 shrink-0\" />}\n            {item.href && !isLast ? (\n              <Link\n                href={item.href}\n                title={item.label}\n                style={{ fontSize: `${scaled.sublabelFontSize}px` }}\n                className=\"text-neutral-500 hover:text-neutral-900 transition-colors font-medium truncate max-w-[140px]\"\n              >\n                {item.label}\n              </Link>\n            ) : (\n              <span\n                title={item.label}\n                style={{\n                  fontSize: `${scaled.sublabelFontSize}px`,\n                  color: isLast ? tokens.textIconColor : undefined,\n                }}\n                className={`font-semibold truncate max-w-[180px] ${isLast ? \"\" : \"text-neutral-500\"}`}\n                aria-current={isLast ? \"page\" : undefined}\n              >\n                {item.label}\n              </span>\n            )}\n          </React.Fragment>\n        );\n      })}\n    </nav>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

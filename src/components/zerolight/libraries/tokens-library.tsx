@@ -1,28 +1,28 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Copy,
   Check,
-  Search,
-  X,
   Terminal,
-  Layers,
-  Sparkles,
-  Sliders,
-  Shield,
-  Palette,
-  ArrowRight,
-  Code2,
 } from "lucide-react";
 import { useZeroLight } from "../context";
+import { Button } from "../atoms/button";
+import { Badge } from "../atoms/badge";
+import { Input } from "../atoms/input";
+import { Switch } from "../atoms/switch";
+import { DynamicIcon } from "../atoms/dynamic-icon";
+import { LibraryHeader } from "./common";
 
 export function SaaSTokensLibrary() {
   const { tokens, scaled } = useZeroLight();
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [motionTrigger, setMotionTrigger] = useState<string | null>(null);
-  const [elevationMode, setElevationMode] = useState<"flat" | "soft" | "elevated">("soft");
+  const [elevationMode, setElevationMode] = useState<"flat" | "soft" | "elevated">(tokens.elevation || "soft");
+  const [liveSwitch, setLiveSwitch] = useState(true);
+  const [liveInput, setLiveInput] = useState("prod-cluster@zerolight.dev");
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard?.writeText(text);
@@ -35,17 +35,20 @@ export function SaaSTokensLibrary() {
     setTimeout(() => setMotionTrigger(null), 600);
   };
 
-  // Color Swatches
+  const primColor = tokens.primaryButtonColor || "#0F172A";
+  const secColor = tokens.chartSecondaryColor || "#FFFFFF";
+
+  // Color Swatches (Bound live to ZeroLight Runtime Tokens)
   const colorTokens = [
-    { id: "canvas", name: "Canvas Neutral", hex: "#F8F9FA", darkHex: "#09090B", role: "Page background canvas" },
-    { id: "surface", name: "Surface Neutral", hex: "#FFFFFF", darkHex: "#121215", role: "Cards, modals & panels" },
-    { id: "border", name: "Hairline Border", hex: "#E4E4E7", darkHex: "#27272A", role: "1px structural hairlines" },
-    { id: "text-primary", name: "Text Primary", hex: "#09090B", darkHex: "#FAFAFA", role: "Headings & active labels" },
-    { id: "text-muted", name: "Text Muted", hex: "#71717A", darkHex: "#A1A1AA", role: "Secondary copy & captions" },
-    { id: "emerald", name: "Status Healthy", hex: "#10B981", darkHex: "#34D399", role: "Success, positive deltas & online" },
-    { id: "amber", name: "Status Warning", hex: "#F59E0B", darkHex: "#FBBF24", role: "Alerts, trial limits & pending" },
-    { id: "rose", name: "Status Danger", hex: "#EF4444", darkHex: "#F87171", role: "Errors, destructive & failed" },
-    { id: "sky", name: "Brand Accent", hex: "#0284C7", darkHex: "#38BDF8", role: "Focus rings, links & selections" },
+    { id: "brand-primary", name: "Primary Brand Accent", hex: primColor, role: "Primary CTAs, focus rings & chart series 1 (live token)" },
+    { id: "chart-secondary", name: "Secondary Chart Accent", hex: secColor, role: "Dual-accent comparisons & secondary chart series (live token)" },
+    { id: "surface", name: "Surface Fill", hex: tokens.universalFillColor || "#FFFFFF", role: "Cards, modals & panel backplates (live token)" },
+    { id: "border", name: "Hairline Border", hex: tokens.universalBorderColor || "#E4E4E7", role: `${tokens.borderWidth ?? 1}px structural boundaries (live token)` },
+    { id: "text-primary", name: "Text & Icon Color", hex: tokens.textIconColor || "#09090B", role: "Headings & YIQ contrast text (live token)" },
+    { id: "hover-tint", name: "Hover Backplate Tint", hex: tokens.hoverBackplateTint || "#F4F4F5", role: "Row hover & quiet pill fill (live token)" },
+    { id: "emerald", name: "Status Healthy", hex: "#10B981", role: "Success, positive deltas & online" },
+    { id: "amber", name: "Status Warning", hex: "#F59E0B", role: "Alerts, trial limits & pending" },
+    { id: "rose", name: "Status Danger", hex: "#EF4444", role: "Errors, destructive & failed" },
   ];
 
   // Typography Scales
@@ -74,52 +77,63 @@ export function SaaSTokensLibrary() {
 
   return (
     <div className="space-y-8">
-      {/* =========================================================================
-           STICKY TOP UTILITY BAR
-      ========================================================================= */}
-      <div className="sticky top-0 z-20 backdrop-blur-md bg-white/90 dark:bg-[#09090B]/90 border-b border-zinc-200/80 dark:border-white/10 -mx-6 px-6 py-2.5 transition-colors">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          {/* Left: Live Counter */}
+      {/* ── UNIFIED LIBRARY UTILITY HEADER (ZERO STICKY OVERLAP, ZERO BLEEDING) ── */}
+      <LibraryHeader
+        countText="120 Foundations & Tokens Active"
+        description="Live-bound tactile calm tokens, Google Fonts, YIQ contrast, materials & spring physics."
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Filter tokens & principles..."
+        action={
+          <button
+            type="button"
+            onClick={() => copyToClipboard("npx zerolight tokens export", "cli-export")}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
+          >
+            <Terminal className="w-3.5 h-3.5" />
+            <span>{copiedToken === "cli-export" ? "Copied Command!" : "Export Tokens CLI"}</span>
+          </button>
+        }
+      />
+
+      {/* ── LIVE RUNTIME PRIMITIVE TOKEN STRIP (PROVES REAL BINDING WITH VISUAL STUDIO DOCK) ── */}
+      <div
+        style={{
+          borderRadius: `${scaled.scaledCardRadius}px`,
+          borderColor: tokens.universalBorderColor,
+          borderWidth: `${tokens.borderWidth}px`,
+          backgroundColor: tokens.universalFillColor,
+        }}
+        className="p-5 border shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+      >
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-              119 Foundations & Tokens Active
-            </span>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 hidden sm:inline">
-              Tactile calm principles, color tokens, typography, materials & physics engine.
+            <Badge variant="healthy" size="xs" showDot>Live Runtime Token Feed</Badge>
+            <span className="text-[11px] font-semibold text-zinc-500 tabular-nums">
+              Radius: {tokens.cornerRadius ?? 12}px &bull; Font: {tokens.fontFamily || "Plus Jakarta Sans"} &bull; Icons: {(tokens.iconLibrary || "lucide").toUpperCase()}
             </span>
           </div>
+          <p className="text-xs text-zinc-500">
+            All real ZeroLight atoms below update immediately whenever tokens change in Visual Studio Dock.
+          </p>
+        </div>
 
-          {/* Right: Search & CLI Export */}
-          <div className="flex items-center gap-2.5">
-            <div className="relative min-w-[210px]">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-              <input
-                type="text"
-                placeholder="Filter tokens & principles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-7 py-1.5 rounded-lg text-xs bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:focus:ring-white/20 transition"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => copyToClipboard("npx zerolight tokens export", "cli-export")}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
-            >
-              <Terminal className="w-3.5 h-3.5" />
-              <span>{copiedToken === "cli-export" ? "Copied Command!" : "Export Tokens CLI"}</span>
-            </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="w-48">
+            <Input
+              value={liveInput}
+              onChange={(e) => setLiveInput(e.target.value)}
+              placeholder="Live token input..."
+            />
           </div>
+          <Switch checked={liveSwitch} onChange={setLiveSwitch} />
+          <div className="p-2 rounded-lg border border-zinc-200/80 flex items-center gap-1.5">
+            <DynamicIcon name="shield-check" size={16} library={tokens.iconLibrary} strokeWidth={tokens.iconStrokeWidth || 1.75} color={primColor} />
+            <DynamicIcon name="zap" size={16} library={tokens.iconLibrary} strokeWidth={tokens.iconStrokeWidth || 1.75} color={primColor} />
+          </div>
+          <Button variant="primary" size="sm">
+            Primary Token CTA
+          </Button>
         </div>
       </div>
 
@@ -195,7 +209,7 @@ export function SaaSTokensLibrary() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
           {colorTokens
             .filter((c) => matchesSearch(c.name) || matchesSearch(c.role))
             .map((c) => (
@@ -240,20 +254,33 @@ export function SaaSTokensLibrary() {
           </p>
         </div>
 
-        <div className="rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] divide-y divide-zinc-100 dark:divide-white/5 overflow-hidden shadow-xs">
+        <div
+          style={{
+            borderRadius: `${scaled.scaledCardRadius}px`,
+            borderColor: tokens.universalBorderColor,
+            borderWidth: `${tokens.borderWidth}px`,
+          }}
+          className="border bg-white divide-y divide-zinc-100 overflow-hidden shadow-xs"
+        >
           {typeScales.map((t, idx) => (
             <div key={t.level} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3 w-48 shrink-0">
                 <span className="text-xs font-bold text-zinc-400 font-sans tabular-nums">0{idx + 1}</span>
                 <div>
-                  <div className="text-xs font-bold text-zinc-900 dark:text-zinc-100">{t.level}</div>
+                  <div className="text-xs font-bold text-zinc-900">{t.level}</div>
                   <div className="text-[10px] text-zinc-400 font-sans tabular-nums">
                     {t.size} · line {t.line}
                   </div>
                 </div>
               </div>
 
-              <div className={`flex-1 text-zinc-900 dark:text-zinc-100 ${t.weight} ${t.track}`} style={{ fontSize: t.size }}>
+              <div
+                className={`flex-1 text-zinc-900 ${t.weight} ${t.track}`}
+                style={{
+                  fontSize: t.size,
+                  fontFamily: idx <= 2 ? scaled.resolvedHeadingFontFamily : scaled.resolvedFontFamily,
+                }}
+              >
                 {t.sample}
               </div>
             </div>
@@ -326,7 +353,7 @@ export function SaaSTokensLibrary() {
               </div>
               <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mb-1.5">{card.name}</h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">{card.desc}</p>
-              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-white/[0.02] border border-zinc-150 dark:border-white/5 text-center text-xs text-zinc-600 dark:text-zinc-300 font-semibold">
+              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200/80 dark:border-white/5 text-center text-xs text-zinc-600 dark:text-zinc-300 font-semibold">
                 Elevation Preview Active
               </div>
             </div>
@@ -364,15 +391,19 @@ export function SaaSTokensLibrary() {
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">{m.desc}</p>
               </div>
 
-              <button
+              <motion.button
                 type="button"
                 onClick={() => triggerSpring(m.id)}
-                className={`w-full py-2 rounded-lg text-xs font-semibold border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-white/5 text-zinc-800 dark:text-zinc-200 transition-transform cursor-pointer ${
-                  motionTrigger === m.id ? "scale-95 bg-zinc-200 dark:bg-white/15" : "hover:scale-[1.02]"
-                }`}
+                animate={{
+                  scale: motionTrigger === m.id ? 0.94 : 1,
+                }}
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: m.stiffness, damping: m.damping }}
+                style={{ borderRadius: `${scaled.scaledRadius}px` }}
+                className="w-full py-2 text-xs font-semibold border border-zinc-200 bg-zinc-50 text-zinc-800 cursor-pointer"
               >
-                Trigger Spring
-              </button>
+                {motionTrigger === m.id ? "Spring Fired!" : "Trigger Spring"}
+              </motion.button>
             </div>
           ))}
         </div>

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton-bar",
+  "type": "registry:component",
+  "title": "Skeleton Bar",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/skeleton-bar.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport interface SkeletonBarProps {\n  width?: string;\n  height?: string;\n  className?: string;\n  rounded?: \"sm\" | \"md\" | \"lg\" | \"full\";\n}\n\nexport function SkeletonBar({\n  width = \"w-full\",\n  height = \"h-4\",\n  className = \"\",\n  rounded = \"md\",\n}: SkeletonBarProps) {\n  const roundedClasses = {\n    sm: \"rounded-sm\",\n    md: \"rounded\",\n    lg: \"rounded-lg\",\n    full: \"rounded-full\",\n  }[rounded];\n\n  return (\n    <div\n      role=\"status\"\n      aria-label=\"Loading content...\"\n      className={`${width} ${height} ${roundedClasses} bg-neutral-900 border border-neutral-800/80 animate-pulse ${className}`}\n    />\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

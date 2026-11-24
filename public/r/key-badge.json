@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "key-badge",
+  "type": "registry:component",
+  "title": "Key Badge",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/key-badge.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport type KeyBadgeVariant = \"neutral\" | \"emerald\" | \"amber\" | \"outline\";\nexport type KeyBadgeSize = \"xs\" | \"sm\";\n\nexport interface KeyBadgeProps {\n  label: string;\n  variant?: KeyBadgeVariant;\n  size?: KeyBadgeSize;\n  className?: string;\n}\n\nexport function KeyBadge({\n  label,\n  variant = \"neutral\",\n  size = \"xs\",\n  className = \"\",\n}: KeyBadgeProps) {\n  const sizeClasses = {\n    xs: \"text-[10px] px-1.5 py-0.5 tracking-wider\",\n    sm: \"text-xs px-2 py-0.5 tracking-wide\",\n  }[size];\n\n  const variantClasses = {\n    neutral: \"bg-neutral-900 text-neutral-300 border border-neutral-800\",\n    emerald: \"bg-emerald-950/60 text-emerald-400 border border-emerald-800/60\",\n    amber: \"bg-amber-950/60 text-amber-300 border border-amber-800/60\",\n    outline: \"bg-transparent text-neutral-400 border border-neutral-800\",\n  }[variant];\n\n  return (\n    <span\n      className={`inline-flex items-center justify-center font-sans uppercase font-medium rounded select-none ${sizeClasses} ${variantClasses} ${className}`}\n    >\n      {label}\n    </span>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

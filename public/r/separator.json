@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "separator",
+  "type": "registry:component",
+  "title": "Separator",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/separator.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface SeparatorProps {\n  orientation?: \"horizontal\" | \"vertical\";\n  label?: string;\n  className?: string;\n  style?: React.CSSProperties;\n}\n\nexport function Separator({\n  orientation = \"horizontal\",\n  label,\n  className = \"\",\n  style,\n}: SeparatorProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  if (orientation === \"vertical\") {\n    return (\n      <div\n        role=\"separator\"\n        aria-orientation=\"vertical\"\n        style={{\n          width: `${Math.max(1, tokens.borderWidth)}px`,\n          backgroundColor: tokens.universalBorderColor,\n          ...style,\n        }}\n        className={`self-stretch h-full shrink-0 ${className}`}\n      />\n    );\n  }\n\n  if (label) {\n    return (\n      <div\n        role=\"separator\"\n        aria-orientation=\"horizontal\"\n        className={`flex items-center gap-3 w-full my-2 select-none ${className}`}\n        style={style}\n      >\n        <div\n          style={{\n            height: `${Math.max(1, tokens.borderWidth)}px`,\n            backgroundColor: tokens.universalBorderColor,\n          }}\n          className=\"flex-1\"\n        />\n        <span\n          style={{\n            fontSize: `${scaled.sublabelFontSize}px`,\n            color: tokens.textIconColor,\n            borderRadius: `${scaled.scaledPillRadius}px`,\n            borderColor: tokens.universalBorderColor,\n            borderWidth: `${tokens.borderWidth}px`,\n            backgroundColor: tokens.hoverBackplateTint,\n          }}\n          className=\"px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border shadow-2xs whitespace-nowrap\"\n        >\n          {label}\n        </span>\n        <div\n          style={{\n            height: `${Math.max(1, tokens.borderWidth)}px`,\n            backgroundColor: tokens.universalBorderColor,\n          }}\n          className=\"flex-1\"\n        />\n      </div>\n    );\n  }\n\n  return (\n    <hr\n      role=\"separator\"\n      aria-orientation=\"horizontal\"\n      style={{\n        height: `${Math.max(1, tokens.borderWidth)}px`,\n        backgroundColor: tokens.universalBorderColor,\n        border: \"none\",\n        ...style,\n      }}\n      className={`w-full my-2 shrink-0 ${className}`}\n    />\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

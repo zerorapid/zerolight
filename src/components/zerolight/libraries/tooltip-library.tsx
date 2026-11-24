@@ -5,7 +5,6 @@ import {
   Search,
   Copy,
   Check,
-  X,
   Download,
   Archive,
   Settings,
@@ -23,13 +22,12 @@ import {
   Link2,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { Badge } from "../atoms/badge";
-import { CodeModal, LibraryHeader } from "./common";
+import { CodeModal, LibraryHeader, LibrarySegmentControl, getZeroLightCardStyle } from "./common";
 
 export type TooltipDensity = "small" | "medium" | "large";
 
 export function SaaSTooltipLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Control Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -111,15 +109,20 @@ export function SaaSTooltipLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
+    const matchesCategory = activeCategory === "all" || activeCategory === category;
     const matchesSearch =
       searchQuery === "" ||
       title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    if (!matchesSearch) return null;
+    if (!matchesCategory || !matchesSearch) return null;
 
     return (
-      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-xs flex flex-col justify-between transition-all hover:border-zinc-300">
+      <div
+        data-zl-card="true"
+        style={getZeroLightCardStyle(tokens, scaled)}
+        className="border p-5 shadow-xs flex flex-col justify-between transition-all hover:border-zinc-400"
+      >
         <div>
           <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100">
             <span className="text-xs font-bold text-zinc-950 flex items-center gap-1.5">
@@ -152,20 +155,37 @@ export function SaaSTooltipLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search tooltips..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <button
-            type="button"
-            onClick={() => setPreviewOpen(!previewOpen)}
-            className="px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer text-xs"
-          >
-            <span className={`w-2 h-2 rounded-full ${previewOpen ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
-            <span>Preview: {previewOpen ? "On" : "Off"}</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <LibrarySegmentControl
+              options={["small", "medium", "large"] as const}
+              value={density}
+              onChange={setDensity}
+              ariaLabel="Tooltip density"
+            />
+            <button
+              type="button"
+              onClick={() => setPreviewOpen(!previewOpen)}
+              className="px-2.5 py-1.5 border font-semibold flex items-center gap-1.5 transition cursor-pointer text-xs"
+              style={{
+                borderRadius: `${scaled.scaledRadius}px`,
+                borderColor: tokens.universalBorderColor,
+                backgroundColor: tokens.universalFillColor,
+                color: tokens.textIconColor,
+              }}
+            >
+              <span className={`w-2 h-2 rounded-full ${previewOpen ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
+              <span>Preview: {previewOpen ? "On" : "Off"}</span>
+            </button>
+          </div>
         }
       />
 
       {/* ── 1. DIRECTIONAL HOVER TOOLTIPS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             1. Directional Hover Tooltips
@@ -174,7 +194,7 @@ export function SaaSTooltipLibrary() {
             Micro directional hint bubbles positioned around interactive anchors.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
         <Card
           number="01"
           title="Top Hover Tooltip"
@@ -267,7 +287,7 @@ export function SaaSTooltipLibrary() {
       </section>
 
       {/* ── 2. SHORTCUTS, LIGHT & STATUS TOOLTIPS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             2. Shortcuts, Light & Status Tooltips
@@ -276,7 +296,7 @@ export function SaaSTooltipLibrary() {
             Keyboard keycap shortcuts, live presence indicators, and health monitors.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
         <Card
           number="05"
           title="Keyboard Shortcut Tooltip"
@@ -385,7 +405,7 @@ export function SaaSTooltipLibrary() {
       </section>
 
       {/* ── 3. TOOLBAR & ICON CONTEXT HINTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             3. Toolbar & Icon Context Hints
@@ -394,7 +414,7 @@ export function SaaSTooltipLibrary() {
             Quick formatting toolbars, table column metrics, and copy feedback.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
         <Card
           number="09"
           title="Icon Action Bar with Tooltips"
@@ -509,7 +529,7 @@ export function SaaSTooltipLibrary() {
       </section>
 
       {/* ── 4. RICH PROFILE & QUOTA POPOVERS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             4. Rich Profile & Quota Popovers
@@ -518,7 +538,7 @@ export function SaaSTooltipLibrary() {
             User presence profiles, plan quota usages, and notification feeds.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
         <Card
           number="13"
           title="Feature Info Card Popover"
@@ -684,7 +704,7 @@ export function SaaSTooltipLibrary() {
       </section>
 
       {/* ── 5. SAFETY CONFIRMATION & WARNING POPOVERS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             5. Safety Confirmation & Warning Popovers
@@ -693,7 +713,7 @@ export function SaaSTooltipLibrary() {
             Two-step confirmation dialogs, permanent action locks, and danger zones.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
         <Card
           number="17"
           title="Delete Confirmation Popover"
@@ -835,7 +855,7 @@ export function SaaSTooltipLibrary() {
       </section>
 
       {/* ── 6. QUICK-EDIT & IN-CONTEXT NOTES ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             6. Quick-Edit & In-Context Notes
@@ -844,7 +864,7 @@ export function SaaSTooltipLibrary() {
             Inline cell annotations, workspace tags, and collaborative notes.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
         <Card
           number="20"
           title="Share Link & Access Popover"

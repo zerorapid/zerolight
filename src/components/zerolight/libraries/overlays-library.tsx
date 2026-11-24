@@ -2,43 +2,29 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Search,
   Copy,
   Check,
   X,
   Command,
-  Sliders,
   AlertTriangle,
   Trash2,
   CheckCircle2,
-  FileText,
   UserPlus,
   Zap,
   ArrowRight,
-  Filter,
   Menu,
   FileSpreadsheet,
-  HelpCircle,
-  ExternalLink,
-  ChevronRight,
   Sparkles,
-  MousePointer,
-  Layers,
-  Calendar,
-  CreditCard,
-  Settings,
   FolderPlus,
-  RefreshCw,
   Folder,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { Badge } from "../atoms/badge";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type OverlaySize = "small" | "medium" | "large";
 
 export function SaaSOverlaysLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -60,10 +46,6 @@ export function SaaSOverlaysLibrary() {
   // Scoped switcher search
   const [switcherSearch, setSwitcherSearch] = useState("");
 
-  // Context menu position state for custom demo triggers
-  const [contextMenuPos, setContextMenuPos] = useState<{ x: number; y: number } | null>(null);
-  const [canvasContextMenuPos, setCanvasContextMenuPos] = useState<{ x: number; y: number } | null>(null);
-
   // Wizard state
   const [wizardStep, setWizardStep] = useState(1);
   const [onboardingStep, setOnboardingStep] = useState(1);
@@ -76,8 +58,6 @@ export function SaaSOverlaysLibrary() {
         setActiveOverlayId("v11");
       } else if (e.key === "Escape") {
         setActiveOverlayId(null);
-        setContextMenuPos(null);
-        setCanvasContextMenuPos(null);
         setActiveCodeModal(null);
       }
     };
@@ -271,50 +251,124 @@ export function SaaSOverlaysLibrary() {
   });
 
   const getCodeSnippet = (id: string, title: string) => {
-    return `// ZeroLight Level 3 Organism: ${title}
+    const num = Number(id.replace("v", "")) || 1;
+    if (num <= 3) {
+      return `// ${title} — ZeroLight ConfirmationModal Organism
 import React, { useState } from "react";
-import { useZeroLight } from "@/components/zerolight/context";
+import { ConfirmationModal, Button } from "@/components/zerolight";
 
-export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { tokens } = useZeroLight();
-
+export function DestructiveConfirmExample() {
+  const [open, setOpen] = useState(false);
   return (
     <>
-      <button 
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 transition hover:opacity-90"
-      >
+      <Button variant="destructive" size="sm" onClick={() => setOpen(true)}>
         Open ${title}
-      </button>
+      </Button>
+      <ConfirmationModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onConfirm={() => setOpen(false)}
+        title="${title}"
+        description="This action permanently modifies cluster state."
+        confirmText="Confirm"
+      />
+    </>
+  );
+}`;
+    }
+    if (num <= 6) {
+      return `// ${title} — ZeroLight Modal Organism
+import React, { useState } from "react";
+import { Modal, Button, Input } from "@/components/zerolight";
 
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-xs transition-opacity"
-          onClick={() => setIsOpen(false)}
-        >
-          <div 
-            className="w-full max-w-[460px] bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-xl shadow-2xl p-6 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-white/10">
-              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">${title}</h3>
-              <button 
-                type="button" 
-                onClick={() => setIsOpen(false)}
-                className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="py-4 text-xs text-zinc-600 dark:text-zinc-400">
-              Complete modal and overlay contents with clean spring transitions.
-            </div>
+export function CreationModalExample() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="primary" size="sm" onClick={() => setOpen(true)}>Open Modal</Button>
+      <Modal isOpen={open} onClose={() => setOpen(false)} title="${title}">
+        <div className="space-y-4">
+          <Input placeholder="Workspace name..." />
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" size="sm" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button variant="primary" size="sm" onClick={() => setOpen(false)}>Save</Button>
           </div>
         </div>
-      )}
+      </Modal>
     </>
+  );
+}`;
+    }
+    if (num <= 10) {
+      return `// ${title} — ZeroLight DetailDrawer Organism
+import React, { useState } from "react";
+import { DetailDrawer, Button, Badge } from "@/components/zerolight";
+
+export function DrawerInspectExample() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>Inspect Record</Button>
+      <DetailDrawer isOpen={open} onClose={() => setOpen(false)} title="${title}">
+        <Badge variant="healthy" showDot>Verified</Badge>
+      </DetailDrawer>
+    </>
+  );
+}`;
+    }
+    if (num <= 12) {
+      return `// ${title} — ZeroLight CommandPalette (⌘K) Organism
+import React, { useState } from "react";
+import { CommandPalette, Button } from "@/components/zerolight";
+
+export function GlobalCommandBar() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Button variant="outline" size="sm" onClick={() => setOpen(true)}>Press ⌘K</Button>
+      <CommandPalette
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        commands={[
+          { id: "1", label: "Create Invoice", shortcut: "⌘N", category: "Billing", action: () => {} },
+          { id: "2", label: "Switch Tenant", shortcut: "⌘T", category: "Workspace", action: () => {} },
+        ]}
+      />
+    </>
+  );
+}`;
+    }
+    if (num <= 14) {
+      return `// ${title} — ZeroLight DropdownMenu & Popover Molecule
+import { DropdownMenu, Button } from "@/components/zerolight";
+
+export function ActionContextMenu() {
+  return (
+    <DropdownMenu
+      trigger={<Button variant="outline" size="sm">Actions</Button>}
+      items={[
+        { id: "export", label: "Export TSV" },
+        { id: "duplicate", label: "Clone Policy" },
+      ]}
+    />
+  );
+}`;
+    }
+    return `// ${title} — ZeroLight Stepper & Modal Wizard
+import React, { useState } from "react";
+import { Modal, Stepper, Button } from "@/components/zerolight";
+
+export function WizardOverlay() {
+  const [step, setStep] = useState(1);
+  return (
+    <Stepper
+      currentStep={step}
+      steps={[
+        { id: "s1", label: "Configure" },
+        { id: "s2", label: "Verify" },
+        { id: "s3", label: "Launch" },
+      ]}
+    />
   );
 }`;
   };
@@ -322,7 +376,9 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
   const renderOverlayCard = (v: typeof variants[0]) => (
     <div
             key={v.id}
-            className="group relative flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition"
+            data-zl-card="true"
+            style={getZeroLightCardStyle(tokens, scaled)}
+            className="group relative flex flex-col justify-between p-5 border shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition"
           >
             <div>
               {/* Header: Number, Category Badge & Type */}
@@ -360,7 +416,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               </p>
 
               {/* Mini Preview Box */}
-              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5 mb-4 text-xs">
+              <div className="p-3 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-200/80 dark:border-white/5 mb-4 text-xs">
                 {v.id === "v01" && (
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 text-zinc-800 dark:text-zinc-200 font-semibold">
@@ -489,7 +545,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
             </div>
 
             {/* Test Action Trigger */}
-            <div className="flex items-center justify-between pt-2 border-t border-zinc-150 dark:border-white/5">
+            <div className="flex items-center justify-between pt-2 border-t border-zinc-200/80 dark:border-white/5">
               <span className="text-[11px] text-zinc-400">
                 {v.cat === "drawers" ? "Slide-over" : v.cat === "commands" ? "Shortcut" : "Centered"}
               </span>
@@ -523,18 +579,29 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Filter overlays..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <button
-            type="button"
-            onClick={() => setActiveOverlayId("v11")}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white dark:bg-white dark:text-zinc-950 hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
-          >
-            <Command className="w-3.5 h-3.5" />
-            <span>Launch Command Bar</span>
-            <span className="text-[10px] bg-white/20 dark:bg-black/10 px-1 py-0.2 rounded font-sans tabular-nums">
-              ⌘K
-            </span>
-          </button>
+          <div className="flex items-center gap-2">
+            <LibrarySegmentControl
+              options={["small", "medium", "large"] as const}
+              value={overlaySize}
+              onChange={setOverlaySize}
+              ariaLabel="Overlay size"
+            />
+            <button
+              type="button"
+              onClick={() => setActiveOverlayId("v11")}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white hover:opacity-90 transition flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0"
+            >
+              <Command className="w-3.5 h-3.5" />
+              <span>Launch Command Bar</span>
+              <span className="text-[10px] bg-white/20 px-1 py-0.2 rounded font-sans tabular-nums">
+                ⌘K
+              </span>
+            </button>
+          </div>
         }
       />
 
@@ -564,7 +631,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
                 {secVariants.map(renderOverlayCard)}
               </div>
             </section>
@@ -741,7 +808,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               className={`w-full ${sizeConfig.modalWidth} bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl ${sizeConfig.padding} space-y-4 animate-in zoom-in-95 duration-150`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200/80 dark:border-white/10">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/10 text-zinc-800 dark:text-zinc-200">
                     <FolderPlus className="w-4 h-4" />
@@ -787,7 +854,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200/80 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setActiveOverlayId(null)}
@@ -812,7 +879,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               className={`w-full ${sizeConfig.modalWidth} bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl ${sizeConfig.padding} space-y-4 animate-in zoom-in-95 duration-150`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200/80 dark:border-white/10">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-lg bg-zinc-100 dark:bg-white/10 text-zinc-800 dark:text-zinc-200">
                     <UserPlus className="w-4 h-4" />
@@ -864,7 +931,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200/80 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setActiveOverlayId(null)}
@@ -889,7 +956,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               className={`w-full ${sizeConfig.modalWidth} bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl ${sizeConfig.padding} space-y-4 animate-in zoom-in-95 duration-150`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200/80 dark:border-white/10">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
                     <Zap className="w-4 h-4" />
@@ -938,7 +1005,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </li>
               </ul>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-zinc-200/80 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setActiveOverlayId(null)}
@@ -964,7 +1031,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               onClick={(e) => e.stopPropagation()}
             >
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-zinc-150 dark:border-white/10">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-200/80 dark:border-white/10">
                   <div>
                     <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
                       {activeOverlayId === "v07" && "Invoice #INV-9042 Details"}
@@ -1055,7 +1122,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-zinc-150 dark:border-white/10 flex items-center justify-end gap-2">
+              <div className="pt-4 border-t border-zinc-200/80 dark:border-white/10 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setActiveOverlayId(null)}
@@ -1081,7 +1148,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               onClick={(e) => e.stopPropagation()}
             >
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-zinc-150 dark:border-white/10">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-200/80 dark:border-white/10">
                   <div className="flex items-center gap-2">
                     <div className="w-7 h-7 rounded-lg bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 flex items-center justify-center font-bold text-xs">
                       ZL
@@ -1117,7 +1184,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-zinc-150 dark:border-white/10 flex items-center justify-between text-xs text-zinc-500">
+              <div className="pt-4 border-t border-zinc-200/80 dark:border-white/10 flex items-center justify-between text-xs text-zinc-500">
                 <span>Enterprise v2.4</span>
                 <span className="font-sans tabular-nums">SOC2 Compliant</span>
               </div>
@@ -1130,7 +1197,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               className={`w-full max-w-[560px] bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-150 dark:border-white/10">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-200/80 dark:border-white/10">
                 <Command className="w-4 h-4 text-zinc-400" />
                 <input
                   type="text"
@@ -1213,7 +1280,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               className={`w-full max-w-[500px] bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-150`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-150 dark:border-white/10">
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-200/80 dark:border-white/10">
                 <Folder className="w-4 h-4 text-zinc-400" />
                 <input
                   type="text"
@@ -1333,7 +1400,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               className={`w-full ${sizeConfig.modalWidth} bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl ${sizeConfig.padding} space-y-4 animate-in zoom-in-95 duration-150`}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-200/80 dark:border-white/10">
                 <div>
                   <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                     Import Customer Records
@@ -1394,7 +1461,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-between pt-3 border-t border-zinc-200/80 dark:border-white/10">
                 <button
                   type="button"
                   disabled={wizardStep === 1}
@@ -1455,7 +1522,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 ))}
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-zinc-150 dark:border-white/10">
+              <div className="flex items-center justify-between pt-2 border-t border-zinc-200/80 dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setActiveOverlayId(null)}

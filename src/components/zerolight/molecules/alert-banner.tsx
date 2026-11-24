@@ -31,35 +31,35 @@ export function AlertBanner({
       case "critical":
         return {
           icon: <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />,
-          bg: isDark ? "#2D0E14" : "#FFF1F2",
-          border: isDark ? "#5B1924" : "#FECDD3",
-          titleColor: isDark ? "#FDA4AF" : "#9F1239",
-          descColor: isDark ? "#F43F5E" : "#BE123C",
+          bg: isDark ? "rgba(239, 68, 68, 0.12)" : "var(--zl-destructive-subtle, #FFF1F2)",
+          border: isDark ? "rgba(239, 68, 68, 0.25)" : "var(--zl-destructive-border, #FECDD3)",
+          titleColor: isDark ? "#FDA4AF" : "var(--zl-destructive-text, #9F1239)",
+          descColor: isDark ? "#F43F5E" : "var(--zl-destructive-desc, #BE123C)",
         };
       case "warning":
         return {
           icon: <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />,
-          bg: isDark ? "#2A1805" : "#FFFBEB",
-          border: isDark ? "#5C350A" : "#FDE68A",
-          titleColor: isDark ? "#FCD34D" : "#92400E",
-          descColor: isDark ? "#FBBF24" : "#B45309",
+          bg: isDark ? "rgba(245, 158, 11, 0.12)" : "var(--zl-warning-subtle, #FFFBEB)",
+          border: isDark ? "rgba(245, 158, 11, 0.25)" : "var(--zl-warning-border, #FDE68A)",
+          titleColor: isDark ? "#FCD34D" : "var(--zl-warning-text, #92400E)",
+          descColor: isDark ? "#FBBF24" : "var(--zl-warning-desc, #B45309)",
         };
       case "success":
         return {
           icon: <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />,
-          bg: isDark ? "#06281E" : "#ECFDF5",
-          border: isDark ? "#0E563F" : "#A7F3D0",
-          titleColor: isDark ? "#6EE7B7" : "#065F46",
-          descColor: isDark ? "#34D399" : "#047857",
+          bg: isDark ? "rgba(16, 185, 129, 0.12)" : "var(--zl-success-subtle, #ECFDF5)",
+          border: isDark ? "rgba(16, 185, 129, 0.25)" : "var(--zl-success-border, #A7F3D0)",
+          titleColor: isDark ? "#6EE7B7" : "var(--zl-success-text, #065F46)",
+          descColor: isDark ? "#34D399" : "var(--zl-success-desc, #047857)",
         };
       case "info":
       default:
         return {
           icon: <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />,
-          bg: isDark ? "#0B2144" : "#EFF6FF",
-          border: isDark ? "#173E77" : "#BFDBFE",
-          titleColor: isDark ? "#93C5FD" : "#1E40AF",
-          descColor: isDark ? "#60A5FA" : "#1D4ED8",
+          bg: isDark ? "rgba(59, 130, 246, 0.12)" : "var(--zl-info-subtle, #EFF6FF)",
+          border: isDark ? "rgba(59, 130, 246, 0.25)" : "var(--zl-info-border, #BFDBFE)",
+          titleColor: isDark ? "#93C5FD" : "var(--zl-info-text, #1E40AF)",
+          descColor: isDark ? "#60A5FA" : "var(--zl-info-desc, #1D4ED8)",
         };
     }
   };

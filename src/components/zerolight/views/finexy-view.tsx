@@ -209,21 +209,21 @@ export function FinexyDashboardInner() {
     switch (status) {
       case "Completed":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             Completed
           </span>
         );
       case "Pending":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
             Pending
           </span>
         );
       case "In Progress":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             In Progress
           </span>
@@ -346,7 +346,7 @@ export function FinexyDashboardInner() {
         {/* ==================== MAIN DASHBOARD BODY ==================== */}
         <main className="flex-1 flex flex-col p-4 sm:p-7 overflow-x-hidden">
           {/* Top Bar: Brand Logo, Segmented Tabs & Profile Menu */}
-          <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-neutral-200/70">
+          <header className="sticky top-0 z-20 bg-[#FAFAFA]/95 backdrop-blur-md flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-2 pb-4 -mt-2 border-b border-neutral-200/70 transition-colors">
             {/* Brand Logo & Name */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-[#15803D] flex items-center justify-center text-white shadow-sm font-bold text-lg">
@@ -542,13 +542,14 @@ export function FinexyDashboardInner() {
                     <span>Wallets</span>
                     <span className="text-[11px] text-neutral-400 font-normal">Total 6 wallets</span>
                   </div>
-                  <div className="flex gap-2 overflow-x-auto pb-1">
+                  <div className="grid grid-cols-3 gap-2">
                     <CurrencyPill
                       flag="🇺🇸"
                       currencyCode="USD"
                       balance="$22,678.00"
                       monthlyLimit="Limit is $10k a month"
                       status="Active"
+                      className="min-w-0 p-2 sm:p-2.5"
                     />
                     <CurrencyPill
                       flag="🇪🇺"
@@ -556,6 +557,7 @@ export function FinexyDashboardInner() {
                       balance="€18,345.00"
                       monthlyLimit="Limit is €6k a month"
                       status="Active"
+                      className="min-w-0 p-2 sm:p-2.5"
                     />
                     <CurrencyPill
                       flag="🇬🇧"
@@ -563,6 +565,7 @@ export function FinexyDashboardInner() {
                       balance="£15,000.00"
                       monthlyLimit="Limit is £7.5k a month"
                       status="Inactive"
+                      className="min-w-0 p-2 sm:p-2.5"
                     />
                   </div>
                 </div>
@@ -818,12 +821,12 @@ export function FinexyDashboardInner() {
                             className="rounded border-neutral-300 text-neutral-900 focus:ring-0 cursor-pointer"
                           />
                         </th>
-                        <th className="py-2.5 px-2">Order ID</th>
-                        <th className="py-2.5 px-2">Activity</th>
-                        <th className="py-2.5 px-2">Price</th>
-                        <th className="py-2.5 px-2">Status</th>
-                        <th className="py-2.5 px-2">Date</th>
-                        <th className="py-2.5 pl-2 text-right">Action</th>
+                        <th className="py-2.5 px-2 whitespace-nowrap">Order ID</th>
+                        <th className="py-2.5 px-2 whitespace-nowrap">Activity</th>
+                        <th className="py-2.5 px-2 whitespace-nowrap">Price</th>
+                        <th className="py-2.5 px-2 whitespace-nowrap">Status</th>
+                        <th className="py-2.5 px-2 whitespace-nowrap">Date</th>
+                        <th className="py-2.5 pl-2 text-right whitespace-nowrap">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-100">
@@ -838,7 +841,7 @@ export function FinexyDashboardInner() {
                             }`}
                           >
                             <td
-                              className="py-3 pr-2"
+                              className="py-2.5 pr-2"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 toggleSelectTx(tx.id);
@@ -851,29 +854,29 @@ export function FinexyDashboardInner() {
                                 className="rounded border-neutral-300 text-neutral-900 focus:ring-0 cursor-pointer"
                               />
                             </td>
-                            <td className="py-3 px-2 font-sans font-medium text-neutral-600 tabular-nums">
+                            <td className="py-2.5 px-2 font-sans font-medium text-neutral-600 tabular-nums whitespace-nowrap">
                               {tx.orderId}
                             </td>
-                            <td className="py-3 px-2">
+                            <td className="py-2.5 px-2">
                               <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-lg bg-neutral-100 flex items-center justify-center shrink-0">
                                   {getCategoryIcon(tx.category)}
                                 </div>
-                                <span className="font-semibold text-neutral-800 line-clamp-1">
+                                <span className="font-semibold text-neutral-800 whitespace-nowrap">
                                   {tx.title}
                                 </span>
                               </div>
                             </td>
-                            <td className="py-3 px-2 font-bold text-neutral-900 tabular-nums">
+                            <td className="py-2.5 px-2 font-bold text-neutral-900 tabular-nums whitespace-nowrap">
                               {tx.price}
                             </td>
-                            <td className="py-3 px-2 whitespace-nowrap">
+                            <td className="py-2.5 px-2 whitespace-nowrap">
                               {getStatusBadge(tx.status)}
                             </td>
-                            <td className="py-3 px-2 text-neutral-500 whitespace-nowrap tabular-nums text-[11px]">
+                            <td className="py-2.5 px-2 text-neutral-500 whitespace-nowrap tabular-nums text-[11px]">
                               {tx.date}
                             </td>
-                            <td className="py-3 pl-2 text-right">
+                            <td className="py-2.5 pl-2 text-right">
                               <button
                                 type="button"
                                 onClick={(e) => {

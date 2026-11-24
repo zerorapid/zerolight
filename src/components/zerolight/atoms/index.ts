@@ -40,3 +40,4 @@ export * from "./skeleton-bar";
 export * from "./status-pill";
 export * from "./trace-dot";
 export * from "./typography";
+export * from "./dynamic-icon";

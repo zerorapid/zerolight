@@ -2,38 +2,25 @@
 
 import React, { useState } from "react";
 import {
-  Search,
   Copy,
   Check,
-  X,
   Bell,
   MessageSquare,
   Send,
-  HelpCircle,
   Headphones,
-  CheckCircle2,
-  CreditCard,
   Download,
-  BarChart3,
-  TrendingUp,
-  PieChart,
-  Layers,
-  Calendar,
   RefreshCw,
   Key,
   Building2,
   ExternalLink,
-  ShieldCheck,
-  Clock,
-  ChevronRight,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type BusinessDensity = "small" | "medium" | "large";
 
 export function SaaSBusinessLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -284,11 +271,22 @@ export function SaaSBusinessLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Filter business modules..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        action={
+          <LibrarySegmentControl
+            options={["small", "medium", "large"] as const}
+            value={density}
+            onChange={setDensity}
+            ariaLabel="Business module density"
+          />
+        }
       />
 
       <div className="space-y-8">
         {/* ── 1. NOTIFICATIONS & @MENTIONS ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredVariants.some((v) => v.cat === "collab") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               1. Notifications & @Mentions
@@ -300,7 +298,11 @@ export function SaaSBusinessLibrary() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* VARIANT 01: Notification Inbox Popover */}
         {filteredVariants.some((v) => v.id === "v01") && (
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
+          <div
+            data-zl-business-card="true"
+            style={getZeroLightCardStyle(tokens, scaled)}
+            className="border overflow-hidden shadow-xs flex flex-col justify-between"
+          >
             <div className={densityConfig.pad}>
               <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-white/5 mb-3">
                 <div className="flex items-center gap-2">
@@ -314,7 +316,18 @@ export function SaaSBusinessLibrary() {
                   onClick={() =>
                     setActiveCodeModal({
                       title: "01 Notification Inbox Popover",
-                      code: `<div class="p-3 bg-white border rounded-xl shadow-xs text-xs">\n  <div class="flex justify-between items-center pb-2 border-b">\n    <span class="font-bold">Inbox</span>\n    <button onclick="markAllRead()">Mark all read</button>\n  </div>\n</div>`,
+                      code: `import { Badge, Button } from "@/components/zerolight";
+
+export function TeamInboxPopover() {
+  return (
+    <div className="p-3 bg-white border rounded-xl shadow-xs text-xs space-y-2">
+      <div className="flex justify-between items-center pb-2 border-b">
+        <span className="font-bold">Team Notifications</span>
+        <Badge variant="info" size="xs">2 New</Badge>
+      </div>
+    </div>
+  );
+}`,
                     })
                   }
                   className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1 cursor-pointer"
@@ -528,8 +541,7 @@ export function SaaSBusinessLibrary() {
                   </div>
         </section>
 
-        {/* ── 2. SAAS PRICING & PLANS ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredVariants.some((v) => v.cat === "pricing") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               2. SaaS Pricing & Plans
@@ -728,8 +740,7 @@ export function SaaSBusinessLibrary() {
                   </div>
         </section>
 
-        {/* ── 3. USAGE, LIMITS & BILLING ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredVariants.some((v) => v.cat === "usage") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               3. Usage, Limits & Billing
@@ -946,8 +957,7 @@ export function SaaSBusinessLibrary() {
                   </div>
         </section>
 
-        {/* ── 4. SVG ANALYTICS PANELS ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredVariants.some((v) => v.cat === "analytics") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               4. SVG Analytics Panels
@@ -1427,8 +1437,7 @@ export function SaaSBusinessLibrary() {
                   </div>
         </section>
 
-        {/* ── 5. INTEGRATIONS & WORKSPACES ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredVariants.some((v) => v.cat === "integrations") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               5. Integrations & Workspaces
@@ -1454,7 +1463,19 @@ export function SaaSBusinessLibrary() {
                   onClick={() =>
                     setActiveCodeModal({
                       title: "14 Tally Prime Sync Card",
-                      code: `<div class="p-3 bg-white border rounded-xl text-xs flex justify-between items-center">\n  <div><strong>Tally Prime v4.1</strong><div class="text-zinc-400">Connected</div></div>\n  <button onclick="sync()">Sync Now</button>\n</div>`,
+                      code: `import { Badge, Button } from "@/components/zerolight";
+
+export function TallyIntegrationCard() {
+  return (
+    <div className="p-3 bg-white border rounded-xl text-xs flex justify-between items-center">
+      <div>
+        <strong>Tally Prime v4.1</strong>
+        <Badge variant="healthy" size="xs" showDot>Connected</Badge>
+      </div>
+      <Button variant="outline" size="sm">Sync Now</Button>
+    </div>
+  );
+}`,
                     })
                   }
                   className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1 cursor-pointer"
@@ -1525,7 +1546,11 @@ export function SaaSBusinessLibrary() {
                   onClick={() =>
                     setActiveCodeModal({
                       title: "15 API Key Row",
-                      code: `<div class="p-2 border rounded-lg text-xs flex justify-between items-center font-sans tabular-nums">\n  <span>sk_live_••••••••••••94a2</span>\n  <button onclick="copy()">Copy</button>\n</div>`,
+                      code: `import { ApiKeyVault } from "@/components/zerolight";
+
+export function ProductionSecretRow() {
+  return <ApiKeyVault />;
+}`,
                     })
                   }
                   className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1 cursor-pointer"
@@ -1594,7 +1619,11 @@ export function SaaSBusinessLibrary() {
                   onClick={() =>
                     setActiveCodeModal({
                       title: "16 Multi-Workspace Switcher",
-                      code: `<div class="p-2 border rounded-lg text-xs flex justify-between items-center">\n  <div><strong>Hyderabad Head Office</strong> (248 Members)</div>\n  <button>Switch →</button>\n</div>`,
+                      code: `import { OrganizationSwitcher, TenantKit } from "@/components/zerolight";
+
+export function WorkspaceSwitchCard() {
+  return <OrganizationSwitcher />;
+}`,
                     })
                   }
                   className="text-xs font-medium text-zinc-500 hover:text-zinc-900 dark:hover:text-white flex items-center gap-1 cursor-pointer"

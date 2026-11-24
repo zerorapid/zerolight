@@ -1130,7 +1130,7 @@ test("Enterprise Authentication Gate and Floating Sidebar Dashboard Shell exist 
   assert.ok(dashboardContent.includes("Vector Map Studio & Asset Downloader"), "DashboardShell Overview must feature Tools preview card");
   assert.ok(dashboardContent.includes("Visual Studio Dock"), "DashboardShell must have DS Editor trigger");
   assert.ok(dashboardContent.includes("Design System"), "DashboardShell must have Design System Docs view");
-  assert.ok(dashboardContent.includes("Map Studio & Tools"), "DashboardShell must have Map Studio tools view");
+  assert.ok(dashboardContent.includes('label: "Tools"'), "DashboardShell must expose unified Tools label");
   assert.ok(dashboardContent.includes("Settings & MCP"), "DashboardShell must have Settings view with MCP status");
 
   const homePage = fs.readFileSync(path.join(rootDir, "src/app/page.tsx"), "utf8");
@@ -2232,6 +2232,102 @@ test("Architectural Atlas: root ATLAS.md & AGENTS.md exist, adhere to strict 150
     const fullPath = path.join(rootDir, relPath);
     assert.ok(fs.existsSync(fullPath), `Landmark path in ATLAS.md must exist on disk: ${relPath}`);
   }
+});
+
+// -----------------------------------------------------------------
+// Test Suite 44: Stageshow-Inspired SaaS Showcase & Bento Architecture
+// -----------------------------------------------------------------
+console.log("\n=== Suite 44: Stageshow-Inspired SaaS Showcase & Bento Architecture ===");
+
+test("Stageshow Primitives: ProductWindow, ChoreographedCursor, HeroShowcase & BentoShowcase exist and adhere to token invariants", () => {
+  const productStagePath = path.join(rootDir, "src/components/zerolight/molecules/product-stage.tsx");
+  assert.ok(fs.existsSync(productStagePath), "product-stage.tsx molecule must exist");
+  const stageContent = fs.readFileSync(productStagePath, "utf8");
+  assert.ok(stageContent.includes("export function ProductWindow"), "must export ProductWindow");
+  assert.ok(stageContent.includes("export function ChoreographedCursor"), "must export ChoreographedCursor");
+  assert.ok(stageContent.includes("export function CounterRoll"), "must export CounterRoll");
+  assert.ok(stageContent.includes("export function PlaceholderLines"), "must export PlaceholderLines");
+
+  const heroShowcasePath = path.join(rootDir, "src/components/zerolight/molecules/hero-showcase.tsx");
+  assert.ok(fs.existsSync(heroShowcasePath), "hero-showcase.tsx molecule must exist");
+  const heroContent = fs.readFileSync(heroShowcasePath, "utf8");
+  assert.ok(heroContent.includes("export function HeroShowcase"), "must export HeroShowcase");
+  assert.ok(heroContent.includes("CounterRoll"), "HeroShowcase must bind CounterRoll for digit rolls");
+  assert.ok(heroContent.includes("ChoreographedCursor"), "HeroShowcase must bind ChoreographedCursor");
+
+  const bentoShowcasePath = path.join(rootDir, "src/components/zerolight/organisms/bento-showcase.tsx");
+  assert.ok(fs.existsSync(bentoShowcasePath), "bento-showcase.tsx organism must exist");
+  const bentoContent = fs.readFileSync(bentoShowcasePath, "utf8");
+  assert.ok(bentoContent.includes("export function BentoShowcase"), "must export BentoShowcase");
+  assert.ok(bentoContent.includes("ProductWindow"), "BentoShowcase must use ProductWindow");
+
+  const molIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/index.ts"), "utf8");
+  assert.ok(molIndex.includes("product-stage") && molIndex.includes("hero-showcase"), "molecules index must export product-stage and hero-showcase");
+
+  const orgIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  assert.ok(orgIndex.includes("bento-showcase"), "organisms index must export bento-showcase");
+});
+
+// -----------------------------------------------------------------
+// Test Suite 45: Unified Tools Directory, ZeroFlash, ZeroAuditor, Gen-UI & shadcn r/ Registry
+// -----------------------------------------------------------------
+console.log("\n=== Suite 45: Unified Tools Directory, Morphic Evolution & shadcn r/ Registry ===");
+
+test("Unified Tools Hub renders preview cards first, dedicated tool pages, zero sidebar submenu & Design System primitives", () => {
+  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  assert.ok(dashboardContent.includes("TOOLS_VIEWS") && dashboardContent.includes('useState<ToolsSubView>("index")'), "DashboardShell must open Tools directory preview cards first");
+  assert.ok(!dashboardContent.includes("toolsMenuExpanded") && !dashboardContent.includes("GenUIStudioTool"), "Sidebar Tools item must have no submenu and GenUIStudioTool must be removed from Tools");
+  assert.ok(dashboardContent.includes("<ToolsDirectory") && dashboardContent.includes("All Tools"), "Tools hub must show preview cards directory first with All Tools back navigation");
+  assert.ok(dashboardContent.includes("<ZeroFlashTool") && dashboardContent.includes("<ZeroAuditorTool") && dashboardContent.includes("<WorldAtlasMap"), "Tools hub must mount ZeroFlash, ZeroAuditor, and WorldAtlasMap");
+  assert.ok(!dashboardContent.includes("Map Studio & Tools"), "Old 'Map Studio & Tools' label must be renamed to 'Tools'");
+
+  // Verify every tool consumes ZeroLight primitives cleanly
+  const flashSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/tools/zero-flash-tool.tsx"), "utf8");
+  assert.ok(flashSrc.includes('from "../molecules/select"') && flashSrc.includes('from "../atoms/card"'), "ZeroFlashTool must use ZeroLight Select and Card primitives");
+  assert.ok(flashSrc.includes("detectedSvgHexes") && flashSrc.includes("deckSlides"), "ZeroFlashTool must support SVG hex extraction and 6-slide Brand Deck preview");
+
+  const auditorSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/tools/zero-auditor-tool.tsx"), "utf8");
+  assert.ok(auditorSrc.includes('from "../molecules/segmented-control"') && auditorSrc.includes('from "../atoms/card"'), "ZeroAuditorTool must use ZeroLight SegmentedControl and Card primitives");
+
+  const atlasSrc = fs.readFileSync(path.join(rootDir, "src/components/WorldAtlasMap.tsx"), "utf8");
+  assert.ok(atlasSrc.includes("useZeroLight") && atlasSrc.includes("SegmentedControl") && atlasSrc.includes("Slider") && atlasSrc.includes("Switch"), "WorldAtlasMap must bind controls to ZeroLight primitives and tokens");
+
+  const genUiPath = path.join(rootDir, "src/components/zerolight/gen-ui/gen-ui-renderer.tsx");
+  assert.ok(fs.existsSync(genUiPath), "gen-ui-renderer.tsx must exist");
+  const genUiContent = fs.readFileSync(genUiPath, "utf8");
+  assert.ok(genUiContent.includes("GenUIPayloadSchema") && genUiContent.includes("export function ZeroLightGenUIRenderer"), "must export GenUIPayloadSchema and ZeroLightGenUIRenderer");
+
+  const shadcnIndex = path.join(rootDir, "public/r/index.json");
+  assert.ok(fs.existsSync(shadcnIndex), "public/r/index.json must exist for shadcn-compatible CLI installs");
+  const parsedShadcn = JSON.parse(fs.readFileSync(shadcnIndex, "utf8"));
+  assert.ok(parsedShadcn.$schema === "https://ui.shadcn.com/schema/registry.json" && Array.isArray(parsedShadcn.items) && parsedShadcn.items.length >= 120, "public/r/index.json must conform to shadcn schema with 120+ items");
+
+  // Rules & TSV export already checked in Suite 45
+  const rulesSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/tools/ai-footprint-rules.ts"), "utf8");
+  const ruleMatches = rulesSrc.match(/ruleNumber:\s*\d+/g) || [];
+  assert.ok(ruleMatches.length >= 30, `Expected 30+ AI_FOOTPRINT_RULES definitions, found ${ruleMatches.length}`);
+  assert.ok(rulesSrc.includes("export function formatAuditTSV"), "ZeroAuditor rules must export formatAuditTSV for Excel copy");
+
+  // Runtime Morphic Evolution (Stages 1-3)
+  const statCardSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/stat-card.tsx"), "utf8");
+  assert.ok(statCardSrc.includes("export type MorphicStage = 1 | 2 | 3") && statCardSrc.includes("data-zl-morphic-stage"), "StatCard must implement MorphicStage 1-3 runtime morphing");
+
+  const genUiSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/gen-ui/gen-ui-renderer.tsx"), "utf8");
+  assert.ok(genUiSrc.includes("morphicStageOverride"), "ZeroLightGenUIRenderer must accept morphicStageOverride for runtime morphing");
+
+  // GitHub monorepo tool labeler, shadcn CLI & zerorapid.in Go-Live readiness
+  assert.ok(fs.existsSync(path.join(rootDir, ".github/labeler.yml")) && fs.existsSync(path.join(rootDir, ".github/workflows/labeler.yml")), "Single-branch monorepo tool labeler must exist under .github/");
+  const cliSrc = fs.readFileSync(path.join(rootDir, "bin/cli.mjs"), "utf8");
+  assert.ok(cliSrc.includes("DEFAULT_SHADCN_REGISTRY_BASE") && cliSrc.includes("--shadcn") && cliSrc.includes("ui.zerorapid.in"), "CLI must support --shadcn flag and ui.zerorapid.in registry host");
+
+  const auditRoutePath = path.join(rootDir, "src/app/api/audit-url/route.ts");
+  assert.ok(fs.existsSync(auditRoutePath), "Public ZeroAuditor URL scanning API route must exist");
+  const auditRouteSrc = fs.readFileSync(auditRoutePath, "utf8");
+  assert.ok(auditRouteSrc.includes("PRIVATE_HOST_PATTERN") && auditRouteSrc.includes("AuditUrlSchema"), "audit-url API route must validate input and guard against SSRF");
+
+  const nextConfigSrc = fs.readFileSync(path.join(rootDir, "next.config.mjs"), "utf8");
+  assert.ok(nextConfigSrc.includes("/r/:path*") && nextConfigSrc.includes("Access-Control-Allow-Origin"), "next.config.mjs must allow CORS on public registry payloads");
+  assert.ok(fs.existsSync(path.join(rootDir, "src/app/robots.ts")) && fs.existsSync(path.join(rootDir, "src/app/sitemap.ts")), "robots.ts and sitemap.ts must exist for SEO indexing");
 });
 
 console.log("\n==================================================");

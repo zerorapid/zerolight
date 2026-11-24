@@ -284,7 +284,7 @@ export function AreaChart({
                   fill={`url(#${secondaryGradientId})`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={scaled.motionConfig.spring}
+                  transition={{ duration: 0.3 }}
                 />
               )}
               <motion.path
@@ -294,9 +294,9 @@ export function AreaChart({
                 strokeWidth={Math.max(1.5, effectiveStrokeWidth * 0.8)}
                 strokeDasharray="4 4"
                 strokeLinecap={tokens.cornerRadius === 0 ? "butt" : "round"}
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={scaled.motionConfig.spring}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
               />
             </>
           )}
@@ -308,7 +308,7 @@ export function AreaChart({
               fill={`url(#${gradientId})`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={scaled.motionConfig.spring}
+              transition={{ duration: 0.3 }}
             />
           )}
           <motion.path
@@ -318,9 +318,9 @@ export function AreaChart({
             strokeWidth={effectiveStrokeWidth}
             strokeLinecap={tokens.cornerRadius === 0 ? "butt" : "round"}
             strokeLinejoin={tokens.cornerRadius === 0 ? "miter" : "round"}
-            initial={{ pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={scaled.motionConfig.spring}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           />
 
           {/* X Axis Labels */}

@@ -76,10 +76,13 @@ import {
   CreditCard,
   Bot,
   GripVertical,
+  Sun,
+  Moon,
 } from "lucide-react";
 import {
   ZeroLightTokens,
   DEFAULT_TOKENS,
+  THEME_PRESETS,
   CornerRadiusPreset,
   HeightDensityPreset,
   MenuOffsetPreset,
@@ -120,6 +123,8 @@ import {
   TagChip,
   Kbd,
   RadioGroup,
+  StatusPill,
+  CapacityMeter,
 } from "./atoms";
 import {
   Pagination,
@@ -849,6 +854,13 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
     transition: scaled.transitionStyle,
   };
 
+  const togglePolarity = useCallback(() => {
+    const isDark = scaled.isDarkSurface;
+    const target = isDark ? THEME_PRESETS.light : THEME_PRESETS.dark;
+    setTokens((prev) => ({ ...prev, ...target.tokens }));
+    triggerToast(isDark ? "Switched to Light Mode" : "Switched to Dark Mode");
+  }, [scaled.isDarkSurface, triggerToast]);
+
 
   const studioInspectorProps = {
     tokens,
@@ -907,13 +919,23 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 borderRadius: `${scaled.scaledRadius === 0 ? 0 : 8}px`,
                 color: scaled.primaryActionTextColor,
               }}
-              className="w-7 h-7 flex items-center justify-center font-bold text-xs shadow-xs"
+              className="w-7 h-7 flex items-center justify-center font-bold text-xs shadow-xs overflow-hidden"
             >
-              ZL
+              {tokens.logoLight || tokens.logoDark ? (
+                <img
+                  src={scaled.isDarkSurface ? (tokens.logoDark || tokens.logoLight) : (tokens.logoLight || tokens.logoDark)}
+                  alt="Logo"
+                  className="w-5 h-5 object-contain"
+                />
+              ) : tokens.logoBrandName ? (
+                tokens.logoBrandName.slice(0, 2).toUpperCase()
+              ) : (
+                "ZL"
+              )}
             </div>
             <div className="flex items-baseline gap-2">
               <span style={{ color: tokens.textIconColor }} className="font-semibold text-sm tracking-tight">
-                ZeroLight
+                {tokens.logoBrandName || "ZeroLight"}
               </span>
               <span className="text-[11px] font-medium text-neutral-400 hidden sm:inline-block">
                 Design System Studio
@@ -930,7 +952,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
             borderWidth: `${tokens.borderWidth}px`,
             backgroundColor: tokens.hoverBackplateTint,
           }}
-          className="inline-flex items-center gap-1.5 p-1 border shadow-xs overflow-x-auto whitespace-nowrap scrollbar-none"
+          className="inline-flex items-center gap-1 p-1 border shadow-xs overflow-x-auto whitespace-nowrap scrollbar-none shrink-0"
         >
           {(
             [
@@ -938,7 +960,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
               { key: "molecules", label: "Molecules", count: "21" },
               { key: "organisms", label: "Organisms", count: "14" },
               { key: "templates", label: "Templates", count: "5" },
-              { key: "pages", label: "Pages", count: "6" },
+              { key: "pages", label: "Pages", count: "3" },
             ] as const
           ).map(({ key, label, count }) => {
             const isSelected = activeTier === key;
@@ -959,7 +981,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                   borderRadius: `${scaled.scaledPillRadius}px`,
                   transition: "background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
                 }}
-                className={`px-5 py-2 text-xs font-semibold cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-2 ${
+                className={`px-3 sm:px-4 py-1.5 text-xs font-semibold cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
                   isSelected ? "shadow-xs" : "hover:text-neutral-900"
                 }`}
               >
@@ -983,7 +1005,33 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
         </div>
 
         {/* Right meta: Scale & Export Tokens */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {/* Quick Light / Dark Polarity Toggle */}
+          <button
+            type="button"
+            onClick={togglePolarity}
+            title={scaled.isDarkSurface ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            style={{
+              borderRadius: `${scaled.scaledPillRadius}px`,
+              borderColor: tokens.universalBorderColor,
+              borderWidth: `${Math.max(1, tokens.borderWidth)}px`,
+              color: tokens.textIconColor,
+              backgroundColor: tokens.universalFillColor,
+            }}
+            className="px-2.5 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs whitespace-nowrap"
+          >
+            {scaled.isDarkSurface ? (
+              <>
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">Light</span>
+              </>
+            ) : (
+              <>
+                <Moon className="w-3.5 h-3.5 text-zinc-400" />
+                <span className="hidden sm:inline">Dark</span>
+              </>
+            )}
+          </button>
           <span
             style={{
               fontSize: `${scaled.sublabelFontSize}px`,
@@ -991,7 +1039,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
               borderColor: tokens.universalBorderColor,
               borderWidth: `${tokens.borderWidth}px`,
             }}
-            className="text-neutral-600 bg-neutral-50 border px-3 py-1 shadow-2xs tabular-nums font-medium hidden xl:inline-block"
+            className="text-neutral-600 bg-neutral-50 border px-2.5 py-1 shadow-2xs tabular-nums font-medium hidden 2xl:inline-block"
           >
             Scale: {tokens.scaleMultiplier.toFixed(2)}x • {tokens.motionPhysics}
           </span>
@@ -1043,15 +1091,175 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
             color: tokens.textIconColor,
             transition: "background-color 0.2s ease, color 0.2s ease",
           }}
-          className="flex-1 min-w-0 p-6 sm:p-10 flex flex-col items-center justify-start h-full overflow-y-auto"
+          className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 flex flex-col items-start justify-start h-full overflow-y-auto"
         >
-          <div className={`w-full ${activeTier === "templates" || activeTier === "pages" ? "max-w-7xl" : activeTier === "organisms" ? "max-w-5xl" : "max-w-4xl"} space-y-8 pb-32`}>
+          <div className={`w-full ${activeTier === "templates" || activeTier === "pages" ? "max-w-7xl" : activeTier === "organisms" ? "max-w-5xl" : "max-w-4xl"} mx-auto space-y-6 pb-32`}>
             
             {/* ══════════════════════════════════════════════════════════
                 VIEW A: PURE ATOMS (UNIVERSAL TOKEN CONTROL)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "atoms" && (
               <>
+                {/* ── FOUNDATIONAL QUICK-TEST BENCH (LIVE ATOM CUSTOMIZER) ── */}
+                <div id="atom-foundational-bench" style={cardStyle} className="p-5 sm:p-7 shadow-xs space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-neutral-200/60 dark:border-white/[0.08]">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-bold tracking-tight">
+                          Foundational Design System Bench
+                        </h2>
+                      </div>
+                      <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500">
+                        Live responsive test-bench for action buttons, inputs, toggles, status pills, and metrics.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge variant="neutral">
+                        {scaled.isDarkSurface ? "OLED Dark Mode" : "Crisp Light Mode"}
+                      </Badge>
+                      <Badge variant="neutral">
+                        YIQ Contrast AAA
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Row 1: Actions & Buttons (Strict 1-Primary CTA Rule) */}
+                  <div className="space-y-2.5">
+                    <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+                      Interactive Action Controls
+                    </span>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <Button variant="primary" size="md">
+                        Primary Action
+                      </Button>
+                      <Button variant="outline" size="md">
+                        Secondary Outline
+                      </Button>
+                      <Button variant="ghost" size="md">
+                        Subtle Ghost
+                      </Button>
+                      <IconButton
+                        icon={<Sparkles size={16} />}
+                        ariaLabel="Trigger kinetic magic"
+                        variant="outline"
+                        size="md"
+                      />
+                      <SplitButton
+                        label="Deploy Engine"
+                        iconLeft={<Zap size={14} />}
+                        onClick={() => triggerToast("Deploy Engine triggered")}
+                        options={[
+                          { id: "stage", label: "Deploy to Staging", onClick: () => triggerToast("Staging triggered") },
+                          { id: "dryrun", label: "Dry-Run Check", onClick: () => triggerToast("Dry-Run clean") },
+                        ]}
+                      />
+                    </div>
+                  </div>
+
+                  {/* 1px Hairline Divider */}
+                  <div className="border-t border-neutral-200/60 dark:border-white/[0.08]" />
+
+                  {/* Row 2: Inputs & Interactive Toggles (Balanced 12-Column Responsive Grid) */}
+                  <div className="space-y-2.5">
+                    <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+                      Form Inputs & Selection Toggles
+                    </span>
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                      <div className="md:col-span-5">
+                        <Input
+                          value={textInput}
+                          onChange={(e) => setTextInput(e.target.value)}
+                          placeholder="Live branded input..."
+                        />
+                      </div>
+                      <div className="md:col-span-4 flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={switchValue}
+                            onChange={setSwitchValue}
+                          />
+                          <span style={{ fontSize: `${scaled.sublabelFontSize}px`, color: tokens.textIconColor }} className="font-medium text-xs">
+                            {switchValue ? "Active" : "Paused"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            checked={checkboxValue}
+                            onChange={setCheckboxValue}
+                          />
+                          <span style={{ fontSize: `${scaled.sublabelFontSize}px`, color: tokens.textIconColor }} className="font-medium text-xs">
+                            Auto-Sync
+                          </span>
+                        </div>
+                      </div>
+                      <div className="md:col-span-3 flex items-center justify-start md:justify-end">
+                        <RadioGroup
+                          options={[
+                            { value: "standard", label: "Standard" },
+                            { value: "pro", label: "Enterprise" },
+                          ]}
+                          value={radioValue}
+                          onChange={(val) => setRadioValue(val as "standard" | "pro")}
+                          name="foundational-tier-radio"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 1px Hairline Divider */}
+                  <div className="border-t border-neutral-200/60 dark:border-white/[0.08]" />
+
+                  {/* Row 3: Live Telemetry & Status Indicators (Separated Rows, Zero Collisions) */}
+                  <div className="space-y-4">
+                    <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider">
+                      Live Telemetry & Status Indicators
+                    </span>
+                    {/* Status Badges Row */}
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <StatusPill variant="success" label="Cluster Online" showDot />
+                      <StatusPill variant="warning" label="High Latency (88ms)" />
+                      <StatusPill variant="neutral" label="Read-Only Replicas" />
+                    </div>
+
+                    {/* Progress & Capacity Dual Metrics Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                      <div className="p-3.5 rounded-xl bg-neutral-50 dark:bg-white/[0.03] border border-neutral-200/70 dark:border-white/[0.08]">
+                        <CapacityMeter value={78} max={100} label="Memory Load" unit="%" />
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-neutral-50 dark:bg-white/[0.03] border border-neutral-200/70 dark:border-white/[0.08] flex flex-col justify-between">
+                        <div className="flex items-center justify-between text-xs mb-1.5 font-medium text-neutral-700 dark:text-neutral-300">
+                          <span>Sync Pipeline</span>
+                          <span className="font-sans tabular-nums text-neutral-600 dark:text-neutral-400 font-semibold">{progressValue}% Complete</span>
+                        </div>
+                        <ProgressBar value={progressValue} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 1px Hairline Divider */}
+                  <div className="border-t border-neutral-200/60 dark:border-white/[0.08]" />
+
+                  {/* Row 4: Atmospheric Token Synchronization Callout (Monochrome Luxury) */}
+                  <div className="p-3.5 rounded-xl bg-neutral-50 dark:bg-white/[0.03] border border-neutral-200/80 dark:border-white/[0.08] flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-neutral-200 dark:bg-white/10 flex items-center justify-center text-neutral-700 dark:text-white shrink-0 mt-0.5 text-xs font-bold">
+                      ℹ
+                    </div>
+                    <div className="space-y-0.5 text-xs">
+                      <span className="font-semibold text-neutral-900 dark:text-white block">
+                        Enterprise Token Synchronization Active
+                      </span>
+                      <p className="text-neutral-500 dark:text-neutral-400 text-[11px] leading-relaxed">
+                        All components above immediately re-render according to your active Visual Studio Dock theme, corner radius, and spring motion.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 1px Hairline Universal Section Separator */}
+                <div className="border-t border-neutral-200/80 dark:border-white/[0.08] my-8" />
+
                 {/* ── 0. FOUNDATIONAL TYPE SCALE ── */}
                 <div id="atom-typography" style={cardStyle} className="p-6 sm:p-7 shadow-xs space-y-5">
                   <div className="flex items-center justify-between">
@@ -3934,9 +4142,9 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                           borderColor: tokens.universalBorderColor,
                           borderWidth: `${tokens.borderWidth}px`,
                         }}
-                        className="hidden sm:flex items-center gap-2 text-xs font-medium text-emerald-700 bg-emerald-50 border px-3 py-1 whitespace-nowrap shrink-0"
+                        className="hidden sm:flex items-center gap-2 text-xs font-medium text-zinc-900 dark:text-white bg-zinc-100 dark:bg-white/10 border px-3 py-1 whitespace-nowrap shrink-0"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-900 dark:bg-white animate-pulse" />
                         <span>All clusters 100%</span>
                       </div>
 
@@ -4569,7 +4777,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         borderColor: tokens.universalBorderColor,
                         borderWidth: `${tokens.borderWidth}px`,
                       }}
-                      className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border px-2.5 py-1 tabular-nums"
+                      className="flex items-center gap-1.5 text-xs font-semibold text-zinc-900 dark:text-white bg-zinc-100 dark:bg-white/10 border px-2.5 py-1 tabular-nums"
                     >
                       <TrendingUp className="w-3.5 h-3.5" />
                       <span>+18.4%</span>

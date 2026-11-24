@@ -26,11 +26,30 @@ export interface ZeroLightProviderProps {
 }
 
 export function ZeroLightProvider({
-  tokens = DEFAULT_TOKENS,
-  updateTokens,
+  tokens: externalTokens = DEFAULT_TOKENS,
+  updateTokens: externalUpdateTokens,
   children,
 }: ZeroLightProviderProps) {
-  const scaled = useMemo(() => computeScaledTokens(tokens), [tokens]);
+  const [internalTokens, setInternalTokens] = React.useState<ZeroLightTokens>(externalTokens);
+
+  useEffect(() => {
+    setInternalTokens(externalTokens);
+  }, [externalTokens]);
+
+  const activeTokens = externalUpdateTokens ? externalTokens : internalTokens;
+
+  const handleUpdateTokens = React.useCallback(
+    (updates: Partial<ZeroLightTokens>) => {
+      if (externalUpdateTokens) {
+        externalUpdateTokens(updates);
+      } else {
+        setInternalTokens((prev) => ({ ...prev, ...updates }));
+      }
+    },
+    [externalUpdateTokens]
+  );
+
+  const scaled = useMemo(() => computeScaledTokens(activeTokens), [activeTokens]);
 
   // Dynamically load active Google Font families on demand without page reload
   useEffect(() => {
@@ -50,11 +69,11 @@ export function ZeroLightProvider({
 
   const value = useMemo(
     () => ({
-      tokens,
+      tokens: activeTokens,
       scaled,
-      updateTokens,
+      updateTokens: handleUpdateTokens,
     }),
-    [tokens, scaled, updateTokens]
+    [activeTokens, scaled, handleUpdateTokens]
   );
 
   return (
@@ -65,10 +84,10 @@ export function ZeroLightProvider({
         data-zl-typography-scope="true"
         style={
           {
-            "--zl-text": tokens.textIconColor,
-            "--zl-surface": tokens.universalFillColor,
-            "--zl-border": tokens.universalBorderColor,
-            "--zl-hover": tokens.hoverBackplateTint,
+            "--zl-text": activeTokens.textIconColor,
+            "--zl-surface": activeTokens.universalFillColor,
+            "--zl-border": activeTokens.universalBorderColor,
+            "--zl-hover": activeTokens.hoverBackplateTint,
             "--zl-font-family": scaled.resolvedFontFamily,
             "--zl-heading-font": scaled.resolvedHeadingFontFamily,
             "--zl-body-weight": String(scaled.bodyWeight),

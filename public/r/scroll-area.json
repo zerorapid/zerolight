@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-area",
+  "type": "registry:component",
+  "title": "Scroll Area",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/scroll-area.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {\n  maxHeight?: number | string;\n  orientation?: \"vertical\" | \"horizontal\" | \"both\";\n  bordered?: boolean;\n}\n\n/**\n * Clean scrollable viewport container respecting ZeroLight border & radius tokens.\n */\nexport function ScrollArea({\n  maxHeight = 280,\n  orientation = \"vertical\",\n  bordered = false,\n  className = \"\",\n  style,\n  children,\n  ...props\n}: ScrollAreaProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  const overflowClass =\n    orientation === \"horizontal\"\n      ? \"overflow-x-auto overflow-y-hidden\"\n      : orientation === \"both\"\n      ? \"overflow-auto\"\n      : \"overflow-y-auto overflow-x-hidden\";\n\n  return (\n    <div\n      style={{\n        maxHeight: typeof maxHeight === \"number\" ? `${maxHeight}px` : maxHeight,\n        borderColor: bordered ? tokens.universalBorderColor : undefined,\n        borderWidth: bordered ? `${tokens.borderWidth}px` : undefined,\n        borderRadius: bordered ? `${scaled.scaledCardRadius}px` : undefined,\n        ...style,\n      }}\n      className={`${overflowClass} ${bordered ? \"border\" : \"\"} font-sans ${className}`}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

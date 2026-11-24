@@ -2,32 +2,21 @@
 
 import React, { useState } from "react";
 import {
-  Search,
-  Copy,
-  Check,
-  X,
   LayoutGrid,
   Code,
-  ArrowRight,
-  RefreshCw,
-  UserPlus,
   Users,
   FileText,
   Settings,
   LayoutDashboard,
   Bell,
-  CheckCircle2,
-  PlusCircle,
-  ChevronRight,
-  ExternalLink,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type ViewportMode = "desktop" | "tablet" | "mobile";
 
 export function SaaSLayoutLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -188,17 +177,20 @@ export function SaaSLayoutLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Filter layout templates..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
           <button
             type="button"
             onClick={() => setZoneGuides(!zoneGuides)}
             className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer flex items-center gap-1.5 shadow-xs ${
               zoneGuides
-                ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300"
-                : "border-zinc-200/80 dark:border-white/10 bg-zinc-100 dark:bg-white/5 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-white/10"
+                ? "border-blue-500 bg-blue-50 text-blue-700"
+                : "border-zinc-200/80 bg-zinc-100 text-zinc-700 hover:bg-zinc-200/70"
             }`}
           >
-            <LayoutGrid className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <LayoutGrid className="w-3.5 h-3.5 text-blue-600" />
             <span>{zoneGuides ? "Zone Guides: On" : "Zone Guides: Off"}</span>
           </button>
         }
@@ -211,7 +203,7 @@ export function SaaSLayoutLibrary() {
         
         {/* TEMPLATE 01: Classic Left Sidebar + Top Bar App Shell */}
         {filteredTemplates.some((t) => t.id === "t01") && (
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden">
+          <div style={getZeroLightCardStyle(tokens, scaled)} className="border shadow-xs overflow-hidden">
             <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
@@ -227,7 +219,16 @@ export function SaaSLayoutLibrary() {
                 onClick={() =>
                   setActiveCodeModal({
                     title: "01 Classic Left Sidebar + Top Bar App Shell",
-                    code: `<div class="flex h-screen bg-[#FAFAFA] dark:bg-[#09090B]">\n  <!-- Sidebar -->\n  <aside class="w-56 border-r border-zinc-200 dark:border-white/10 p-4">\n    <nav class="space-y-1">\n      <a href="#" class="block p-2 rounded-lg bg-zinc-950 text-white font-semibold">Overview</a>\n      <a href="#" class="block p-2 rounded-lg text-zinc-600 dark:text-zinc-400">Invoices</a>\n    </nav>\n  </aside>\n  <!-- Main Canvas -->\n  <div class="flex-1 flex flex-col min-w-0">\n    <header class="h-14 border-b border-zinc-200 dark:border-white/10 px-6 flex items-center justify-between">\n      <h1 class="text-sm font-bold">Overview</h1>\n    </header>\n    <main class="flex-1 p-6 overflow-y-auto">\n      <!-- Page Content -->\n    </main>\n  </div>\n</div>`,
+                    code: `import { AppShell, PageHeader } from "@/components/zerolight";
+
+export function EnterpriseAppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AppShell brandName="ZeroLight Pro" navItems={[{ id: "overview", label: "Overview" }, { id: "invoices", label: "Invoices" }]}>
+      <PageHeader title="Overview" />
+      <main className="p-6">{children}</main>
+    </AppShell>
+  );
+}`,
                   })
                 }
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
@@ -380,7 +381,21 @@ export function SaaSLayoutLibrary() {
                 onClick={() =>
                   setActiveCodeModal({
                     title: "03 4-KPI Top Row + 8/4 Split",
-                    code: `<div class="space-y-6">\n  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">\n    <div class="p-4 bg-white border rounded-xl"><h3>Net Revenue</h3><p class="text-2xl font-bold font-sans tabular-nums">₹48.2L</p></div>\n    <div class="p-4 bg-white border rounded-xl"><h3>Active Subs</h3><p class="text-2xl font-bold font-sans tabular-nums">3,480</p></div>\n  </div>\n  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">\n    <div class="lg:col-span-8 p-6 bg-white border rounded-xl"><h4>Revenue Growth Chart</h4></div>\n    <div class="lg:col-span-4 p-6 bg-white border rounded-xl"><h4>Live Activity Feed</h4></div>\n  </div>\n</div>`,
+                    code: `import { DashboardTemplate, StatCard, AreaChart } from "@/components/zerolight";
+
+export function ExecutiveOverviewTemplate() {
+  return (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Net Revenue" value="₹48.2L" delta="+14.2%" trend="up" />
+        <StatCard label="Active Subs" value="3,480" delta="+8.1%" trend="up" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="lg:col-span-8"><AreaChart title="Revenue Growth" data={[]} /></div>
+      </div>
+    </div>
+  );
+}`,
                   })
                 }
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"
@@ -507,7 +522,16 @@ export function SaaSLayoutLibrary() {
                 onClick={() =>
                   setActiveCodeModal({
                     title: "05 List-Detail Split View",
-                    code: `<div class="grid grid-cols-1 md:grid-cols-12 border rounded-2xl overflow-hidden divide-x divide-zinc-200">\n  <!-- Master List -->\n  <div class="md:col-span-5 p-4 space-y-2 overflow-y-auto">\n    <div class="p-3 border rounded-xl cursor-pointer"><strong>Zerorapid India</strong><p>₹1,25,000</p></div>\n  </div>\n  <!-- Detail Pane -->\n  <div class="md:col-span-7 p-6 space-y-4">\n    <h2>Customer Dossier</h2>\n  </div>\n</div>`,
+                    code: `import { PageLayout, DetailDrawer } from "@/components/zerolight";
+
+export function ListDetailSplitTemplate() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-12 border rounded-2xl overflow-hidden divide-x divide-zinc-200">
+      <div className="md:col-span-5 p-4 space-y-2">Master Records</div>
+      <div className="md:col-span-7 p-6 space-y-4">Customer Dossier</div>
+    </div>
+  );
+}`,
                   })
                 }
                 className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 dark:bg-white/10 hover:bg-zinc-200 dark:hover:bg-white/15 text-zinc-900 dark:text-white flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto shrink-0"

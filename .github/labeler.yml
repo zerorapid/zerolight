@@ -1,0 +1,44 @@
+# ZeroLight Monorepo Tool & Area Auto-Labeler (single `main` branch)
+# Maps PR file changes directly to ZeroLight ecosystem products and architecture tiers.
+
+"tool:zerolight":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/zerolight/atoms/**"
+          - "src/components/zerolight/molecules/**"
+          - "src/components/zerolight/organisms/**"
+          - "src/components/zerolight/templates/**"
+          - "src/components/zerolight/views/**"
+          - "src/components/zerolight/libraries/**"
+
+"tool:zeroflash":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/zerolight/tools/zero-flash-tool.tsx"
+
+"tool:zeroauditor":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/zerolight/tools/zero-auditor-tool.tsx"
+          - "src/components/zerolight/tools/ai-footprint-rules.ts"
+
+"area:gen-ui":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/zerolight/gen-ui/**"
+
+"area:studio":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/components/zerolight/studio/**"
+          - "src/components/zerolight/dashboard/**"
+          - "src/components/zerolight/docs-studio.tsx"
+          - "src/components/zerolight/tools/tools-directory.tsx"
+
+"area:registry":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "scripts/**"
+          - "bin/**"
+          - "public/registry/**"
+          - "public/r/**"

@@ -20,14 +20,14 @@ District 1: ATOMS (43 Foundational Primitives — Zero Domain Logic)
 District 2: MOLECULES (45 Composite Controls & Micro-Charts)
   └── src/components/zerolight/molecules/
       • FormFields, SearchBars, Dropdowns, DatePickers, Breadcrumbs, Tabs
-      • D3 AreaChart, Sparkline, BarChart, DonutChart, WorldMap (Zero-API TopoJSON map)
+      • D3 AreaChart, Sparkline, BarChart, DonutChart, WorldMap, ProductWindow, HeroShowcase
 
-District 3: ORGANISMS (18 Enterprise Modules)
+District 3: ORGANISMS (19 Enterprise Modules)
   └── src/components/zerolight/organisms/
       • BillingPortal (Stripe tiers & cards), TenantKit (Multi-tenant switcher), TeamPermissions (RBAC)
-      • DataTable (Virtual grid + TSV export), CommandPalette (⌘K), GeoBreakdown, AuditLog
+      • DataTable (Virtual grid + TSV export), CommandPalette (⌘K), GeoBreakdown, BentoShowcase
 
-District 4: TEMPLATES (6 Page Skeletons)
+District 4: TEMPLATES (5 Page Skeletons)
   └── src/components/zerolight/templates/
       • DashboardTemplate, AnalyticsReportTemplate, ConsoleTableTemplate, ChatWorkspaceTemplate
 
@@ -45,11 +45,13 @@ District 5: DESTINATION APPLICATIONS (8 Working SaaS Pages)
 | `src/components/zerolight/libraries/` | 15 Showcase Libraries | All 295 pattern variants (Buttons, Inputs, Overlays, Data, Layouts) |
 | `src/components/zerolight/libraries/common/` | Shared Library Primitives | `LibraryHeader` (Search + Badges), `CodeModal` (TSX Viewer), `VariantCard` |
 | `src/components/zerolight/dashboard/` | Dashboard Shell | Master coordinator shell hosting sidebar, top-nav, and 6-tier routing |
-| `src/components/zerolight/docs-studio.tsx` | Visual Studio Dock | 5-tab IDE for runtime theme, typography, motion & token customization |
-| `bin/cli.mjs` | The `zerolight` CLI | Commands: `npx zerolight init`, `list`, `add <component>` |
+| `src/components/zerolight/docs-studio.tsx` | Visual Studio Dock | 5-tab IDE for runtime theme, typography, motion & token customization (inside Tools) |
+| `src/components/zerolight/tools/` | Tools Hub | Directory cards, Visual Studio Dock, Atlas Map, ZeroFlash & ZeroAuditor |
+| `src/components/zerolight/gen-ui/` | Gen-UI Runtime | Zod-validated generative UI renderer with Morphic Stage 1–3 evolution |
+| `bin/cli.mjs` | The `zerolight` CLI | Commands: `npx zerolight init`, `list`, `add <component>` (`--shadcn` supported) |
 | `bin/zerolight-mcp.mjs` | AI Agent MCP Server | Stdio JSON-RPC 2.0 server with 4 tools for Cursor, Windsurf, Claude Code |
-| `scripts/build-registry.mjs` | Registry Compiler | Scans 120 primitives and builds `public/registry/*.json` |
-| `public/registry/` | Component Payloads | 120 standalone JSON component payloads + `index.json` |
+| `scripts/build-registry.mjs` | Registry Compiler | Scans all ZeroLight tiers, Tools & Gen-UI (`129` payloads) |
+| `public/registry/` | Component Payloads | 129 standalone JSON payloads (`public/r/` shadcn format also generated) |
 
 ---
 
@@ -59,6 +61,6 @@ District 5: DESTINATION APPLICATIONS (8 Working SaaS Pages)
 2. **Motion Invariant**: All animations must bind to `useZeroLight().scaled.motionConfig.spring` or `motionConfig.transition`. No uncoordinated CSS keyframes.
 3. **Test Invariant**: Every change must pass 100% of automated tests:
    ```bash
-   node tests/zerolight.test.mjs    # Must pass 188 / 188 assertions
+   node tests/zerolight.test.mjs    # Must pass 191 / 191 assertions
    npx tsc --noEmit                 # Must pass with 0 errors
    ```

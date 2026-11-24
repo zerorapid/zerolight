@@ -5,3 +5,4 @@ export * from "./settings-view";
 export * from "./finexy-view";
 export * from "./school-attendance-view";
 export * from "./donations-view";
+export * from "./notifications-view";

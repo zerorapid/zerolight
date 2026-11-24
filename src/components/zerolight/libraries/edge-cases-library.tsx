@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Search,
   Copy,
   Check,
   X,
@@ -15,17 +14,14 @@ import {
   RefreshCw,
   PanelRight,
   Inbox,
-  ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type MotionCurve = "snappy" | "damped" | "gentle" | "instant";
 
 export function SaaSEdgeCasesLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -124,24 +120,17 @@ export function SaaSEdgeCasesLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search edge cases..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
           <div className="flex items-center gap-2">
-            <div className="flex items-center p-0.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-xs">
-              {(["snappy", "damped", "gentle", "instant"] as MotionCurve[]).map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setMotionCurve(c)}
-                  className={`px-2 py-1 rounded-md capitalize transition cursor-pointer ${
-                    motionCurve === c
-                      ? "font-semibold bg-white dark:bg-white/15 text-zinc-950 dark:text-white shadow-xs"
-                      : "font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
+            <LibrarySegmentControl
+              options={["snappy", "damped", "gentle", "instant"] as const}
+              value={motionCurve}
+              onChange={setMotionCurve}
+              ariaLabel="Motion physics preset"
+            />
 
             <button
               type="button"
@@ -161,10 +150,10 @@ export function SaaSEdgeCasesLibrary() {
 
       <div className="space-y-8">
         {/* ── 1. TYPOGRAPHY & TRUNCATION ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredPatterns.some((p) => p.cat === "typography") ? "" : "hidden"}`}>
           <div>
-            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
-              1. Typography & Truncation
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-zinc-100">
+              1. Typography &amp; Truncation
             </h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
               Single-line ellipsis, multi-line clamps & long non-breaking string containment.
@@ -173,7 +162,7 @@ export function SaaSEdgeCasesLibrary() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Pattern 01: Single-Line Truncation */}
         {filteredPatterns.some((p) => p.id === "p01") && (
-          <div className="bg-white dark:bg-[#121215] border border-zinc-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden flex flex-col justify-between">
+          <div style={getZeroLightCardStyle(tokens, scaled)} className="border shadow-xs overflow-hidden flex flex-col justify-between">
             <div className="p-4 sm:p-5 space-y-3">
               <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-white/5">
                 <div className="flex items-center gap-2">
@@ -185,7 +174,18 @@ export function SaaSEdgeCasesLibrary() {
                   onClick={() =>
                     setActiveCodeModal({
                       title: "01 Single-Line Truncation",
-                      code: `<div class="flex items-center justify-between gap-2">\n  <span class="truncate text-xs font-bold" title="Long Title">Long Title...</span>\n  <button onclick="copy()">Copy</button>\n</div>`,
+                      code: `import { CopyTrigger } from "@/components/zerolight";
+
+export function SingleLineTruncateRow({ entityName }: { entityName: string }) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span className="truncate text-xs font-bold" title={entityName}>
+        {entityName}
+      </span>
+      <CopyTrigger value={entityName} />
+    </div>
+  );
+}`,
                     })
                   }
                   className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1 cursor-pointer"
@@ -333,7 +333,7 @@ export function SaaSEdgeCasesLibrary() {
         </section>
 
         {/* ── 2. METRICS & ZERO STATES ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredPatterns.some((p) => p.cat === "metrics") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               2. Metrics & Zero States
@@ -497,7 +497,7 @@ export function SaaSEdgeCasesLibrary() {
         </section>
 
         {/* ── 3. MOTION PHYSICS ENGINE ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredPatterns.some((p) => p.cat === "motion") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               3. Motion Physics Engine
@@ -647,7 +647,7 @@ export function SaaSEdgeCasesLibrary() {
         </section>
 
         {/* ── 4. RECOVERY & SKELETONS ── */}
-        <section className="space-y-3">
+        <section className={`space-y-3 ${filteredPatterns.some((p) => p.cat === "recovery") ? "" : "hidden"}`}>
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               4. Recovery & Skeletons
@@ -773,7 +773,18 @@ export function SaaSEdgeCasesLibrary() {
                   onClick={() =>
                     setActiveCodeModal({
                       title: "12 Network Timeout Auto-Retry",
-                      code: `<div class="p-3 bg-red-50 text-red-700 rounded-xl text-xs flex justify-between">\n  <span>Gateway Timeout (504)</span>\n  <button onclick="retry()">Retry Now</button>\n</div>`,
+                      code: `import { AlertBanner, Button } from "@/components/zerolight";
+
+export function RetryBanner({ onRetry }: { onRetry: () => void }) {
+  return (
+    <AlertBanner
+      severity="critical"
+      title="GST Portal Timeout (504)"
+      description="Retrying automatically..."
+      action={<Button variant="outline" size="sm" onClick={onRetry}>Retry Now</Button>}
+    />
+  );
+}`,
                     })
                   }
                   className="text-zinc-400 hover:text-zinc-900 dark:hover:text-white text-xs flex items-center gap-1 cursor-pointer"

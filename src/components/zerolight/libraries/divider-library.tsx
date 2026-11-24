@@ -1,11 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  Search,
-  Copy,
-  Check,
-  X,
   ChevronDown,
   ArrowLeft,
   Download,
@@ -15,13 +11,12 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { Badge } from "../atoms/badge";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type SpacingScale = "tight" | "default" | "relaxed";
 
 export function SaaSDividerLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -78,7 +73,11 @@ export function SaaSDividerLibrary() {
     if (!matchesCategory || !matchesSearch) return null;
 
     return (
-      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-xs flex flex-col justify-between transition-all hover:border-zinc-300">
+      <div
+        data-zl-card="true"
+        className="p-5 shadow-xs flex flex-col justify-between transition-all"
+        style={getZeroLightCardStyle(tokens, scaled)}
+      >
         <div>
           <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100">
             <span className="text-xs font-bold text-zinc-950 flex items-center gap-1.5">
@@ -109,21 +108,38 @@ export function SaaSDividerLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search dividers..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <button
-            type="button"
-            onClick={() => setGuidesActive(!guidesActive)}
-            className="px-2.5 py-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
-          >
-            <span className={`w-2 h-2 rounded-full ${guidesActive ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
-            <span>Guides: {guidesActive ? "On" : "Off"}</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <LibrarySegmentControl
+              options={["tight", "default", "relaxed"] as const}
+              value={spacingScale}
+              onChange={setSpacingScale}
+              ariaLabel="Spacing scale"
+            />
+            <button
+              type="button"
+              onClick={() => setGuidesActive(!guidesActive)}
+              className="px-2.5 py-1.5 border font-semibold flex items-center gap-1.5 transition cursor-pointer text-xs"
+              style={{
+                borderRadius: `${scaled.scaledRadius}px`,
+                borderColor: tokens.universalBorderColor,
+                backgroundColor: tokens.universalFillColor,
+                color: tokens.textIconColor,
+              }}
+            >
+              <span className={`w-2 h-2 rounded-full ${guidesActive ? "bg-emerald-500 shadow-xs" : "bg-zinc-400"}`} />
+              <span>Guides: {guidesActive ? "On" : "Off"}</span>
+            </button>
+          </div>
         }
       />
 
       <div className="space-y-8">
         {/* ── 1. HORIZONTAL RULES & LINE STYLES ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               1. Horizontal Rules & Line Styles
@@ -132,7 +148,7 @@ export function SaaSDividerLibrary() {
               Solid hairline rules, dashed receipt dividers, dotted section breaks & gradient boundaries.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           number="01"
@@ -236,7 +252,7 @@ export function SaaSDividerLibrary() {
         </section>
 
         {/* ── 2. LABELED & INTERACTIVE SECTION DIVIDERS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               2. Labeled & Interactive Section Dividers
@@ -245,7 +261,7 @@ export function SaaSDividerLibrary() {
               Centered text dividers, left-aligned badge tags, and expandable/collapsible details.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           number="06"
@@ -359,7 +375,7 @@ export function SaaSDividerLibrary() {
         </section>
 
         {/* ── 3. VERTICAL & INLINE SPLITTERS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               3. Vertical & Inline Splitters
@@ -368,7 +384,7 @@ export function SaaSDividerLibrary() {
               Toolbar pipe splitters, stat card vertical boundaries, and dot separators.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           number="11"
@@ -446,7 +462,7 @@ export function SaaSDividerLibrary() {
         </section>
 
         {/* ── 4. CONSISTENT SPACING UNITS (8-32PX) ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               4. Consistent Spacing Units (8-32px)
@@ -455,7 +471,7 @@ export function SaaSDividerLibrary() {
               Proportional vertical spacing blocks adhering to 4px and 8px baseline rhythm.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           number="14"
@@ -585,7 +601,7 @@ export function SaaSDividerLibrary() {
         </section>
 
         {/* ── 5. AUTO-PUSH & LAYOUT SPACERS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               5. Auto-Push & Layout Spacers
@@ -594,7 +610,7 @@ export function SaaSDividerLibrary() {
               Flexbox push mechanisms for sticky card footers and separated action rails.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           number="19"
@@ -644,7 +660,7 @@ export function SaaSDividerLibrary() {
         </section>
 
         {/* ── 6. CARD & LIST DIVIDERS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               6. Card & List Dividers
@@ -653,7 +669,7 @@ export function SaaSDividerLibrary() {
               Inner divide-y borders for dense metadata tables, setting cards & modal action footers.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           number="21"

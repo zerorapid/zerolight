@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Save,
   Check,
   Copy,
   Plus,
@@ -14,8 +13,6 @@ import {
   List,
   Columns,
   Star,
-  Eye,
-  EyeOff,
   RefreshCw,
   Upload,
   Trash2,
@@ -26,7 +23,6 @@ import {
   Sparkles,
   Wand2,
   Zap,
-  Search,
   Filter,
   Code2,
   FileSpreadsheet,
@@ -36,12 +32,11 @@ import {
   ShoppingCart,
   MoreHorizontal,
   Edit2,
-  SlidersHorizontal,
 } from "lucide-react";
 import { useZeroLight } from "../context";
+import { getContrastColor } from "../types";
 import { Kbd } from "../atoms/kbd";
-import { Badge } from "../atoms/badge";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type ButtonDensityTier = "28px" | "36px" | "42px" | "48px";
 export type ButtonGlobalState = "ready" | "saving" | "saved" | "disabled";
@@ -163,7 +158,7 @@ export function SaaSButtonLibrary() {
     }
   };
 
-  // Card Wrapper for consistent styling
+  // Card Wrapper for consistent styling (Token-bound & auto-filters category + search)
   const Card = ({
     number,
     title,
@@ -177,11 +172,15 @@ export function SaaSButtonLibrary() {
     category: string;
     code: string;
   }) => {
-    // Filter matching
+    if (activeCategory !== "all" && activeCategory !== category) return null;
     if (searchQuery.trim() && !title.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
     return (
-      <div className="rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs flex flex-col justify-between gap-4 transition-all hover:border-zinc-300">
+      <div
+        data-zl-card="true"
+        style={getZeroLightCardStyle(tokens, scaled)}
+        className="border p-5 shadow-xs flex flex-col justify-between gap-4 transition-all hover:border-zinc-400"
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-sans tabular-nums font-bold text-zinc-400">{number}</span>
@@ -219,42 +218,53 @@ export function SaaSButtonLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search buttons..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <div className="relative" data-button-popover>
-            <button
-              type="button"
-              onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
-              className="px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-white/5 border border-zinc-200/80 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-200/60 dark:hover:bg-white/10 transition cursor-pointer"
-            >
-              <span>State: <strong className="capitalize text-zinc-950 dark:text-white">{globalState}</strong></span>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-            </button>
+          <div className="flex items-center gap-2">
+            <LibrarySegmentControl
+              options={["28px", "36px", "42px", "48px"] as const}
+              value={density}
+              onChange={setDensity}
+              ariaLabel="Button density"
+            />
+            <div className="relative" data-button-popover>
+              <button
+                type="button"
+                onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
+                className="px-2.5 py-1.5 rounded-lg bg-zinc-100 border border-zinc-200/80 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-200/60 transition cursor-pointer"
+              >
+                <span>State: <strong className="capitalize text-zinc-950">{globalState}</strong></span>
+                <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+              </button>
 
-            {stateDropdownOpen && (
-              <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
-                {(["ready", "saving", "saved", "disabled"] as const).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => {
-                      setGlobalState(s);
-                      setStateDropdownOpen(false);
-                    }}
-                    className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                      globalState === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            )}
+              {stateDropdownOpen && (
+                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white border border-zinc-200 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                  {(["ready", "saving", "saved", "disabled"] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setGlobalState(s);
+                        setStateDropdownOpen(false);
+                      }}
+                      className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
+                        globalState === s ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         }
       />
 
       {/* ── 1. MAIN ACTION STYLES ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             1. Main Action Styles
@@ -263,7 +273,7 @@ export function SaaSButtonLibrary() {
             Primary, secondary, outline, ghost, and high-contrast action triggers.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="01"
           title="Main Solid Button"
@@ -272,10 +282,15 @@ export function SaaSButtonLibrary() {
         >
           <button
             type="button"
-            style={heightStyle}
+            style={{
+              ...heightStyle,
+              backgroundColor: tokens.primaryButtonColor || "#09090B",
+              color: getContrastColor(tokens.primaryButtonColor || "#09090B"),
+              borderRadius: `${scaled.scaledRadius}px`,
+            }}
             disabled={globalState === "disabled"}
             onClick={() => triggerToast("Main Action: Changes saved")}
-            className="w-full sm:w-auto px-5 rounded-xl bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-5 font-semibold text-xs hover:opacity-90 transition shadow-xs flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {globalState === "saving" ? (
               <span>Saving...</span>
@@ -377,7 +392,7 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── 2. BUTTONS WITH ICONS & SHORTCUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             2. Buttons with Icons & Shortcuts
@@ -386,7 +401,7 @@ export function SaaSButtonLibrary() {
             Leading icons, trailing arrows, icon-only buttons, and keyboard shortcuts.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="07"
           title="Create Button with Plus"
@@ -500,7 +515,7 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── 3. SPLIT & CUSTOM MENU BUTTONS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             3. Split & Custom Menu Buttons
@@ -509,7 +524,7 @@ export function SaaSButtonLibrary() {
             Conjoined split buttons, dropdown menus, and action overflow triggers.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="13"
           title="Split Save Button"
@@ -746,7 +761,7 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── 4. TOGGLE, SWITCH & VIEW BUTTONS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             4. Toggle, Switch & View Buttons
@@ -755,7 +770,7 @@ export function SaaSButtonLibrary() {
             Segmented switches, view toggles, filter pills, and bookmark favorites.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="17"
           title="List / Grid / Board View"
@@ -856,7 +871,7 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── 5. LOADING, COPY & PROGRESS BUTTONS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             5. Loading, Copy & Progress Buttons
@@ -865,7 +880,7 @@ export function SaaSButtonLibrary() {
             Shimmer spinners, inline progress feedback, and success checkmarks.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="21"
           title="Click-to-Save Progress"
@@ -947,7 +962,7 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── 6. DELETE & SAFETY CONFIRM BUTTONS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             6. Delete & Safety Confirm Buttons
@@ -956,7 +971,7 @@ export function SaaSButtonLibrary() {
             Destructive delete triggers, critical confirmation states, and safety locks.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="25"
           title="Two-Click Delete Confirm"
@@ -1015,7 +1030,7 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── 7. COMPACT TOOL BUTTONS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             7. Compact Tool Buttons
@@ -1024,7 +1039,7 @@ export function SaaSButtonLibrary() {
             Floating action buttons, counter badges, and audio voice triggers.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="28"
           title="Toolbar Action Strip"
@@ -1116,7 +1131,7 @@ export function SaaSButtonLibrary() {
       </section>
 
       {/* ── 8. SMART AI & UPGRADE BUTTONS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             8. Smart AI & Upgrade Buttons
@@ -1125,7 +1140,7 @@ export function SaaSButtonLibrary() {
             Generative AI prompts, shimmer borders, and tier conversion triggers.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="31"
           title="Auto-Build with AI Button"

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "typing-indicator",
+  "type": "registry:component",
+  "title": "Typing Indicator",
+  "dependencies": [
+    "framer-motion"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/typing-indicator.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { motion } from \"framer-motion\";\n\nexport interface TypingIndicatorProps {\n  label?: string;\n  size?: \"sm\" | \"md\";\n  className?: string;\n}\n\nexport function TypingIndicator({\n  label,\n  size = \"md\",\n  className = \"\",\n}: TypingIndicatorProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  const dotSize = size === \"sm\" ? 4 : 6;\n  const dotGap = size === \"sm\" ? 3 : 4;\n\n  const dotTransition = {\n    duration: 0.6,\n    repeat: Infinity,\n    repeatType: \"reverse\" as const,\n    ease: \"easeInOut\" as const,\n  };\n\n  return (\n    <div\n      style={{\n        borderRadius: `${scaled.scaledPillRadius}px`,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${tokens.borderWidth}px`,\n        backgroundColor: tokens.universalFillColor,\n      }}\n      className={`inline-flex items-center gap-2 px-3 py-1.5 border shadow-2xs select-none ${className}`}\n    >\n      <div className=\"flex items-center\" style={{ gap: `${dotGap}px` }}>\n        {[0, 1, 2].map((i) => (\n          <motion.span\n            key={i}\n            initial={{ y: 0, opacity: 0.4 }}\n            animate={{ y: -3, opacity: 1 }}\n            transition={{\n              ...dotTransition,\n              delay: i * 0.15,\n            }}\n            style={{\n              width: `${dotSize}px`,\n              height: `${dotSize}px`,\n              backgroundColor: tokens.primaryButtonColor,\n              borderRadius: \"9999px\",\n            }}\n          />\n        ))}\n      </div>\n      {label && (\n        <span\n          style={{\n            fontSize: `${scaled.sublabelFontSize}px`,\n            color: tokens.textIconColor,\n          }}\n          className=\"font-medium text-neutral-500\"\n        >\n          {label}\n        </span>\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

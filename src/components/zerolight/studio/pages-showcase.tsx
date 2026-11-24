@@ -4,12 +4,8 @@ import React from "react";
 import {
   Bot,
   CreditCard,
-  DollarSign,
   ExternalLink,
-  Gift,
   Globe,
-  GraduationCap,
-  Settings,
   Terminal,
 } from "lucide-react";
 import { ZeroLightTokens, ScaledTokens } from "../types";
@@ -18,10 +14,6 @@ import {
   AiAssistantView,
   BillingView,
   DevConsoleView,
-  DonationsInner,
-  FinexyDashboardInner,
-  SchoolAttendanceInner,
-  SettingsView,
 } from "../views";
 
 export type StudioPageTab =
@@ -59,7 +51,7 @@ export function PagesShowcase({
                         <h2 style={{ fontSize: `${scaled.headingFontSize}px`, color: tokens.textIconColor }} className="font-semibold">
                           Atomic Tier 5: Enterprise SaaS Pages
                         </h2>
-                        <Badge variant="healthy">7 Full Screens</Badge>
+                        <Badge variant="healthy">3 Core SaaS Pages</Badge>
                       </div>
                       <p style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-500 leading-relaxed max-w-2xl">
                         Production domain applications rendered live with active design tokens. Tweak any Visual Studio slider or color on the right to see the screen transform instantly.
@@ -92,10 +84,6 @@ export function PagesShowcase({
                       { id: "dev-console", label: "Dev Console", icon: <Terminal className="w-3.5 h-3.5" /> },
                       { id: "billing", label: "Billing Hub", icon: <CreditCard className="w-3.5 h-3.5" /> },
                       { id: "ai-assistant", label: "AI Copilot", icon: <Bot className="w-3.5 h-3.5" /> },
-                      { id: "settings", label: "Org Settings", icon: <Settings className="w-3.5 h-3.5" /> },
-                      { id: "finexy", label: "Finexy FinTech", icon: <DollarSign className="w-3.5 h-3.5" /> },
-                      { id: "school-attendance", label: "School Attendance", icon: <GraduationCap className="w-3.5 h-3.5" /> },
-                      { id: "donations", label: "Donations Hub", icon: <Gift className="w-3.5 h-3.5" /> },
                     ].map((pg) => {
                       const isSelected = activePageTab === pg.id;
                       return (
@@ -126,10 +114,6 @@ export function PagesShowcase({
                   {activePageTab === "dev-console" && <DevConsoleView />}
                   {activePageTab === "billing" && <BillingView />}
                   {activePageTab === "ai-assistant" && <AiAssistantView />}
-                  {activePageTab === "settings" && <SettingsView />}
-                  {activePageTab === "finexy" && <FinexyDashboardInner />}
-                  {activePageTab === "school-attendance" && <SchoolAttendanceInner />}
-                  {activePageTab === "donations" && <DonationsInner />}
                 </div>
               </div>
   );

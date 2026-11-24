@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  Search,
-  Copy,
   Check,
   X,
   RotateCcw,
@@ -25,13 +23,12 @@ import {
   FileSpreadsheet,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { Badge } from "../atoms/badge";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type FeedbackDensity = "small" | "medium" | "large";
 
 export function SaaSFeedbackLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -119,7 +116,11 @@ export function SaaSFeedbackLibrary() {
     if (!matchesCategory || !matchesSearch) return null;
 
     return (
-      <div className="bg-white rounded-2xl border border-zinc-200/80 p-5 shadow-xs flex flex-col justify-between transition-all hover:border-zinc-300">
+      <div
+        data-zl-card="true"
+        className="p-5 shadow-xs flex flex-col justify-between transition-all"
+        style={getZeroLightCardStyle(tokens, scaled)}
+      >
         <div>
           <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-100">
             <span className="text-xs font-bold text-zinc-950 flex items-center gap-1.5">
@@ -150,21 +151,38 @@ export function SaaSFeedbackLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search feedback..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <button
-            type="button"
-            onClick={handleRestoreAll}
-            className="px-2.5 py-1.5 rounded-lg border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] text-zinc-800 dark:text-zinc-200 font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-zinc-500" />
-            <span>Restore Hidden</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <LibrarySegmentControl
+              options={["small", "medium", "large"] as const}
+              value={density}
+              onChange={setDensity}
+              ariaLabel="Feedback density"
+            />
+            <button
+              type="button"
+              onClick={handleRestoreAll}
+              className="px-2.5 py-1.5 border font-semibold flex items-center gap-1.5 transition cursor-pointer text-xs"
+              style={{
+                borderRadius: `${scaled.scaledRadius}px`,
+                borderColor: tokens.universalBorderColor,
+                backgroundColor: tokens.universalFillColor,
+                color: tokens.textIconColor,
+              }}
+            >
+              <RotateCcw className="w-3.5 h-3.5 opacity-70" />
+              <span>Restore Hidden</span>
+            </button>
+          </div>
         }
       />
 
       <div className="space-y-8">
         {/* ── 1. INLINE PAGE ALERTS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               1. Inline Page Alerts
@@ -173,7 +191,7 @@ export function SaaSFeedbackLibrary() {
               Subtle informative notices, verification callouts, seat warnings, and critical error strips.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           id="alert-01"
@@ -357,7 +375,7 @@ export function SaaSFeedbackLibrary() {
         </section>
 
         {/* ── 2. TOP ANNOUNCEMENT BARS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               2. Top Announcement Bars
@@ -366,7 +384,7 @@ export function SaaSFeedbackLibrary() {
               Sticky top viewport banners for maintenance, subscription renewals, and critical alerts.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           id="banner-07"
@@ -468,7 +486,7 @@ export function SaaSFeedbackLibrary() {
         </section>
 
         {/* ── 3. SNACKBARS & TOAST NOTIFICATIONS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               3. Snackbars & Toast Notifications
@@ -477,7 +495,7 @@ export function SaaSFeedbackLibrary() {
               Floating transient snackbars with undo triggers, progress states, and retry buttons.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           id="toast-10"
@@ -567,7 +585,7 @@ export function SaaSFeedbackLibrary() {
         </section>
 
         {/* ── 4. EMPTY STATES & RECOVERY CARDS ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               4. Empty States & Recovery Cards
@@ -576,7 +594,7 @@ export function SaaSFeedbackLibrary() {
               Zero-data placeholders with actionable CTAs, search reset, and document imports.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           id="empty-13"
@@ -680,7 +698,7 @@ export function SaaSFeedbackLibrary() {
         </section>
 
         {/* ── 5. ERROR & LOCKED STATES ── */}
-        <section className="space-y-3">
+        <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
           <div>
             <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
               5. Error & Locked States
@@ -689,7 +707,7 @@ export function SaaSFeedbackLibrary() {
               Feature paywalls, sync failures, rate limit countdowns, and session timeouts.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
 
         <Card
           id="error-17"

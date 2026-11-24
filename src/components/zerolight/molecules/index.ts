@@ -41,3 +41,5 @@ export * from "./file-card";
 export * from "./world-map";
 export * from "./organization-switcher";
 export * from "./api-key-vault";
+export * from "./product-stage";
+export * from "./hero-showcase";

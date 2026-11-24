@@ -21,6 +21,17 @@ import {
   GLOBAL_LAND_PATH,
   CountryShape,
 } from "@/components/zerolight/molecules/world-map-data";
+import { useZeroLight } from "@/components/zerolight/context";
+import { Button } from "@/components/zerolight/atoms/button";
+import { IconButton } from "@/components/zerolight/atoms/icon-button";
+import { Input } from "@/components/zerolight/atoms/input";
+import { Switch } from "@/components/zerolight/atoms/switch";
+import { Slider } from "@/components/zerolight/atoms/slider";
+import { TagChip } from "@/components/zerolight/atoms/tag-chip";
+import { Badge } from "@/components/zerolight/atoms/badge";
+import { Card } from "@/components/zerolight/atoms/card";
+import { Kbd } from "@/components/zerolight/atoms/kbd";
+import { SegmentedControl } from "@/components/zerolight/molecules/segmented-control";
 
 export type MapRenderStyle = "vector" | "dots" | "pixels" | "crosses" | "diamonds" | "hatch";
 export type PatternDensity = "fine" | "standard" | "bold";
@@ -78,6 +89,7 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
   showChoropleth: initialChoropleth = false,
   interactive = true,
 }) => {
+  const { tokens, scaled } = useZeroLight();
   // Render Config State
   const [style, setStyle] = useState<MapRenderStyle>(defaultStyle);
   const [density, setDensity] = useState<PatternDensity>(defaultDensity);
@@ -129,10 +141,9 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
   // Keyboard shortcut listener ('/' to focus search)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "/" && document.activeElement !== searchInputRef.current) {
+      if (e.key === "/" && !["INPUT", "TEXTAREA"].includes((document.activeElement as HTMLElement)?.tagName || "")) {
         e.preventDefault();
         setIsSearchOpen(true);
-        setTimeout(() => searchInputRef.current?.focus(), 50);
       } else if (e.key === "Escape") {
         setIsSearchOpen(false);
         setIsAdvancedOpen(false);
@@ -251,8 +262,16 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full select-none overflow-hidden rounded-2xl border border-zinc-200/80 bg-white font-sans text-zinc-900 shadow-sm transition-all duration-300 ${className}`}
-      style={{ minHeight: "440px" }}
+      className={`relative w-full select-none overflow-hidden border font-sans transition-all duration-300 ${className}`}
+      style={{
+        minHeight: "440px",
+        borderRadius: `${scaled.scaledCardRadius}px`,
+        borderColor: tokens.universalBorderColor,
+        borderWidth: `${tokens.borderWidth}px`,
+        backgroundColor: tokens.universalFillColor,
+        color: tokens.textIconColor,
+        boxShadow: scaled.cardShadow,
+      }}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
     >
@@ -262,111 +281,91 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 p-3 sm:p-5">
         {/* Top-Left: Search Capsule */}
         <div className="pointer-events-auto relative">
-          <div
-            onClick={() => {
-              setIsSearchOpen(true);
-              setTimeout(() => searchInputRef.current?.focus(), 50);
-            }}
-            className="flex cursor-pointer items-center gap-2 rounded-full border border-black/10 bg-white/85 px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-zinc-600 shadow-lg backdrop-blur-xl transition hover:border-black/20 hover:bg-white"
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsSearchOpen((prev) => !prev)}
+            iconLeft={<Search className="h-3.5 w-3.5 shrink-0" />}
+            style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
           >
-            <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-zinc-400 shrink-0" />
             <span className="font-medium truncate max-w-[110px] sm:max-w-none">
               {activeInspectorCountry ? activeInspectorCountry.name : "Select country..."}
             </span>
-            <kbd className="hidden rounded bg-zinc-100 px-1.5 py-0.5 text-[11px] font-semibold text-zinc-400 sm:inline-block">
-              /
-            </kbd>
-          </div>
+            <Kbd className="hidden sm:inline-flex">/</Kbd>
+          </Button>
 
           {/* Search Dropdown Modal */}
           {isSearchOpen && (
-            <div className="absolute left-0 top-12 z-50 w-72 rounded-2xl border border-zinc-200/90 bg-white/95 p-2 shadow-2xl backdrop-blur-xl">
-              <div className="relative mb-2">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
-                <input
-                  ref={searchInputRef}
+            <Card variant="elevated" padding="none" className="absolute left-0 top-11 z-50 w-72 p-2">
+              <div className="mb-2">
+                <Input
+                  autoFocus
                   type="text"
                   placeholder="Search countries..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50/80 py-2 pl-9 pr-8 text-xs font-medium text-zinc-800 outline-none focus:border-zinc-900 focus:bg-white"
+                  iconLeft={<Search className="h-4 w-4" />}
+                  iconRight={
+                    searchQuery ? (
+                      <IconButton
+                        icon={<X className="h-3.5 w-3.5" />}
+                        ariaLabel="Clear country search"
+                        size="sm"
+                        onClick={() => setSearchQuery("")}
+                      />
+                    ) : undefined
+                  }
                 />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-600"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
               </div>
 
-              <div className="max-h-60 overflow-y-auto rounded-lg">
+              <div className="max-h-60 overflow-y-auto space-y-1">
                 {filteredCountries.map((country) => {
                   const isSelected = selectedIds.includes(country.id);
                   return (
-                    <button
+                    <Button
                       key={country.id}
+                      variant={isSelected ? "primary" : "ghost"}
+                      size="sm"
                       onClick={() => {
                         handleCountryClick(country.id);
                         setIsSearchOpen(false);
                         setSearchQuery("");
                       }}
-                      className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-xs transition ${
-                        isSelected
-                          ? "bg-zinc-900 text-white font-medium"
-                          : "text-zinc-700 hover:bg-zinc-100"
-                      }`}
+                      className="w-full justify-between"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold">{country.name}</span>
-                        <span className={`text-[10px] ${isSelected ? "text-zinc-300" : "text-zinc-400"}`}>
-                          ({country.id})
-                        </span>
-                      </div>
-                      {isSelected && <Check className="h-3.5 w-3.5 text-white" />}
-                    </button>
+                      <span className="flex items-center gap-2 truncate">
+                        <span className="font-semibold truncate">{country.name}</span>
+                        <span className="text-[10px] opacity-65">({country.id})</span>
+                      </span>
+                      {isSelected && <Check className="h-3.5 w-3.5 shrink-0" />}
+                    </Button>
                   );
                 })}
               </div>
-            </div>
+            </Card>
           )}
         </div>
 
         {/* Top-Right: Style Segmented Pill + Advanced Button */}
-        <div className="pointer-events-auto flex items-center gap-2.5">
-          {/* Quick 3-Style Segmented Pill */}
-          <div className="flex items-center rounded-full border border-black/10 bg-white/85 p-1 shadow-lg backdrop-blur-xl">
-            {(["vector", "dots", "pixels"] as MapRenderStyle[]).map((s) => {
-              const active = style === s;
-              return (
-                <button
-                  key={s}
-                  onClick={() => setStyle(s)}
-                  className={`rounded-full px-3.5 py-1 text-xs font-semibold capitalize transition ${
-                    active
-                      ? "bg-zinc-950 text-white shadow-sm"
-                      : "text-zinc-600 hover:text-zinc-950"
-                  }`}
-                >
-                  {s}
-                </button>
-              );
-            })}
-          </div>
+        <div className="pointer-events-auto flex items-center gap-2">
+          <SegmentedControl<"vector" | "dots" | "pixels">
+            value={style === "dots" || style === "pixels" ? style : "vector"}
+            onChange={(s) => setStyle(s)}
+            options={[
+              { key: "vector", label: "Vector" },
+              { key: "dots", label: "Dots" },
+              { key: "pixels", label: "Pixels" },
+            ]}
+          />
 
-          {/* Advanced Studio Toggle Button */}
-          <button
+          <Button
+            variant={isAdvancedOpen ? "primary" : "outline"}
+            size="sm"
             onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-            className={`flex items-center gap-1.5 rounded-full border border-black/10 px-3.5 py-1.5 text-xs font-semibold shadow-lg backdrop-blur-xl transition ${
-              isAdvancedOpen
-                ? "bg-zinc-950 text-white"
-                : "bg-white/85 text-zinc-700 hover:bg-white hover:text-zinc-950"
-            }`}
+            iconLeft={<SlidersHorizontal className="h-3.5 w-3.5" />}
           >
-            <SlidersHorizontal className="h-3.5 w-3.5" />
-            <span>Advanced</span>
-          </button>
+            Advanced
+          </Button>
         </div>
       </div>
 
@@ -374,40 +373,43 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
           ADVANCED STUDIO DRAWER (Collapsible right panel)
          ========================================================================= */}
       {isAdvancedOpen && (
-        <div className="absolute right-4 top-16 z-40 w-80 rounded-2xl border border-zinc-200/90 bg-white/95 p-4 shadow-2xl backdrop-blur-xl transition-all">
-          <div className="mb-3 flex items-center justify-between border-b border-zinc-100 pb-2.5">
+        <Card variant="elevated" padding="md" className="absolute right-4 top-16 z-40 w-80">
+          <div
+            className="mb-3 flex items-center justify-between border-b pb-2.5"
+            style={{ borderColor: tokens.universalBorderColor }}
+          >
             <div className="flex items-center gap-2">
-              <Layers className="h-4 w-4 text-zinc-900" />
-              <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900">
+              <Layers className="h-4 w-4" style={{ color: tokens.textIconColor }} />
+              <h4 className="text-xs font-bold uppercase tracking-wider" style={{ color: tokens.textIconColor }}>
                 Map Studio Settings
               </h4>
             </div>
-            <button
+            <IconButton
+              icon={<X className="h-3.5 w-3.5" />}
+              ariaLabel="Close map studio settings"
+              size="sm"
               onClick={() => setIsAdvancedOpen(false)}
-              className="rounded-full p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
+            />
           </div>
 
           <div className="space-y-4 text-xs">
             {/* 6 Render Styles Grid */}
             <div>
-              <label className="mb-1.5 block font-semibold text-zinc-700">Render Style</label>
+              <label className="mb-1.5 block font-semibold" style={{ color: tokens.textIconColor }}>
+                Render Style
+              </label>
               <div className="grid grid-cols-3 gap-1.5">
                 {(["vector", "dots", "pixels", "crosses", "diamonds", "hatch"] as MapRenderStyle[]).map(
                   (s) => (
-                    <button
+                    <Button
                       key={s}
+                      variant={style === s ? "primary" : "outline"}
+                      size="sm"
                       onClick={() => setStyle(s)}
-                      className={`rounded-lg py-1.5 text-[11px] font-medium capitalize transition ${
-                        style === s
-                          ? "bg-zinc-950 text-white font-semibold"
-                          : "border border-zinc-200 bg-zinc-50/60 text-zinc-600 hover:bg-zinc-100"
-                      }`}
+                      className="capitalize w-full justify-center"
                     >
                       {s}
-                    </button>
+                    </Button>
                   )
                 )}
               </div>
@@ -416,20 +418,20 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
             {/* Pattern Density */}
             {style !== "vector" && (
               <div>
-                <label className="mb-1.5 block font-semibold text-zinc-700">Pattern Density</label>
+                <label className="mb-1.5 block font-semibold" style={{ color: tokens.textIconColor }}>
+                  Pattern Density
+                </label>
                 <div className="grid grid-cols-3 gap-1.5">
                   {(["fine", "standard", "bold"] as PatternDensity[]).map((d) => (
-                    <button
+                    <Button
                       key={d}
+                      variant={density === d ? "primary" : "outline"}
+                      size="sm"
                       onClick={() => setDensity(d)}
-                      className={`rounded-lg py-1 text-[11px] font-medium capitalize transition ${
-                        density === d
-                          ? "bg-zinc-950 text-white font-semibold"
-                          : "border border-zinc-200 bg-zinc-50/60 text-zinc-600 hover:bg-zinc-100"
-                      }`}
+                      className="capitalize w-full justify-center"
                     >
                       {d}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -437,90 +439,71 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
 
             {/* Element Scale Slider */}
             {style !== "vector" && (
-              <div>
-                <div className="mb-1 flex justify-between font-semibold text-zinc-700">
-                  <span>Element Scale</span>
-                  <span className="font-sans tabular-nums text-zinc-500">{Math.round(scale * 100)}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0.4"
-                  max="0.95"
-                  step="0.05"
-                  value={scale}
-                  onChange={(e) => setScale(parseFloat(e.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-zinc-200 accent-zinc-950"
-                />
-              </div>
+              <Slider
+                label="Element Scale"
+                min={40}
+                max={95}
+                step={5}
+                value={Math.round(scale * 100)}
+                onChange={(pct) => setScale(pct / 100)}
+              />
             )}
 
             {/* Region Presets */}
             <div>
-              <label className="mb-1.5 block font-semibold text-zinc-700">Focus Region</label>
+              <label className="mb-1.5 block font-semibold" style={{ color: tokens.textIconColor }}>
+                Focus Region
+              </label>
               <div className="grid grid-cols-3 gap-1.5">
                 {(["all", "americas", "europe", "asia", "africa", "oceania"] as MapRegion[]).map(
                   (r) => (
-                    <button
+                    <Button
                       key={r}
+                      variant={region === r ? "primary" : "outline"}
+                      size="sm"
                       onClick={() => handleSelectRegion(r)}
-                      className={`rounded-lg py-1 text-[11px] font-medium capitalize transition ${
-                        region === r
-                          ? "bg-zinc-950 text-white font-semibold"
-                          : "border border-zinc-200 bg-zinc-50/60 text-zinc-600 hover:bg-zinc-100"
-                      }`}
+                      className="capitalize w-full justify-center"
                     >
                       {r}
-                    </button>
+                    </Button>
                   )
                 )}
               </div>
             </div>
 
             {/* Toggles: Hairline borders, Choropleth, Hub Telemetry */}
-            <div className="space-y-2 pt-1 border-t border-zinc-100">
-              <label className="flex cursor-pointer items-center justify-between text-zinc-700">
-                <span className="font-medium">Country Hairline Borders</span>
-                <input
-                  type="checkbox"
-                  checked={borders}
-                  onChange={(e) => setBorders(e.target.checked)}
-                  className="h-4 w-4 rounded border-zinc-300 accent-zinc-950"
-                />
-              </label>
-
-              <label className="flex cursor-pointer items-center justify-between text-zinc-700">
-                <span className="font-medium">Choropleth Telemetry</span>
-                <input
-                  type="checkbox"
-                  checked={showChoropleth}
-                  onChange={(e) => setShowChoropleth(e.target.checked)}
-                  className="h-4 w-4 rounded border-zinc-300 accent-zinc-950"
-                />
-              </label>
-
-              <label className="flex cursor-pointer items-center justify-between text-zinc-700">
-                <span className="font-medium">Pulse Edge Hub Markers</span>
-                <input
-                  type="checkbox"
-                  checked={showTelemetry}
-                  onChange={(e) => setShowTelemetry(e.target.checked)}
-                  className="h-4 w-4 rounded border-zinc-300 accent-zinc-950"
-                />
-              </label>
+            <div className="space-y-2.5 pt-2 border-t flex flex-col" style={{ borderColor: tokens.universalBorderColor }}>
+              <Switch
+                label="Country Hairline Borders"
+                checked={borders}
+                onChange={setBorders}
+              />
+              <Switch
+                label="Choropleth Telemetry"
+                checked={showChoropleth}
+                onChange={setShowChoropleth}
+              />
+              <Switch
+                label="Pulse Edge Hub Markers"
+                checked={showTelemetry}
+                onChange={setShowTelemetry}
+              />
             </div>
 
             {/* SVG Export Action */}
             <div className="pt-2">
-              <button
+              <Button
+                variant="primary"
+                size="md"
                 onClick={handleExportSVG}
-                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-zinc-950 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-zinc-800"
+                iconLeft={<Download className="h-3.5 w-3.5" />}
+                className="w-full justify-center"
               >
-                <Download className="h-3.5 w-3.5" />
-                <span>Export Standalone SVG</span>
-              </button>
+                Export Standalone SVG
+              </Button>
             </div>
           </div>
-        </div>
+        </Card>
       )}
 
       {/* =========================================================================
@@ -837,59 +820,59 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
       {/* =========================================================================
           BOTTOM-RIGHT VERTICAL ZOOM PILL [ + | - | ↺ ]
          ========================================================================= */}
-      <div className="absolute bottom-5 right-5 z-30 flex flex-col items-center overflow-hidden rounded-full border border-black/10 bg-white/85 shadow-lg backdrop-blur-xl">
-        <button
+      <Card
+        variant="elevated"
+        padding="none"
+        className="absolute bottom-5 right-5 z-30 flex flex-col items-center p-1 gap-0.5"
+        style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
+      >
+        <IconButton
+          icon={<Plus className="h-4 w-4" />}
+          ariaLabel="Zoom In"
+          size="sm"
           onClick={() => handleZoom("in")}
-          title="Zoom In"
-          className="flex h-9 w-9 items-center justify-center text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950 active:bg-zinc-200"
-        >
-          <Plus className="h-4 w-4" />
-        </button>
-        <div className="h-[1px] w-5 bg-zinc-200" />
-        <button
+        />
+        <IconButton
+          icon={<Minus className="h-4 w-4" />}
+          ariaLabel="Zoom Out"
+          size="sm"
           onClick={() => handleZoom("out")}
-          title="Zoom Out"
-          className="flex h-9 w-9 items-center justify-center text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950 active:bg-zinc-200"
-        >
-          <Minus className="h-4 w-4" />
-        </button>
-        <div className="h-[1px] w-5 bg-zinc-200" />
-        <button
+        />
+        <IconButton
+          icon={<RotateCcw className="h-3.5 w-3.5" />}
+          ariaLabel="Reset Map View"
+          size="sm"
           onClick={handleReset}
-          title="Reset Map View"
-          className="flex h-9 w-9 items-center justify-center text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950 active:bg-zinc-200"
-        >
-          <RotateCcw className="h-3.5 w-3.5" />
-        </button>
-      </div>
+        />
+      </Card>
 
       {/* =========================================================================
           BOTTOM-LEFT SELECTED COUNTRIES PILL BAR & INSPECTOR
          ========================================================================= */}
       <div className="pointer-events-none absolute bottom-5 left-5 z-30 flex flex-wrap items-center gap-2">
         {selectedIds.length > 0 && (
-          <div className="pointer-events-auto flex flex-wrap items-center gap-1.5 rounded-full border border-black/10 bg-white/85 p-1.5 shadow-lg backdrop-blur-xl">
-            <span className="px-2 text-[11px] font-bold uppercase tracking-wider text-zinc-500">
+          <Card
+            variant="elevated"
+            padding="none"
+            className="pointer-events-auto flex flex-wrap items-center gap-1.5 px-2.5 py-1.5"
+            style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
+          >
+            <span className="px-1 text-[11px] font-bold uppercase tracking-wider opacity-65" style={{ color: tokens.textIconColor }}>
               Active ({selectedIds.length})
             </span>
             {selectedIds.map((id) => {
               const country = REAL_WORLD_COUNTRIES.find((c) => c.id === id);
               return (
-                <div
+                <TagChip
                   key={id}
-                  className="flex items-center gap-1 rounded-full bg-zinc-950 px-2.5 py-1 text-xs font-semibold text-white shadow-sm"
-                >
-                  <span>{country?.name || id}</span>
-                  <button
-                    onClick={() => handleCountryClick(id)}
-                    className="ml-0.5 rounded-full p-0.5 hover:bg-zinc-800"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </div>
+                  label={country?.name || id}
+                  onRemove={() => handleCountryClick(id)}
+                />
               );
             })}
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => {
                 if (onSelectCountry) {
                   selectedIds.forEach((id) => onSelectCountry(id, true));
@@ -897,26 +880,22 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
                   setInternalSelected([]);
                 }
               }}
-              className="rounded-full px-2 py-1 text-[11px] font-semibold text-zinc-500 hover:text-zinc-900"
             >
               Clear all
-            </button>
-          </div>
+            </Button>
+          </Card>
         )}
 
         {/* Hover / Active Inspector Capsule */}
         {activeInspectorCountry && (
-          <div className="pointer-events-auto flex items-center gap-2.5 rounded-full border border-black/10 bg-white/85 px-3.5 py-1.5 shadow-lg backdrop-blur-xl">
-            <div className="h-2 w-2 rounded-full bg-emerald-500" />
-            <div className="flex items-center gap-1.5 text-xs">
-              <span className="font-bold text-zinc-900">{activeInspectorCountry.name}</span>
-              <span className="font-sans text-[10px] text-zinc-400">({activeInspectorCountry.id})</span>
-              <span className="text-zinc-300">·</span>
-              <span className="font-sans tabular-nums text-[11px] text-zinc-600">
-                {Math.round(18 + (activeInspectorCountry.id.charCodeAt(0) % 25))}ms edge latency
-              </span>
-            </div>
-          </div>
+          <Badge variant="healthy" size="sm" className="pointer-events-auto">
+            <span className="font-bold">{activeInspectorCountry.name}</span>
+            <span className="opacity-65 font-sans">({activeInspectorCountry.id})</span>
+            <span className="opacity-45">·</span>
+            <span className="font-sans tabular-nums">
+              {Math.round(18 + (activeInspectorCountry.id.charCodeAt(0) % 25))}ms edge latency
+            </span>
+          </Badge>
         )}
       </div>
     </div>

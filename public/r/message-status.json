@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "message-status",
+  "type": "registry:component",
+  "title": "Message Status",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/message-status.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { Check, CheckCheck, Loader2, AlertCircle } from \"lucide-react\";\n\nexport type MessageStatusType = \"sending\" | \"sent\" | \"delivered\" | \"read\" | \"failed\";\n\nexport interface MessageStatusProps {\n  status: MessageStatusType;\n  size?: number;\n  className?: string;\n}\n\nexport function MessageStatus({\n  status,\n  size = 13,\n  className = \"\",\n}: MessageStatusProps) {\n  const { tokens } = useZeroLight();\n  const strokeWidth = tokens.iconStrokeWidth || 1.75;\n\n  switch (status) {\n    case \"sending\":\n      return (\n        <Loader2\n          size={size}\n          strokeWidth={strokeWidth}\n          className={`animate-spin text-neutral-400 shrink-0 ${className}`}\n          aria-label=\"Sending message\"\n        />\n      );\n    case \"sent\":\n      return (\n        <Check\n          size={size}\n          strokeWidth={strokeWidth}\n          className={`text-neutral-400 shrink-0 ${className}`}\n          aria-label=\"Message sent\"\n        />\n      );\n    case \"delivered\":\n      return (\n        <CheckCheck\n          size={size + 2}\n          strokeWidth={strokeWidth}\n          className={`text-neutral-400 shrink-0 ${className}`}\n          aria-label=\"Message delivered\"\n        />\n      );\n    case \"read\":\n      return (\n        <CheckCheck\n          size={size + 2}\n          strokeWidth={strokeWidth + 0.25}\n          color={tokens.primaryButtonColor}\n          className={`shrink-0 ${className}`}\n          aria-label=\"Message read\"\n        />\n      );\n    case \"failed\":\n      return (\n        <AlertCircle\n          size={size}\n          strokeWidth={strokeWidth}\n          className={`text-rose-500 shrink-0 ${className}`}\n          aria-label=\"Message delivery failed\"\n        />\n      );\n  }\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

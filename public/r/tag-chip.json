@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tag-chip",
+  "type": "registry:component",
+  "title": "Tag Chip",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/tag-chip.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { X } from \"lucide-react\";\n\nexport interface TagChipProps {\n  label: string;\n  onRemove?: () => void;\n  className?: string;\n}\n\nexport function TagChip({ label, onRemove, className = \"\" }: TagChipProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <span\n      style={{\n        borderRadius: `${scaled.scaledPillRadius}px`,\n        backgroundColor: tokens.hoverBackplateTint,\n        color: tokens.textIconColor,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${tokens.borderWidth}px`,\n        transition: scaled.transitionStyle,\n      }}\n      className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium border shadow-2xs whitespace-nowrap shrink-0 max-w-[160px] ${className}`}\n    >\n      <span title={label} className=\"truncate\">{label}</span>\n      {onRemove && (\n        <button\n          type=\"button\"\n          onClick={onRemove}\n          className=\"text-neutral-400 hover:text-neutral-700 cursor-pointer ml-0.5 rounded-full p-0.5\"\n          aria-label={`Remove tag ${label}`}\n        >\n          <X\n            size={scaled.iconSmSize ? Math.max(10, Math.round(scaled.iconSmSize * 0.75)) : 12}\n            strokeWidth={tokens.iconStrokeWidth || 2}\n            color={tokens.iconColor || tokens.textIconColor}\n            className=\"shrink-0\"\n          />\n        </button>\n      )}\n    </span>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

@@ -1,14 +1,16 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 119,
+  "totalCount": 129,
   "tiers": {
     "core": 3,
-    "atoms": 42,
-    "molecules": 44,
-    "organisms": 18,
+    "atoms": 43,
+    "molecules": 46,
+    "organisms": 19,
     "templates": 5,
-    "views": 7
+    "views": 8,
+    "tools": 4,
+    "gen-ui": 1
   },
   "items": [
     {
@@ -19,8 +21,9 @@
       "targetPath": "src/components/zerolight/types.ts",
       "dependencies": [],
       "registryDependencies": [],
-      "lines": 835,
-      "registryUrl": "/registry/types.json"
+      "lines": 852,
+      "registryUrl": "/registry/types.json",
+      "shadcnUrl": "/r/types.json"
     },
     {
       "name": "context",
@@ -32,8 +35,9 @@
       "registryDependencies": [
         "types"
       ],
-      "lines": 93,
-      "registryUrl": "/registry/context.json"
+      "lines": 112,
+      "registryUrl": "/registry/context.json",
+      "shadcnUrl": "/r/context.json"
     },
     {
       "name": "zerolight-index",
@@ -48,13 +52,16 @@
         "context",
         "dashboard-shell",
         "docs-studio",
+        "gen-ui-renderer",
         "libraries",
         "sign-in-card",
+        "tools",
         "types",
         "zerolight-docs-portal"
       ],
-      "lines": 14,
-      "registryUrl": "/registry/zerolight-index.json"
+      "lines": 16,
+      "registryUrl": "/registry/zerolight-index.json",
+      "shadcnUrl": "/r/zerolight-index.json"
     },
     {
       "name": "aperture-action",
@@ -65,7 +72,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 50,
-      "registryUrl": "/registry/aperture-action.json"
+      "registryUrl": "/registry/aperture-action.json",
+      "shadcnUrl": "/r/aperture-action.json"
     },
     {
       "name": "aperture-slider",
@@ -76,7 +84,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 91,
-      "registryUrl": "/registry/aperture-slider.json"
+      "registryUrl": "/registry/aperture-slider.json",
+      "shadcnUrl": "/r/aperture-slider.json"
     },
     {
       "name": "aperture-switch",
@@ -87,7 +96,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 82,
-      "registryUrl": "/registry/aperture-switch.json"
+      "registryUrl": "/registry/aperture-switch.json",
+      "shadcnUrl": "/r/aperture-switch.json"
     },
     {
       "name": "audit-timestamp",
@@ -98,7 +108,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 85,
-      "registryUrl": "/registry/audit-timestamp.json"
+      "registryUrl": "/registry/audit-timestamp.json",
+      "shadcnUrl": "/r/audit-timestamp.json"
     },
     {
       "name": "avatar",
@@ -111,7 +122,8 @@
         "context"
       ],
       "lines": 99,
-      "registryUrl": "/registry/avatar.json"
+      "registryUrl": "/registry/avatar.json",
+      "shadcnUrl": "/r/avatar.json"
     },
     {
       "name": "badge",
@@ -123,8 +135,9 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 88,
-      "registryUrl": "/registry/badge.json"
+      "lines": 128,
+      "registryUrl": "/registry/badge.json",
+      "shadcnUrl": "/r/badge.json"
     },
     {
       "name": "button-group",
@@ -137,7 +150,8 @@
         "context"
       ],
       "lines": 41,
-      "registryUrl": "/registry/button-group.json"
+      "registryUrl": "/registry/button-group.json",
+      "shadcnUrl": "/r/button-group.json"
     },
     {
       "name": "button",
@@ -153,7 +167,8 @@
         "context"
       ],
       "lines": 150,
-      "registryUrl": "/registry/button.json"
+      "registryUrl": "/registry/button.json",
+      "shadcnUrl": "/r/button.json"
     },
     {
       "name": "capacity-meter",
@@ -164,7 +179,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 78,
-      "registryUrl": "/registry/capacity-meter.json"
+      "registryUrl": "/registry/capacity-meter.json",
+      "shadcnUrl": "/r/capacity-meter.json"
     },
     {
       "name": "card",
@@ -177,7 +193,8 @@
         "context"
       ],
       "lines": 139,
-      "registryUrl": "/registry/card.json"
+      "registryUrl": "/registry/card.json",
+      "shadcnUrl": "/r/card.json"
     },
     {
       "name": "checkbox",
@@ -193,7 +210,8 @@
         "context"
       ],
       "lines": 109,
-      "registryUrl": "/registry/checkbox.json"
+      "registryUrl": "/registry/checkbox.json",
+      "shadcnUrl": "/r/checkbox.json"
     },
     {
       "name": "copy-trigger",
@@ -206,7 +224,8 @@
         "context"
       ],
       "lines": 127,
-      "registryUrl": "/registry/copy-trigger.json"
+      "registryUrl": "/registry/copy-trigger.json",
+      "shadcnUrl": "/r/copy-trigger.json"
     },
     {
       "name": "currency-pill",
@@ -221,7 +240,23 @@
         "context"
       ],
       "lines": 82,
-      "registryUrl": "/registry/currency-pill.json"
+      "registryUrl": "/registry/currency-pill.json",
+      "shadcnUrl": "/r/currency-pill.json"
+    },
+    {
+      "name": "dynamic-icon",
+      "title": "Dynamic Icon",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/dynamic-icon.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context",
+        "types"
+      ],
+      "lines": 985,
+      "registryUrl": "/registry/dynamic-icon.json",
+      "shadcnUrl": "/r/dynamic-icon.json"
     },
     {
       "name": "entity-avatar",
@@ -232,7 +267,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 68,
-      "registryUrl": "/registry/entity-avatar.json"
+      "registryUrl": "/registry/entity-avatar.json",
+      "shadcnUrl": "/r/entity-avatar.json"
     },
     {
       "name": "icon-button",
@@ -247,7 +283,8 @@
         "context"
       ],
       "lines": 108,
-      "registryUrl": "/registry/icon-button.json"
+      "registryUrl": "/registry/icon-button.json",
+      "shadcnUrl": "/r/icon-button.json"
     },
     {
       "name": "icon",
@@ -260,7 +297,8 @@
         "context"
       ],
       "lines": 195,
-      "registryUrl": "/registry/icon.json"
+      "registryUrl": "/registry/icon.json",
+      "shadcnUrl": "/r/icon.json"
     },
     {
       "name": "input",
@@ -273,7 +311,8 @@
         "context"
       ],
       "lines": 77,
-      "registryUrl": "/registry/input.json"
+      "registryUrl": "/registry/input.json",
+      "shadcnUrl": "/r/input.json"
     },
     {
       "name": "kbd-shortcut",
@@ -284,7 +323,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 38,
-      "registryUrl": "/registry/kbd-shortcut.json"
+      "registryUrl": "/registry/kbd-shortcut.json",
+      "shadcnUrl": "/r/kbd-shortcut.json"
     },
     {
       "name": "kbd",
@@ -297,7 +337,8 @@
         "context"
       ],
       "lines": 30,
-      "registryUrl": "/registry/kbd.json"
+      "registryUrl": "/registry/kbd.json",
+      "shadcnUrl": "/r/kbd.json"
     },
     {
       "name": "key-badge",
@@ -308,7 +349,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 41,
-      "registryUrl": "/registry/key-badge.json"
+      "registryUrl": "/registry/key-badge.json",
+      "shadcnUrl": "/r/key-badge.json"
     },
     {
       "name": "label",
@@ -321,7 +363,8 @@
         "context"
       ],
       "lines": 48,
-      "registryUrl": "/registry/label.json"
+      "registryUrl": "/registry/label.json",
+      "shadcnUrl": "/r/label.json"
     },
     {
       "name": "message-status",
@@ -336,7 +379,8 @@
         "context"
       ],
       "lines": 72,
-      "registryUrl": "/registry/message-status.json"
+      "registryUrl": "/registry/message-status.json",
+      "shadcnUrl": "/r/message-status.json"
     },
     {
       "name": "micro-input",
@@ -347,7 +391,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 78,
-      "registryUrl": "/registry/micro-input.json"
+      "registryUrl": "/registry/micro-input.json",
+      "shadcnUrl": "/r/micro-input.json"
     },
     {
       "name": "mono-value",
@@ -358,7 +403,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 82,
-      "registryUrl": "/registry/mono-value.json"
+      "registryUrl": "/registry/mono-value.json",
+      "shadcnUrl": "/r/mono-value.json"
     },
     {
       "name": "payment-card",
@@ -373,7 +419,8 @@
         "context"
       ],
       "lines": 115,
-      "registryUrl": "/registry/payment-card.json"
+      "registryUrl": "/registry/payment-card.json",
+      "shadcnUrl": "/r/payment-card.json"
     },
     {
       "name": "progress-bar",
@@ -388,7 +435,8 @@
         "context"
       ],
       "lines": 63,
-      "registryUrl": "/registry/progress-bar.json"
+      "registryUrl": "/registry/progress-bar.json",
+      "shadcnUrl": "/r/progress-bar.json"
     },
     {
       "name": "radio-group",
@@ -403,7 +451,8 @@
         "context"
       ],
       "lines": 185,
-      "registryUrl": "/registry/radio-group.json"
+      "registryUrl": "/registry/radio-group.json",
+      "shadcnUrl": "/r/radio-group.json"
     },
     {
       "name": "scroll-area",
@@ -416,7 +465,8 @@
         "context"
       ],
       "lines": 49,
-      "registryUrl": "/registry/scroll-area.json"
+      "registryUrl": "/registry/scroll-area.json",
+      "shadcnUrl": "/r/scroll-area.json"
     },
     {
       "name": "segment-pill",
@@ -427,7 +477,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 40,
-      "registryUrl": "/registry/segment-pill.json"
+      "registryUrl": "/registry/segment-pill.json",
+      "shadcnUrl": "/r/segment-pill.json"
     },
     {
       "name": "separator",
@@ -440,7 +491,8 @@
         "context"
       ],
       "lines": 89,
-      "registryUrl": "/registry/separator.json"
+      "registryUrl": "/registry/separator.json",
+      "shadcnUrl": "/r/separator.json"
     },
     {
       "name": "skeleton-bar",
@@ -451,7 +503,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 33,
-      "registryUrl": "/registry/skeleton-bar.json"
+      "registryUrl": "/registry/skeleton-bar.json",
+      "shadcnUrl": "/r/skeleton-bar.json"
     },
     {
       "name": "skeleton",
@@ -464,7 +517,8 @@
         "context"
       ],
       "lines": 49,
-      "registryUrl": "/registry/skeleton.json"
+      "registryUrl": "/registry/skeleton.json",
+      "shadcnUrl": "/r/skeleton.json"
     },
     {
       "name": "slider",
@@ -477,7 +531,8 @@
         "context"
       ],
       "lines": 94,
-      "registryUrl": "/registry/slider.json"
+      "registryUrl": "/registry/slider.json",
+      "shadcnUrl": "/r/slider.json"
     },
     {
       "name": "spinner",
@@ -490,7 +545,8 @@
         "context"
       ],
       "lines": 61,
-      "registryUrl": "/registry/spinner.json"
+      "registryUrl": "/registry/spinner.json",
+      "shadcnUrl": "/r/spinner.json"
     },
     {
       "name": "status-pill",
@@ -501,7 +557,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 64,
-      "registryUrl": "/registry/status-pill.json"
+      "registryUrl": "/registry/status-pill.json",
+      "shadcnUrl": "/r/status-pill.json"
     },
     {
       "name": "switch",
@@ -516,7 +573,8 @@
         "context"
       ],
       "lines": 84,
-      "registryUrl": "/registry/switch.json"
+      "registryUrl": "/registry/switch.json",
+      "shadcnUrl": "/r/switch.json"
     },
     {
       "name": "tag-chip",
@@ -531,7 +589,8 @@
         "context"
       ],
       "lines": 47,
-      "registryUrl": "/registry/tag-chip.json"
+      "registryUrl": "/registry/tag-chip.json",
+      "shadcnUrl": "/r/tag-chip.json"
     },
     {
       "name": "textarea",
@@ -544,7 +603,8 @@
         "context"
       ],
       "lines": 108,
-      "registryUrl": "/registry/textarea.json"
+      "registryUrl": "/registry/textarea.json",
+      "shadcnUrl": "/r/textarea.json"
     },
     {
       "name": "trace-dot",
@@ -555,7 +615,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 64,
-      "registryUrl": "/registry/trace-dot.json"
+      "registryUrl": "/registry/trace-dot.json",
+      "shadcnUrl": "/r/trace-dot.json"
     },
     {
       "name": "trend-delta",
@@ -568,7 +629,8 @@
         "context"
       ],
       "lines": 75,
-      "registryUrl": "/registry/trend-delta.json"
+      "registryUrl": "/registry/trend-delta.json",
+      "shadcnUrl": "/r/trend-delta.json"
     },
     {
       "name": "typing-indicator",
@@ -583,7 +645,8 @@
         "context"
       ],
       "lines": 73,
-      "registryUrl": "/registry/typing-indicator.json"
+      "registryUrl": "/registry/typing-indicator.json",
+      "shadcnUrl": "/r/typing-indicator.json"
     },
     {
       "name": "typography",
@@ -594,7 +657,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 81,
-      "registryUrl": "/registry/typography.json"
+      "registryUrl": "/registry/typography.json",
+      "shadcnUrl": "/r/typography.json"
     },
     {
       "name": "accordion",
@@ -610,7 +674,8 @@
         "context"
       ],
       "lines": 117,
-      "registryUrl": "/registry/accordion.json"
+      "registryUrl": "/registry/accordion.json",
+      "shadcnUrl": "/r/accordion.json"
     },
     {
       "name": "alert-banner",
@@ -625,7 +690,8 @@
         "context"
       ],
       "lines": 112,
-      "registryUrl": "/registry/alert-banner.json"
+      "registryUrl": "/registry/alert-banner.json",
+      "shadcnUrl": "/r/alert-banner.json"
     },
     {
       "name": "api-key-vault",
@@ -640,7 +706,8 @@
         "context"
       ],
       "lines": 217,
-      "registryUrl": "/registry/api-key-vault.json"
+      "registryUrl": "/registry/api-key-vault.json",
+      "shadcnUrl": "/r/api-key-vault.json"
     },
     {
       "name": "area-chart",
@@ -655,7 +722,8 @@
         "context"
       ],
       "lines": 455,
-      "registryUrl": "/registry/area-chart.json"
+      "registryUrl": "/registry/area-chart.json",
+      "shadcnUrl": "/r/area-chart.json"
     },
     {
       "name": "bar-chart",
@@ -669,8 +737,9 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 269,
-      "registryUrl": "/registry/bar-chart.json"
+      "lines": 275,
+      "registryUrl": "/registry/bar-chart.json",
+      "shadcnUrl": "/r/bar-chart.json"
     },
     {
       "name": "breadcrumbs",
@@ -685,7 +754,8 @@
         "context"
       ],
       "lines": 56,
-      "registryUrl": "/registry/breadcrumbs.json"
+      "registryUrl": "/registry/breadcrumbs.json",
+      "shadcnUrl": "/r/breadcrumbs.json"
     },
     {
       "name": "calendar",
@@ -700,7 +770,8 @@
         "context"
       ],
       "lines": 111,
-      "registryUrl": "/registry/calendar.json"
+      "registryUrl": "/registry/calendar.json",
+      "shadcnUrl": "/r/calendar.json"
     },
     {
       "name": "cascader",
@@ -716,7 +787,8 @@
         "context"
       ],
       "lines": 324,
-      "registryUrl": "/registry/cascader.json"
+      "registryUrl": "/registry/cascader.json",
+      "shadcnUrl": "/r/cascader.json"
     },
     {
       "name": "chat-bubble",
@@ -734,7 +806,8 @@
         "message-status"
       ],
       "lines": 253,
-      "registryUrl": "/registry/chat-bubble.json"
+      "registryUrl": "/registry/chat-bubble.json",
+      "shadcnUrl": "/r/chat-bubble.json"
     },
     {
       "name": "chat-input",
@@ -750,7 +823,8 @@
         "context"
       ],
       "lines": 168,
-      "registryUrl": "/registry/chat-input.json"
+      "registryUrl": "/registry/chat-input.json",
+      "shadcnUrl": "/r/chat-input.json"
     },
     {
       "name": "conjoined-field",
@@ -763,7 +837,8 @@
         "context"
       ],
       "lines": 67,
-      "registryUrl": "/registry/conjoined-field.json"
+      "registryUrl": "/registry/conjoined-field.json",
+      "shadcnUrl": "/r/conjoined-field.json"
     },
     {
       "name": "date-range-picker",
@@ -779,7 +854,8 @@
         "context"
       ],
       "lines": 144,
-      "registryUrl": "/registry/date-range-picker.json"
+      "registryUrl": "/registry/date-range-picker.json",
+      "shadcnUrl": "/r/date-range-picker.json"
     },
     {
       "name": "donut-chart",
@@ -793,8 +869,9 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 195,
-      "registryUrl": "/registry/donut-chart.json"
+      "lines": 197,
+      "registryUrl": "/registry/donut-chart.json",
+      "shadcnUrl": "/r/donut-chart.json"
     },
     {
       "name": "dropdown-menu",
@@ -809,7 +886,8 @@
         "context"
       ],
       "lines": 347,
-      "registryUrl": "/registry/dropdown-menu.json"
+      "registryUrl": "/registry/dropdown-menu.json",
+      "shadcnUrl": "/r/dropdown-menu.json"
     },
     {
       "name": "empty-state",
@@ -825,7 +903,8 @@
         "context"
       ],
       "lines": 83,
-      "registryUrl": "/registry/empty-state.json"
+      "registryUrl": "/registry/empty-state.json",
+      "shadcnUrl": "/r/empty-state.json"
     },
     {
       "name": "file-card",
@@ -841,7 +920,8 @@
         "progress-bar"
       ],
       "lines": 103,
-      "registryUrl": "/registry/file-card.json"
+      "registryUrl": "/registry/file-card.json",
+      "shadcnUrl": "/r/file-card.json"
     },
     {
       "name": "file-upload",
@@ -855,8 +935,9 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 144,
-      "registryUrl": "/registry/file-upload.json"
+      "lines": 170,
+      "registryUrl": "/registry/file-upload.json",
+      "shadcnUrl": "/r/file-upload.json"
     },
     {
       "name": "form-field",
@@ -872,7 +953,8 @@
         "input"
       ],
       "lines": 70,
-      "registryUrl": "/registry/form-field.json"
+      "registryUrl": "/registry/form-field.json",
+      "shadcnUrl": "/r/form-field.json"
     },
     {
       "name": "form",
@@ -887,7 +969,8 @@
         "context"
       ],
       "lines": 199,
-      "registryUrl": "/registry/form.json"
+      "registryUrl": "/registry/form.json",
+      "shadcnUrl": "/r/form.json"
     },
     {
       "name": "funnel-chart",
@@ -902,7 +985,8 @@
         "context"
       ],
       "lines": 134,
-      "registryUrl": "/registry/funnel-chart.json"
+      "registryUrl": "/registry/funnel-chart.json",
+      "shadcnUrl": "/r/funnel-chart.json"
     },
     {
       "name": "gauge-chart",
@@ -917,7 +1001,8 @@
         "context"
       ],
       "lines": 172,
-      "registryUrl": "/registry/gauge-chart.json"
+      "registryUrl": "/registry/gauge-chart.json",
+      "shadcnUrl": "/r/gauge-chart.json"
     },
     {
       "name": "heatmap-matrix",
@@ -932,7 +1017,29 @@
         "context"
       ],
       "lines": 173,
-      "registryUrl": "/registry/heatmap-matrix.json"
+      "registryUrl": "/registry/heatmap-matrix.json",
+      "shadcnUrl": "/r/heatmap-matrix.json"
+    },
+    {
+      "name": "hero-showcase",
+      "title": "Hero Showcase",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/hero-showcase.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "avatar",
+        "badge",
+        "button",
+        "context",
+        "product-stage"
+      ],
+      "lines": 292,
+      "registryUrl": "/registry/hero-showcase.json",
+      "shadcnUrl": "/r/hero-showcase.json"
     },
     {
       "name": "horizontal-bar-chart",
@@ -947,7 +1054,8 @@
         "context"
       ],
       "lines": 133,
-      "registryUrl": "/registry/horizontal-bar-chart.json"
+      "registryUrl": "/registry/horizontal-bar-chart.json",
+      "shadcnUrl": "/r/horizontal-bar-chart.json"
     },
     {
       "name": "input-group",
@@ -962,7 +1070,8 @@
         "context"
       ],
       "lines": 130,
-      "registryUrl": "/registry/input-group.json"
+      "registryUrl": "/registry/input-group.json",
+      "shadcnUrl": "/r/input-group.json"
     },
     {
       "name": "list-row",
@@ -975,7 +1084,8 @@
         "context"
       ],
       "lines": 103,
-      "registryUrl": "/registry/list-row.json"
+      "registryUrl": "/registry/list-row.json",
+      "shadcnUrl": "/r/list-row.json"
     },
     {
       "name": "organization-switcher",
@@ -990,7 +1100,8 @@
         "context"
       ],
       "lines": 172,
-      "registryUrl": "/registry/organization-switcher.json"
+      "registryUrl": "/registry/organization-switcher.json",
+      "shadcnUrl": "/r/organization-switcher.json"
     },
     {
       "name": "pagination",
@@ -1006,7 +1117,8 @@
         "context"
       ],
       "lines": 253,
-      "registryUrl": "/registry/pagination.json"
+      "registryUrl": "/registry/pagination.json",
+      "shadcnUrl": "/r/pagination.json"
     },
     {
       "name": "popover",
@@ -1021,7 +1133,25 @@
         "context"
       ],
       "lines": 127,
-      "registryUrl": "/registry/popover.json"
+      "registryUrl": "/registry/popover.json",
+      "shadcnUrl": "/r/popover.json"
+    },
+    {
+      "name": "product-stage",
+      "title": "Product Stage",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/product-stage.tsx",
+      "dependencies": [
+        "framer-motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 316,
+      "registryUrl": "/registry/product-stage.json",
+      "shadcnUrl": "/r/product-stage.json"
     },
     {
       "name": "profit-loss-chart",
@@ -1036,7 +1166,8 @@
         "context"
       ],
       "lines": 196,
-      "registryUrl": "/registry/profit-loss-chart.json"
+      "registryUrl": "/registry/profit-loss-chart.json",
+      "shadcnUrl": "/r/profit-loss-chart.json"
     },
     {
       "name": "search-bar",
@@ -1051,7 +1182,8 @@
         "context"
       ],
       "lines": 80,
-      "registryUrl": "/registry/search-bar.json"
+      "registryUrl": "/registry/search-bar.json",
+      "shadcnUrl": "/r/search-bar.json"
     },
     {
       "name": "segmented-control",
@@ -1066,7 +1198,8 @@
         "context"
       ],
       "lines": 89,
-      "registryUrl": "/registry/segmented-control.json"
+      "registryUrl": "/registry/segmented-control.json",
+      "shadcnUrl": "/r/segmented-control.json"
     },
     {
       "name": "select",
@@ -1082,7 +1215,8 @@
         "context"
       ],
       "lines": 159,
-      "registryUrl": "/registry/select.json"
+      "registryUrl": "/registry/select.json",
+      "shadcnUrl": "/r/select.json"
     },
     {
       "name": "sparkline",
@@ -1097,7 +1231,8 @@
         "context"
       ],
       "lines": 130,
-      "registryUrl": "/registry/sparkline.json"
+      "registryUrl": "/registry/sparkline.json",
+      "shadcnUrl": "/r/sparkline.json"
     },
     {
       "name": "split-button",
@@ -1113,7 +1248,8 @@
         "context"
       ],
       "lines": 354,
-      "registryUrl": "/registry/split-button.json"
+      "registryUrl": "/registry/split-button.json",
+      "shadcnUrl": "/r/split-button.json"
     },
     {
       "name": "stat-card",
@@ -1127,8 +1263,9 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 212,
-      "registryUrl": "/registry/stat-card.json"
+      "lines": 272,
+      "registryUrl": "/registry/stat-card.json",
+      "shadcnUrl": "/r/stat-card.json"
     },
     {
       "name": "stepper",
@@ -1143,7 +1280,8 @@
         "context"
       ],
       "lines": 94,
-      "registryUrl": "/registry/stepper.json"
+      "registryUrl": "/registry/stepper.json",
+      "shadcnUrl": "/r/stepper.json"
     },
     {
       "name": "tabs",
@@ -1158,7 +1296,8 @@
         "context"
       ],
       "lines": 140,
-      "registryUrl": "/registry/tabs.json"
+      "registryUrl": "/registry/tabs.json",
+      "shadcnUrl": "/r/tabs.json"
     },
     {
       "name": "tag-input",
@@ -1172,7 +1311,8 @@
         "tag-chip"
       ],
       "lines": 92,
-      "registryUrl": "/registry/tag-input.json"
+      "registryUrl": "/registry/tag-input.json",
+      "shadcnUrl": "/r/tag-input.json"
     },
     {
       "name": "toolbar",
@@ -1185,7 +1325,8 @@
         "context"
       ],
       "lines": 54,
-      "registryUrl": "/registry/toolbar.json"
+      "registryUrl": "/registry/toolbar.json",
+      "shadcnUrl": "/r/toolbar.json"
     },
     {
       "name": "tooltip",
@@ -1200,7 +1341,8 @@
         "context"
       ],
       "lines": 182,
-      "registryUrl": "/registry/tooltip.json"
+      "registryUrl": "/registry/tooltip.json",
+      "shadcnUrl": "/r/tooltip.json"
     },
     {
       "name": "transfer",
@@ -1217,7 +1359,8 @@
         "context"
       ],
       "lines": 319,
-      "registryUrl": "/registry/transfer.json"
+      "registryUrl": "/registry/transfer.json",
+      "shadcnUrl": "/r/transfer.json"
     },
     {
       "name": "tree-select",
@@ -1234,7 +1377,8 @@
         "context"
       ],
       "lines": 505,
-      "registryUrl": "/registry/tree-select.json"
+      "registryUrl": "/registry/tree-select.json",
+      "shadcnUrl": "/r/tree-select.json"
     },
     {
       "name": "world-map-data",
@@ -1245,7 +1389,8 @@
       "dependencies": [],
       "registryDependencies": [],
       "lines": 1298,
-      "registryUrl": "/registry/world-map-data.json"
+      "registryUrl": "/registry/world-map-data.json",
+      "shadcnUrl": "/r/world-map-data.json"
     },
     {
       "name": "world-map",
@@ -1259,7 +1404,8 @@
         "world-map-data"
       ],
       "lines": 101,
-      "registryUrl": "/registry/world-map.json"
+      "registryUrl": "/registry/world-map.json",
+      "shadcnUrl": "/r/world-map.json"
     },
     {
       "name": "app-shell",
@@ -1275,7 +1421,8 @@
         "context"
       ],
       "lines": 366,
-      "registryUrl": "/registry/app-shell.json"
+      "registryUrl": "/registry/app-shell.json",
+      "shadcnUrl": "/r/app-shell.json"
     },
     {
       "name": "audit-log",
@@ -1292,7 +1439,31 @@
         "context"
       ],
       "lines": 153,
-      "registryUrl": "/registry/audit-log.json"
+      "registryUrl": "/registry/audit-log.json",
+      "shadcnUrl": "/r/audit-log.json"
+    },
+    {
+      "name": "bento-showcase",
+      "title": "Bento Showcase",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/bento-showcase.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "avatar",
+        "badge",
+        "button",
+        "context",
+        "donut-chart",
+        "product-stage",
+        "sparkline",
+        "switch"
+      ],
+      "lines": 303,
+      "registryUrl": "/registry/bento-showcase.json",
+      "shadcnUrl": "/r/bento-showcase.json"
     },
     {
       "name": "billing-portal",
@@ -1314,7 +1485,8 @@
         "stat-card"
       ],
       "lines": 768,
-      "registryUrl": "/registry/billing-portal.json"
+      "registryUrl": "/registry/billing-portal.json",
+      "shadcnUrl": "/r/billing-portal.json"
     },
     {
       "name": "chat-conversation",
@@ -1333,7 +1505,8 @@
         "typing-indicator"
       ],
       "lines": 277,
-      "registryUrl": "/registry/chat-conversation.json"
+      "registryUrl": "/registry/chat-conversation.json",
+      "shadcnUrl": "/r/chat-conversation.json"
     },
     {
       "name": "command-palette",
@@ -1349,7 +1522,8 @@
         "context"
       ],
       "lines": 211,
-      "registryUrl": "/registry/command-palette.json"
+      "registryUrl": "/registry/command-palette.json",
+      "shadcnUrl": "/r/command-palette.json"
     },
     {
       "name": "confirmation-modal",
@@ -1366,7 +1540,8 @@
         "context"
       ],
       "lines": 251,
-      "registryUrl": "/registry/confirmation-modal.json"
+      "registryUrl": "/registry/confirmation-modal.json",
+      "shadcnUrl": "/r/confirmation-modal.json"
     },
     {
       "name": "data-table",
@@ -1382,7 +1557,8 @@
         "context"
       ],
       "lines": 730,
-      "registryUrl": "/registry/data-table.json"
+      "registryUrl": "/registry/data-table.json",
+      "shadcnUrl": "/r/data-table.json"
     },
     {
       "name": "detail-drawer",
@@ -1399,7 +1575,8 @@
         "context"
       ],
       "lines": 319,
-      "registryUrl": "/registry/detail-drawer.json"
+      "registryUrl": "/registry/detail-drawer.json",
+      "shadcnUrl": "/r/detail-drawer.json"
     },
     {
       "name": "filter-builder",
@@ -1416,7 +1593,8 @@
         "context"
       ],
       "lines": 294,
-      "registryUrl": "/registry/filter-builder.json"
+      "registryUrl": "/registry/filter-builder.json",
+      "shadcnUrl": "/r/filter-builder.json"
     },
     {
       "name": "geo-breakdown",
@@ -1432,7 +1610,8 @@
         "world-map"
       ],
       "lines": 176,
-      "registryUrl": "/registry/geo-breakdown.json"
+      "registryUrl": "/registry/geo-breakdown.json",
+      "shadcnUrl": "/r/geo-breakdown.json"
     },
     {
       "name": "modal",
@@ -1448,7 +1627,8 @@
         "context"
       ],
       "lines": 162,
-      "registryUrl": "/registry/modal.json"
+      "registryUrl": "/registry/modal.json",
+      "shadcnUrl": "/r/modal.json"
     },
     {
       "name": "page-header",
@@ -1461,7 +1641,8 @@
         "context"
       ],
       "lines": 76,
-      "registryUrl": "/registry/page-header.json"
+      "registryUrl": "/registry/page-header.json",
+      "shadcnUrl": "/r/page-header.json"
     },
     {
       "name": "page-layout",
@@ -1474,7 +1655,8 @@
         "context"
       ],
       "lines": 98,
-      "registryUrl": "/registry/page-layout.json"
+      "registryUrl": "/registry/page-layout.json",
+      "shadcnUrl": "/r/page-layout.json"
     },
     {
       "name": "quota-matrix",
@@ -1491,7 +1673,8 @@
         "progress-bar"
       ],
       "lines": 113,
-      "registryUrl": "/registry/quota-matrix.json"
+      "registryUrl": "/registry/quota-matrix.json",
+      "shadcnUrl": "/r/quota-matrix.json"
     },
     {
       "name": "team-permissions",
@@ -1510,7 +1693,8 @@
         "modal"
       ],
       "lines": 630,
-      "registryUrl": "/registry/team-permissions.json"
+      "registryUrl": "/registry/team-permissions.json",
+      "shadcnUrl": "/r/team-permissions.json"
     },
     {
       "name": "tenant-kit",
@@ -1527,7 +1711,8 @@
         "progress-bar"
       ],
       "lines": 347,
-      "registryUrl": "/registry/tenant-kit.json"
+      "registryUrl": "/registry/tenant-kit.json",
+      "shadcnUrl": "/r/tenant-kit.json"
     },
     {
       "name": "toast",
@@ -1543,7 +1728,8 @@
         "context"
       ],
       "lines": 174,
-      "registryUrl": "/registry/toast.json"
+      "registryUrl": "/registry/toast.json",
+      "shadcnUrl": "/r/toast.json"
     },
     {
       "name": "tree-view",
@@ -1558,7 +1744,8 @@
         "context"
       ],
       "lines": 154,
-      "registryUrl": "/registry/tree-view.json"
+      "registryUrl": "/registry/tree-view.json",
+      "shadcnUrl": "/r/tree-view.json"
     },
     {
       "name": "analytics-report-template",
@@ -1572,7 +1759,8 @@
         "context"
       ],
       "lines": 147,
-      "registryUrl": "/registry/analytics-report-template.json"
+      "registryUrl": "/registry/analytics-report-template.json",
+      "shadcnUrl": "/r/analytics-report-template.json"
     },
     {
       "name": "chat-workspace-template",
@@ -1588,7 +1776,8 @@
         "context"
       ],
       "lines": 273,
-      "registryUrl": "/registry/chat-workspace-template.json"
+      "registryUrl": "/registry/chat-workspace-template.json",
+      "shadcnUrl": "/r/chat-workspace-template.json"
     },
     {
       "name": "console-table-template",
@@ -1602,7 +1791,8 @@
         "context"
       ],
       "lines": 149,
-      "registryUrl": "/registry/console-table-template.json"
+      "registryUrl": "/registry/console-table-template.json",
+      "shadcnUrl": "/r/console-table-template.json"
     },
     {
       "name": "dashboard-template",
@@ -1616,7 +1806,8 @@
         "context"
       ],
       "lines": 159,
-      "registryUrl": "/registry/dashboard-template.json"
+      "registryUrl": "/registry/dashboard-template.json",
+      "shadcnUrl": "/r/dashboard-template.json"
     },
     {
       "name": "settings-form-template",
@@ -1633,7 +1824,8 @@
         "context"
       ],
       "lines": 256,
-      "registryUrl": "/registry/settings-form-template.json"
+      "registryUrl": "/registry/settings-form-template.json",
+      "shadcnUrl": "/r/settings-form-template.json"
     },
     {
       "name": "ai-assistant-view",
@@ -1649,7 +1841,8 @@
         "types"
       ],
       "lines": 160,
-      "registryUrl": "/registry/ai-assistant-view.json"
+      "registryUrl": "/registry/ai-assistant-view.json",
+      "shadcnUrl": "/r/ai-assistant-view.json"
     },
     {
       "name": "billing-view",
@@ -1663,7 +1856,8 @@
         "context"
       ],
       "lines": 23,
-      "registryUrl": "/registry/billing-view.json"
+      "registryUrl": "/registry/billing-view.json",
+      "shadcnUrl": "/r/billing-view.json"
     },
     {
       "name": "dev-console-view",
@@ -1678,8 +1872,9 @@
         "context",
         "types"
       ],
-      "lines": 334,
-      "registryUrl": "/registry/dev-console-view.json"
+      "lines": 392,
+      "registryUrl": "/registry/dev-console-view.json",
+      "shadcnUrl": "/r/dev-console-view.json"
     },
     {
       "name": "donations-view",
@@ -1695,7 +1890,8 @@
         "types"
       ],
       "lines": 525,
-      "registryUrl": "/registry/donations-view.json"
+      "registryUrl": "/registry/donations-view.json",
+      "shadcnUrl": "/r/donations-view.json"
     },
     {
       "name": "finexy-view",
@@ -1711,8 +1907,29 @@
         "context",
         "types"
       ],
-      "lines": 1196,
-      "registryUrl": "/registry/finexy-view.json"
+      "lines": 1199,
+      "registryUrl": "/registry/finexy-view.json",
+      "shadcnUrl": "/r/finexy-view.json"
+    },
+    {
+      "name": "notifications-view",
+      "title": "Notifications View",
+      "type": "registry:ui",
+      "tier": "views",
+      "targetPath": "src/components/zerolight/views/notifications-view.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "avatar",
+        "badge",
+        "button",
+        "context",
+        "switch"
+      ],
+      "lines": 557,
+      "registryUrl": "/registry/notifications-view.json",
+      "shadcnUrl": "/r/notifications-view.json"
     },
     {
       "name": "school-attendance-view",
@@ -1729,7 +1946,8 @@
         "types"
       ],
       "lines": 1234,
-      "registryUrl": "/registry/school-attendance-view.json"
+      "registryUrl": "/registry/school-attendance-view.json",
+      "shadcnUrl": "/r/school-attendance-view.json"
     },
     {
       "name": "settings-view",
@@ -1744,8 +1962,117 @@
         "context",
         "types"
       ],
-      "lines": 224,
-      "registryUrl": "/registry/settings-view.json"
+      "lines": 292,
+      "registryUrl": "/registry/settings-view.json",
+      "shadcnUrl": "/r/settings-view.json"
+    },
+    {
+      "name": "ai-footprint-rules",
+      "title": "Ai Footprint Rules",
+      "type": "registry:ui",
+      "tier": "tools",
+      "targetPath": "src/components/zerolight/tools/ai-footprint-rules.ts",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 550,
+      "registryUrl": "/registry/ai-footprint-rules.json",
+      "shadcnUrl": "/r/ai-footprint-rules.json"
+    },
+    {
+      "name": "tools-directory",
+      "title": "Tools Directory",
+      "type": "registry:ui",
+      "tier": "tools",
+      "targetPath": "src/components/zerolight/tools/tools-directory.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "context",
+        "progress-bar",
+        "switch",
+        "tag-chip"
+      ],
+      "lines": 360,
+      "registryUrl": "/registry/tools-directory.json",
+      "shadcnUrl": "/r/tools-directory.json"
+    },
+    {
+      "name": "zero-auditor-tool",
+      "title": "Zero Auditor Tool",
+      "type": "registry:ui",
+      "tier": "tools",
+      "targetPath": "src/components/zerolight/tools/zero-auditor-tool.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "ai-footprint-rules",
+        "alert-banner",
+        "badge",
+        "button",
+        "card",
+        "context",
+        "empty-state",
+        "input",
+        "segmented-control",
+        "stat-card",
+        "textarea"
+      ],
+      "lines": 449,
+      "registryUrl": "/registry/zero-auditor-tool.json",
+      "shadcnUrl": "/r/zero-auditor-tool.json"
+    },
+    {
+      "name": "zero-flash-tool",
+      "title": "Zero Flash Tool",
+      "type": "registry:ui",
+      "tier": "tools",
+      "targetPath": "src/components/zerolight/tools/zero-flash-tool.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "context",
+        "form-field",
+        "input",
+        "progress-bar",
+        "select",
+        "stat-card",
+        "types"
+      ],
+      "lines": 556,
+      "registryUrl": "/registry/zero-flash-tool.json",
+      "shadcnUrl": "/r/zero-flash-tool.json"
+    },
+    {
+      "name": "gen-ui-renderer",
+      "title": "Gen Ui Renderer",
+      "type": "registry:ui",
+      "tier": "gen-ui",
+      "targetPath": "src/components/zerolight/gen-ui/gen-ui-renderer.tsx",
+      "dependencies": [
+        "zod"
+      ],
+      "registryDependencies": [
+        "alert-banner",
+        "area-chart",
+        "badge",
+        "bar-chart",
+        "button",
+        "context",
+        "donut-chart",
+        "stat-card"
+      ],
+      "lines": 277,
+      "registryUrl": "/registry/gen-ui-renderer.json",
+      "shadcnUrl": "/r/gen-ui-renderer.json"
     }
   ]
 }

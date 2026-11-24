@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visual Studio Dock — ZeroLight OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --outer-bg: #eef0f4;
+      --background: #ffffff;
+      --canvas-bg: #fafafa;
+      --foreground: #09090b;
+      --card: #ffffff;
+      --primary: #18181b;
+      --primary-foreground: #fafafa;
+      --secondary: #f4f4f5;
+      --secondary-foreground: #18181b;
+      --muted: #f4f4f5;
+      --muted-foreground: #71717a;
+      --destructive: #ef4444;
+      --destructive-foreground: #fafafa;
+      --border: #e4e4e7;
+      --input: #e4e4e7;
+      --ring: #18181b;
+
+      /* Dynamic Studio Tokens */
+      --radius: 0.5rem;
+      --border-w: 1px;
+      --control-h: 36px;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-size-base: 14px;
+      --font-weight-base: 400;
+      --font-style-base: normal;
+      --letter-spacing-base: -0.011em;
+      --line-height-base: 1.5;
+
+      /* Elevation & Blur */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+      --shadow-shell: 0 12px 36px -8px rgba(9, 9, 11, 0.08), 0 2px 6px rgba(9, 9, 11, 0.04);
+      --shadow-float: 0 4px 18px -2px rgba(9, 9, 11, 0.06), 0 1px 3px rgba(9, 9, 11, 0.03);
+      --shadow-popover: 0 12px 28px -6px rgba(9, 9, 11, 0.14), 0 4px 10px -4px rgba(9, 9, 11, 0.06);
+      --backdrop-blur: 0px;
+
+      /* Live Lucide SVG Icon Tokens */
+      --icon-stroke: 2;
+      --icon-scale: 1;
+      --icon-color: currentColor;
+
+      /* Motion Tokens */
+      --spring-stiffness: 400;
+      --spring-damping: 28;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-base);
+      font-style: var(--font-style-base);
+      letter-spacing: var(--letter-spacing-base);
+      line-height: var(--line-height-base);
+      color: var(--foreground);
+      background: var(--outer-bg);
+      height: 100vh;
+      overflow: hidden;
+      padding: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .lucide {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: var(--icon-color);
+      stroke-width: var(--icon-stroke);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transform: scale(var(--icon-scale));
+      flex-shrink: 0;
+      transition: transform 0.15s ease, stroke-width 0.15s ease;
+    }
+
+    /* ================= CLEAN TOOLTIPS ================= */
+    [data-tip] { position: relative; }
+    [data-tip]::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 7px);
+      left: 50%;
+      transform: translateX(-50%) translateY(2px);
+      background: #18181b;
+      color: #fafafa;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 400;
+      transition: opacity 0.14s ease, transform 0.14s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    [data-tip]:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    [data-tip-pos="bottom"]::after {
+      bottom: auto;
+      top: calc(100% + 7px);
+    }
+
+    /* ================= SINGLE OVERALL OUTER CONTAINER ================= */
+    .app-shell {
+      width: 100%;
+      height: 100%;
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-shell);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Unified Top Header: Visual Studio Dock -> ZeroLight OS */
+    .app-header {
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .title-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .dock-main-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border-radius: calc(var(--radius) * 0.75);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .brand-mark img { width: 100%; height: 100%; object-fit: cover; }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .search-wrap {
+      width: 240px;
+      position: relative;
+    }
+
+    .mobile-studio-btn { display: none; }
+
+    /* Inner Split: Main Canvas + Floating Token Studio Container */
+    .app-body {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 14px;
+      padding: 0 14px 14px;
+    }
+
+    /* Main Scrollable Canvas */
+    .canvas {
+      height: 100%;
+      overflow-y: auto;
+      padding: 22px 26px 96px;
+      background: var(--canvas-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .canvas-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 44px;
+    }
+
+    /* Section Headers */
+    .ds-section { display: flex; flex-direction: column; gap: 18px; }
+    .ds-section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .ds-section-title { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+    .ds-section-desc { font-size: 13px; color: var(--muted-foreground); }
+
+    /* Foundations */
+    .foundation-card {
+      background: var(--card);
+      border: var(--border-w) solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(var(--backdrop-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .f-card-label { font-size: 12.5px; font-weight: 600; color: var(--muted-foreground); }
+
+    .brand-lockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .brand-tile {
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 0.85);
+      padding: 16px;
+      background: var(--canvas-bg);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-tile.inverted {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      border-color: var(--primary);
+    }
+    .brand-mark-lg {
+      width: 42px;
+      height: 42px;
+      border-radius: calc(var(--radius) * 0.75);
+      background: var(--primary);
+      color: var(--primary-foreground);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 17px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .brand-tile.inverted .brand-mark-lg {
+      background: var(--primary-foreground);
+      color: var(--primary);
+    }
+    .brand-mark-lg img { width: 100%; height: 100%; object-fit: cover; }
+
+    .color-palette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    .color-card {
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 0.75);
+      padding: 8px;
+      background: var(--background);
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .color-card:hover { border-color: var(--ring); }
+    .color-chip-box {
+      height: 48px;
+      border-radius: calc(var(--radius) * 0.5);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      margin-bottom: 8px;
+    }
+    .color-name { font-size: 12px; font-weight: 600; }
+    .color-hex { font-size: 11.5px; color: var(--muted-foreground); }
+
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .type-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .type-row:first-child { padding-top: 0; }
+    .type-meta { font-size: 12px; font-weight: 500; color: var(--muted-foreground); width: 115px; flex-shrink: 0; }
+    .tabular-nums { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+    /* Component Grid */
+    .comp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+      gap: 18px;
+    }
+    .comp-slot { display: flex; flex-direction: column; gap: 6px; min-width: 0; position: relative; }
+    .comp-slot[hidden] { display: none; }
+    .comp-slot.elevated { z-index: 60; }
+
+    .comp-title-above { font-size: 12.5px; font-weight: 600; color: var(--foreground); padding-left: 2px; }
+
+    .comp-card {
+      background: var(--card);
+      color: var(--foreground);
+      border: var(--border-w) solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(var(--backdrop-blur));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 88px;
+      justify-content: center;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    /* ================= CUSTOM POPOVER / DROPDOWN SYSTEM ================= */
+    .ui-dd { position: relative; width: 100%; }
+    .ui-dd.inline { width: auto; display: inline-block; }
+
+    .ui-dd-trigger {
+      width: 100%;
+      height: var(--control-h);
+      padding: 0 11px;
+      border-radius: var(--radius);
+      border: var(--border-w) solid var(--input);
+      background: var(--background);
+      color: var(--foreground);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+    .ui-dd-trigger:hover { background: var(--secondary); }
+    .ui-dd.open .ui-dd-trigger {
+      border-color: var(--ring);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 16%, transparent);
+    }
+
+    .ui-dd-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      min-width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 2px);
+      padding: 5px;
+      box-shadow: var(--shadow-popover);
+      z-index: 160;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-height: 220px;
+      overflow-y: auto;
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+      pointer-events: none;
+      transition: opacity 0.14s ease, transform 0.14s ease;
+    }
+    .ui-dd-menu.align-right { left: auto; right: 0; min-width: 170px; }
+    .ui-dd.open .ui-dd-menu { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+    .ui-dd-item {
+      padding: 7px 10px;
+      border: none;
+      background: transparent;
+      color: var(--foreground);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 500;
+      border-radius: calc(var(--radius) * 0.75);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .ui-dd-item:hover { background: var(--secondary); }
+    .ui-dd-item .dd-check { opacity: 0; width: 14px; height: 14px; }
+    .ui-dd-item.active { background: var(--secondary); font-weight: 600; }
+    .ui-dd-item.active .dd-check { opacity: 1; }
+
+    /* ================= PRIMITIVES ================= */
+    .btn {
+      height: var(--control-h);
+      padding: 0 14px;
+      border-radius: var(--radius);
+      border: var(--border-w) solid var(--input);
+      background: var(--background);
+      color: var(--foreground);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      box-shadow: var(--shadow-sm);
+      transition: background-color 0.15s, opacity 0.15s, transform 0.1s;
+    }
+    .btn:hover { background: var(--secondary); }
+    .btn:active { transform: scale(0.97); }
+    .btn.primary { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+    .btn.primary:hover { opacity: 0.9; background: var(--primary); color: var(--primary-foreground); }
+    .btn.secondary { background: var(--secondary); color: var(--secondary-foreground); border-color: transparent; }
+    .btn.danger { background: var(--destructive); color: var(--destructive-foreground); border-color: var(--destructive); }
+    .btn.ghost { border-color: transparent; box-shadow: none; background: transparent; }
+    .btn.ghost:hover { background: var(--secondary); }
+    .btn.sm { height: 30px; padding: 0 10px; font-size: 12px; }
+    .btn.icon-only { width: var(--control-h); padding: 0; }
+    .btn.icon-only.sm { width: 30px; }
+    .btn:disabled { opacity: 0.45; pointer-events: none; }
+
+    .input, .textarea {
+      width: 100%;
+      height: var(--control-h);
+      padding: 0 12px;
+      border-radius: var(--radius);
+      border: var(--border-w) solid var(--input);
+      background: var(--background);
+      color: var(--foreground);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      box-shadow: var(--shadow-sm);
+    }
+    .textarea { height: 70px; padding: 10px 12px; resize: vertical; }
+    .input::placeholder, .textarea::placeholder { color: var(--muted-foreground); }
+    .input:focus, .textarea:focus {
+      border-color: var(--ring);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 20%, transparent);
+    }
+
+    .badge, .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 9px;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: calc(var(--radius) * 0.75);
+      background: var(--secondary);
+      color: var(--secondary-foreground);
+      border: var(--border-w) solid var(--border);
+    }
+    .pill { border-radius: 9999px; }
+    .badge.accent { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+    .pill-close { border: none; background: none; color: inherit; cursor: pointer; display: inline-flex; opacity: 0.65; }
+    .pill-close:hover { opacity: 1; }
+
+    .choice-card {
+      padding: 10px;
+      border: var(--border-w) solid var(--border);
+      border-radius: var(--radius);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .choice-card.selected {
+      border-color: var(--primary);
+      box-shadow: inset 0 0 0 1px var(--primary);
+      background: color-mix(in srgb, var(--primary) 5%, var(--card));
+    }
+
+    .code-inline { font-size: 12.5px; font-weight: 500; padding: 2px 6px; border-radius: 5px; background: var(--muted); }
+    .code-block {
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      padding: 12px;
+      border-radius: var(--radius);
+      background: #18181b;
+      color: #fafafa;
+      overflow-x: auto;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .status-dot { width: 8px; height: 8px; border-radius: 9999px; display: inline-block; }
+
+    .switch {
+      width: 40px;
+      height: 22px;
+      border-radius: 9999px;
+      background: var(--input);
+      position: relative;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+    .switch::after {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+    .switch.on { background: var(--primary); }
+    .switch.on::after { transform: translateX(18px); }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 9999px;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .dots span {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 9999px;
+      background: var(--primary);
+      margin: 0 2px;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes pulse { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
+
+    .skeleton { height: 14px; border-radius: 6px; background: var(--muted); animation: skPulse 1.5s ease-in-out infinite; }
+    @keyframes skPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+    .sys-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    .sys-table th, .sys-table td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    .sys-table th { color: var(--muted-foreground); font-weight: 500; font-size: 11.5px; }
+
+    /* ================= FLOATING TOKEN STUDIO CONTAINER (INSIDE APP-SHELL) ================= */
+    .inspector {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-float);
+      overflow: hidden;
+      z-index: 50;
+    }
+
+    .inspector-head {
+      height: 54px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .inspector-head-title { font-size: 13.5px; font-weight: 700; }
+    .inspector-head-sub { font-size: 11px; color: var(--muted-foreground); }
+
+    .icon-reset-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--muted-foreground);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+    .icon-reset-btn:hover { background: var(--secondary); color: var(--foreground); }
+
+    .inspector-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 4px 12px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .studio-section {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      position: relative;
+    }
+    .studio-sec-btn {
+      width: 100%;
+      padding: 10px 12px;
+      background: transparent;
+      border: none;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--foreground);
+      cursor: pointer;
+    }
+    .studio-sec-btn:hover { background: var(--secondary); }
+    .studio-sec-chevron { transition: transform 0.18s ease; color: var(--muted-foreground); display: inline-flex; }
+    .studio-section.open .studio-sec-chevron { transform: rotate(180deg); }
+
+    .studio-sec-body {
+      display: none;
+      padding: 12px 12px 14px;
+      border-top: 1px solid var(--border);
+      flex-direction: column;
+      gap: 12px;
+    }
+    .studio-section.open .studio-sec-body { display: flex; }
+
+    .token-field { display: flex; flex-direction: column; gap: 6px; position: relative; }
+    .token-field label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+    }
+
+    .token-readout {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--foreground);
+      background: var(--secondary);
+      padding: 1px 7px;
+      border-radius: 5px;
+    }
+
+    .studio-input {
+      width: 100%;
+      height: 34px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--input);
+      background: #ffffff;
+      color: var(--foreground);
+      font-family: inherit;
+      font-size: 12.5px;
+      outline: none;
+    }
+    .studio-input:focus {
+      border-color: var(--ring);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--ring) 18%, transparent);
+    }
+
+    .studio-upload-btn {
+      width: 100%;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px dashed var(--input);
+      background: #fafafa;
+      color: var(--foreground);
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+    }
+    .studio-upload-btn:hover { background: var(--secondary); border-color: var(--ring); }
+
+    .seg-track {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--secondary);
+      padding: 3px;
+      border-radius: 8px;
+    }
+    .seg-track.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .seg-track.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .seg-track.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+    .seg-opt {
+      padding: 5px 4px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted-foreground);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .seg-opt.active {
+      background: #ffffff;
+      color: var(--foreground);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+
+    .two-col-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .swatch-strip { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .swatch-chip {
+      width: 22px;
+      height: 22px;
+      border-radius: 9999px;
+      border: 1px solid rgba(0,0,0,0.12);
+      cursor: pointer;
+    }
+    .swatch-chip.active { box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px var(--ring); }
+
+    .color-picker-wrap {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      border-radius: 9999px;
+      border: 1px dashed var(--muted-foreground);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .color-picker-wrap input { position: absolute; inset: -6px; opacity: 0; cursor: pointer; }
+
+    input[type="range"].studio-slider { width: 100%; accent-color: var(--primary); cursor: pointer; }
+
+    .spring-track {
+      height: 34px;
+      background: var(--secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .inspector-foot {
+      padding: 10px 12px;
+      background: #ffffff;
+      flex-shrink: 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 1024px) {
+      body { padding: 8px; }
+      .app-body { grid-template-columns: 1fr; }
+      .mobile-studio-btn { display: inline-flex; }
+      .inspector {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        bottom: 14px;
+        height: auto;
+        width: min(360px, calc(100vw - 28px));
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+        transform: translateX(calc(100% + 28px));
+        transition: transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .inspector.mobile-open { transform: translateX(0); }
+    }
+
+    @media (max-width: 600px) {
+      .app-header { padding: 12px 14px; }
+      .search-wrap { width: 150px; }
+      .canvas { padding: 14px 14px 80px; }
+      .comp-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Dialog, Sheet & Toast */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 9, 11, 0.4);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease;
+    }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+    .dialog-box {
+      background: #ffffff;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      box-shadow: var(--shadow-popover);
+      transform: scale(0.96);
+      transition: transform 0.16s ease;
+    }
+    .overlay.open .dialog-box { transform: scale(1); }
+
+    .drawer-panel {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      bottom: 14px;
+      width: 340px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      z-index: 210;
+      box-shadow: var(--shadow-popover);
+      transform: translateX(calc(100% + 28px));
+      transition: transform 0.22s ease;
+    }
+    .drawer-panel.open { transform: translateX(0); }
+
+    .toast-banner {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #ffffff;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-popover);
+      padding: 11px 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .toast-banner.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- SINGLE OVERALL CONTAINER -->
+  <div class="app-shell">
+
+    <!-- MAIN HEADER: VISUAL STUDIO DOCK -> ZEROLIGHT OS -->
+    <header class="app-header">
+      <div class="title-stack">
+        <span class="dock-main-title">Visual Studio Dock</span>
+        <div class="brand-cluster">
+          <div class="brand-mark js-brand-mark">Z</div>
+          <span class="brand-title js-brand-name">ZeroLight OS</span>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <div class="search-wrap">
+          <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted-foreground);pointer-events:none;display:inline-flex;">
+            <svg class="lucide" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </span>
+          <input type="text" class="input" style="height:34px;padding-left:32px;" id="filterInput" placeholder="Search components..." />
+        </div>
+        <button class="btn sm mobile-studio-btn" id="toggleStudioBtn" data-tip="Open Token Studio" data-tip-pos="bottom">
+          <svg class="lucide" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/></svg>
+          <span>Studio</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- INNER BODY: CANVAS + FLOATING TOKEN STUDIO CONTAINER -->
+    <div class="app-body">
+
+      <main class="canvas">
+        <div class="canvas-inner">
+
+          <!-- FOUNDATIONS -->
+          <section class="ds-section" id="sec-foundations">
+            <div class="ds-section-head">
+              <h2 class="ds-section-title">Foundations</h2>
+              <span class="ds-section-desc">Brand Identity, Colors &amp; Typography</span>
+            </div>
+
+            <div class="foundation-card">
+              <div class="f-card-label">Brand Identity Placeholders</div>
+              <div class="brand-lockup-grid">
+                <div class="brand-tile">
+                  <div class="brand-mark-lg js-brand-mark">Z</div>
+                  <div>
+                    <div style="font-weight:700;font-size:15px;" class="js-brand-name">ZeroLight OS</div>
+                    <div style="font-size:12px;color:var(--muted-foreground);" class="js-brand-tagline">Clean, light-mode brand design system</div>
+                  </div>
+                </div>
+                <div class="brand-tile inverted">
+                  <div class="brand-mark-lg js-brand-mark">Z</div>
+                  <div>
+                    <div style="font-weight:700;font-size:15px;" class="js-brand-name">ZeroLight OS</div>
+                    <div style="font-size:11.5px;opacity:0.8;">Primary Brand Lockup</div>
+                  </div>
+                </div>
+                <div class="brand-tile" style="justify-content:space-between;">
+                  <div class="row">
+                    <div class="brand-mark-lg js-brand-mark" style="border-radius:9999px;">Z</div>
+                    <div>
+                      <div style="font-weight:600;font-size:13px;">App Icon</div>
+                      <div style="font-size:11.5px;color:var(--muted-foreground);">Syncs with logo upload</div>
+                    </div>
+                  </div>
+                  <span class="badge accent">Live</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="foundation-card">
+              <div class="f-card-label">Color Palette</div>
+              <div class="color-palette-grid">
+                <div class="color-card" data-tip="Click to copy hex" onclick="copyHex(document.getElementById('swatchPrimaryHex').textContent)">
+                  <div class="color-chip-box" style="background:var(--primary);"></div>
+                  <div class="color-name">Primary Brand</div>
+                  <div class="color-hex" id="swatchPrimaryHex">#18181B</div>
+                </div>
+                <div class="color-card" data-tip="Click to copy hex" onclick="copyHex('#09090B')">
+                  <div class="color-chip-box" style="background:var(--foreground);"></div>
+                  <div class="color-name">Foreground Ink</div>
+                  <div class="color-hex">#09090B</div>
+                </div>
+                <div class="color-card" data-tip="Click to copy hex" onclick="copyHex(document.getElementById('swatchMutedHex').textContent)">
+                  <div class="color-chip-box" style="background:var(--secondary);"></div>
+                  <div class="color-name">Secondary</div>
+                  <div class="color-hex" id="swatchMutedHex">#F4F4F5</div>
+                </div>
+                <div class="color-card" data-tip="Click to copy hex" onclick="copyHex(document.getElementById('swatchBorderHex').textContent)">
+                  <div class="color-chip-box" style="background:var(--border);"></div>
+                  <div class="color-name">Border</div>
+                  <div class="color-hex" id="swatchBorderHex">#E4E4E7</div>
+                </div>
+                <div class="color-card" data-tip="Click to copy hex" onclick="copyHex('#FFFFFF')">
+                  <div class="color-chip-box" style="background:var(--background);"></div>
+                  <div class="color-name">Surface</div>
+                  <div class="color-hex">#FFFFFF</div>
+                </div>
+                <div class="color-card" data-tip="Click to copy hex" onclick="copyHex('#EF4444')">
+                  <div class="color-chip-box" style="background:var(--destructive);"></div>
+                  <div class="color-name">Destructive</div>
+                  <div class="color-hex">#EF4444</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="foundation-card">
+              <div class="f-card-label">Typography Scale</div>
+              <div>
+                <div class="type-row">
+                  <span class="type-meta">Display</span>
+                  <span style="font-size:30px;font-weight:700;letter-spacing:-0.03em;" class="js-brand-name">ZeroLight OS</span>
+                </div>
+                <div class="type-row">
+                  <span class="type-meta">Heading</span>
+                  <span style="font-size:20px;font-weight:600;letter-spacing:-0.02em;">Operational Brand Interface Architecture</span>
+                </div>
+                <div class="type-row">
+                  <span class="type-meta">Body</span>
+                  <span>Crisp, high-readability typography inheriting your active font family, size, weight, and tracking.</span>
+                </div>
+                <div class="type-row">
+                  <span class="type-meta">Tabular Nums</span>
+                  <span class="tabular-nums">$148,250.00 • 99.98% SLA • 1,284 nodes • 24.8ms</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ATOMS -->
+          <section class="ds-section" id="sec-atoms">
+            <div class="ds-section-head">
+              <h2 class="ds-section-title">Atoms</h2>
+              <span class="ds-section-desc">Core UI primitives</span>
+            </div>
+            <div class="comp-grid" id="atomsGrid"></div>
+          </section>
+
+          <!-- MOLECULES -->
+          <section class="ds-section" id="sec-molecules">
+            <div class="ds-section-head">
+              <h2 class="ds-section-title">Molecules</h2>
+              <span class="ds-section-desc">Composite patterns &amp; overlays</span>
+            </div>
+            <div class="comp-grid" id="moleculesGrid"></div>
+          </section>
+
+        </div>
+      </main>
+
+      <!-- TOKEN STUDIO: FLOATING CONTAINER INSIDE OVERALL SHELL -->
+      <aside class="inspector" id="tokenStudioAside">
+        <div class="inspector-head">
+          <div>
+            <div class="inspector-head-title">Token Studio</div>
+            <div class="inspector-head-sub">Customize &amp; download</div>
+          </div>
+          <div class="row" style="gap:6px;">
+            <button class="icon-reset-btn" id="resetAllBtn" data-tip="Reset defaults" data-tip-pos="bottom">
+              <svg class="lucide" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+            <button class="icon-reset-btn mobile-studio-btn" id="closeStudioBtn" data-tip="Close" data-tip-pos="bottom">
+              <svg class="lucide" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="inspector-scroll">
+
+          <!-- Brand Identity & Logo -->
+          <div class="studio-section open">
+            <button type="button" class="studio-sec-btn">
+              <span>Brand Identity &amp; Logo</span>
+              <span class="studio-sec-chevron"><svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+            </button>
+            <div class="studio-sec-body">
+              <div class="token-field">
+                <label>Brand Name</label>
+                <input type="text" class="studio-input" id="brandNameInput" value="ZeroLight OS" />
+              </div>
+              <div class="token-field">
+                <label>Brand Tagline</label>
+                <input type="text" class="studio-input" id="brandTaglineInput" value="Clean, light-mode brand design system" />
+              </div>
+              <div class="token-field">
+                <label>Logo Mark</label>
+                <div class="seg-track cols-5" id="logoMarkGroup">
+                  <button type="button" class="seg-opt active" data-mark="Z" data-tip="Letter Z">Z</button>
+                  <button type="button" class="seg-opt" data-mark="ZL" data-tip="Monogram ZL">ZL</button>
+                  <button type="button" class="seg-opt" data-mark="zap" data-tip="Bolt icon"><svg class="lucide" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button>
+                  <button type="button" class="seg-opt" data-mark="command" data-tip="Command icon"><svg class="lucide" viewBox="0 0 24 24"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></button>
+                  <button type="button" class="seg-opt" data-mark="hexagon" data-tip="Hexagon icon"><svg class="lucide" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Custom Logo</label>
+                <label class="studio-upload-btn" for="logoUploadInput">
+                  <svg class="lucide" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                  <span>Upload Brand Image</span>
+                </label>
+                <input type="file" accept="image/*" id="logoUploadInput" style="display:none;" />
+              </div>
+              <div class="token-field">
+                <label>Primary Brand Color <span class="token-readout" id="accentHexVal">#18181B</span></label>
+                <div class="swatch-strip" id="accentSwatches">
+                  <button type="button" class="swatch-chip active" data-hex="#18181b" style="background:#18181b" data-tip="Obsidian"></button>
+                  <button type="button" class="swatch-chip" data-hex="#0f766e" style="background:#0f766e" data-tip="Teal"></button>
+                  <button type="button" class="swatch-chip" data-hex="#2563eb" style="background:#2563eb" data-tip="Blue"></button>
+                  <button type="button" class="swatch-chip" data-hex="#7c3aed" style="background:#7c3aed" data-tip="Violet"></button>
+                  <button type="button" class="swatch-chip" data-hex="#e11d48" style="background:#e11d48" data-tip="Rose"></button>
+                  <button type="button" class="swatch-chip" data-hex="#ea580c" style="background:#ea580c" data-tip="Orange"></button>
+                  <div class="color-picker-wrap" data-tip="Custom color">
+                    <svg class="lucide" style="width:12px;height:12px;" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+                    <input type="color" id="customColorPicker" value="#18181b" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typography & Fonts -->
+          <div class="studio-section open">
+            <button type="button" class="studio-sec-btn">
+              <span>Typography &amp; Fonts</span>
+              <span class="studio-sec-chevron"><svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+            </button>
+            <div class="studio-sec-body">
+              <div class="token-field">
+                <label>Font Family</label>
+                <div class="ui-dd" id="fontDropdown">
+                  <button type="button" class="ui-dd-trigger" style="height:34px;font-size:12.5px;">
+                    <span class="dd-label">Plus Jakarta Sans</span>
+                    <svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="ui-dd-menu">
+                    <button type="button" class="ui-dd-item active" data-val="'Plus Jakarta Sans', sans-serif"><span>Plus Jakarta Sans</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                    <button type="button" class="ui-dd-item" data-val="'Inter', sans-serif"><span>Inter</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                    <button type="button" class="ui-dd-item" data-val="'Space Grotesk', sans-serif"><span>Space Grotesk</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                    <button type="button" class="ui-dd-item" data-val="'DM Sans', sans-serif"><span>DM Sans</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                    <button type="button" class="ui-dd-item" data-val="'Outfit', sans-serif"><span>Outfit</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="token-field">
+                <label>Font Size <span class="token-readout" id="fontSizeVal">14px</span></label>
+                <input type="range" class="studio-slider" id="fontSizeSlider" min="12" max="16" step="1" value="14" />
+              </div>
+
+              <div class="token-field">
+                <label>Font Weight</label>
+                <div class="seg-track cols-5" id="fontWeightGroup">
+                  <button type="button" class="seg-opt" data-w="300">300</button>
+                  <button type="button" class="seg-opt active" data-w="400">400</button>
+                  <button type="button" class="seg-opt" data-w="500">500</button>
+                  <button type="button" class="seg-opt" data-w="600">600</button>
+                  <button type="button" class="seg-opt" data-w="700">700</button>
+                </div>
+              </div>
+
+              <div class="two-col-split">
+                <div class="token-field">
+                  <label>Style</label>
+                  <div class="seg-track cols-2" id="fontStyleGroup">
+                    <button type="button" class="seg-opt active" data-st="normal">Normal</button>
+                    <button type="button" class="seg-opt" data-st="italic">Italic</button>
+                  </div>
+                </div>
+                <div class="token-field">
+                  <label>Line Height</label>
+                  <div class="seg-track cols-3" id="lineHeightGroup">
+                    <button type="button" class="seg-opt" data-lh="1.35">1.35</button>
+                    <button type="button" class="seg-opt active" data-lh="1.5">1.50</button>
+                    <button type="button" class="seg-opt" data-lh="1.65">1.65</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="token-field">
+                <label>Tracking</label>
+                <div class="seg-track cols-3" id="trackingGroup">
+                  <button type="button" class="seg-opt active" data-tr="-0.011em">Tight</button>
+                  <button type="button" class="seg-opt" data-tr="0em">Normal</button>
+                  <button type="button" class="seg-opt" data-tr="0.025em">Wide</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shape & Density -->
+          <div class="studio-section">
+            <button type="button" class="studio-sec-btn">
+              <span>Shape &amp; Density</span>
+              <span class="studio-sec-chevron"><svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+            </button>
+            <div class="studio-sec-body">
+              <div class="token-field">
+                <label>Corner Radius <span class="token-readout" id="radiusVal">0.5rem</span></label>
+                <div class="seg-track cols-5" id="radiusPresets">
+                  <button type="button" class="seg-opt" data-r="0rem">0</button>
+                  <button type="button" class="seg-opt" data-r="0.3rem">0.3</button>
+                  <button type="button" class="seg-opt active" data-r="0.5rem">0.5</button>
+                  <button type="button" class="seg-opt" data-r="0.75rem">0.75</button>
+                  <button type="button" class="seg-opt" data-r="1rem">1.0</button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Border Width</label>
+                <div class="seg-track" id="borderWidthGroup">
+                  <button type="button" class="seg-opt" data-bw="0px">0px</button>
+                  <button type="button" class="seg-opt active" data-bw="1px">1px</button>
+                  <button type="button" class="seg-opt" data-bw="1.5px">1.5px</button>
+                  <button type="button" class="seg-opt" data-bw="2px">2px</button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Control Height</label>
+                <div class="seg-track cols-3" id="densityGroup">
+                  <button type="button" class="seg-opt" data-h="32px">Compact</button>
+                  <button type="button" class="seg-opt active" data-h="36px">Default</button>
+                  <button type="button" class="seg-opt" data-h="42px">Spacious</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Surface & Elevation -->
+          <div class="studio-section">
+            <button type="button" class="studio-sec-btn">
+              <span>Surface &amp; Elevation</span>
+              <span class="studio-sec-chevron"><svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+            </button>
+            <div class="studio-sec-body">
+              <div class="token-field">
+                <label>Light Neutral Surface</label>
+                <div class="seg-track" id="surfaceFillGroup">
+                  <button type="button" class="seg-opt active" data-sf="zinc">Zinc</button>
+                  <button type="button" class="seg-opt" data-sf="pure">Pure</button>
+                  <button type="button" class="seg-opt" data-sf="slate">Slate</button>
+                  <button type="button" class="seg-opt" data-sf="stone">Stone</button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Border Contrast</label>
+                <div class="seg-track" id="borderColorGroup">
+                  <button type="button" class="seg-opt active" data-bc="#e4e4e7">Default</button>
+                  <button type="button" class="seg-opt" data-bc="#d4d4d8">Medium</button>
+                  <button type="button" class="seg-opt" data-bc="#a1a1aa">Strong</button>
+                  <button type="button" class="seg-opt" data-bc="#18181b">Ink</button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Card Shadow</label>
+                <div class="seg-track cols-3" id="elevationGroup">
+                  <button type="button" class="seg-opt" data-el="none">Flat</button>
+                  <button type="button" class="seg-opt active" data-el="soft">Subtle</button>
+                  <button type="button" class="seg-opt" data-el="lifted">Lifted</button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Backdrop Blur <span class="token-readout" id="blurVal">0px</span></label>
+                <input type="range" class="studio-slider" id="blurSlider" min="0" max="16" step="2" value="0" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Icons & Graphic Assets -->
+          <div class="studio-section">
+            <button type="button" class="studio-sec-btn">
+              <span>Icons &amp; Graphic Assets</span>
+              <span class="studio-sec-chevron"><svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+            </button>
+            <div class="studio-sec-body">
+              <div class="token-field">
+                <label>Icon Library</label>
+                <div class="ui-dd" id="iconDropdown">
+                  <button type="button" class="ui-dd-trigger" style="height:34px;font-size:12.5px;">
+                    <span class="dd-label">Lucide Icons</span>
+                    <svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="ui-dd-menu">
+                    <button type="button" class="ui-dd-item active" data-val="Lucide"><span>Lucide Icons</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                    <button type="button" class="ui-dd-item" data-val="Radix"><span>Radix Icons</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                    <button type="button" class="ui-dd-item" data-val="Tabler"><span>Tabler Icons</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                    <button type="button" class="ui-dd-item" data-val="Heroicons"><span>Heroicons</span><svg class="lucide dd-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></button>
+                  </div>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Stroke Width <span class="token-readout" id="iconStrokeVal">2</span></label>
+                <div class="seg-track cols-5" id="iconStrokeGroup">
+                  <button type="button" class="seg-opt" data-sw="1.25">1.25</button>
+                  <button type="button" class="seg-opt" data-sw="1.5">1.5</button>
+                  <button type="button" class="seg-opt" data-sw="1.75">1.75</button>
+                  <button type="button" class="seg-opt active" data-sw="2">2</button>
+                  <button type="button" class="seg-opt" data-sw="2.5">2.5</button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Icon Tint</label>
+                <div class="swatch-strip" id="iconColorSwatches">
+                  <button type="button" class="swatch-chip active" data-ic="currentColor" style="background:linear-gradient(135deg,#18181b 50%,#e4e4e7 50%)" data-tip="Inherit"></button>
+                  <button type="button" class="swatch-chip" data-ic="#2563eb" style="background:#2563eb" data-tip="Blue"></button>
+                  <button type="button" class="swatch-chip" data-ic="#0f766e" style="background:#0f766e" data-tip="Teal"></button>
+                  <button type="button" class="swatch-chip" data-ic="#7c3aed" style="background:#7c3aed" data-tip="Violet"></button>
+                  <button type="button" class="swatch-chip" data-ic="#e11d48" style="background:#e11d48" data-tip="Rose"></button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Icon Scale <span class="token-readout" id="iconScaleVal">100%</span></label>
+                <input type="range" class="studio-slider" id="iconScaleSlider" min="0.8" max="1.35" step="0.05" value="1" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Motion Physics -->
+          <div class="studio-section">
+            <button type="button" class="studio-sec-btn">
+              <span>Motion Physics</span>
+              <span class="studio-sec-chevron"><svg class="lucide" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+            </button>
+            <div class="studio-sec-body">
+              <div class="token-field">
+                <label>Spring Preset</label>
+                <div class="seg-track" id="motionPresetGroup">
+                  <button type="button" class="seg-opt" data-k="700" data-d="45">Instant</button>
+                  <button type="button" class="seg-opt" data-k="520" data-d="24">Snappy</button>
+                  <button type="button" class="seg-opt active" data-k="400" data-d="28">Damped</button>
+                  <button type="button" class="seg-opt" data-k="220" data-d="20">Gentle</button>
+                </div>
+              </div>
+              <div class="token-field">
+                <label>Stiffness <span class="token-readout" id="stiffnessVal">400</span></label>
+                <input type="range" class="studio-slider" id="stiffnessSlider" min="150" max="750" step="10" value="400" />
+              </div>
+              <div class="token-field">
+                <label>Damping <span class="token-readout" id="dampingVal">28</span></label>
+                <input type="range" class="studio-slider" id="dampingSlider" min="10" max="50" step="1" value="28" />
+              </div>
+              <button type="button" class="btn sm" style="width:100%;" id="testSpringBtn">
+                <svg class="lucide" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Test Spring Recoil</span>
+              </button>
+              <div class="spring-track">
+                <div id="springPuck" style="width:24px;height:24px;border-radius:4px;background:var(--primary);"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="inspector-foot">
+          <button type="button" class="btn sm" style="flex:1;" id="footerDownloadBtn" data-tip="Save theme CSS file">
+            <svg class="lucide" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span>Download CSS</span>
+          </button>
+          <button type="button" class="btn sm primary" style="flex:1;" id="footerExportBtn" data-tip="Inspect CSS or JSON">
+            <svg class="lucide" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span>Export Code</span>
+          </button>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- CUSTOM DIALOG, SHEET & TOAST -->
+  <div class="overlay" id="globalModal">
+    <div class="dialog-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 id="modalTitle" style="font-size:15px;font-weight:600;">Dialog</h3>
+        <button class="btn sm ghost icon-only" onclick="closeModal()" data-tip="Close">
+          <svg class="lucide" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="drawer-panel" id="globalDrawer">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <h3 id="drawerTitle" style="font-size:15px;font-weight:600;">Sheet</h3>
+      <button class="btn sm ghost icon-only" onclick="closeDrawer()" data-tip="Close">
+        <svg class="lucide" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <p id="drawerBody" style="font-size:13px;color:var(--muted-foreground);"></p>
+  </div>
+
+  <div class="toast-banner" id="globalToast">
+    <svg class="lucide" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    <span id="toastText">Done</span>
+  </div>
+
+  <script>
+    // Safe Storage Helpers (Prevents sandbox iframe SecurityError crash)
+    function safeGet(key) {
+      try { return localStorage.getItem(key); } catch (e) { return null; }
+    }
+    function safeSet(key, val) {
+      try { localStorage.setItem(key, val); } catch (e) {}
+    }
+    function safeRemove(key) {
+      try { localStorage.removeItem(key); } catch (e) {}
+    }
+
+    const lucide = (paths, cls = '') => `<svg class="lucide ${cls}" viewBox="0 0 24 24">${paths}</svg>`;
+    const ICONS = {
+      copy: lucide('<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>'),
+      search: lucide('<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>'),
+      folder: lucide('<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/>'),
+      file: lucide('<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>'),
+      alert: lucide('<circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/>'),
+      bell: lucide('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>'),
+      x: lucide('<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'),
+      check: lucide('<path d="M20 6 9 17l-5-5"/>', 'dd-check'),
+      chevDown: lucide('<path d="m6 9 6 6 6-6"/>'),
+      chevRight: lucide('<path d="m9 18 6-6-6-6"/>'),
+      more: lucide('<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>'),
+      zap: lucide('<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>'),
+      command: lucide('<path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/>'),
+      hexagon: lucide('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>'),
+      thumbsUp: lucide('<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>'),
+      thumbsDown: lucide('<path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/>')
+    };
+
+    function buildCustomSelect(options, initialIndex = 0) {
+      return `
+        <div class="ui-dd js-auto-dd">
+          <button type="button" class="ui-dd-trigger">
+            <span class="dd-label">${options[initialIndex]}</span>
+            ${ICONS.chevDown}
+          </button>
+          <div class="ui-dd-menu">
+            ${options.map((opt, idx) => `
+              <button type="button" class="ui-dd-item ${idx === initialIndex ? 'active' : ''}" data-val="${opt}">
+                <span>${opt}</span>${ICONS.check}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    const ATOMS = [
+      { name: "Avatar", html: `<div class="row"><div style="width:36px;height:36px;border-radius:9999px;background:var(--primary);color:var(--primary-foreground);display:grid;place-items:center;font-weight:600;font-size:12px;">ZL</div><div style="width:36px;height:36px;border-radius:9999px;background:var(--secondary);border:1px solid var(--border);display:grid;place-items:center;font-weight:600;font-size:12px;">JR</div></div>` },
+      { name: "Badge", html: `<div class="row"><span class="badge">Secondary</span><span class="badge accent">Default</span><span class="badge" style="background:transparent;">Outline</span></div>` },
+      { name: "Button", html: `<div class="row"><button class="btn primary" onclick="showToast('Primary action triggered')">Primary</button><button class="btn secondary" onclick="showToast('Secondary action triggered')">Secondary</button><button class="btn" onclick="showToast('Outline action triggered')">Outline</button><button class="btn danger" onclick="showToast('Destructive action triggered')">Delete</button></div>` },
+      { name: "Checkbox", html: `<label class="row" style="cursor:pointer;"><input type="checkbox" checked style="accent-color:var(--primary);width:15px;height:15px;" onchange="showToast(this.checked ? 'Checked' : 'Unchecked')" /><span>Accept terms and conditions</span></label>` },
+      { name: "Code", html: `<div>Token: <span class="code-inline">var(--primary)</span></div>` },
+      { name: "Copy Button", html: `<button class="btn sm" data-tip="Copy install snippet" onclick="copyHex('npx zerolight init')">${ICONS.copy}<span>Copy Command</span></button>` },
+      { name: "Error", html: `<span class="row" style="color:var(--destructive);font-size:12.5px;font-weight:500;">${ICONS.alert}<span>Username must be at least 2 characters.</span></span>` },
+      { name: "Input", html: `<input class="input" type="email" placeholder="Email address" />` },
+      { name: "Label", html: `<label style="font-size:12.5px;font-weight:600;">Workspace Name</label>` },
+      { name: "Loading Dots", html: `<div class="dots"><span></span><span></span><span></span></div>` },
+      { name: "Pill", html: `<div class="row"><span class="pill">Standard</span><span class="pill" style="background:var(--primary);color:var(--primary-foreground);">Active</span></div>` },
+      { name: "Progress", html: `<progress value="62" max="100" style="width:100%;accent-color:var(--primary);"></progress>` },
+      { name: "Radio", html: `<div class="row"><label class="row" style="cursor:pointer;"><input type="radio" name="r1" checked style="accent-color:var(--primary);" onchange="showToast('Default selected')" /><span>Default</span></label><label class="row" style="cursor:pointer;"><input type="radio" name="r1" style="accent-color:var(--primary);" onchange="showToast('Compact selected')" /><span>Compact</span></label></div>` },
+      { name: "Separator", html: `<hr style="border:none;border-top:1px solid var(--border);margin:6px 0;" />` },
+      { name: "Skeleton", html: `<div style="display:flex;flex-direction:column;gap:6px;"><div class="skeleton" style="width:65%;"></div><div class="skeleton" style="width:90%;"></div></div>` },
+      { name: "Slider", html: `<div class="row" style="width:100%;"><input type="range" min="0" max="100" value="50" style="flex:1;accent-color:var(--primary);" oninput="this.nextElementSibling.textContent=this.value+'%'" /><span class="token-readout">50%</span></div>` },
+      { name: "Spinner", html: `<div class="spinner"></div>` },
+      { name: "Status Dot", html: `<div class="row"><span class="status-dot" style="background:#22c55e;"></span><span style="font-size:12.5px;">Operational</span></div>` },
+      { name: "Switch", html: `<div class="row"><button class="switch on" onclick="this.classList.toggle('on');showToast(this.classList.contains('on') ? 'Enabled' : 'Disabled')"></button><span style="font-size:12.5px;">Auto-Sync</span></div>` },
+      { name: "Textarea", html: `<textarea class="textarea" placeholder="Type your message here."></textarea>` },
+      { name: "Toggle", html: `<button class="btn sm" data-tip="Toggle bold" onclick="this.classList.toggle('primary');showToast(this.classList.contains('primary') ? 'Bold on' : 'Bold off')"><strong>B</strong></button>` },
+      { name: "Tooltip", html: `<button class="btn sm" data-tip="Clean floating tooltip" onclick="showToast('Tooltip button clicked')">Hover Me</button>` }
+    ];
+
+    const MOLECULES = [
+      { name: "Address Input", html: `<input class="input" placeholder="1600 Amphitheatre Pkwy, Mountain View, CA" /><div class="row"><input class="input" style="width:48%" placeholder="Postal Code" /><input class="input" style="width:48%" placeholder="Country" /></div>` },
+      { name: "Banner", html: `<div style="padding:10px 12px;border-radius:var(--radius);background:var(--muted);border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;"><span class="row" style="font-size:12.5px;">${ICONS.bell}<span>Brand tokens live.</span></span><button class="btn sm" onclick="this.parentElement.style.opacity='0.45';showToast('Banner dismissed')">Dismiss</button></div>` },
+      { name: "Book", html: `<div style="width:120px;height:124px;border-radius:4px 10px 10px 4px;background:var(--primary);color:var(--primary-foreground);padding:12px;display:flex;flex-direction:column;justify-content:space-between;"><span style="font-size:10px;opacity:0.75;">BRAND</span><strong style="font-size:12.5px;" class="js-brand-name">ZeroLight OS</strong></div>` },
+      { name: "Breadcrumbs", html: `<div class="row" style="font-size:12.5px;color:var(--muted-foreground);"><span>Home</span>${ICONS.chevRight}<span>System</span>${ICONS.chevRight}<strong style="color:var(--foreground);font-weight:500;">Molecules</strong></div>` },
+      { name: "Browser", html: `<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;"><div style="padding:6px 10px;background:var(--muted);border-bottom:1px solid var(--border);font-size:11.5px;color:var(--muted-foreground);">ui.brand.dev</div><div style="padding:10px;font-size:12.5px;">Embedded viewport</div></div>` },
+      { name: "Calendar", html: `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px;">${Array.from({length:14},(_,i)=>`<button type="button" class="btn sm ${i===9?'primary':'ghost'}" style="padding:0;height:26px;" onclick="selectCalDay(this)">${i+1}</button>`).join('')}</div>` },
+      { name: "Choicebox", html: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div class="choice-card selected" onclick="selectChoice(this)"><strong>Card</strong><br><span style="color:var(--muted-foreground)">Standard billing</span></div><div class="choice-card" onclick="selectChoice(this)"><strong>Invoice</strong><br><span style="color:var(--muted-foreground)">Net-30 enterprise</span></div></div>` },
+      { name: "Clearable Input", html: `<div style="position:relative;"><input class="input" id="clrIn" value="brand-token-v1" style="padding-right:32px;" /><button type="button" data-tip="Clear input" onclick="document.getElementById('clrIn').value='';document.getElementById('clrIn').focus();" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;color:var(--muted-foreground);cursor:pointer;display:inline-flex;">${ICONS.x}</button></div>` },
+      { name: "Code Block", html: `<pre class="code-block">:root {\n  --radius: 0.5rem;\n  --primary: #18181b;\n}</pre>` },
+      { name: "Collapse", html: `<details style="border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;"><summary style="cursor:pointer;font-weight:500;font-size:12.5px;">Token Inheritance</summary><p style="margin-top:6px;font-size:12px;color:var(--muted-foreground);">All components inherit root CSS variables.</p></details>` },
+      { name: "Combobox", html: buildCustomSelect(["Next.js", "React", "Vue", "SvelteKit"], 0) },
+      { name: "Context Card", html: `<div style="padding:10px;background:var(--muted);border-radius:var(--radius);font-size:12.5px;"><strong>Workspace:</strong> Production</div>` },
+      { name: "Context Menu", html: `<div oncontextmenu="event.preventDefault();showToast('Custom context popover opened')" style="padding:14px;border:1px dashed var(--border);border-radius:var(--radius);text-align:center;font-size:12px;color:var(--muted-foreground);cursor:context-menu;">Right click here</div>` },
+      { name: "Description", html: `<dl style="display:grid;grid-template-columns:90px 1fr;gap:4px;font-size:12.5px;"><dt style="color:var(--muted-foreground)">Mode</dt><dd style="font-weight:500;">Light Brand UI</dd></dl>` },
+      { name: "Destructive Action Modal", html: `<button class="btn danger sm" onclick="openModal('Delete Workspace?','<p style=font-size:13px;color:var(--muted-foreground);margin-bottom:14px;>This action cannot be undone.</p><div style=display:flex;justify-content:flex-end;gap:8px;><button class=\\'btn sm\\' onclick=\\'closeModal()\\'>Cancel</button><button class=\\'btn danger sm\\' onclick=\\'closeModal();showToast(\"Deleted\")\\'>Continue</button></div>')">Delete Account</button>` },
+      { name: "Destructive Confirmation Input", html: `<input class="input" placeholder="Type DELETE" oninput="document.getElementById('confBtn').disabled = this.value !== 'DELETE'" /><button class="btn danger sm" id="confBtn" disabled onclick="showToast('Confirmed')">Confirm Delete</button>` },
+      { name: "Dots Menu", html: `<div class="ui-dd inline js-auto-dd"><button type="button" class="btn icon-only sm ui-dd-trigger" data-tip="More options" style="width:32px;padding:0;justify-content:center;">${ICONS.more}</button><div class="ui-dd-menu"><button type="button" class="ui-dd-item" onclick="showToast('Duplicated')"><span>Duplicate</span></button><button type="button" class="ui-dd-item" onclick="showToast('Archived')"><span>Archive</span></button></div></div>` },
+      { name: "Drawer", html: `<button class="btn sm" onclick="openDrawer('Edit Profile','Update your brand profile settings.')">Open Drawer</button>` },
+      { name: "Empty State", html: `<div style="padding:14px;text-align:center;border:1px dashed var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--muted-foreground);">No results found.</div>` },
+      { name: "Entity", html: `<div style="display:flex;justify-content:space-between;align-items:center;"><strong style="font-size:12.5px;">api-gateway-prod</strong><span class="badge">Active</span></div>` },
+      { name: "Error Card", html: `<div style="padding:10px 12px;border-radius:var(--radius);border:1px solid var(--destructive);color:var(--destructive);font-size:12.5px;" class="row">${ICONS.alert}<span><strong>Error:</strong> Session expired.</span></div>` },
+      { name: "Feedback", html: `<div class="row"><span style="font-size:12px;color:var(--muted-foreground);">Helpful?</span><button class="btn sm" onclick="showToast('Voted Yes')">${ICONS.thumbsUp}<span>Yes</span></button><button class="btn sm" onclick="showToast('Voted No')">${ICONS.thumbsDown}<span>No</span></button></div>` },
+      { name: "Fieldset", html: `<fieldset style="border:1px solid var(--border);border-radius:var(--radius);padding:10px;"><legend style="padding:0 6px;font-size:11.5px;font-weight:600;">Project Name</legend><input class="input" placeholder="brand-ui" /></fieldset>` },
+      { name: "File Tree", html: `<div style="font-size:12.5px;display:flex;flex-direction:column;gap:4px;"><span class="row">${ICONS.folder}<span>tokens/</span></span><span class="row" style="padding-left:18px;">${ICONS.file}<span>theme.css</span></span></div>` },
+      { name: "Filter Params", html: `<div class="row"><span class="pill">status:todo <button class="pill-close" data-tip="Remove" onclick="this.parentElement.remove()">${ICONS.x}</button></span><span class="pill">priority:high <button class="pill-close" data-tip="Remove" onclick="this.parentElement.remove()">${ICONS.x}</button></span></div>` },
+      { name: "Gauge", html: `<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Storage</span><strong>68%</strong></div><div style="height:8px;background:var(--secondary);border-radius:9999px;overflow:hidden;"><div style="width:68%;height:100%;background:var(--primary);"></div></div></div>` },
+      { name: "Grid", html: `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div class="badge" style="justify-content:center;">Col 1</div><div class="badge" style="justify-content:center;">Col 2</div></div>` },
+      { name: "JSON View", html: `<pre class="code-block">{"brand": "ZeroLight", "mode": "light"}</pre>` },
+      { name: "Load More Button", html: `<button class="btn sm secondary" style="width:100%;" onclick="this.textContent='All items loaded';this.disabled=true;showToast('Loaded remaining items')">Load More</button>` },
+      { name: "Menu", html: `<div style="border:1px solid var(--border);border-radius:var(--radius);padding:4px;display:flex;flex-direction:column;"><button class="btn sm ghost" style="justify-content:flex-start;" onclick="showToast('Profile opened')">Profile</button><button class="btn sm ghost" style="justify-content:flex-start;" onclick="showToast('Billing opened')">Billing</button></div>` },
+      { name: "MiddleTruncate", html: `<div style="font-size:12.5px;color:var(--muted-foreground);">brand_system_tokens_..._release.css</div>` },
+      { name: "Modal", html: `<button class="btn sm" onclick="openModal('Share Brand Kit','<p style=font-size:13px;color:var(--muted-foreground);>Anyone with the link can view these tokens.</p>')">Open Dialog</button>` },
+      { name: "Multi Select", html: `<div class="row" style="padding:6px;border:1px solid var(--input);border-radius:var(--radius);"><span class="badge">CSS <button class="pill-close" data-tip="Remove" onclick="this.parentElement.remove()">${ICONS.x}</button></span><span class="badge">JSON <button class="pill-close" data-tip="Remove" onclick="this.parentElement.remove()">${ICONS.x}</button></span></div>` },
+      { name: "Note", html: `<div style="padding:10px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--muted);font-size:12.5px;"><strong>Note:</strong> Download tokens anytime from Token Studio.</div>` },
+      { name: "Pagination", html: `<div class="row"><button class="btn sm ghost" onclick="setPage(this,1)">1</button><button class="btn sm primary" onclick="setPage(this,2)">2</button><button class="btn sm ghost" onclick="setPage(this,3)">3</button></div>` },
+      { name: "Phone", html: `<div class="row" style="flex-wrap:nowrap;"><div style="width:94px;flex-shrink:0;">${buildCustomSelect(["+91 IN", "+1 US", "+44 UK"], 0)}</div><input class="input" style="flex:1;" placeholder="98765 43210" /></div>` },
+      { name: "Pie Gauge", html: `<div class="row"><div style="width:36px;height:36px;border-radius:9999px;background:conic-gradient(var(--primary) 0% 75%, var(--secondary) 75% 100%);"></div><span style="font-size:12.5px;">75% Quota</span></div>` },
+      { name: "Project Banner", html: `<div style="padding:10px 12px;border-radius:var(--radius);background:var(--primary);color:var(--primary-foreground);font-size:12.5px;"><strong class="js-brand-name">ZeroLight OS</strong> — Ready for production</div>` },
+      { name: "Relative Time Card", html: `<div style="font-size:12.5px;color:var(--muted-foreground);">Updated <strong style="color:var(--foreground);">2m ago</strong></div>` },
+      { name: "Scroller", html: `<div style="max-height:56px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius);padding:6px;font-size:12px;">Initial Release<br>Token Architecture<br>Export Pipeline<br>Live Sync</div>` },
+      { name: "Search Input", html: `<div style="position:relative;"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted-foreground);pointer-events:none;display:inline-flex;">${ICONS.search}</span><input type="search" class="input" style="padding-left:32px;" placeholder="Search documentation..." /></div>` },
+      { name: "Select", html: buildCustomSelect(["AP South (Hyderabad)", "US East (N. Virginia)", "EU Central (Frankfurt)"], 0) },
+      { name: "Sheet", html: `<button class="btn sm" onclick="openDrawer('Sheet','Contextual side sheet overlay.')">Open Sheet</button>` },
+      { name: "Show more", html: `<div><span id="smText" style="font-size:12.5px;">Build your brand system...</span> <button class="btn sm ghost" onclick="document.getElementById('smText').textContent='Build your brand system. Clean, light-mode, and ready to download.';this.remove();">Show more</button></div>` },
+      { name: "Snippet", html: `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:var(--radius);background:var(--muted);border:1px solid var(--border);font-size:12.5px;"><span>npx zerolight init</span><button class="btn sm ghost icon-only" data-tip="Copy" onclick="copyHex('npx zerolight init')">${ICONS.copy}</button></div>` },
+      { name: "Split Button", html: `<div class="ui-dd inline js-auto-dd"><div style="display:inline-flex;"><button class="btn primary" style="border-top-right-radius:0;border-bottom-right-radius:0;" onclick="showToast('Deploying...')">Deploy</button><button type="button" class="btn primary ui-dd-trigger" data-tip="Deploy options" style="width:auto;border-top-left-radius:0;border-bottom-left-radius:0;padding:0 9px;border-left:1px solid rgba(255,255,255,0.2);">${ICONS.chevDown}</button></div><div class="ui-dd-menu align-right"><button type="button" class="ui-dd-item" onclick="showToast('Deploy to Staging')"><span>Deploy to Staging</span></button><button type="button" class="ui-dd-item" onclick="showToast('Schedule Deploy')"><span>Schedule Deploy</span></button></div></div>` },
+      { name: "Table", html: `<table class="sys-table"><thead><tr><th>Token</th><th>Value</th></tr></thead><tbody><tr><td>Radius</td><td>0.5rem</td></tr></tbody></table>` },
+      { name: "Tabs", html: `<div><div class="seg-track cols-2" style="max-width:220px;"><button class="seg-opt active" onclick="switchDemoTab(this,'Account settings panel.')">Account</button><button class="seg-opt" onclick="switchDemoTab(this,'Security & API keys.')">Security</button></div><div class="tab-out" style="font-size:12px;color:var(--muted-foreground);margin-top:6px;">Account settings panel.</div></div>` },
+      { name: "Text With Copy Button", html: `<div class="row"><span class="code-inline">https://brand.design</span><button class="btn sm icon-only" data-tip="Copy URL" onclick="copyHex('https://brand.design')">${ICONS.copy}</button></div>` },
+      { name: "Toast", html: `<button class="btn sm" onclick="showToast('Brand tokens updated successfully')">Trigger Toast</button>` }
+    ];
+
+    function renderSection(containerId, list) {
+      document.getElementById(containerId).innerHTML = list.map(c => `
+        <div class="comp-slot" data-name="${c.name.toLowerCase()}">
+          <span class="comp-title-above">${c.name}</span>
+          <article class="comp-card">${c.html}</article>
+        </div>
+      `).join('');
+    }
+    renderSection('atomsGrid', ATOMS);
+    renderSection('moleculesGrid', MOLECULES);
+
+    // Custom Dropdown Controller
+    function closeAllDropdowns() {
+      document.querySelectorAll('.ui-dd.open').forEach(dd => {
+        dd.classList.remove('open');
+        const slot = dd.closest('.comp-slot');
+        if (slot) slot.classList.remove('elevated');
+      });
+    }
+
+    function initDropdown(dd, onChange) {
+      const trigger = dd.querySelector('.ui-dd-trigger');
+      const label = dd.querySelector('.dd-label');
+      const items = dd.querySelectorAll('.ui-dd-item');
+
+      trigger.addEventListener('click', e => {
+        e.stopPropagation();
+        const wasOpen = dd.classList.contains('open');
+        closeAllDropdowns();
+        if (!wasOpen) {
+          dd.classList.add('open');
+          const slot = dd.closest('.comp-slot');
+          if (slot) slot.classList.add('elevated');
+        }
+      });
+
+      items.forEach(item => {
+        item.addEventListener('click', e => {
+          e.stopPropagation();
+          if (label) {
+            items.forEach(x => x.classList.remove('active'));
+            item.classList.add('active');
+            label.textContent = item.querySelector('span').textContent;
+          }
+          closeAllDropdowns();
+          if (onChange) onChange(item.dataset.val);
+        });
+      });
+    }
+
+    document.querySelectorAll('.js-auto-dd').forEach(dd => initDropdown(dd));
+    document.addEventListener('click', closeAllDropdowns);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeAllDropdowns(); closeModal(); closeDrawer(); }
+    });
+
+    // Interactive Component Helpers
+    function copyHex(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+      showToast(`Copied ${text}`);
+    }
+    function selectCalDay(btn) {
+      btn.parentElement.querySelectorAll('button').forEach(b => { b.classList.remove('primary'); b.classList.add('ghost'); });
+      btn.classList.remove('ghost'); btn.classList.add('primary');
+    }
+    function selectChoice(card) {
+      card.parentElement.querySelectorAll('.choice-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    }
+    function setPage(btn, num) {
+      btn.parentElement.querySelectorAll('button').forEach(b => { b.classList.remove('primary'); b.classList.add('ghost'); });
+      btn.classList.remove('ghost'); btn.classList.add('primary');
+      showToast(`Page ${num}`);
+    }
+    function switchDemoTab(btn, text) {
+      btn.parentElement.querySelectorAll('.seg-opt').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      btn.parentElement.nextElementSibling.textContent = text;
+    }
+
+    // Search Filter
+    document.getElementById('filterInput').addEventListener('input', e => {
+      const q = e.target.value.trim().toLowerCase();
+      document.querySelectorAll('.comp-slot').forEach(s => {
+        s.hidden = !s.dataset.name.includes(q);
+      });
+    });
+
+    // ================= REACTIVE STATE ENGINE =================
+    const STORAGE_KEY = 'visual_studio_dock_tokens_v6';
+    const DEFAULTS = {
+      brandName: 'ZeroLight OS',
+      brandTagline: 'Clean, light-mode brand design system',
+      brandMark: 'Z',
+      primary: '#18181b',
+      font: "'Plus Jakarta Sans', sans-serif",
+      fontSize: 14,
+      fontWeight: '400',
+      fontStyle: 'normal',
+      lineHeight: '1.5',
+      tracking: '-0.011em',
+      radius: '0.5rem',
+      borderW: '1px',
+      controlH: '36px',
+      surface: 'zinc',
+      borderColor: '',
+      elevation: 'soft',
+      blur: 0,
+      iconStroke: '2',
+      iconColor: 'currentColor',
+      iconScale: 1,
+      stiffness: 400,
+      damping: 28
+    };
+
+    let saved = {};
+    try { saved = JSON.parse(safeGet(STORAGE_KEY) || '{}'); } catch (e) { saved = {}; }
+    let state = { ...DEFAULTS, ...saved };
+    let uploadedLogoDataUrl = '';
+    const root = document.documentElement;
+
+    function getContrastYIQ(hex) {
+      const clean = hex.replace('#', '');
+      if (clean.length !== 6) return '#fafafa';
+      const r = parseInt(clean.substr(0, 2), 16);
+      const g = parseInt(clean.substr(2, 2), 16);
+      const b = parseInt(clean.substr(4, 2), 16);
+      return ((r * 299) + (g * 587) + (b * 114)) / 1000 >= 150 ? '#09090b' : '#fafafa';
+    }
+
+    const SURFACES = {
+      zinc:  { bg: '#ffffff', canvas: '#fafafa', sec: '#f4f4f5', border: '#e4e4e7' },
+      pure:  { bg: '#ffffff', canvas: '#ffffff', sec: '#f4f4f5', border: '#e5e7eb' },
+      slate: { bg: '#ffffff', canvas: '#f8fafc', sec: '#f1f5f9', border: '#e2e8f0' },
+      stone: { bg: '#ffffff', canvas: '#fafaf9', sec: '#f5f5f4', border: '#e7e5e4' }
+    };
+
+    const SHADOWS = {
+      none: 'none',
+      soft: '0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+      lifted: '0 4px 10px -2px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.04)'
+    };
+
+    function renderBrandMarkContent() {
+      if (uploadedLogoDataUrl) return `<img src="${uploadedLogoDataUrl}" alt="Brand Logo" />`;
+      if (ICONS[state.brandMark]) return ICONS[state.brandMark];
+      return state.brandMark;
+    }
+
+    function applyState() {
+      const s = SURFACES[state.surface] || SURFACES.zinc;
+      const borderHex = state.borderColor || s.border;
+
+      root.style.setProperty('--background', s.bg);
+      root.style.setProperty('--canvas-bg', s.canvas);
+      root.style.setProperty('--secondary', s.sec);
+      root.style.setProperty('--muted', s.sec);
+      root.style.setProperty('--border', borderHex);
+      root.style.setProperty('--input', borderHex);
+
+      root.style.setProperty('--primary', state.primary);
+      root.style.setProperty('--primary-foreground', getContrastYIQ(state.primary));
+      root.style.setProperty('--ring', state.primary);
+
+      root.style.setProperty('--font-sans', state.font);
+      root.style.setProperty('--font-size-base', `${state.fontSize}px`);
+      root.style.setProperty('--font-weight-base', state.fontWeight);
+      root.style.setProperty('--font-style-base', state.fontStyle);
+      root.style.setProperty('--line-height-base', state.lineHeight);
+      root.style.setProperty('--letter-spacing-base', state.tracking);
+      root.style.setProperty('--radius', state.radius);
+      root.style.setProperty('--border-w', state.borderW);
+      root.style.setProperty('--control-h', state.controlH);
+      root.style.setProperty('--shadow-sm', SHADOWS[state.elevation] || SHADOWS.soft);
+      root.style.setProperty('--backdrop-blur', `${state.blur}px`);
+      root.style.setProperty('--icon-stroke', state.iconStroke);
+      root.style.setProperty('--icon-color', state.iconColor);
+      root.style.setProperty('--icon-scale', state.iconScale);
+
+      document.querySelectorAll('.js-brand-name').forEach(el => el.textContent = state.brandName);
+      document.querySelectorAll('.js-brand-tagline').forEach(el => el.textContent = state.brandTagline);
+      const markHtml = renderBrandMarkContent();
+      document.querySelectorAll('.js-brand-mark').forEach(el => el.innerHTML = markHtml);
+
+      document.getElementById('swatchPrimaryHex').textContent = state.primary.toUpperCase();
+      document.getElementById('swatchMutedHex').textContent = s.sec.toUpperCase();
+      document.getElementById('swatchBorderHex').textContent = borderHex.toUpperCase();
+
+      document.getElementById('brandNameInput').value = state.brandName;
+      document.getElementById('brandTaglineInput').value = state.brandTagline;
+      document.getElementById('accentHexVal').textContent = state.primary.toUpperCase();
+      document.getElementById('customColorPicker').value = state.primary;
+      document.getElementById('fontSizeVal').textContent = `${state.fontSize}px`;
+      document.getElementById('fontSizeSlider').value = state.fontSize;
+      document.getElementById('radiusVal').textContent = state.radius;
+      document.getElementById('blurVal').textContent = `${state.blur}px`;
+      document.getElementById('blurSlider').value = state.blur;
+      document.getElementById('iconStrokeVal').textContent = state.iconStroke;
+      document.getElementById('iconScaleVal').textContent = `${Math.round(state.iconScale * 100)}%`;
+      document.getElementById('iconScaleSlider').value = state.iconScale;
+      document.getElementById('stiffnessVal').textContent = state.stiffness;
+      document.getElementById('stiffnessSlider').value = state.stiffness;
+      document.getElementById('dampingVal').textContent = state.damping;
+      document.getElementById('dampingSlider').value = state.damping;
+
+      safeSet(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // Studio Drawer & Accordions
+    const studioAside = document.getElementById('tokenStudioAside');
+    document.getElementById('toggleStudioBtn').addEventListener('click', () => studioAside.classList.add('mobile-open'));
+    document.getElementById('closeStudioBtn').addEventListener('click', () => studioAside.classList.remove('mobile-open'));
+
+    document.querySelectorAll('.studio-sec-btn').forEach(btn => {
+      btn.addEventListener('click', () => btn.parentElement.classList.toggle('open'));
+    });
+
+    initDropdown(document.getElementById('fontDropdown'), val => { state.font = val; applyState(); });
+    initDropdown(document.getElementById('iconDropdown'), val => showToast(`Icon library: ${val}`));
+
+    function bindGroup(id, fn) {
+      document.querySelectorAll(`#${id} .seg-opt`).forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll(`#${id} .seg-opt`).forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          fn(btn.dataset);
+          applyState();
+        });
+      });
+    }
+
+    document.getElementById('brandNameInput').addEventListener('input', e => { state.brandName = e.target.value || 'Brand System'; applyState(); });
+    document.getElementById('brandTaglineInput').addEventListener('input', e => { state.brandTagline = e.target.value; applyState(); });
+    bindGroup('logoMarkGroup', d => { uploadedLogoDataUrl = ''; state.brandMark = d.mark; });
+    document.getElementById('logoUploadInput').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = ev => { uploadedLogoDataUrl = ev.target.result; applyState(); showToast('Custom logo uploaded'); };
+      r.readAsDataURL(f);
+    });
+
+    document.querySelectorAll('#accentSwatches .swatch-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#accentSwatches .swatch-chip').forEach(x => x.classList.remove('active'));
+        chip.classList.add('active');
+        state.primary = chip.dataset.hex;
+        applyState();
+      });
+    });
+    document.getElementById('customColorPicker').addEventListener('input', e => {
+      document.querySelectorAll('#accentSwatches .swatch-chip').forEach(x => x.classList.remove('active'));
+      state.primary = e.target.value;
+      applyState();
+    });
+
+    document.getElementById('fontSizeSlider').addEventListener('input', e => { state.fontSize = Number(e.target.value); applyState(); });
+    bindGroup('fontWeightGroup', d => state.fontWeight = d.w);
+    bindGroup('fontStyleGroup', d => state.fontStyle = d.st);
+    bindGroup('lineHeightGroup', d => state.lineHeight = d.lh);
+    bindGroup('trackingGroup', d => state.tracking = d.tr);
+    bindGroup('radiusPresets', d => state.radius = d.r);
+    bindGroup('borderWidthGroup', d => state.borderW = d.bw);
+    bindGroup('densityGroup', d => state.controlH = d.h);
+    bindGroup('surfaceFillGroup', d => { state.surface = d.sf; state.borderColor = ''; });
+    bindGroup('borderColorGroup', d => state.borderColor = d.bc);
+    bindGroup('elevationGroup', d => state.elevation = d.el);
+    document.getElementById('blurSlider').addEventListener('input', e => { state.blur = Number(e.target.value); applyState(); });
+    bindGroup('iconStrokeGroup', d => state.iconStroke = d.sw);
+    document.querySelectorAll('#iconColorSwatches .swatch-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('#iconColorSwatches .swatch-chip').forEach(x => x.classList.remove('active'));
+        chip.classList.add('active');
+        state.iconColor = chip.dataset.ic;
+        applyState();
+      });
+    });
+    document.getElementById('iconScaleSlider').addEventListener('input', e => { state.iconScale = Number(e.target.value); applyState(); });
+    bindGroup('motionPresetGroup', d => { state.stiffness = Number(d.k); state.damping = Number(d.d); });
+    document.getElementById('stiffnessSlider').addEventListener('input', e => { state.stiffness = Number(e.target.value); applyState(); });
+    document.getElementById('dampingSlider').addEventListener('input', e => { state.damping = Number(e.target.value); applyState(); });
+
+    // Spring Physics Test
+    document.getElementById('testSpringBtn').addEventListener('click', () => {
+      const puck = document.getElementById('springPuck');
+      let pos = 0, vel = 16;
+      const target = 240, dt = 1 / 60;
+      function frame() {
+        const accel = (-state.stiffness * (pos - target)) - (state.damping * vel);
+        vel += accel * dt; pos += vel * dt;
+        puck.style.transform = `translateX(${pos}px)`;
+        if (Math.abs(target - pos) > 0.2 || Math.abs(vel) > 0.2) requestAnimationFrame(frame);
+        else setTimeout(() => { puck.style.transform = 'translateX(0px)'; }, 250);
+      }
+      requestAnimationFrame(frame);
+    });
+
+    // Overlays & Export
+    function openModal(title, html) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = html;
+      document.getElementById('globalModal').classList.add('open');
+    }
+    function closeModal() { document.getElementById('globalModal').classList.remove('open'); }
+    document.getElementById('globalModal').addEventListener('click', e => { if (e.target.id === 'globalModal') closeModal(); });
+
+    function openDrawer(title, text) {
+      document.getElementById('drawerTitle').textContent = title;
+      document.getElementById('drawerBody').textContent = text;
+      document.getElementById('globalDrawer').classList.add('open');
+    }
+    function closeDrawer() { document.getElementById('globalDrawer').classList.remove('open'); }
+
+    let toastTimer;
+    function showToast(msg) {
+      document.getElementById('toastText').textContent = msg;
+      const t = document.getElementById('globalToast');
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function buildCSS() {
+      const s = getComputedStyle(root);
+      return `/* ${state.brandName} — Design System Tokens */\n:root {\n  --background: ${s.getPropertyValue('--background').trim()};\n  --canvas-bg: ${s.getPropertyValue('--canvas-bg').trim()};\n  --foreground: #09090b;\n  --primary: ${state.primary};\n  --primary-foreground: ${getContrastYIQ(state.primary)};\n  --secondary: ${s.getPropertyValue('--secondary').trim()};\n  --border: ${s.getPropertyValue('--border').trim()};\n  --radius: ${state.radius};\n  --border-w: ${state.borderW};\n  --control-h: ${state.controlH};\n  --font-sans: ${state.font};\n  --font-size-base: ${state.fontSize}px;\n  --font-weight-base: ${state.fontWeight};\n  --line-height-base: ${state.lineHeight};\n  --letter-spacing-base: ${state.tracking};\n  --icon-stroke: ${state.iconStroke};\n  --icon-scale: ${state.iconScale};\n  --spring-stiffness: ${state.stiffness};\n  --spring-damping: ${state.damping};\n}`;
+    }
+
+    function downloadFile(filename, content) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([content], { type: 'text/plain' }));
+      a.download = filename;
+      a.click();
+      showToast(`Downloaded ${filename}`);
+    }
+
+    function openExportModal() {
+      const css = buildCSS();
+      const slug = state.brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'brand';
+      openModal('Export Design System', `
+        <pre class="code-block" id="exportCodeView">${css}</pre>
+        <div class="row" style="margin-top:12px;justify-content:space-between;">
+          <div class="row">
+            <button class="btn sm" onclick="document.getElementById('exportCodeView').textContent=buildCSS()">CSS</button>
+            <button class="btn sm" onclick="document.getElementById('exportCodeView').textContent=JSON.stringify(state,null,2)">JSON</button>
+          </div>
+          <div class="row">
+            <button class="btn sm" onclick="downloadFile('${slug}-tokens.json', JSON.stringify(state,null,2))">Download JSON</button>
+            <button class="btn sm primary" onclick="copyHex(document.getElementById('exportCodeView').textContent)">Copy</button>
+          </div>
+        </div>
+      `);
+    }
+
+    document.getElementById('footerDownloadBtn').addEventListener('click', () => {
+      const slug = state.brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'brand';
+      downloadFile(`${slug}-tokens.css`, buildCSS());
+    });
+    document.getElementById('footerExportBtn').addEventListener('click', openExportModal);
+
+    document.getElementById('resetAllBtn').addEventListener('click', () => {
+      state = { ...DEFAULTS };
+      uploadedLogoDataUrl = '';
+      safeRemove(STORAGE_KEY);
+      applyState();
+      showToast('Reset to defaults');
+    });
+
+    applyState();
+  </script>
+</body>
+</html>

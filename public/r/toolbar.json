@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toolbar",
+  "type": "registry:component",
+  "title": "Toolbar",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/toolbar.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface ToolbarProps {\n  leading?: React.ReactNode;\n  children?: React.ReactNode;\n  trailing?: React.ReactNode;\n  variant?: \"surface\" | \"floating\";\n  className?: string;\n}\n\n/**\n * Horizontal or floating Toolbar for editor actions, table bulk operations, and workspace controls.\n */\nexport function Toolbar({\n  leading,\n  children,\n  trailing,\n  variant = \"surface\",\n  className = \"\",\n}: ToolbarProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <div\n      role=\"toolbar\"\n      style={{\n        backgroundColor: tokens.universalFillColor,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${Math.max(1, tokens.borderWidth)}px`,\n        borderRadius:\n          variant === \"floating\"\n            ? `${scaled.scaledPillRadius}px`\n            : `${scaled.scaledCardRadius}px`,\n        color: tokens.textIconColor,\n        boxShadow:\n          variant === \"floating\"\n            ? scaled.isDarkSurface\n              ? \"0 12px 32px rgba(0,0,0,0.5)\"\n              : \"0 10px 28px rgba(15,23,42,0.12)\"\n            : scaled.cardShadow,\n        transition: scaled.transitionStyle,\n      }}\n      className={`px-3 py-2 border flex items-center justify-between gap-3 flex-wrap font-sans ${className}`}\n    >\n      {leading && <div className=\"flex items-center gap-2\">{leading}</div>}\n      {children && <div className=\"flex items-center gap-1.5 flex-wrap\">{children}</div>}\n      {trailing && <div className=\"flex items-center gap-2 ml-auto\">{trailing}</div>}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

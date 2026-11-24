@@ -1,6 +1,7 @@
 # ZeroLight Design System — Enterprise Rules & Principles
 
-> **Official Standard Operating Guidelines for Copywriting, Text Scaling, Layout Simplicity, and Anti-Crowded Dashboards.**
+> **Official Standard Operating Guidelines for Copywriting, Text Scaling, Layout Simplicity, and Anti-Crowded Dashboards.**  
+> 🔗 **For the complete, authoritative 20-section constitution covering Morphic Evolution, UX Laws, Responsive Systems, and Tokens, see [docs/MASTER_RULEBOOK.md](docs/MASTER_RULEBOOK.md).**
 
 ---
 

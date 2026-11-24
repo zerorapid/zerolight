@@ -109,9 +109,10 @@ export function DonutChart({
               strokeWidth={strokeWidth}
             />
 
-            {/* Segments with Motion Spring & Geometric Cut */}
+            {/* Segments with Motion & Geometric Cut */}
             {segmentsWithAngles.map((seg) => {
               const isHovered = hoveredId === seg.id;
+              const isWhite = seg.color.toLowerCase() === "#ffffff" || seg.color.toLowerCase() === "#fff";
               return (
                 <motion.circle
                   key={seg.id}
@@ -119,17 +120,18 @@ export function DonutChart({
                   cy={size / 2}
                   r={radius}
                   fill="transparent"
-                  stroke={seg.color}
+                  stroke={isWhite ? "#E2E8F0" : seg.color}
                   strokeWidth={isHovered ? strokeWidth + 4 : strokeWidth}
                   strokeDasharray={seg.strokeDasharray}
                   strokeDashoffset={seg.strokeDashoffset}
                   strokeLinecap={tokens.cornerRadius === 0 ? "butt" : "round"}
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={{ pathLength: 1, opacity: 1 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={scaled.motionConfig.spring}
                   onMouseEnter={() => setHoverIdSafe(seg.id)}
                   onMouseLeave={() => setHoverIdSafe(null)}
-                  className="cursor-pointer"
+                  className="cursor-pointer transition-all"
+                  style={isWhite ? { filter: "drop-shadow(0px 0px 1.5px rgba(0,0,0,0.2))" } : undefined}
                 />
               );
             })}

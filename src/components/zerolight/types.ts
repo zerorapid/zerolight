@@ -5,6 +5,7 @@ export type MenuOffsetPreset = 4 | 8 | 10 | 14;
 export type MotionPhysicsPreset = "instant" | "snappy" | "damped" | "gentle" | "elastic" | "linear";
 export type IconStrokePreset = 1.25 | 1.5 | 2.0 | 2.5 | 3.0;
 export type IconFillPreset = "none" | "currentColor" | "subtle";
+export type IconLibraryPreset = "lucide" | "tabler" | "feather" | "heroicons";
 export type ChartPalettePreset = "emerald" | "violet" | "sky" | "amber" | "monochrome";
 export type ChartGridPreset = "dotted" | "solid" | "none";
 export type ChartStrokePreset = 1.5 | 2.0 | 2.5 | 3.0;
@@ -24,6 +25,7 @@ export interface GoogleFontOption {
 export const GOOGLE_FONT_CATALOG: GoogleFontOption[] = [
   { family: "Plus Jakarta Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Balanced modern SaaS default" },
   { family: "Inter", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Crisp neutral UI standard" },
+  { family: "Geist", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Modern developer & AI sans" },
   { family: "DM Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Friendly geometric clarity" },
   { family: "Manrope", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Semi-condensed technical sans" },
   { family: "Outfit", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Clean geometric precision" },
@@ -34,6 +36,17 @@ export const GOOGLE_FONT_CATALOG: GoogleFontOption[] = [
   { family: "Poppins", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Warm circular geometric" },
   { family: "Rubik", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Soft rounded corner geometry" },
   { family: "Public Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Civic & enterprise clarity" },
+  { family: "Roboto", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 700], note: "Universal utilitarian sans" },
+  { family: "Open Sans", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 600, 700], note: "High-contrast legible sans" },
+  { family: "Lato", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 700], note: "Warm corporate sans" },
+  { family: "Montserrat", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Geometric urban display sans" },
+  { family: "Nunito", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 600, 700, 800], note: "Balanced rounded sans" },
+  { family: "Figtree", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Friendly modern UI sans" },
+  { family: "Urbanist", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700, 800], note: "Geometric low-contrast sans" },
+  { family: "Lexend", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Readability-engineered sans" },
+  { family: "Raleway", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Elegant display sans" },
+  { family: "Ubuntu", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 700], note: "Distinctive humanist sans" },
+  { family: "Barlow", category: "Sans", fallback: "system-ui, sans-serif", weights: [300, 400, 500, 600, 700], note: "Slightly rounded low-contrast sans" },
   { family: "Fraunces", category: "Editorial Serif", fallback: "Georgia, serif", weights: [400, 500, 600, 700, 800], note: "Soft expressive display serif" },
   { family: "Lora", category: "Editorial Serif", fallback: "Georgia, serif", weights: [400, 500, 600, 700], note: "Contemporary calligraphic serif" },
   { family: "Playfair Display", category: "Editorial Serif", fallback: "Georgia, serif", weights: [400, 500, 600, 700, 800], note: "High-contrast luxury headings" },
@@ -157,6 +170,7 @@ export interface ZeroLightTokens {
   iconStrokeWidth: IconStrokePreset;
   iconFill: IconFillPreset;
   iconColor: string;
+  iconLibrary?: IconLibraryPreset;
   // Data Visualization Tokens
   chartPalette?: ChartPalettePreset;
   chartPrimaryColor?: string;
@@ -214,10 +228,11 @@ export const DEFAULT_TOKENS: ZeroLightTokens = {
   iconStrokeWidth: 2.0,
   iconFill: "none",
   iconColor: "#71717A",
+  iconLibrary: "lucide",
   // Data Visualization defaults
   chartPalette: "emerald",
   chartPrimaryColor: "#10B981",
-  chartSecondaryColor: "#64748B",
+  chartSecondaryColor: "#FFFFFF",
   chartStrokeWidth: 2.5,
   chartFillOpacity: 0.25,
   chartGridStyle: "dotted",
@@ -257,7 +272,7 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePresetDefinition> = {
       primaryButtonColor: "#111111",
       hoverBackplateTint: "#F4F4F5",
       iconColor: "#71717A",
-      chartSecondaryColor: "#64748B",
+      chartSecondaryColor: "#FFFFFF",
       borderWidth: 1,
     },
   },
@@ -289,7 +304,7 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePresetDefinition> = {
       primaryButtonColor: "#38BDF8",
       hoverBackplateTint: "#1E293B",
       iconColor: "#94A3B8",
-      chartSecondaryColor: "#64748B",
+      chartSecondaryColor: "#FFFFFF",
       borderWidth: 1,
     },
   },
@@ -369,6 +384,7 @@ export interface ScaledTokens {
   iconStrokeWidth: number;
   iconFill: string;
   iconColor: string;
+  iconLibrary: IconLibraryPreset;
   // Data Visualization Computations
   chartColors: string[];
   chartPrimaryColor: string;
@@ -754,6 +770,7 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
         ? tokens.hoverBackplateTint || "rgba(0,0,0,0.06)"
         : "none",
     iconColor: tokens.iconColor || tokens.textIconColor || "#71717A",
+    iconLibrary: tokens.iconLibrary || "lucide",
     // Data Visualization Computations
     chartColors: (() => {
       let basePalette: string[];
@@ -784,7 +801,7 @@ export function computeScaledTokens(tokens: ZeroLightTokens): ScaledTokens {
       return basePalette;
     })(),
     chartPrimaryColor: tokens.chartPrimaryColor || "#10B981",
-    chartSecondaryColor: tokens.chartSecondaryColor || "#64748B",
+    chartSecondaryColor: tokens.chartSecondaryColor || "#FFFFFF",
     chartStrokeWidth: tokens.chartStrokeWidth ?? 2.5,
     chartFillOpacity: tokens.chartFillOpacity ?? 0.25,
     chartGridStyle: tokens.chartGridStyle ?? "dotted",

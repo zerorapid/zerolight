@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton",
+  "type": "registry:component",
+  "title": "Skeleton",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/skeleton.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface SkeletonProps {\n  variant?: \"rect\" | \"circle\" | \"text\";\n  width?: string | number;\n  height?: string | number;\n  className?: string;\n  style?: React.CSSProperties;\n}\n\nexport function Skeleton({\n  variant = \"rect\",\n  width,\n  height,\n  className = \"\",\n  style,\n}: SkeletonProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  const getBorderRadius = (): string => {\n    if (variant === \"circle\") return \"9999px\";\n    if (variant === \"text\") return `${scaled.scaledPillRadius}px`;\n    return `${scaled.scaledRadius}px`;\n  };\n\n  const defaultHeight = variant === \"text\" ? 14 : variant === \"circle\" ? 36 : 24;\n  const defaultWidth = variant === \"circle\" ? 36 : \"100%\";\n\n  return (\n    <div\n      style={{\n        borderRadius: getBorderRadius(),\n        backgroundColor: tokens.hoverBackplateTint === \"#FFFFFF\" ? \"#E4E4E7\" : tokens.hoverBackplateTint,\n        border: \"none\",\n        width: width ?? defaultWidth,\n        height: height ?? defaultHeight,\n        ...style,\n      }}\n      className={`animate-pulse relative overflow-hidden select-none shrink-0 ${className}`}\n      aria-hidden=\"true\"\n    >\n      <div className=\"absolute inset-0 -translate-x-full animate-[shimmer_1.8s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent\" />\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

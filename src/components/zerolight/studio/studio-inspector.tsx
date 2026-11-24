@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Check, Code2, Copy, RotateCcw, X } from "lucide-react";
-import { DEFAULT_TOKENS, ScaledTokens, ZeroLightTokens } from "../types";
+import { Check, Code2, Copy, RotateCcw, X, Sun, Moon } from "lucide-react";
+import { DEFAULT_TOKENS, ScaledTokens, ZeroLightTokens, THEME_PRESETS } from "../types";
 import { getExportSnippet } from "./studio-export";
 import { PanelTheme } from "./panel-theme";
 import { PanelTypography } from "./panel-typography";
@@ -58,6 +58,7 @@ export function StudioInspector({
   triggerToast,
 }: StudioInspectorProps) {
   const [copiedQuickCss, setCopiedQuickCss] = React.useState(false);
+  const [copiedQuickTailwind, setCopiedQuickTailwind] = React.useState(false);
 
   const customizedCount = useMemo(() => {
     let count = 0;
@@ -79,6 +80,24 @@ export function StudioInspector({
     }
   };
 
+  const handleQuickCopyTailwind = async () => {
+    try {
+      await navigator.clipboard.writeText(getExportSnippet("tailwind", tokens));
+      setCopiedQuickTailwind(true);
+      triggerToast("Copied Tailwind config snippet");
+      setTimeout(() => setCopiedQuickTailwind(false), 1600);
+    } catch {
+      setIsExportOpen(true);
+    }
+  };
+
+  const handleTogglePolarity = () => {
+    const isDark = scaled.isDarkSurface;
+    const target = isDark ? THEME_PRESETS.light : THEME_PRESETS.dark;
+    setTokens((prev) => ({ ...prev, ...target.tokens }));
+    triggerToast(isDark ? "Switched to Light Mode" : "Switched to Dark Mode");
+  };
+
   return (
     <div className="flex flex-col h-full min-h-0 bg-[#0E0E10] text-zinc-200">
       {/* ── Minimalist Sticky Header ── */}
@@ -92,6 +111,18 @@ export function StudioInspector({
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={handleTogglePolarity}
+              title={scaled.isDarkSurface ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              className="p-1 rounded-md text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-colors cursor-pointer flex items-center justify-center"
+            >
+              {scaled.isDarkSurface ? (
+                <Sun className="w-3.5 h-3.5 text-amber-400" />
+              ) : (
+                <Moon className="w-3.5 h-3.5 text-zinc-400" />
+              )}
+            </button>
             <button
               type="button"
               onClick={handleResetDefaults}
@@ -208,23 +239,43 @@ export function StudioInspector({
             "Default tokens"
           )}
         </span>
-        <button
-          type="button"
-          onClick={handleQuickCopyCss}
-          className="px-2.5 py-1 rounded-md bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-zinc-300 font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
-        >
-          {copiedQuickCss ? (
-            <>
-              <Check className="w-3 h-3 text-emerald-400" />
-              <span>Copied</span>
-            </>
-          ) : (
-            <>
-              <Copy className="w-3 h-3 text-zinc-400" />
-              <span>Copy CSS</span>
-            </>
-          )}
-        </button>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            type="button"
+            onClick={handleQuickCopyTailwind}
+            title="Copy Tailwind CSS config tokens"
+            className="px-2 py-1 rounded-md bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.06] text-zinc-400 hover:text-zinc-200 font-medium flex items-center gap-1 transition-colors cursor-pointer shrink-0 text-[10px]"
+          >
+            {copiedQuickTailwind ? (
+              <>
+                <Check className="w-2.5 h-2.5 text-emerald-400" />
+                <span>Copied</span>
+              </>
+            ) : (
+              <>
+                <Code2 className="w-2.5 h-2.5 text-zinc-400" />
+                <span>Tailwind</span>
+              </>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={handleQuickCopyCss}
+            className="px-2.5 py-1 rounded-md bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-zinc-300 font-medium flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+          >
+            {copiedQuickCss ? (
+              <>
+                <Check className="w-3 h-3 text-emerald-400" />
+                <span>Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3 text-zinc-400" />
+                <span>Copy CSS</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

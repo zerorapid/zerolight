@@ -4,6 +4,8 @@ import React from "react";
 import { useZeroLight } from "../context";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
+export type MorphicStage = 1 | 2 | 3;
+
 export interface StatCardProps {
   label: string;
   value: string | number;
@@ -12,6 +14,9 @@ export interface StatCardProps {
   comparisonText?: string;
   subValue?: string;
   layout?: "vertical" | "horizontal";
+  /** Scalar Morphic Evolution stage: 1 = Compact Atom, 2 = Standard Analytical, 3 = Command Capsule */
+  stage?: MorphicStage;
+  timeframeLabel?: string;
   minorDecimal?: boolean;
   deltaPill?: React.ReactNode;
   icon?: React.ReactNode;
@@ -41,6 +46,8 @@ export function StatCard({
   comparisonText = "vs last month",
   subValue,
   layout = "vertical",
+  stage = 2,
+  timeframeLabel,
   minorDecimal = false,
   deltaPill,
   icon,
@@ -49,6 +56,43 @@ export function StatCard({
   className = "",
 }: StatCardProps) {
   const { tokens, scaled } = useZeroLight();
+
+  if (stage === 1) {
+    return (
+      <div
+        data-zl-morphic-stage="1"
+        style={{
+          borderRadius: `${scaled.scaledCardRadius}px`,
+          backgroundColor: tokens.universalFillColor,
+          borderColor: tokens.universalBorderColor,
+          borderWidth: `${tokens.borderWidth}px`,
+          boxShadow: scaled.cardShadow,
+          transition: scaled.transitionStyle,
+        }}
+        className={`px-4 py-3 border select-none flex items-center justify-between gap-3 min-h-[68px] ${className}`}
+      >
+        <span
+          title={label}
+          className="text-xs font-semibold text-neutral-500 dark:text-neutral-400 truncate min-w-0"
+        >
+          {label}
+        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          {badge}
+          <span
+            title={String(value)}
+            style={{
+              fontSize: `${Math.round(18 * scaled.scale)}px`,
+              color: tokens.textIconColor,
+            }}
+            className="font-bold tabular-nums tracking-tight whitespace-nowrap"
+          >
+            {renderFormattedValue(value, minorDecimal)}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   if (layout === "horizontal") {
     return (
@@ -138,6 +182,7 @@ export function StatCard({
 
   return (
     <div
+      data-zl-morphic-stage={String(stage)}
       style={{
         borderRadius: `${scaled.scaledCardRadius}px`,
         backgroundColor: tokens.universalFillColor,
@@ -146,14 +191,14 @@ export function StatCard({
         boxShadow: scaled.cardShadow,
         transition: scaled.transitionStyle,
       }}
-      className={`p-5 border space-y-2 select-none min-h-[110px] flex flex-col justify-between ${className}`}
+      className={`p-5 border space-y-2 select-none ${stage === 3 ? "min-h-[138px]" : "min-h-[110px]"} flex flex-col justify-between ${className}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 truncate">
+          <div className="flex items-center justify-between gap-2">
             <span
               title={label}
-              className="text-xs font-semibold uppercase tracking-wider text-neutral-400 truncate"
+              className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 leading-tight"
             >
               {label}
             </span>
@@ -166,7 +211,7 @@ export function StatCard({
               fontSize: `${Math.round(24 * scaled.scale)}px`,
               color: tokens.textIconColor,
             }}
-            className="font-bold tabular-nums tracking-tight truncate pt-0.5"
+            className="font-bold tabular-nums tracking-tight pt-0.5"
           >
             {value}
           </div>
@@ -185,20 +230,20 @@ export function StatCard({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-3 pt-1">
+      <div className="flex items-center justify-between gap-2 pt-1 min-w-0">
         {delta && (
-          <div className="flex items-center gap-1.5 text-xs truncate">
+          <div className="flex items-center gap-1.5 text-xs min-w-0 flex-1">
             <span
               className={`inline-flex items-center gap-1 font-semibold shrink-0 ${
-                trend === "up" ? "text-emerald-600" : trend === "down" ? "text-rose-600" : "text-neutral-500"
+                trend === "up" ? "text-emerald-600 dark:text-emerald-400" : trend === "down" ? "text-rose-600 dark:text-rose-400" : "text-neutral-500"
               }`}
             >
               {trend === "up" && <TrendingUp className="w-3.5 h-3.5 shrink-0" />}
               {trend === "down" && <TrendingDown className="w-3.5 h-3.5 shrink-0" />}
-              <span className="tabular-nums">{delta}</span>
+              <span className="tabular-nums whitespace-nowrap">{delta}</span>
             </span>
             {comparisonText && (
-              <span title={comparisonText} className="text-neutral-400 font-medium truncate">
+              <span title={comparisonText} className="text-neutral-400 font-medium truncate text-[11px]">
                 {comparisonText}
               </span>
             )}
@@ -206,6 +251,21 @@ export function StatCard({
         )}
         {sparkline && <div className="shrink-0 ml-auto">{sparkline}</div>}
       </div>
+      {stage === 3 && (subValue || timeframeLabel) && (
+        <div
+          className="pt-2 border-t flex items-center justify-between gap-2 text-[11px] font-medium"
+          style={{ borderColor: tokens.universalBorderColor, color: tokens.textIconColor }}
+        >
+          <span className="opacity-70 truncate" title={subValue || timeframeLabel}>
+            {subValue || "Real-time telemetry stream"}
+          </span>
+          {timeframeLabel && (
+            <span className="px-2 py-0.5 rounded font-sans tabular-nums text-[10px] font-semibold opacity-80 border whitespace-nowrap shrink-0" style={{ borderColor: tokens.universalBorderColor }}>
+              {timeframeLabel}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "currency-pill",
+  "type": "registry:component",
+  "title": "Currency Pill",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/currency-pill.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { MoreVertical } from \"lucide-react\";\n\nexport interface CurrencyPillProps {\n  flag: string;\n  currencyCode: string;\n  balance: string;\n  monthlyLimit: string;\n  status?: \"Active\" | \"Inactive\";\n  onMenuClick?: () => void;\n  className?: string;\n}\n\nexport function CurrencyPill({\n  flag,\n  currencyCode,\n  balance,\n  monthlyLimit,\n  status = \"Active\",\n  onMenuClick,\n  className = \"\",\n}: CurrencyPillProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  const isActive = status === \"Active\";\n\n  return (\n    <div\n      style={{\n        borderRadius: `${scaled.scaledRadius}px`,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${tokens.borderWidth}px`,\n        backgroundColor: tokens.universalFillColor,\n        transition: scaled.transitionStyle,\n      }}\n      className={`p-3 border flex flex-col justify-between select-none min-w-[130px] flex-1 shadow-2xs hover:border-neutral-400 transition-colors ${className}`}\n    >\n      <div className=\"flex items-center justify-between pb-1.5\">\n        <div className=\"flex items-center gap-1.5 text-xs font-bold text-neutral-800\">\n          <span className=\"text-sm\">{flag}</span>\n          <span className=\"tabular-nums tracking-tight\">{currencyCode}</span>\n        </div>\n        {onMenuClick && (\n          <button\n            type=\"button\"\n            onClick={onMenuClick}\n            className=\"text-neutral-400 hover:text-neutral-700 p-0.5 rounded cursor-pointer\"\n            aria-label=\"Wallet options\"\n          >\n            <MoreVertical size={13} />\n          </button>\n        )}\n      </div>\n\n      <div\n        style={{ color: tokens.textIconColor }}\n        className=\"font-bold tabular-nums text-xs tracking-tight\"\n        title={balance}\n      >\n        {balance}\n      </div>\n\n      <div className=\"text-[10px] text-neutral-400 truncate pt-0.5\" title={monthlyLimit}>\n        {monthlyLimit}\n      </div>\n\n      <div className=\"pt-2\">\n        <span\n          className={`inline-block text-[9px] font-bold px-2 py-0.5 rounded-full ${\n            isActive ? \"bg-emerald-50 text-emerald-700 border border-emerald-200\" : \"bg-neutral-100 text-neutral-500 border border-neutral-200\"\n          }`}\n        >\n          {status}\n        </span>\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

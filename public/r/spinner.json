@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "spinner",
+  "type": "registry:component",
+  "title": "Spinner",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/spinner.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface SpinnerProps {\n  size?: \"xs\" | \"sm\" | \"md\" | \"lg\";\n  color?: string;\n  className?: string;\n  style?: React.CSSProperties;\n}\n\nexport function Spinner({\n  size = \"md\",\n  color,\n  className = \"\",\n  style,\n}: SpinnerProps) {\n  const { tokens } = useZeroLight();\n\n  const dimensionMap = {\n    xs: 14,\n    sm: 18,\n    md: 24,\n    lg: 32,\n  };\n\n  const dim = dimensionMap[size];\n  const strokeColor = color || tokens.primaryButtonColor;\n\n  return (\n    <svg\n      role=\"status\"\n      aria-label=\"Loading...\"\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      style={{\n        width: `${dim}px`,\n        height: `${dim}px`,\n        ...style,\n      }}\n      className={`animate-spin shrink-0 ${className}`}\n    >\n      <circle\n        cx=\"12\"\n        cy=\"12\"\n        r=\"10\"\n        stroke=\"currentColor\"\n        strokeWidth=\"3\"\n        className=\"opacity-20\"\n      />\n      <path\n        d=\"M12 2a10 10 0 0 1 10 10\"\n        stroke={strokeColor}\n        strokeWidth=\"3\"\n        strokeLinecap=\"round\"\n      />\n    </svg>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

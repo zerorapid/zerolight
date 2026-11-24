@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "segmented-control",
+  "type": "registry:component",
+  "title": "Segmented Control",
+  "dependencies": [
+    "framer-motion"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/segmented-control.tsx",
+      "content": "\"use client\";\n\nimport React, { useId } from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { motion } from \"framer-motion\";\n\nexport interface SegmentOption<T extends string = string> {\n  key: T;\n  label: string;\n  count?: string | number;\n}\n\nexport interface SegmentedControlProps<T extends string = string> {\n  options: readonly SegmentOption<T>[];\n  value: T;\n  onChange: (val: T) => void;\n  className?: string;\n}\n\nexport function SegmentedControl<T extends string = string>({\n  options,\n  value,\n  onChange,\n  className = \"\",\n}: SegmentedControlProps<T>) {\n  const { tokens, scaled } = useZeroLight();\n  const controlId = useId();\n\n  return (\n    <div\n      style={{\n        borderRadius: `${scaled.scaledPillRadius}px`,\n        borderColor: tokens.universalBorderColor,\n        borderWidth: `${tokens.borderWidth}px`,\n        backgroundColor: tokens.hoverBackplateTint,\n      }}\n      className={`inline-flex items-center gap-1 p-0.5 border select-none whitespace-nowrap shrink-0 max-w-full overflow-x-auto scrollbar-none ${className}`}\n    >\n      {options.map((opt) => {\n        const isSelected = value === opt.key;\n        return (\n          <motion.button\n            key={opt.key}\n            type=\"button\"\n            onClick={() => onChange(opt.key)}\n            whileTap={{ scale: scaled.motionConfig.tapScale }}\n            transition={scaled.motionConfig.transition}\n            style={{\n              borderRadius: `${scaled.scaledPillRadius}px`,\n              transition: scaled.transitionStyle,\n              color: isSelected ? scaled.primaryActionTextColor : tokens.textIconColor,\n            }}\n            className={`px-3.5 py-1.5 text-xs font-semibold cursor-pointer relative whitespace-nowrap shrink-0 flex items-center gap-1.5 ${\n              isSelected ? \"\" : \"hover:text-neutral-900\"\n            }`}\n          >\n            {isSelected && (\n              <motion.span\n                layoutId={`segment-pill-${controlId}`}\n                transition={scaled.motionConfig.pillTransition}\n                style={{\n                  borderRadius: `${scaled.scaledPillRadius}px`,\n                  backgroundColor: tokens.primaryButtonColor,\n                }}\n                className=\"absolute inset-0 shadow-xs z-0\"\n              />\n            )}\n            <span className=\"relative z-10 whitespace-nowrap\">{opt.label}</span>\n            {opt.count !== undefined && (\n              <span\n                style={{\n                  borderRadius: `${scaled.scaledPillRadius}px`,\n                  backgroundColor: isSelected\n                    ? (scaled.primaryActionTextColor === \"#FFFFFF\" ? \"rgba(255,255,255,0.2)\" : \"rgba(0,0,0,0.1)\")\n                    : \"#E4E4E7\",\n                  color: isSelected ? scaled.primaryActionTextColor : \"#71717A\",\n                }}\n                className=\"relative z-10 text-[10px] px-1.5 py-0.2 font-bold tabular-nums whitespace-nowrap shrink-0\"\n              >\n                {opt.count}\n              </span>\n            )}\n          </motion.button>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

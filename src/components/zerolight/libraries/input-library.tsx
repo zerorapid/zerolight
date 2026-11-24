@@ -8,50 +8,36 @@ import {
   ChevronDown,
   Calendar as CalendarIcon,
   Clock,
-  Globe,
   Mail,
-  Lock,
-  Eye,
-  EyeOff,
   Edit2,
-  Trash2,
   Plus,
   Minus,
   X,
   Code2,
-  SlidersHorizontal,
   Sparkles,
   Wand2,
-  AlertCircle,
-  AlertTriangle,
-  RotateCcw,
   UploadCloud,
   FileText,
   MapPin,
   Mic,
   Tag,
-  Hash,
-  DollarSign,
-  Maximize2,
   List,
   Bold,
   Italic,
   QrCode,
   ArrowRight,
-  ShieldCheck,
-  CheckCircle2,
 } from "lucide-react";
 import { useZeroLight } from "../context";
 import { Kbd } from "../atoms/kbd";
 import { Badge } from "../atoms/badge";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type InputDensityTier = "28px" | "36px" | "44px" | "52px";
 export type InputGlobalState = "idle" | "checking" | "verified" | "warning" | "error" | "disabled" | "readonly";
 export type InputLabelLayout = "top" | "small-top" | "side" | "hidden";
 
 export function SaaSInputFieldLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Global Sticky Bar State
   const [searchQuery, setSearchQuery] = useState("");
@@ -91,7 +77,7 @@ export function SaaSInputFieldLibrary() {
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
   ];
-  const [apiKeyVal, setApiKeyVal] = useState("sk_live_98a7f6d5e4c3b2a1");
+  const [apiKeyVal] = useState("sk_live_98a7f6d5e4c3b2a1");
 
   // Category 2
   const [seatCount, setSeatCount] = useState(25);
@@ -149,7 +135,7 @@ export function SaaSInputFieldLibrary() {
   const [phoneNumber, setPhoneNumber] = useState("98765 43210");
   const [streetAddress, setStreetAddress] = useState("Suite 400, Innovation Tower, Financial District");
   const [pinCode, setPinCode] = useState("500032");
-  const [cityDetected, setCityDetected] = useState("Hyderabad, TG");
+  const [cityDetected] = useState("Hyderabad, TG");
   const [latVal, setLatVal] = useState("17.4399° N");
   const [longVal, setLongVal] = useState("78.3489° E");
   const [recipientEmails, setRecipientEmails] = useState(["lead@corp.io", "sec@corp.io"]);
@@ -166,7 +152,7 @@ export function SaaSInputFieldLibrary() {
   const [polishDraft, setPolishDraft] = useState("our system works good and fast with low latency");
 
   // Category 9
-  const [uploadedFileName, setUploadedFileName] = useState("enterprise_contract_v2.pdf");
+  const [uploadedFileName] = useState("enterprise_contract_v2.pdf");
   const [colorHex, setColorHex] = useState("#10B981");
 
   // Category 10
@@ -242,7 +228,7 @@ export function SaaSInputFieldLibrary() {
     }
   };
 
-  // Card Container Component
+  // Card Container Component (Token-bound & supports category + search filtering)
   const InputCard = ({
     number,
     title,
@@ -258,10 +244,15 @@ export function SaaSInputFieldLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
+    if (activeCategory !== "all" && activeCategory !== category) return null;
     if (searchQuery.trim() && !title.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
     return (
-      <div className="rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs flex flex-col justify-between gap-3.5 transition-all hover:border-zinc-300">
+      <div
+        data-zl-card="true"
+        style={getZeroLightCardStyle(tokens, scaled)}
+        className="border p-5 shadow-xs flex flex-col justify-between gap-3.5 transition-all hover:border-zinc-400"
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-sans tabular-nums font-bold text-zinc-400">{number}</span>
@@ -315,8 +306,18 @@ export function SaaSInputFieldLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search inputs..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Input Height Density Tiers */}
+            <LibrarySegmentControl
+              options={["28px", "36px", "44px", "52px"] as const}
+              value={density}
+              onChange={setDensity}
+              ariaLabel="Input density"
+            />
             {/* Global State Selector (Custom Popover) */}
             <div className="relative" data-dd-root>
               <button
@@ -391,7 +392,7 @@ export function SaaSInputFieldLibrary() {
       />
 
       {/* ── 1. BASIC TEXT & LOGIN INPUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             1. Basic Text & Login Inputs
@@ -400,7 +401,7 @@ export function SaaSInputFieldLibrary() {
             Single-line text, email validation, password masks, and authentication fields.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="01"
           title="Simple Text Box"
@@ -563,7 +564,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 2. NUMBERS, MONEY & TAX INPUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             2. Numbers, Money & Tax Inputs
@@ -572,7 +573,7 @@ export function SaaSInputFieldLibrary() {
             Currency formats, decimal precision, numeric steppers, and tax percentages.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="07"
           title="Stepper Counter"
@@ -758,7 +759,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 3. ICONS, PREFIXES & CUSTOM DROPDOWN INPUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             3. Icons, Prefixes & Custom Dropdowns
@@ -767,7 +768,7 @@ export function SaaSInputFieldLibrary() {
             Domain URL pre-fills, leading icon triggers, and currency selectors.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="13"
           title="Email with Left Icon"
@@ -968,7 +969,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 4. SEARCH BARS & TAG INPUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             4. Search Bars & Tag Inputs
@@ -977,7 +978,7 @@ export function SaaSInputFieldLibrary() {
             Filter inputs, tokenizers, auto-complete search, and multi-tag fields.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="19"
           title="Quick Command Search"
@@ -1146,7 +1147,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 5. CUSTOM DATE, CALENDAR & TIME PICKERS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             5. Custom Date, Calendar & Time Pickers
@@ -1155,7 +1156,7 @@ export function SaaSInputFieldLibrary() {
             Date selection, calendar popups, range spans, and time scheduling.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="25"
           title="Custom Calendar Date Picker"
@@ -1395,7 +1396,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 6. COUNTRY CODE, ADDRESS & CONTACT INPUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             6. Country Code, Address & Contact Inputs
@@ -1404,7 +1405,7 @@ export function SaaSInputFieldLibrary() {
             International phone codes, street address fields, and postal codes.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="30"
           title="Custom Country Code Phone"
@@ -1555,7 +1556,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 7. MULTI-LINE NOTES & TEXT EDITORS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             7. Multi-Line Notes & Text Editors
@@ -1564,7 +1565,7 @@ export function SaaSInputFieldLibrary() {
             Expanding textareas, Markdown text blocks, and structured notes.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="35"
           title="Auto-Growing Note Box"
@@ -1648,7 +1649,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 8. SMART AI & ASSISTANT INPUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             8. Smart AI & Assistant Inputs
@@ -1657,7 +1658,7 @@ export function SaaSInputFieldLibrary() {
             Prompt drafting fields, token streaming indicators, and AI commands.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="38"
           title="AI Prompt Box"
@@ -1732,7 +1733,7 @@ export function SaaSInputFieldLibrary() {
       </section>
 
       {/* ── 9. FILE UPLOAD & COLOR INPUTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             9. File Upload & Color Inputs
@@ -1741,7 +1742,7 @@ export function SaaSInputFieldLibrary() {
             Drag-and-drop dropzones, file attachments, and hex color selectors.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <InputCard
           number="41"
           title="File Upload Box"

@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Check,
-  Search,
-  SlidersHorizontal,
   ChevronDown,
   Code2,
   X,
@@ -13,31 +11,20 @@ import {
   AlertCircle,
   Clock,
   CheckCircle2,
-  AlertTriangle,
   ArrowUpRight,
   ArrowDownRight,
   RefreshCw,
   HardDrive,
-  Calendar,
-  Layers,
-  Activity,
-  Radio,
-  Package,
-  Truck,
-  CheckCheck,
-  ShieldCheck,
   Bell,
-  Copy,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { Badge } from "../atoms/badge";
-import { CodeModal, LibraryHeader } from "./common";
+import { CodeModal, LibraryHeader, LibrarySegmentControl, getZeroLightCardStyle } from "./common";
 
 export type IndicatorDensity = "small" | "medium" | "large";
 export type IndicatorSpeed = "normal" | "fast" | "paused";
 
 export function SaaSIndicatorLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -126,7 +113,7 @@ export function SaaSIndicatorLibrary() {
     { id: "cat6", label: "6. Trackers & Timelines" },
   ];
 
-  // Card Container Component
+  // Card Container Component (Token-bound & auto-filters category + search)
   const Card = ({
     number,
     title,
@@ -140,10 +127,15 @@ export function SaaSIndicatorLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
+    if (activeCategory !== "all" && activeCategory !== category) return null;
     if (searchQuery.trim() && !title.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
     return (
-      <div className="rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs flex flex-col justify-between gap-4 transition-all hover:border-zinc-300">
+      <div
+        data-zl-card="true"
+        style={getZeroLightCardStyle(tokens, scaled)}
+        className="border p-5 shadow-xs flex flex-col justify-between gap-4 transition-all hover:border-zinc-400"
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-sans tabular-nums font-bold text-zinc-400">{number}</span>
@@ -181,42 +173,53 @@ export function SaaSIndicatorLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search indicators..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <div className="relative" data-indicator-popover>
-            <button
-              type="button"
-              onClick={() => setSpeedDropdownOpen(!speedDropdownOpen)}
-              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
-            >
-              <span>Speed: <strong className="capitalize text-zinc-950 dark:text-white">{animSpeed}</strong></span>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-            </button>
+          <div className="flex items-center gap-2">
+            <LibrarySegmentControl
+              options={["small", "medium", "large"] as const}
+              value={density}
+              onChange={setDensity}
+              ariaLabel="Indicator density"
+            />
+            <div className="relative" data-indicator-popover>
+              <button
+                type="button"
+                onClick={() => setSpeedDropdownOpen(!speedDropdownOpen)}
+                className="px-2.5 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
+              >
+                <span>Speed: <strong className="capitalize text-zinc-950">{animSpeed}</strong></span>
+                <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+              </button>
 
-            {speedDropdownOpen && (
-              <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
-                {(["normal", "fast", "paused"] as const).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => {
-                      setAnimSpeed(s);
-                      setSpeedDropdownOpen(false);
-                    }}
-                    className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                      animSpeed === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            )}
+              {speedDropdownOpen && (
+                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white border border-zinc-200 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                  {(["normal", "fast", "paused"] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setAnimSpeed(s);
+                        setSpeedDropdownOpen(false);
+                      }}
+                      className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
+                        animSpeed === s ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         }
       />
 
       {/* ── 1. STATUS BADGES & HEALTH PILLS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             1. Status Badges & Health Pills
@@ -225,7 +228,7 @@ export function SaaSIndicatorLibrary() {
             High-visibility status tags, verification pills, and warning chips.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="01"
           title="Soft Status Pills"
@@ -354,7 +357,7 @@ export function SaaSIndicatorLibrary() {
       </section>
 
       {/* ── 2. PLAN, FEATURE & FILTER TAGS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             2. Plan, Feature & Filter Tags
@@ -363,7 +366,7 @@ export function SaaSIndicatorLibrary() {
             Subscription tier tags, removable filter chips, and count badges.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="07"
           title="Plan & Release Badges"
@@ -500,7 +503,7 @@ export function SaaSIndicatorLibrary() {
       </section>
 
       {/* ── 3. PROGRESS BARS & USAGE METERS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             3. Progress Bars & Usage Meters
@@ -509,7 +512,7 @@ export function SaaSIndicatorLibrary() {
             Linear fill bars, storage quota gauges, and multi-segment meters.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="13"
           title="Simple Progress Bar with Percent"
@@ -665,7 +668,7 @@ export function SaaSIndicatorLibrary() {
       </section>
 
       {/* ── 4. SPINNERS & LIVE LOADERS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             4. Spinners & Live Loaders
@@ -674,7 +677,7 @@ export function SaaSIndicatorLibrary() {
             Circular spinners, buffered rings, radar pulses, and pulsing beacons.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="19"
           title="Clean Ring Spinner"
@@ -755,7 +758,7 @@ export function SaaSIndicatorLibrary() {
       </section>
 
       {/* ── 5. LOADING PLACEHOLDERS & SHIMMER SKELETONS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             5. Loading Placeholders & Shimmer Skeletons
@@ -764,7 +767,7 @@ export function SaaSIndicatorLibrary() {
             Table row placeholders, card shimmers, and avatar loading skeletons.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="23"
           title="User Row Loading Placeholder"
@@ -817,7 +820,7 @@ export function SaaSIndicatorLibrary() {
       </section>
 
       {/* ── 6. STEP TRACKERS & ORDER TIMELINES ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             6. Step Trackers & Order Timelines
@@ -826,7 +829,7 @@ export function SaaSIndicatorLibrary() {
             Sequential multi-step progress bars and audit checkpoint timelines.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="26"
           title="Horizontal 3-Step Indicator"

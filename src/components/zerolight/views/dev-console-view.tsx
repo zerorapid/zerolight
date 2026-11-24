@@ -10,6 +10,7 @@ import {
   DetailDrawer,
   ConfirmationModal,
   TagChip,
+  StatCard,
 } from "@/components/zerolight";
 import {
   Key,
@@ -18,6 +19,10 @@ import {
   Plus,
   RefreshCw,
   AlertTriangle,
+  Activity,
+  Server,
+  Zap,
+  ShieldCheck,
 } from "lucide-react";
 
 interface ApiKeyRecord {
@@ -176,71 +181,124 @@ export function DevConsoleView() {
           </div>
         }
         table={
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-neutral-200/70 bg-neutral-50/50">
-                  <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Secret Label</th>
-                  <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Key Prefix</th>
-                  <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Environment</th>
-                  <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Last Ingress</th>
-                  <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Lifecycle</th>
-                  <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider text-right">Inspect</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-100">
-                {filteredKeys.map((k) => (
-                  <tr
-                    key={k.id}
-                    onClick={() => setSelectedKey(k)}
-                    className="hover:bg-neutral-50/80 transition-colors cursor-pointer"
-                  >
-                    <td className="py-3 px-4 text-xs font-semibold text-neutral-900 flex items-center gap-2">
-                      <Key className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
-                      <span className="truncate max-w-[180px]">{k.name}</span>
-                    </td>
-                    <td className="py-3 px-4 text-xs text-neutral-600 font-sans tabular-nums">
-                      <div className="flex items-center gap-2">
-                        <span className="bg-neutral-100 px-2 py-0.5 rounded text-[11px] font-sans">
-                          {k.keyPrefix}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCopy(k.id, k.keyPrefix);
-                          }}
-                          className="p-1 hover:bg-neutral-200 rounded text-neutral-500 transition-colors cursor-pointer"
-                          title="Copy Key"
-                        >
-                          {copiedKeyId === k.id ? (
-                            <Check className="w-3 h-3 text-emerald-600" />
-                          ) : (
-                            <Copy className="w-3 h-3" />
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4 text-xs text-neutral-600 font-sans">
-                      <TagChip label={k.environment} />
-                    </td>
-                    <td className="py-3 px-4 text-xs text-neutral-500 tabular-nums">
-                      {k.lastUsed}
-                    </td>
-                    <td className="py-3 px-4 text-xs">
-                      <Badge variant={k.status === "Active" ? "healthy" : "critical"}>
-                        {k.status}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4 text-xs text-right">
-                      <span className="text-neutral-400 hover:text-neutral-900 font-medium">
-                        View →
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-5">
+            {/* Live Telemetry & Cluster Quotas */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard
+                label="Cluster Ingress"
+                value="1.42M"
+                subValue="req/s"
+                delta="+12.4%"
+                trend="up"
+                comparisonText="vs last hour"
+                icon={<Activity className="w-4 h-4 text-emerald-600" />}
+              />
+              <StatCard
+                label="Active Edge Nodes"
+                value="14 / 14"
+                subValue="PoPs"
+                delta="100%"
+                trend="neutral"
+                comparisonText="Global SLA 99.99%"
+                icon={<Server className="w-4 h-4 text-blue-600" />}
+              />
+              <StatCard
+                label="Rate Quota Used"
+                value="64.2%"
+                delta="-3.1%"
+                trend="down"
+                comparisonText="Tier 1 Allowance"
+                icon={<Zap className="w-4 h-4 text-amber-600" />}
+              />
+              <StatCard
+                label="P99 Median Latency"
+                value="18.4"
+                subValue="ms"
+                delta="-4.2ms"
+                trend="up"
+                comparisonText="Optimal edge routing"
+                icon={<ShieldCheck className="w-4 h-4 text-violet-600" />}
+              />
+            </div>
+
+            {/* API Credentials Table */}
+            <div className="bg-white rounded-2xl border border-neutral-200/80 shadow-2xs overflow-hidden">
+              <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-neutral-900">Provisioned Ingress Secrets</h3>
+                  <p className="text-xs text-neutral-500">Active machine-to-machine tokens with scoped rate limits</p>
+                </div>
+                <Badge variant="neutral">
+                  <span className="font-sans tabular-nums">{filteredKeys.length} Keys Listed</span>
+                </Badge>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-neutral-200/70 bg-neutral-50/50">
+                      <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Secret Label</th>
+                      <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Key Prefix</th>
+                      <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Environment</th>
+                      <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Last Ingress</th>
+                      <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider">Lifecycle</th>
+                      <th className="py-3 px-4 text-xs font-semibold text-neutral-500 uppercase tracking-wider text-right">Inspect</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-neutral-100">
+                    {filteredKeys.map((k) => (
+                      <tr
+                        key={k.id}
+                        onClick={() => setSelectedKey(k)}
+                        className="hover:bg-neutral-50/80 transition-colors cursor-pointer"
+                      >
+                        <td className="py-3 px-4 text-xs font-semibold text-neutral-900 flex items-center gap-2">
+                          <Key className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                          <span className="truncate max-w-[180px]">{k.name}</span>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-neutral-600 font-sans tabular-nums">
+                          <div className="flex items-center gap-2">
+                            <span className="bg-neutral-100 px-2 py-0.5 rounded text-[11px] font-sans">
+                              {k.keyPrefix}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopy(k.id, k.keyPrefix);
+                              }}
+                              className="p-1 hover:bg-neutral-200 rounded text-neutral-500 transition-colors cursor-pointer"
+                              title="Copy Key"
+                            >
+                              {copiedKeyId === k.id ? (
+                                <Check className="w-3 h-3 text-emerald-600" />
+                              ) : (
+                                <Copy className="w-3 h-3" />
+                              )}
+                            </button>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-neutral-600 font-sans">
+                          <TagChip label={k.environment} />
+                        </td>
+                        <td className="py-3 px-4 text-xs text-neutral-500 tabular-nums">
+                          {k.lastUsed}
+                        </td>
+                        <td className="py-3 px-4 text-xs">
+                          <Badge variant={k.status === "Active" ? "healthy" : "critical"}>
+                            {k.status}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-4 text-xs text-right">
+                          <span className="text-neutral-400 hover:text-neutral-900 font-medium">
+                            View →
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         }
         detailDrawer={

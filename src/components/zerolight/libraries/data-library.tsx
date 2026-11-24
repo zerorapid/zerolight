@@ -5,7 +5,6 @@ import {
   Search,
   Copy,
   Check,
-  X,
   TrendingUp,
   AlertTriangle,
   ArrowUpDown,
@@ -14,19 +13,15 @@ import {
   Plus,
   ChevronDown,
   UploadCloud,
-  FileSpreadsheet,
   FileText,
-  Clock,
-  Trash2,
-  Share2,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type DataDensity = "compact" | "default" | "relaxed";
 
 export function SaaSDataLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,7 +58,7 @@ export function SaaSDataLibrary() {
   ]);
 
   // Variant 16 State: File Dropzone Status
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const [uploadedFileName] = useState<string | null>(null);
 
   // Density Config
   const densityConfig = {
@@ -242,12 +237,13 @@ export function SaaSDataLibrary() {
 
   // Filtering
   const filteredVariants = variants.filter((v) => {
+    const matchesCat = activeCategory === "all" || v.cat === activeCategory;
     const matchesQuery =
       searchQuery.trim() === "" ||
       v.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       v.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
       v.type.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesQuery;
+    return matchesCat && matchesQuery;
   });
 
   // Table Helpers
@@ -292,17 +288,96 @@ export function SaaSDataLibrary() {
   };
 
   const getCodeSnippet = (id: string, title: string) => {
-    return `// ZeroLight Level 3 Organism: ${title}
-import React from "react";
-import { useZeroLight } from "@/components/zerolight/context";
+    const num = Number(id.replace("v", "")) || 1;
+    if (num <= 6) {
+      return `// ${title} — ZeroLight StatCard Molecule
+import { StatCard, Sparkline, useZeroLight } from "@/components/zerolight";
 
-export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
+export function KpiMetricModule() {
   const { tokens } = useZeroLight();
-
   return (
-    <div className="p-4 rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#121215]">
-      <h3 className="text-sm font-bold text-zinc-950 dark:text-white font-sans">${title}</h3>
+    <StatCard
+      label="${title}"
+      value="₹1,42,850"
+      delta="+14.2%"
+      trend="up"
+      comparisonText="vs last month"
+      sparkline={<Sparkline data={[32, 45, 42, 68, 84]} color={tokens.primaryButtonColor} />}
+    />
+  );
+}`;
+    }
+    if (num <= 8) {
+      return `// ${title} — ZeroLight DataTable Organism
+import { DataTable, Badge } from "@/components/zerolight";
+
+export function EnterpriseGridModule() {
+  return (
+    <DataTable
+      editable
+      enableClipboardPaste
+      enableExport
+    />
+  );
+}`;
+    }
+    if (num <= 12) {
+      return `// ${title} — ZeroLight FilterBuilder & TagChip
+import { FilterBuilder, TagChip, SearchBar } from "@/components/zerolight";
+
+export function FilterModule() {
+  return (
+    <div className="space-y-3">
+      <FilterBuilder
+        fields={[
+          { key: "status", label: "Status", options: ["Paid", "Pending", "Overdue"] },
+          { key: "region", label: "Region", options: ["Hyderabad HQ", "Bengaluru Hub"] },
+        ]}
+      />
     </div>
+  );
+}`;
+    }
+    if (num === 13) {
+      return `// ${title} — ZeroLight Bento & Pipeline Stage Cards
+import { Badge, Button, Avatar } from "@/components/zerolight";
+
+export function DealPipelineCard() {
+  return (
+    <div className="p-4 border rounded-xl space-y-2 bg-white">
+      <div className="flex justify-between items-center">
+        <span className="font-bold text-xs">Enterprise Annual Plan</span>
+        <Badge variant="healthy" size="xs" showDot>Proposal</Badge>
+      </div>
+      <div className="text-sm font-bold tabular-nums">₹8,50,000</div>
+    </div>
+  );
+}`;
+    }
+    if (num <= 15) {
+      return `// ${title} — ZeroLight AuditLog Organism
+import { AuditLog } from "@/components/zerolight";
+
+export function AuditStreamExample() {
+  return (
+    <AuditLog
+      entries={[
+        { id: "1", actor: "Sai Joshna", action: "Verified GSTR-2B Ledger", timestamp: "2m ago", status: "healthy" },
+      ]}
+    />
+  );
+}`;
+    }
+    return `// ${title} — ZeroLight FileUpload Molecule
+import { FileUpload } from "@/components/zerolight";
+
+export function BulkImportDropzone() {
+  return (
+    <FileUpload
+      accept=".csv,.xlsx"
+      maxSizeMb={25}
+      onFilesSelected={(files) => console.log("Selected files:", files)}
+    />
   );
 }`;
   };
@@ -318,6 +393,17 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Filter data modules..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        action={
+          <LibrarySegmentControl
+            options={["compact", "default", "relaxed"] as const}
+            value={density}
+            onChange={setDensity}
+            ariaLabel="Data density"
+          />
+        }
       />
 
       {/* =========================================================================
@@ -325,13 +411,15 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
       ========================================================================= */}
       <div className="space-y-8">
         {/* Render Grid for Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           {filteredVariants
             .filter((v) => v.cat !== "tables" && v.cat !== "kanban")
             .map((v) => (
               <div
                 key={v.id}
-                className="group flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition"
+                data-zl-card="true"
+                style={getZeroLightCardStyle(tokens, scaled)}
+                className="group flex flex-col justify-between p-5 border shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -367,7 +455,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                   </p>
 
                   {/* Previews */}
-                  <div className="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+                  <div className="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-200/80 dark:border-white/5">
                     {/* V01: KPI Stat Card */}
                     {v.id === "v01" && (
                       <div className="space-y-1">
@@ -448,11 +536,11 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                     {/* V05: Key-Value Dossier */}
                     {v.id === "v05" && (
                       <dl className="space-y-1.5 text-xs">
-                        <div className="flex justify-between py-1 border-b border-zinc-150 dark:border-white/5">
+                        <div className="flex justify-between py-1 border-b border-zinc-200/80 dark:border-white/5">
                           <dt className="text-zinc-500 dark:text-zinc-400">Client GSTIN</dt>
                           <dd className="font-bold text-zinc-950 dark:text-white font-sans tabular-nums">36AAACZ1234F1Z5</dd>
                         </div>
-                        <div className="flex justify-between py-1 border-b border-zinc-150 dark:border-white/5">
+                        <div className="flex justify-between py-1 border-b border-zinc-200/80 dark:border-white/5">
                           <dt className="text-zinc-500 dark:text-zinc-400">Payment Terms</dt>
                           <dd className="font-semibold text-zinc-900 dark:text-zinc-100">Net 30 Days</dd>
                         </div>
@@ -633,7 +721,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                   </div>
                 </div>
 
-                <div className="pt-3 mt-4 border-t border-zinc-150 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+                <div className="pt-3 mt-4 border-t border-zinc-200/80 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
                   <span>Category: {v.cat}</span>
                   <span className="text-emerald-600 dark:text-emerald-400 font-medium">Interactive Metric</span>
                 </div>

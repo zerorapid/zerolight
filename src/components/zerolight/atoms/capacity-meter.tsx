@@ -46,10 +46,10 @@ export function CapacityMeter({
     <div className={`space-y-1.5 w-full font-sans select-none ${className}`}>
       {showLabel && (
         <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 font-medium text-neutral-300">
+          <div className="flex items-center gap-1.5 font-medium text-neutral-700 dark:text-neutral-300">
             {label && <span>{label}</span>}
             <span
-              className={`text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded bg-neutral-900 border border-neutral-800 transition-colors duration-300 ${textColor} ${
+              className={`text-[10px] font-sans font-semibold px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 transition-colors duration-300 ${textColor} ${
                 isCritical ? "animate-pulse border-rose-800/80 bg-rose-950/40" : ""
               }`}
             >
@@ -57,16 +57,16 @@ export function CapacityMeter({
             </span>
           </div>
 
-          <div className="font-sans text-xs tabular-nums text-neutral-400">
+          <div className="font-sans text-xs tabular-nums text-neutral-600 dark:text-neutral-400">
             <span className={`font-semibold transition-colors duration-300 ${textColor}`}>{value}</span>
             <span className="text-neutral-500">/{max}{unit}</span>
-            <span className="text-neutral-500 ml-1">({percentage}%)</span>
+            <span className="text-neutral-400 dark:text-neutral-500 ml-1">({percentage}%)</span>
           </div>
         </div>
       )}
 
       {/* Progress Track with Hardware Acceleration */}
-      <div className="w-full h-1.5 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800/80">
+      <div className="w-full h-1.5 bg-neutral-100 dark:bg-neutral-900 rounded-full overflow-hidden border border-neutral-200/80 dark:border-neutral-800/80">
         <div
           className={`h-full rounded-full transition-all duration-500 ease-spring-tactile transform-gpu will-change-transform ${barColor}`}
           style={{ width: `${percentage}%` }}

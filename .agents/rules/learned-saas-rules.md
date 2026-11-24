@@ -30,3 +30,12 @@ description: Living rulebook of SaaS UI patterns learned from user references an
 ### ZL-LEARN-005: Tactile Calm Over Decorative Noise
 - **Learned From**: Core ZeroLight handcrafted SaaS baseline
 - **Rule**: Prefer 1px hairline borders, crisp YIQ-verified text contrast, `tabular-nums` alignment, and quiet neutral backgrounds (`#F8F9FA` / `#FFFFFF` or `#09090B` / `#0E0E10`) over multi-stop gradients, drop-shadow stacking, or decorative emojis.
+
+### ZL-LEARN-006: Intentional Bleed Framing & Micro-Interaction Choreography (Stageshow Doctrine)
+- **Learned From**: Benji Taylor's Stageshow Research (2026-11-25)
+- **Rule**: Never shrink an entire desktop app window into a cramped 300px card (the "boxed screenshot" trap). Plan the crop before coding: let the window bleed off the bottom/right edges (`bleed="bottom"` or `"right"`), and use `ProductWindow` with authentic macOS traffic lights or browser chrome. In looping hero demos, every animation must have a cause (choreographed cursor arcs and presses), only the key story words must be real text (use `PlaceholderLines` for secondary context), and loops must reset cleanly without a visible seam or 4px snap.
+
+### ZL-LEARN-007: SaaS Bento Grid Asymmetry
+- **Learned From**: Linear & Stripe Bento grid standards via Stageshow
+- **Rule**: In Bento grids, window chrome appears **exactly once** across the section. Only 1/3 to 1/2 of tiles show detailed UI; the remaining tiles must be an impactful high-contrast KPI stat (`StatCard`), an interactive tactile control (`Switch`), and a micro-diagram (`DonutChart` / `Sparkline`). No tile sits adjacent to another of the same kind.
+

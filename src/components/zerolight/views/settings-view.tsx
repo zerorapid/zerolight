@@ -13,6 +13,13 @@ import {
   Users,
   ShieldCheck,
   Bell,
+  Palette,
+  Cpu,
+  Terminal,
+  Check,
+  Plus,
+  Trash2,
+  Lock,
 } from "lucide-react";
 
 export function SettingsView() {
@@ -61,6 +68,8 @@ export function SettingsView() {
         subtitle="Configure enterprise workspace domains, member access roles, SSO policies and incident alerts."
         tabs={[
           { id: "general", label: "General & Workspace", icon: <Building2 className="w-3.5 h-3.5" /> },
+          { id: "appearance", label: "Appearance & Theme", icon: <Palette className="w-3.5 h-3.5" /> },
+          { id: "mcp", label: "MCP Protocol Servers", icon: <Cpu className="w-3.5 h-3.5" /> },
           { id: "team", label: "Team & Member Roles", icon: <Users className="w-3.5 h-3.5" /> },
           { id: "security", label: "Security & SSO", icon: <ShieldCheck className="w-3.5 h-3.5" /> },
           { id: "notifications", label: "Incident Alerts", icon: <Bell className="w-3.5 h-3.5" /> },
@@ -105,6 +114,65 @@ export function SettingsView() {
                     markDirty();
                   }}
                 />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "appearance" && (
+          <div className="space-y-6">
+            <div className="p-6 bg-white border border-neutral-200/70 rounded-xl space-y-4 shadow-2xs">
+              <h3 className="text-sm font-bold text-neutral-900">Surface Polarity &amp; Density</h3>
+              <p className="text-xs text-neutral-500">Configure visual themes, contrast baselines, and layout density.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <div className="p-3.5 border border-neutral-900 rounded-xl bg-white shadow-2xs">
+                  <div className="text-xs font-bold text-neutral-900">Pure White</div>
+                  <div className="text-[11px] text-neutral-500">Standard Light Theme</div>
+                </div>
+                <div className="p-3.5 border border-neutral-200 rounded-xl bg-slate-50">
+                  <div className="text-xs font-bold text-neutral-900">Cool Slate</div>
+                  <div className="text-[11px] text-neutral-500">Reduced Glare Neutral</div>
+                </div>
+                <div className="p-3.5 border border-neutral-800 rounded-xl bg-neutral-900 text-white">
+                  <div className="text-xs font-bold">Obsidian Dark</div>
+                  <div className="text-[11px] text-neutral-400">Low-Light Workstation</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "mcp" && (
+          <div className="space-y-6">
+            <div className="p-6 bg-white border border-neutral-200/70 rounded-xl space-y-4 shadow-2xs">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-neutral-900 flex items-center gap-2">
+                    <Cpu className="w-4 h-4 text-violet-600" />
+                    <span>Model Context Protocol (MCP) Endpoints</span>
+                  </h3>
+                  <p className="text-xs text-neutral-500">Registered stdio and SSE tools for AI agent orchestration.</p>
+                </div>
+              </div>
+              <div className="divide-y divide-neutral-100 border border-neutral-200/70 rounded-xl overflow-hidden">
+                {[
+                  { name: "antigravity-mcp", transport: "STDIO", tools: 18, ping: "12ms" },
+                  { name: "postgres-enterprise-db", transport: "STDIO", tools: 8, ping: "38ms" },
+                  { name: "stitch-mcp-design", transport: "SSE", tools: 14, ping: "22ms" },
+                ].map((s) => (
+                  <div key={s.name} className="p-3.5 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <Terminal className="w-4 h-4 text-violet-600 shrink-0" />
+                      <div>
+                        <div className="text-xs font-bold text-neutral-900">{s.name}</div>
+                        <div className="text-[11px] text-neutral-400 font-sans tabular-nums">{s.transport} • Latency: {s.ping}</div>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded-full font-sans tabular-nums">
+                      {s.tools} Tools Active
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

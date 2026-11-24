@@ -17,19 +17,17 @@ import {
   X,
   Check,
   Download,
-  MoreHorizontal,
   UserPlus,
   ArrowRight,
-  TrendingUp,
-  AlertCircle,
-  FileQuestion,
   CheckCircle2,
-  ExternalLink,
 } from "lucide-react";
 import { useZeroLight } from "../context";
+import { LibraryHeader, CodeModal } from "./common";
 
 export function SaaSAppScreensLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
 
   // App Shell State
   const [activePage, setActivePage] = useState<"dashboard" | "invoices" | "pipeline" | "team" | "billing" | "settings">("dashboard");
@@ -77,7 +75,7 @@ export function SaaSAppScreensLibrary() {
   const [newInvAmount, setNewInvAmount] = useState(95000);
   const [newInvStatus, setNewInvStatus] = useState("Pending");
   const [newInvCity, setNewInvCity] = useState("Hyderabad");
-  const [newInvNotes, setNewInvNotes] = useState("Quarterly accounting telemetry and GST filing...");
+  const [newInvNotes] = useState("Quarterly accounting telemetry and GST filing...");
 
   // Deals Data
   const [deals, setDeals] = useState([
@@ -98,7 +96,7 @@ export function SaaSAppScreensLibrary() {
   // Invite Member Form State
   const [newMemberName, setNewMemberName] = useState("");
   const [newMemberEmail, setNewMemberEmail] = useState("");
-  const [newMemberRole, setNewMemberRole] = useState("Editor");
+  const [newMemberRole] = useState("Editor");
 
   // Billing Period State
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly");
@@ -128,30 +126,61 @@ export function SaaSAppScreensLibrary() {
 
   return (
     <div className="space-y-6">
-      {/* Title & Level 5 Badge */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-zinc-200/80 dark:border-white/10">
-        <div className="flex items-center gap-3">
-          <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-xs">
-            L5
-          </span>
-          <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold tracking-tight text-zinc-950 dark:text-white">
-                Complete Interactive SaaS Application
-              </h2>
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-sans tabular-nums border border-zinc-200/60 dark:border-white/5">
-                6 Full Pages Live
-              </span>
-            </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Level 5 Screens: Dashboard, Client Invoices, Deal Pipeline Kanban, Team & Roles, Billing, and Workspace Settings.
-            </p>
-          </div>
-        </div>
-      </div>
+      <LibraryHeader
+        countText="6 Full Interactive Pages"
+        description="Complete Level 5 SaaS App Screens with billing, invoices, Kanban & RBAC."
+        searchQuery={searchQuery}
+        onSearchChange={(q) => {
+          setSearchQuery(q);
+          const match = (["dashboard", "invoices", "pipeline", "team", "billing", "settings"] as const).find((p) =>
+            p.includes(q.trim().toLowerCase())
+          );
+          if (q.trim() && match) setActivePage(match);
+        }}
+        searchPlaceholder="Jump to screen (billing, pipeline, team)..."
+        categories={[
+          { id: "dashboard", label: "1. Dashboard" },
+          { id: "invoices", label: "2. Invoices" },
+          { id: "pipeline", label: "3. Pipeline" },
+          { id: "team", label: "4. Team & Roles" },
+          { id: "billing", label: "5. Billing" },
+          { id: "settings", label: "6. Settings" },
+        ]}
+        activeCategory={activePage}
+        onCategoryChange={(cat) => setActivePage(cat as typeof activePage)}
+        action={
+          <button
+            type="button"
+            onClick={() =>
+              setActiveCodeModal({
+                title: `Level 5 Screen: ${activePage.toUpperCase()}`,
+                code: `import { ZeroLightProvider, DashboardTemplate, BillingPortal, DataTable, TeamPermissions } from "@/components/zerolight";
+
+export function ${activePage.charAt(0).toUpperCase() + activePage.slice(1)}Screen() {
+  return (
+    <ZeroLightProvider>
+      <DashboardTemplate title="${workspace}" />
+    </ZeroLightProvider>
+  );
+}`,
+              })
+            }
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-900 text-white hover:opacity-90 transition cursor-pointer"
+          >
+            View Screen TSX
+          </button>
+        }
+      />
 
       {/* Main SaaS Application Sandbox Container */}
-      <div className="border border-zinc-200/80 dark:border-white/10 rounded-2xl overflow-hidden bg-white dark:bg-[#0E0E10] shadow-sm flex h-[760px] relative">
+      <div
+        style={{
+          borderRadius: `${scaled.scaledCardRadius}px`,
+          borderColor: tokens.universalBorderColor,
+          borderWidth: `${tokens.borderWidth}px`,
+        }}
+        className="border rounded-2xl overflow-hidden bg-white shadow-sm flex h-[760px] relative"
+      >
         
         {/* =====================================================================
              1. AUTHENTICATED APP SHELL: LEFT SIDEBAR
@@ -1386,13 +1415,15 @@ export function SaaSAppScreensLibrary() {
 
         {/* Floating Toast */}
         {toastMessage && (
-          <div className="absolute bottom-5 right-5 z-50 px-4 py-3 rounded-xl bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 shadow-2xl flex items-center gap-3 text-xs animate-in slide-in-from-bottom duration-200">
+          <div className="absolute bottom-5 right-5 z-50 px-4 py-3 rounded-xl bg-zinc-950 text-white shadow-2xl flex items-center gap-3 text-xs animate-in slide-in-from-bottom duration-200">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span className="font-medium">{toastMessage}</span>
           </div>
         )}
 
       </div>
+
+      <CodeModal modal={activeCodeModal} onClose={() => setActiveCodeModal(null)} />
     </div>
   );
 }

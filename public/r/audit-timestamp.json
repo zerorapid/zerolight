@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "audit-timestamp",
+  "type": "registry:component",
+  "title": "Audit Timestamp",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/audit-timestamp.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport type AuditTimestampFormat = \"compact\" | \"iso\" | \"full\" | \"time-only\";\n\nexport interface AuditTimestampProps {\n  date?: Date | string | number;\n  format?: AuditTimestampFormat;\n  showPill?: boolean;\n  className?: string;\n}\n\nexport function AuditTimestamp({\n  date = new Date(),\n  format = \"compact\",\n  showPill = false,\n  className = \"\",\n}: AuditTimestampProps) {\n  const d = date instanceof Date ? date : new Date(date);\n\n  // Fallback for invalid date\n  if (isNaN(d.getTime())) {\n    return <span className=\"font-sans text-neutral-500 text-xs\">[INVALID_DATE]</span>;\n  }\n\n  let formatted = \"\";\n  switch (format) {\n    case \"iso\":\n      formatted = d.toISOString();\n      break;\n    case \"time-only\":\n      formatted = new Intl.DateTimeFormat(\"en-US\", {\n        hour: \"2-digit\",\n        minute: \"2-digit\",\n        second: \"2-digit\",\n        hour12: false,\n      }).format(d);\n      break;\n    case \"full\":\n      formatted = new Intl.DateTimeFormat(\"en-US\", {\n        year: \"numeric\",\n        month: \"2-digit\",\n        day: \"2-digit\",\n        hour: \"2-digit\",\n        minute: \"2-digit\",\n        second: \"2-digit\",\n        fractionalSecondDigits: 3,\n        hour12: false,\n      }).format(d);\n      break;\n    case \"compact\":\n    default:\n      formatted = new Intl.DateTimeFormat(\"en-US\", {\n        hour: \"2-digit\",\n        minute: \"2-digit\",\n        second: \"2-digit\",\n        fractionalSecondDigits: 3,\n        hour12: false,\n      }).format(d);\n      break;\n  }\n\n  if (showPill) {\n    return (\n      <span\n        className={`inline-flex items-center gap-1 font-sans text-[10px] tabular-nums text-neutral-400 bg-neutral-900 border border-neutral-800 px-1.5 py-0.5 rounded select-none ${className}`}\n        title={`ISO: ${d.toISOString()}`}\n      >\n        <span className=\"w-1 h-1 rounded-full bg-neutral-500\" />\n        <span>{formatted}</span>\n      </span>\n    );\n  }\n\n  return (\n    <span\n      className={`font-sans text-xs tabular-nums text-neutral-400 select-none ${className}`}\n      title={`ISO: ${d.toISOString()}`}\n    >\n      [{formatted}]\n    </span>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

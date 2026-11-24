@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stepper",
+  "type": "registry:component",
+  "title": "Stepper",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/stepper.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { Check } from \"lucide-react\";\n\nexport interface StepItem {\n  id: string;\n  title: string;\n  description?: string;\n}\n\nexport interface StepperProps {\n  steps: StepItem[];\n  currentStepIndex: number;\n  onStepClick?: (idx: number) => void;\n  className?: string;\n}\n\nexport function Stepper({\n  steps,\n  currentStepIndex,\n  onStepClick,\n  className = \"\",\n}: StepperProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <div className={`flex items-start justify-between w-full select-none ${className}`}>\n      {steps.map((step, idx) => {\n        const isCompleted = idx < currentStepIndex;\n        const isCurrent = idx === currentStepIndex;\n\n        return (\n          <div key={step.id} className=\"flex-1 flex flex-col items-center relative text-center px-1\">\n            {/* Connecting Track Line */}\n            {idx > 0 && (\n              <div\n                style={{\n                  height: `${Math.max(1, tokens.borderWidth)}px`,\n                  backgroundColor: idx <= currentStepIndex ? tokens.primaryButtonColor : \"#E4E4E7\",\n                  transition: scaled.transitionStyle,\n                  left: \"-50%\",\n                  right: \"50%\",\n                  top: \"14px\",\n                }}\n                className=\"absolute z-0\"\n              />\n            )}\n\n            {/* Step Circle Indicator */}\n            <button\n              type=\"button\"\n              disabled={!onStepClick}\n              onClick={() => onStepClick?.(idx)}\n              style={{\n                borderRadius: `${scaled.scaledPillRadius}px`,\n                backgroundColor: isCompleted || isCurrent ? tokens.primaryButtonColor : tokens.universalFillColor,\n                borderColor: isCompleted || isCurrent ? tokens.primaryButtonColor : tokens.universalBorderColor,\n                borderWidth: `${tokens.borderWidth}px`,\n                color: isCompleted || isCurrent ? scaled.primaryActionTextColor : tokens.textIconColor,\n                transition: scaled.transitionStyle,\n              }}\n              className={`w-7 h-7 flex items-center justify-center font-bold text-xs relative z-10 shadow-xs tabular-nums ${\n                onStepClick ? \"cursor-pointer\" : \"cursor-default\"\n              }`}\n            >\n              {isCompleted ? <Check className=\"w-3.5 h-3.5\" strokeWidth={3} /> : idx + 1}\n            </button>\n\n            {/* Step Label */}\n            <div className=\"mt-2 space-y-0.5\">\n              <span\n                style={{\n                  fontSize: `${scaled.sublabelFontSize}px`,\n                  color: isCurrent ? tokens.textIconColor : isCompleted ? \"#52525B\" : \"#A1A1AA\",\n                }}\n                className={`block font-semibold ${isCurrent ? \"font-bold\" : \"\"}`}\n              >\n                {step.title}\n              </span>\n              {step.description && (\n                <span className=\"text-[10px] text-neutral-400 hidden sm:block\">\n                  {step.description}\n                </span>\n              )}\n            </div>\n          </div>\n        );\n      })}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

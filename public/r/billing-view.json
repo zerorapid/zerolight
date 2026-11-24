@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "billing-view",
+  "type": "registry:component",
+  "title": "Billing View",
+  "dependencies": [],
+  "registryDependencies": [
+    "billing-portal",
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/views/billing-view.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { BillingPortal } from \"../organisms/billing-portal\";\n\nexport function BillingView() {\n  const { tokens } = useZeroLight();\n\n  return (\n    <div\n      style={{\n        backgroundColor: tokens.universalFillColor === \"#FFFFFF\" ? \"#F8FAFC\" : tokens.universalFillColor,\n      }}\n      className=\"min-h-screen p-6 md:p-8\"\n    >\n      <div className=\"max-w-7xl mx-auto\">\n        <BillingPortal />\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

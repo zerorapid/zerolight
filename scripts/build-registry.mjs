@@ -5,8 +5,9 @@ import path from "node:path";
 const ROOT = process.cwd();
 const ZEROLIGHT_DIR = path.join(ROOT, "src", "components", "zerolight");
 const REGISTRY_OUT_DIR = path.join(ROOT, "public", "registry");
+const SHADCN_OUT_DIR = path.join(ROOT, "public", "r");
 
-const TIER_DIRS = ["atoms", "molecules", "organisms", "templates", "views"];
+const TIER_DIRS = ["atoms", "molecules", "organisms", "templates", "views", "tools", "gen-ui"];
 
 function toTitleCase(slug) {
   return slug
@@ -98,18 +99,22 @@ function collectFiles() {
 
 function main() {
   fs.mkdirSync(REGISTRY_OUT_DIR, { recursive: true });
+  fs.mkdirSync(SHADCN_OUT_DIR, { recursive: true });
 
   // Remove stale registry JSON files before regenerating
-  for (const existing of fs.readdirSync(REGISTRY_OUT_DIR)) {
-    if (existing.endsWith(".json")) {
-      fs.unlinkSync(path.join(REGISTRY_OUT_DIR, existing));
+  for (const outDir of [REGISTRY_OUT_DIR, SHADCN_OUT_DIR]) {
+    for (const existing of fs.readdirSync(outDir)) {
+      if (existing.endsWith(".json")) {
+        fs.unlinkSync(path.join(outDir, existing));
+      }
     }
   }
 
   const collected = collectFiles();
   const seenNames = new Set();
   const indexItems = [];
-  const tierCounts = { core: 0, atoms: 0, molecules: 0, organisms: 0, templates: 0, views: 0 };
+  const shadcnItems = [];
+  const tierCounts = { core: 0, atoms: 0, molecules: 0, organisms: 0, templates: 0, views: 0, tools: 0, "gen-ui": 0 };
 
   for (const item of collected) {
     if (seenNames.has(item.name)) {
@@ -147,6 +152,37 @@ function main() {
       "utf-8"
     );
 
+    const shadcnItem = {
+      $schema: "https://ui.shadcn.com/schema/registry-item.json",
+      name: item.name,
+      type: item.tier === "core" ? "registry:lib" : "registry:component",
+      title: itemPayload.title,
+      dependencies,
+      registryDependencies: cleanRegistryDeps,
+      files: [
+        {
+          path: relFromRoot,
+          content,
+          type: item.tier === "core" ? "registry:lib" : "registry:component",
+        },
+      ],
+    };
+
+    fs.writeFileSync(
+      path.join(SHADCN_OUT_DIR, `${item.name}.json`),
+      JSON.stringify(shadcnItem, null, 2) + "\n",
+      "utf-8"
+    );
+
+    shadcnItems.push({
+      name: item.name,
+      type: shadcnItem.type,
+      title: shadcnItem.title,
+      dependencies,
+      registryDependencies: cleanRegistryDeps,
+      files: [{ path: relFromRoot, type: shadcnItem.type }],
+    });
+
     indexItems.push({
       name: item.name,
       title: itemPayload.title,
@@ -157,6 +193,7 @@ function main() {
       registryDependencies: cleanRegistryDeps,
       lines,
       registryUrl: `/registry/${item.name}.json`,
+      shadcnUrl: `/r/${item.name}.json`,
     });
 
     tierCounts[item.tier] = (tierCounts[item.tier] || 0) + 1;
@@ -176,10 +213,23 @@ function main() {
     "utf-8"
   );
 
+  const shadcnRegistry = {
+    $schema: "https://ui.shadcn.com/schema/registry.json",
+    name: "zerolight",
+    homepage: "https://zerolight.dev",
+    items: shadcnItems,
+  };
+
+  fs.writeFileSync(
+    path.join(SHADCN_OUT_DIR, "index.json"),
+    JSON.stringify(shadcnRegistry, null, 2) + "\n",
+    "utf-8"
+  );
+
   console.log(
     `Built ZeroLight registry: ${indexItems.length} items (${Object.entries(tierCounts)
       .map(([k, v]) => `${k}=${v}`)
-      .join(", ")}) -> public/registry/`
+      .join(", ")}) -> public/registry/ & public/r/`
   );
 }
 

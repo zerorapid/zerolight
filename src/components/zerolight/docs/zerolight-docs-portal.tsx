@@ -4,35 +4,17 @@ import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   Search,
-  Command,
-  Sun,
-  Moon,
   Copy,
   Check,
   ChevronRight,
   ChevronLeft,
-  ExternalLink,
-  Code2,
-  Terminal,
-  Layers,
-  Sparkles,
-  AlertTriangle,
-  Info,
-  Sliders,
-  Eye,
   CheckCircle2,
   X,
   FileCode,
-  Layout,
-  Maximize2,
   Smile,
   Meh,
   Frown,
-  Download,
-  Palette,
-  Shield,
   Activity,
-  Compass,
 } from "lucide-react";
 import { useZeroLight } from "../context";
 import { Button } from "../atoms/button";
@@ -45,10 +27,20 @@ import { ProgressBar } from "../atoms/progress-bar";
 import { Kbd } from "../atoms/kbd";
 import { Avatar } from "../atoms/avatar";
 import { Skeleton } from "../atoms/skeleton";
-import { TagChip } from "../atoms/tag-chip";
 import { StatCard } from "../molecules/stat-card";
 import { AlertBanner } from "../molecules/alert-banner";
 import { Tooltip } from "../molecules/tooltip";
+import { AreaChart } from "../molecules/area-chart";
+import { BarChart } from "../molecules/bar-chart";
+import { DonutChart } from "../molecules/donut-chart";
+import { Select } from "../molecules/select";
+import { Calendar } from "../molecules/calendar";
+import { Pagination } from "../molecules/pagination";
+import { Tabs } from "../molecules/tabs";
+import { Breadcrumbs } from "../molecules/breadcrumbs";
+import { ChatBubble } from "../molecules/chat-bubble";
+import { HeroShowcase } from "../molecules/hero-showcase";
+import { BentoShowcase } from "../organisms/bento-showcase";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { DataTable } from "../organisms/data-table";
 import { TenantKit } from "../organisms/tenant-kit";
@@ -84,6 +76,12 @@ export const ZEROLIGHT_DOCS_NAV: DocItem[] = [
   { id: "kbd", title: "Keyboard Shortcut (Kbd)", category: "components", tier: "atom", description: "Monospace-free keyboard shortcut capsule for command accelerators." },
 
   // UI COMPONENTS - MOLECULES & ORGANISMS
+  { id: "area-chart", title: "Area Chart", category: "components", tier: "molecule", description: "Interactive SVG Bezier area & throughput chart with live dual-accent tokens and crosshair tooltips." },
+  { id: "bar-chart", title: "Bar Chart", category: "components", tier: "molecule", description: "Grouped and stacked comparative bar visualization bound to ZeroLight accents and motion easing." },
+  { id: "donut-chart", title: "Donut Chart", category: "components", tier: "molecule", description: "Proportional ring breakdown with stroke-dasharray arcs and hover KPI center labels." },
+  { id: "select-calendar", title: "Select, Calendar & Pagination", category: "components", tier: "molecule", description: "Framer Motion animated dropdowns, month/day calendar grids, and range pagination." },
+  { id: "tabs-breadcrumbs", title: "Tabs, Breadcrumbs & Chat", category: "components", tier: "molecule", description: "Spring-animated pill tabs, hierarchy breadcrumbs, and message bubbles." },
+  { id: "product-stage", title: "ProductStage, Hero & Bento", category: "components", tier: "molecule", description: "Stageshow-aligned product window chrome, scripted cursor choreography, and bento grids." },
   { id: "stat-card", title: "Stat Card", category: "components", tier: "molecule", description: "KPI metric container with trend delta, comparison text, and horizontal layout." },
   { id: "alert-banner", title: "Alert Banner", category: "components", tier: "molecule", description: "System notification banner for healthy, warning, error, and neutral operational states." },
   { id: "tooltip", title: "Tooltip", category: "components", tier: "molecule", description: "Portaled micro-copy popup attached to trigger element." },
@@ -97,9 +95,20 @@ export const ZEROLIGHT_DOCS_NAV: DocItem[] = [
   { id: "brand-variations", title: "Logo Variations & Themes", category: "brand", tier: "brand", description: "Multi-tenant light, dark, and favicon variations managed directly in Visual Studio." },
 ];
 
-export function ZeroLightDocsPortal() {
+export interface ZeroLightDocsPortalProps {
+  embedded?: boolean;
+  defaultSectionId?: string;
+}
+
+export function ZeroLightDocsPortal({
+  embedded = false,
+  defaultSectionId = "button",
+}: ZeroLightDocsPortalProps = {}) {
   const { tokens, scaled } = useZeroLight();
-  const [activeId, setActiveId] = useState<string>("button");
+  const [activeId, setActiveId] = useState<string>(defaultSectionId);
+  const [demoSelectVal, setDemoSelectVal] = useState<string>("enterprise");
+  const [demoCalDate, setDemoCalDate] = useState<Date>(new Date(2026, 10, 25));
+  const [demoPage, setDemoPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -166,66 +175,107 @@ export function ZeroLightDocsPortal() {
     setTimeout(() => setFeedbackSent(null), 4000);
   };
 
+  const primColor = tokens.primaryButtonColor || "#0F172A";
+  const secColor =
+    tokens.chartSecondaryColor &&
+    tokens.chartSecondaryColor.toUpperCase() !== "#FFFFFF" &&
+    tokens.chartSecondaryColor.toUpperCase() !== "#FFF"
+      ? tokens.chartSecondaryColor
+      : "#64748B";
+
   return (
-    <div className="flex flex-col min-h-screen bg-white font-sans text-zinc-900 antialiased">
-      {/* ── TOP HEADER (ZeroLight Delta Mark + Search Cmd+K) ── */}
-      <header className="sticky top-0 z-40 h-14 border-b border-zinc-200/80 bg-white/90 backdrop-blur-xl px-6 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div
-            className="flex items-center gap-2.5 cursor-pointer"
-            onClick={() => setActiveId("philosophy")}
-          >
-            <div className="w-6 h-6 rounded-md bg-zinc-950 flex items-center justify-center text-white shadow-xs">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 22 20 2 20 12 2" />
-              </svg>
+    <div
+      style={{
+        borderRadius: embedded ? `${Math.max(16, scaled.scaledCardRadius)}px` : undefined,
+        borderColor: embedded ? tokens.universalBorderColor : undefined,
+      }}
+      className={
+        embedded
+          ? "flex flex-col border bg-white font-sans text-zinc-900 antialiased overflow-hidden shadow-xs"
+          : "flex flex-col min-h-screen bg-white font-sans text-zinc-900 antialiased"
+      }
+    >
+      {/* ── TOP HEADER (ZeroLight Delta Mark + Search Cmd+K; hidden when embedded inside DashboardShell) ── */}
+      {!embedded && (
+        <header className="sticky top-0 z-40 h-14 border-b border-zinc-200/80 bg-white/90 backdrop-blur-xl px-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div
+              className="flex items-center gap-2.5 cursor-pointer"
+              onClick={() => setActiveId("philosophy")}
+            >
+              <div className="w-6 h-6 rounded-md bg-zinc-950 flex items-center justify-center text-white shadow-xs">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 22 20 2 20 12 2" />
+                </svg>
+              </div>
+              <span className="font-bold text-sm tracking-tight text-zinc-950">
+                ZeroLight Design System
+              </span>
+              <Badge variant="neutral" className="text-[10px] py-0 px-1.5 ml-1">
+                v2.4 Documentation
+              </Badge>
             </div>
-            <span className="font-bold text-sm tracking-tight text-zinc-950">
-              ZeroLight Design System
-            </span>
-            <Badge variant="neutral" className="text-[10px] py-0 px-1.5 ml-1">
-              v2.0 Documentation
+          </div>
+
+          {/* Center Search Capsule (Cmd+K) */}
+          <div
+            onClick={() => {
+              setIsSearchModalOpen(true);
+              setTimeout(() => searchInputRef.current?.focus(), 50);
+            }}
+            className="flex items-center gap-3 w-64 md:w-80 px-3 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 text-xs text-zinc-500 cursor-pointer hover:border-zinc-300 transition"
+          >
+            <Search className="w-3.5 h-3.5 text-zinc-400" />
+            <span className="flex-1 text-zinc-400">Search foundations & components...</span>
+            <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-zinc-200/80 text-[10px] font-semibold text-zinc-600 font-sans tabular-nums">
+              ⌘K
+            </kbd>
+          </div>
+
+          {/* Right Info Badge */}
+          <div className="flex items-center gap-2">
+            <Badge variant="healthy" className="text-[11px]">
+              120 Primitives Active
             </Badge>
           </div>
-        </div>
+        </header>
+      )}
 
-        {/* Center Search Capsule (Cmd+K) */}
-        <div
-          onClick={() => {
-            setIsSearchModalOpen(true);
-            setTimeout(() => searchInputRef.current?.focus(), 50);
-          }}
-          className="flex items-center gap-3 w-64 md:w-80 px-3 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 text-xs text-zinc-500 cursor-pointer hover:border-zinc-300 transition"
-        >
-          <Search className="w-3.5 h-3.5 text-zinc-400" />
-          <span className="flex-1 text-zinc-400">Search foundations & components...</span>
-          <kbd className="flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-zinc-200/80 text-[10px] font-semibold text-zinc-600 font-sans tabular-nums">
-            ⌘K
-          </kbd>
-        </div>
-
-        {/* Right Info Badge */}
-        <div className="flex items-center gap-2">
-          <Badge variant="healthy" className="text-[11px]">
-            119 Primitives Active
-          </Badge>
-        </div>
-      </header>
-
-      {/* ── BODY LAYOUT (Sticky Sidebar + Center Content) ── */}
-      <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
+      {/* ── BODY LAYOUT (Sidebar Directory + Center Content) ── */}
+      <div className={embedded ? "flex flex-col lg:flex-row w-full" : "flex-1 flex max-w-[1600px] w-full mx-auto"}>
         {/* LEFT SIDEBAR NAVIGATION */}
-        <aside className="w-64 shrink-0 border-r border-zinc-200/80 p-4 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto space-y-6 text-xs">
-          {/* Quick Filter Input */}
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-zinc-400" />
-            <input
-              type="text"
-              placeholder="Filter documentation..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-2.5 py-1.5 rounded-md border border-zinc-200 bg-zinc-50 text-xs outline-none focus:border-zinc-950 transition"
-            />
+        <aside
+          className={
+            embedded
+              ? "w-full lg:w-64 shrink-0 border-b lg:border-b-0 lg:border-r border-zinc-200/80 p-4 space-y-5 text-xs bg-zinc-50/40"
+              : "w-64 shrink-0 border-r border-zinc-200/80 p-4 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto space-y-6 text-xs"
+          }
+        >
+          {/* Quick Filter Input + Embedded ⌘K button */}
+          <div className="flex items-center gap-1.5">
+            <div className="relative flex-1">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-zinc-400" />
+              <input
+                type="text"
+                placeholder="Filter directory..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-8 pr-2.5 py-1.5 rounded-md border border-zinc-200 bg-white text-xs outline-none focus:border-zinc-950 transition"
+              />
+            </div>
+            {embedded && (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSearchModalOpen(true);
+                  setTimeout(() => searchInputRef.current?.focus(), 50);
+                }}
+                title="Quick Jump (⌘K)"
+                className="px-2 py-1.5 rounded-md border border-zinc-200 bg-white text-[10px] font-bold text-zinc-600 hover:border-zinc-400 transition cursor-pointer shrink-0"
+              >
+                ⌘K
+              </button>
+            )}
           </div>
 
           {/* Section 1: Foundations */}
@@ -402,7 +452,7 @@ export function ZeroLightDocsPortal() {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-zinc-900">{color.label}</span>
                       <span className="text-[10px] font-sans tabular-nums text-zinc-400 group-hover:text-zinc-950">
-                        {color.hex}
+                        {copiedId === color.hex ? "Copied" : color.hex}
                       </span>
                     </div>
                     <span className="text-[10px] text-zinc-400 block">{color.note}</span>
@@ -1040,6 +1090,220 @@ node bin/zerolight-mcp.mjs`}
             </div>
           )}
 
+          {/* MOLECULE: AREA CHART */}
+          {activeId === "area-chart" && (
+            <div className="space-y-6">
+              <AreaChart
+                title="Telemetry & Throughput Trend"
+                subtitle="Daily active edge requests vs SLA baseline"
+                primaryLabel="Live Requests"
+                secondaryLabel="SLA Target"
+                primaryColor={primColor}
+                secondaryColor={secColor}
+                height={220}
+                data={[
+                  { label: "Oct 01", value: 48, secondaryValue: 35 },
+                  { label: "Oct 15", value: 68, secondaryValue: 48 },
+                  { label: "Nov 01", value: 52, secondaryValue: 50 },
+                  { label: "Nov 20", value: 94, secondaryValue: 64 },
+                ]}
+              />
+              <CollapsibleCode
+                code={`import { AreaChart, useZeroLight } from "@/components/zerolight";
+
+export function ThroughputChart() {
+  const { tokens } = useZeroLight();
+  return (
+    <AreaChart
+      title="Telemetry & Throughput Trend"
+      primaryColor={tokens.primaryButtonColor}
+      secondaryColor={tokens.chartSecondaryColor}
+      data={[
+        { label: "Oct 01", value: 48, secondaryValue: 35 },
+        { label: "Oct 15", value: 68, secondaryValue: 48 },
+        { label: "Nov 20", value: 94, secondaryValue: 64 },
+      ]}
+    />
+  );
+}`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: BAR CHART */}
+          {activeId === "bar-chart" && (
+            <div className="space-y-6">
+              <BarChart
+                title="Regional P95 Latency Benchmarks"
+                subtitle="Current vs target SLA thresholds (ms)"
+                primaryLabel="Observed P95"
+                secondaryLabel="Target SLA"
+                primaryColor={primColor}
+                secondaryColor={secColor}
+                height={220}
+                data={[
+                  { label: "US-East", value: 24, secondaryValue: 45 },
+                  { label: "EU-West", value: 32, secondaryValue: 50 },
+                  { label: "AP-South", value: 41, secondaryValue: 55 },
+                  { label: "SA-East", value: 58, secondaryValue: 60 },
+                ]}
+              />
+              <CollapsibleCode
+                code={`import { BarChart, useZeroLight } from "@/components/zerolight";
+
+const { tokens } = useZeroLight();
+<BarChart
+  title="Regional P95 Latency"
+  primaryColor={tokens.primaryButtonColor}
+  secondaryColor={tokens.chartSecondaryColor}
+  data={[
+    { label: "US-East", value: 24, secondaryValue: 45 },
+    { label: "AP-South", value: 41, secondaryValue: 55 },
+  ]}
+/>`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: DONUT CHART */}
+          {activeId === "donut-chart" && (
+            <div className="space-y-6">
+              <DonutChart
+                title="Edge Traffic Protocol Breakdown"
+                subtitle="Live share by protocol"
+                size={150}
+                strokeWidth={18}
+                centerLabel="Total Volume"
+                centerValue="100%"
+                data={[
+                  { id: "1", label: "HTTP/3 Quic", value: 54, color: primColor },
+                  { id: "2", label: "gRPC Mesh", value: 32, color: secColor },
+                  { id: "3", label: "WebSockets", value: 14, color: "#94A3B8" },
+                ]}
+              />
+              <CollapsibleCode
+                code={`import { DonutChart, useZeroLight } from "@/components/zerolight";
+
+const { tokens } = useZeroLight();
+<DonutChart
+  title="Traffic Breakdown"
+  data={[
+    { id: "1", label: "HTTP/3", value: 54, color: tokens.primaryButtonColor },
+    { id: "2", label: "gRPC", value: 32, color: tokens.chartSecondaryColor },
+    { id: "3", label: "Other", value: 14, color: "#94A3B8" },
+  ]}
+/>`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: SELECT, CALENDAR & PAGINATION */}
+          {activeId === "select-calendar" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-5 rounded-xl border border-zinc-200 bg-white space-y-4">
+                  <label className="text-xs font-bold text-zinc-900 block">ZeroLight Select Molecule</label>
+                  <Select
+                    value={demoSelectVal}
+                    onChange={setDemoSelectVal}
+                    options={[
+                      { value: "enterprise", label: "Enterprise Workspace" },
+                      { value: "staging", label: "Staging Cluster" },
+                      { value: "vault", label: "Security HSM Vault" },
+                    ]}
+                  />
+                  <div className="pt-3 border-t border-zinc-100">
+                    <label className="text-xs font-bold text-zinc-900 block mb-2">Pagination Molecule</label>
+                    <Pagination
+                      currentPage={demoPage}
+                      totalItems={100}
+                      pageSize={10}
+                      onPageChange={setDemoPage}
+                    />
+                  </div>
+                </div>
+                <div className="p-5 rounded-xl border border-zinc-200 bg-white flex flex-col items-center justify-center">
+                  <Calendar
+                    selectedDate={demoCalDate}
+                    onSelectDate={setDemoCalDate}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { Select, Calendar, Pagination } from "@/components/zerolight";
+
+<Select value={cluster} onChange={setCluster} options={[...]} />
+<Calendar selectedDate={date} onSelectDate={setDate} />
+<Pagination currentPage={page} totalItems={100} pageSize={10} onPageChange={setPage} />`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: TABS, BREADCRUMBS & CHAT BUBBLE */}
+          {activeId === "tabs-breadcrumbs" && (
+            <div className="space-y-6">
+              <div className="p-5 rounded-xl border border-zinc-200 bg-white space-y-5">
+                <Breadcrumbs
+                  items={[
+                    { label: "ZeroLight OS", href: "#" },
+                    { label: "Molecules", href: "#" },
+                    { label: "Navigation & Messaging" },
+                  ]}
+                />
+                <Tabs
+                  variant="pills"
+                  items={[
+                    { id: "overview", label: "Overview" },
+                    { id: "telemetry", label: "Telemetry" },
+                    { id: "audit", label: "Audit Stream" },
+                  ]}
+                />
+                <div className="pt-2 border-t border-zinc-100 space-y-3">
+                  <ChatBubble
+                    sender="bot"
+                    senderName="ZeroLight Assistant"
+                    avatarInitials="AI"
+                    timestamp="01:10 AM"
+                    status="read"
+                    message="All tokens synced via ZeroLightProvider with YIQ luminance protection."
+                  />
+                  <ChatBubble
+                    sender="user"
+                    avatarInitials="ZL"
+                    timestamp="01:11 AM"
+                    status="read"
+                    message="Verify dual-accent tokens across charts and hero demos."
+                  />
+                </div>
+              </div>
+              <CollapsibleCode
+                code={`import { Breadcrumbs, Tabs, ChatBubble } from "@/components/zerolight";
+
+<Breadcrumbs items={[{ label: "Home" }, { label: "Molecules" }]} />
+<Tabs variant="pills" items={[{ id: "overview", label: "Overview" }]} />
+<ChatBubble sender="bot" senderName="Assistant" message="Synced!" />`}
+              />
+            </div>
+          )}
+
+          {/* MOLECULE: PRODUCT STAGE, HERO SHOWCASE & BENTO GRID */}
+          {activeId === "product-stage" && (
+            <div className="space-y-8">
+              <HeroShowcase />
+              <BentoShowcase />
+              <CollapsibleCode
+                code={`import { ProductWindow, HeroShowcase, BentoShowcase } from "@/components/zerolight";
+
+// Looping 4-beat scripted SaaS demo with real ZeroLight tokens
+<HeroShowcase autoPlay={true} />
+
+// Asymmetrical 4-tile SaaS Bento Showcase
+<BentoShowcase />`}
+              />
+            </div>
+          )}
+
           {/* MOLECULE: TOOLTIP */}
           {activeId === "tooltip" && (
             <div className="space-y-6">
@@ -1156,21 +1420,27 @@ node bin/zerolight-mcp.mjs`}
               <div className="flex items-center gap-1 text-zinc-400">
                 <button
                   onClick={() => handleFeedback("positive")}
-                  className="p-1 hover:text-emerald-600 transition cursor-pointer"
+                  className={`p-1 transition cursor-pointer ${
+                    feedbackSent === "positive" ? "text-emerald-600" : "hover:text-emerald-600"
+                  }`}
                   title="Helpful"
                 >
                   <Smile className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => handleFeedback("neutral")}
-                  className="p-1 hover:text-amber-500 transition cursor-pointer"
+                  className={`p-1 transition cursor-pointer ${
+                    feedbackSent === "neutral" ? "text-amber-500" : "hover:text-amber-500"
+                  }`}
                   title="Neutral"
                 >
                   <Meh className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => handleFeedback("negative")}
-                  className="p-1 hover:text-rose-500 transition cursor-pointer"
+                  className={`p-1 transition cursor-pointer ${
+                    feedbackSent === "negative" ? "text-rose-500" : "hover:text-rose-500"
+                  }`}
                   title="Needs Improvement"
                 >
                   <Frown className="w-3.5 h-3.5" />

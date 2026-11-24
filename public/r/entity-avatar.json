@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "entity-avatar",
+  "type": "registry:component",
+  "title": "Entity Avatar",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/entity-avatar.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport interface EntityAvatarProps {\n  name: string;\n  size?: \"xs\" | \"sm\" | \"md\" | \"lg\";\n  className?: string;\n}\n\n// Deterministic palette choices matching dark ZeroLight aesthetic\nconst PALETTES = [\n  { bg: \"bg-emerald-950/80 border-emerald-800/80 text-emerald-300\" },\n  { bg: \"bg-rose-950/80 border-rose-800/80 text-rose-300\" },\n  { bg: \"bg-amber-950/80 border-amber-800/80 text-amber-300\" },\n  { bg: \"bg-cyan-950/80 border-cyan-800/80 text-cyan-300\" },\n  { bg: \"bg-indigo-950/80 border-indigo-800/80 text-indigo-300\" },\n  { bg: \"bg-purple-950/80 border-purple-800/80 text-purple-300\" },\n  { bg: \"bg-teal-950/80 border-teal-800/80 text-teal-300\" },\n  { bg: \"bg-blue-950/80 border-blue-800/80 text-blue-300\" },\n];\n\nfunction hashString(str: string): number {\n  let hash = 0;\n  for (let i = 0; i < str.length; i++) {\n    hash = (hash << 5) - hash + str.charCodeAt(i);\n    hash |= 0;\n  }\n  return Math.abs(hash);\n}\n\nfunction getInitials(name: string): string {\n  if (!name) return \"??\";\n  const words = name.trim().split(/[\\s-_]+/);\n  if (words.length >= 2) {\n    return (words[0][0] + words[1][0]).toUpperCase();\n  }\n  return name.substring(0, 2).toUpperCase();\n}\n\nexport function EntityAvatar({\n  name,\n  size = \"sm\",\n  className = \"\",\n}: EntityAvatarProps) {\n  const initials = getInitials(name);\n  const paletteIndex = hashString(name) % PALETTES.length;\n  const palette = PALETTES[paletteIndex];\n\n  const sizeClasses = {\n    xs: \"w-5 h-5 text-[9px]\",\n    sm: \"w-6 h-6 text-[10px]\",\n    md: \"w-8 h-8 text-xs font-semibold\",\n    lg: \"w-10 h-10 text-sm font-bold\",\n  }[size];\n\n  return (\n    <div\n      role=\"img\"\n      aria-label={`Entity avatar for ${name}`}\n      title={name}\n      className={`inline-flex items-center justify-center rounded-md border font-sans select-none flex-shrink-0 ${sizeClasses} ${palette.bg} ${className}`}\n    >\n      {initials}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

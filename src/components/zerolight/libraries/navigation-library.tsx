@@ -32,12 +32,12 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { LibraryHeader, CodeModal } from "./common";
+import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 
 export type NavDensity = "small" | "medium" | "large";
 
 export function SaaSNavigationLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -287,17 +287,89 @@ export function SaaSNavigationLibrary() {
   });
 
   const getCodeSnippet = (id: string, title: string) => {
-    return `// ZeroLight Level 3 Organism: ${title}
-import React from "react";
-import { useZeroLight } from "@/components/zerolight/context";
+    const num = Number(id.replace("v", "")) || 1;
+    if (num <= 4) {
+      return `// ${title} — ZeroLight Breadcrumbs Molecule
+import { Breadcrumbs, useZeroLight } from "@/components/zerolight";
 
-export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
+export function NavigationExample() {
   const { tokens } = useZeroLight();
-
   return (
-    <nav className="flex items-center gap-2 text-xs font-sans">
-      <span className="font-semibold text-zinc-900 dark:text-zinc-100">${title}</span>
-    </nav>
+    <Breadcrumbs
+      items={[
+        { label: "Workspace", href: "#workspace" },
+        { label: "Invoices", href: "#invoices" },
+        { label: "#INV-9042" },
+      ]}
+    />
+  );
+}`;
+    }
+    if (num <= 8) {
+      return `// ${title} — ZeroLight Tabs Molecule
+import { Tabs, useZeroLight } from "@/components/zerolight";
+
+export function TabsExample() {
+  const { scaled } = useZeroLight();
+  return (
+    <Tabs
+      variant="${id === "v06" ? "pills" : "underline"}"
+      items={[
+        { id: "overview", label: "Overview", badge: 14 },
+        { id: "analytics", label: "Analytics" },
+        { id: "settings", label: "Settings" },
+      ]}
+    />
+  );
+}`;
+    }
+    if (num <= 11) {
+      return `// ${title} — ZeroLight Pagination Molecule
+import React, { useState } from "react";
+import { Pagination } from "@/components/zerolight";
+
+export function PaginationExample() {
+  const [page, setPage] = useState(1);
+  return (
+    <Pagination
+      currentPage={page}
+      totalItems={248}
+      pageSize={25}
+      onPageChange={setPage}
+    />
+  );
+}`;
+    }
+    if (num <= 14) {
+      return `// ${title} — ZeroLight Stepper Molecule
+import React, { useState } from "react";
+import { Stepper } from "@/components/zerolight";
+
+export function StepperExample() {
+  const [currentStep, setCurrentStep] = useState(1);
+  return (
+    <Stepper
+      currentStep={currentStep}
+      steps={[
+        { id: "account", label: "Organization Details" },
+        { id: "billing", label: "GSTIN & Tax Setup" },
+        { id: "launch", label: "Activate Workspace" },
+      ]}
+    />
+  );
+}`;
+    }
+    return `// ${title} — ZeroLight ${num <= 17 ? "AppShell" : "PageHeader"} Organism
+import { ${num <= 17 ? "AppShell" : "PageHeader"}, Button, Breadcrumbs } from "@/components/zerolight";
+
+export function NavigationShellExample() {
+  return (
+    <PageHeader
+      title="Enterprise Workspace"
+      subtitle="Unified navigation chrome & token alignment"
+      breadcrumbs={<Breadcrumbs items={[{ label: "Home" }, { label: "Navigation" }]} />}
+      actions={<Button variant="primary" size="sm">New Deployment</Button>}
+    />
   );
 }`;
   };
@@ -307,7 +379,9 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
           return (
             <div
               key={v.id}
-              className={`group flex flex-col justify-between p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-white dark:bg-[#121215] shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition ${
+              data-zl-card="true"
+              style={getZeroLightCardStyle(tokens, scaled)}
+              className={`group flex flex-col justify-between p-5 border shadow-xs hover:border-zinc-300 dark:hover:border-white/20 transition ${
                 isFullWidthTopnav ? "lg:col-span-2" : ""
               }`}
             >
@@ -347,7 +421,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </p>
 
                 {/* Live Preview Container */}
-                <div className="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-150 dark:border-white/5">
+                <div className="p-3.5 rounded-lg bg-zinc-50 dark:bg-[#09090B] border border-zinc-200/80 dark:border-white/5">
                   {/* V01: Chevron Breadcrumb */}
                   {v.id === "v01" && (
                     <nav aria-label="Breadcrumb">
@@ -1048,7 +1122,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
               </div>
 
               {/* Card Footer */}
-              <div className="pt-3 mt-4 border-t border-zinc-150 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+              <div className="pt-3 mt-4 border-t border-zinc-200/80 dark:border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
                 <span>Category: {v.cat}</span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">Interactive State</span>
               </div>
@@ -1067,6 +1141,17 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Filter navigation..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        action={
+          <LibrarySegmentControl
+            options={["small", "medium", "large"] as const}
+            value={density}
+            onChange={setDensity}
+            ariaLabel="Navigation density"
+          />
+        }
       />
 
       {/* =========================================================================
@@ -1095,7 +1180,7 @@ export function ${title.replace(/[^a-zA-Z0-9]/g, "")}() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
                 {secVariants.map(renderNavCard)}
               </div>
             </section>

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "switch",
+  "type": "registry:component",
+  "title": "Switch",
+  "dependencies": [
+    "framer-motion"
+  ],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/switch.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\nimport { motion } from \"framer-motion\";\n\nexport interface SwitchProps {\n  checked: boolean;\n  onChange: (checked: boolean) => void;\n  disabled?: boolean;\n  label?: string;\n  description?: string;\n  id?: string;\n}\n\nexport function Switch({\n  checked,\n  onChange,\n  disabled = false,\n  label,\n  description,\n  id,\n}: SwitchProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <label\n      htmlFor={id}\n      className={`inline-flex items-center justify-between gap-4 select-none ${\n        disabled ? \"opacity-50 cursor-not-allowed\" : \"cursor-pointer\"\n      }`}\n    >\n      {(label || description) && (\n        <div className=\"space-y-0.5\">\n          {label && (\n            <span\n              style={{ fontSize: `${scaled.scaledFontSize}px`, color: tokens.textIconColor }}\n              className=\"font-medium block leading-snug\"\n            >\n              {label}\n            </span>\n          )}\n          {description && (\n            <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className=\"text-neutral-500 block leading-snug\">\n              {description}\n            </span>\n          )}\n        </div>\n      )}\n\n      <motion.button\n        id={id}\n        type=\"button\"\n        role=\"switch\"\n        aria-checked={checked}\n        disabled={disabled}\n        whileTap={{ scale: disabled ? 1 : scaled.motionConfig.tapScale }}\n        transition={scaled.motionConfig.transition}\n        onClick={() => !disabled && onChange(!checked)}\n        style={{\n          borderRadius: `${scaled.scaledPillRadius}px`,\n          backgroundColor: checked ? tokens.primaryButtonColor : \"#E4E4E7\",\n          borderColor: tokens.borderWidth > 0 ? tokens.universalBorderColor : \"transparent\",\n          borderWidth: `${tokens.borderWidth}px`,\n          width: \"44px\",\n          height: \"24px\",\n          transition: scaled.transitionStyle,\n        }}\n        className=\"relative p-0.5 border cursor-pointer shrink-0 shadow-2xs\"\n      >\n        <motion.div\n          animate={{ x: checked ? 20 : 0 }}\n          transition={scaled.motionConfig.transition}\n          style={{\n            borderRadius: `${scaled.scaledPillRadius}px`,\n            backgroundColor: \"#FFFFFF\",\n          }}\n          className=\"w-4 h-4 shadow-sm\"\n        />\n      </motion.button>\n    </label>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

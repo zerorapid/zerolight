@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useZeroLight } from "../context";
 import { UploadCloud, File, CheckCircle2, X } from "lucide-react";
 
@@ -10,15 +10,18 @@ export interface UploadedFile {
   size: string;
   progress: number;
   status: "uploading" | "complete" | "error";
+  previewUrl?: string;
 }
 
 export interface FileUploadProps {
   label?: string;
   acceptText?: string;
   maxSizeText?: string;
+  accept?: string;
   files?: UploadedFile[];
   onUpload?: (files: FileList) => void;
   onRemoveFile?: (id: string) => void;
+  compact?: boolean;
   className?: string;
 }
 
@@ -31,23 +34,43 @@ export function FileUpload({
   label = "Upload manifest or certificate",
   acceptText = "Supports .yaml, .json, .pem, or .crt files",
   maxSizeText = "Max payload size: 10 MB",
+  accept,
   files = [],
+  onUpload,
   onRemoveFile,
+  compact = false,
   className = "",
 }: FileUploadProps) {
   const { tokens, scaled } = useZeroLight();
   const [isDragOver, setIsDragOver] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFiles = (fileList: FileList | null) => {
+    if (fileList && fileList.length > 0) {
+      onUpload?.(fileList);
+    }
+  };
 
   return (
-    <div className={`space-y-3 w-full select-none ${className}`}>
+    <div className={`space-y-2 w-full select-none ${className}`}>
       {label && (
-        <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-medium block">
+        <span style={{ fontSize: `${scaled.labelFontSize}px`, color: tokens.textIconColor }} className="font-semibold block">
           {label}
         </span>
       )}
 
+      {/* Hidden File Input */}
+      <input
+        ref={inputRef}
+        type="file"
+        accept={accept}
+        onChange={(e) => handleFiles(e.target.files)}
+        className="hidden"
+      />
+
       {/* Drop Zone */}
       <div
+        onClick={() => inputRef.current?.click()}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragOver(true);
@@ -56,39 +79,42 @@ export function FileUpload({
         onDrop={(e) => {
           e.preventDefault();
           setIsDragOver(false);
+          handleFiles(e.dataTransfer.files);
         }}
         style={{
-          borderRadius: `${scaled.scaledCardRadius}px`,
+          borderRadius: `${scaled.scaledRadius}px`,
           borderColor: isDragOver ? tokens.primaryButtonColor : tokens.universalBorderColor,
           backgroundColor: isDragOver ? tokens.hoverBackplateTint : tokens.universalFillColor,
           borderWidth: `${Math.max(1, tokens.borderWidth)}px`,
           transition: scaled.transitionStyle,
         }}
-        className="border-dashed p-6 text-center flex flex-col items-center justify-center space-y-2 cursor-pointer hover:bg-neutral-50/50 transition-colors"
+        className={`border-dashed text-center flex flex-col items-center justify-center cursor-pointer hover:bg-neutral-50/50 transition-colors ${
+          compact ? "p-3 space-y-1" : "p-6 space-y-2"
+        }`}
       >
         <div
           style={{
             borderRadius: `${scaled.scaledPillRadius}px`,
             backgroundColor: tokens.hoverBackplateTint,
           }}
-          className="w-10 h-10 flex items-center justify-center text-neutral-500 shadow-2xs"
+          className={`${compact ? "w-7 h-7" : "w-10 h-10"} flex items-center justify-center text-neutral-500 shadow-2xs`}
         >
-          <UploadCloud className="w-5 h-5" />
+          <UploadCloud className={compact ? "w-3.5 h-3.5" : "w-5 h-5"} />
         </div>
 
         <div>
-          <span style={{ color: tokens.textIconColor }} className="text-xs font-semibold block">
-            Click to upload or drag and drop
+          <span style={{ color: tokens.textIconColor, fontSize: compact ? "11px" : "12px" }} className="font-semibold block">
+            Click to upload or drag &amp; drop
           </span>
           <span style={{ fontSize: `${scaled.sublabelFontSize}px` }} className="text-neutral-400 block mt-0.5">
-            {acceptText} • {maxSizeText}
+            {acceptText} {maxSizeText ? `• ${maxSizeText}` : ""}
           </span>
         </div>
       </div>
 
       {/* File List */}
       {files.length > 0 && (
-        <div className="space-y-2 pt-1">
+        <div className="space-y-1.5 pt-1">
           {files.map((file) => (
             <div
               key={file.id}
@@ -98,39 +124,39 @@ export function FileUpload({
                 borderWidth: `${tokens.borderWidth}px`,
                 backgroundColor: tokens.universalFillColor,
               }}
-              className="p-3 border flex items-center justify-between gap-3 text-xs"
+              className="p-2 border flex items-center justify-between gap-2.5 text-xs"
             >
-              <div className="flex items-center gap-2.5 truncate">
-                <File className="w-4 h-4 text-neutral-400 shrink-0" />
+              <div className="flex items-center gap-2 truncate">
+                {file.previewUrl ? (
+                  <img src={file.previewUrl} alt={file.name} className="w-6 h-6 rounded object-cover border border-neutral-200" />
+                ) : (
+                  <File className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                )}
                 <div className="truncate">
-                  <div style={{ color: tokens.textIconColor }} className="font-semibold truncate">
+                  <div style={{ color: tokens.textIconColor }} className="font-semibold truncate text-[11px]">
                     {file.name}
                   </div>
                   <div className="text-[10px] text-neutral-400 tabular-nums">
-                    {file.size} • {file.status === "complete" ? "Verified" : `${file.progress}% uploaded`}
+                    {file.size} • {file.status === "complete" ? "Ready" : `${file.progress}%`}
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {file.status === "complete" ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                ) : (
-                  <div className="w-16 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
-                    <div
-                      style={{ width: `${file.progress}%`, backgroundColor: tokens.primaryButtonColor }}
-                      className="h-full transition-all"
-                    />
-                  </div>
+                {file.status === "complete" && (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                 )}
                 {onRemoveFile && (
                   <button
                     type="button"
-                    onClick={() => onRemoveFile(file.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemoveFile(file.id);
+                    }}
                     className="text-neutral-400 hover:text-neutral-700 cursor-pointer p-0.5"
                     aria-label={`Remove file ${file.name}`}
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-3 h-3" />
                   </button>
                 )}
               </div>

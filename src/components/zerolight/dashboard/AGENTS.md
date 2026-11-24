@@ -32,4 +32,4 @@
 ## 3. Safe Refactoring Rule
 When refactoring or breaking down `dashboard-shell.tsx` into smaller sub-components:
 - Always ensure the required tokens above remain referenced or re-exported in `dashboard-shell.tsx`.
-- Run `node tests/zerolight.test.mjs` to verify all 188 assertions remain 100% green.
+- Run `node tests/zerolight.test.mjs` to verify all 190 assertions remain 100% green.

@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { WorldAtlasMap, WorldAtlasMapProps, MapRenderStyle, PatternDensity } from "../../WorldAtlasMap";
-import { GLOBAL_LAND_PATH, REAL_WORLD_COUNTRIES, CountryShape } from "./world-map-data";
+import { WorldAtlasMap, MapRenderStyle, PatternDensity } from "../../WorldAtlasMap";
+import { REAL_WORLD_COUNTRIES, CountryShape } from "./world-map-data";
 
 export type { CountryShape };
 export const WORLD_COUNTRIES: CountryShape[] = REAL_WORLD_COUNTRIES;

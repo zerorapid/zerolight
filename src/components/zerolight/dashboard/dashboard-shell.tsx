@@ -1,29 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import {
   Home,
-  SlidersHorizontal,
   Layers,
   Wrench,
   Settings,
   LogOut,
   ShieldCheck,
-  Zap,
   Terminal,
-  Activity,
   User,
   Key,
   Globe,
-  Plus,
   ArrowUpRight,
   Sparkles,
   ChevronDown,
+  ChevronLeft,
   HelpCircle,
   FileCode2,
-  CheckCircle2,
-  Lock,
   PanelLeftClose,
   PanelLeft,
   Copy,
@@ -31,28 +27,35 @@ import {
   RefreshCw,
   Eye,
   EyeOff,
-  Server,
-  Clock,
   Laptop,
   Radio,
   Download,
-  AlertTriangle,
   Building,
   Cpu,
   Database,
   Sliders,
+  Search,
+  Bell,
+  ExternalLink,
+  Printer,
+  X,
 } from "lucide-react";
 import { useAuth } from "../auth/auth-context";
 import { useZeroLight } from "../context";
-import { ZeroLightStudio } from "../docs-studio";
 import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
 import { SaaSTokensLibrary, SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary, SaaSTooltipLibrary, SaaSFeedbackLibrary, SaaSOverlaysLibrary, SaaSNavigationLibrary, SaaSDataLibrary, SaaSBusinessLibrary, SaaSLayoutLibrary, SaaSAppScreensLibrary, SaaSEdgeCasesLibrary } from "../libraries";
-import { StatCard } from "../molecules/stat-card";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
+import { Card } from "../atoms/card";
+import { DynamicIcon } from "../atoms/dynamic-icon";
+import { SegmentedControl } from "../molecules/segmented-control";
+import { TokenStudioSidebar } from "../studio/token-studio-sidebar";
+import { SaasTemplateStage, SaasTemplateKey } from "../studio/saas-template-stage";
+import { ToolsDirectory, ZeroFlashTool, ZeroAuditorTool } from "../tools";
 
-export type DashboardTab = "overview" | "ds-editor" | "docs" | "tools" | "settings";
+export type DashboardTab = "overview" | "docs" | "tools" | "settings";
+export type ToolsSubView = "index" | "studio" | "atlas" | "zeroflash" | "zeroauditor";
 export type DocsTier = "foundations" | "atoms" | "molecules" | "organisms" | "templates" | "pages";
 export type DocsSubView =
   | "catalog"
@@ -83,10 +86,10 @@ export const DOCS_TIERS: {
   {
     id: "foundations",
     label: "Foundations",
-    count: "34",
+    count: "154",
     defaultTab: "catalog",
     tabs: [
-      { id: "catalog", label: "Tokens & Principles", count: "119", desc: "Design tokens, color swatches, hairlines & typography scale" },
+      { id: "catalog", label: "Tokens & Principles", count: "120", desc: "Design tokens, color swatches, hairlines & typography scale" },
       { id: "dividers", label: "Dividers & Spacers", count: "22", desc: "Monochrome hairlines, inset boundaries & proportional spacing" },
       { id: "edge-cases", label: "Hierarchy & Resilience", count: "12", desc: "Spring motion physics, truncation resilience & layout stress tests" },
     ],
@@ -107,10 +110,11 @@ export const DOCS_TIERS: {
   {
     id: "molecules",
     label: "Molecules",
-    count: "20",
+    count: "65",
     defaultTab: "feedback",
     tabs: [
       { id: "feedback", label: "Feedback & Alerts", count: "20", desc: "Inline notice bars, floating toasts, empty states & recovery cards" },
+      { id: "catalog-molecules", label: "Molecules Directory", count: "45", desc: "StatCards, charts, calendars, ProductWindow & HeroShowcase" },
     ],
   },
   {
@@ -145,13 +149,74 @@ export const DOCS_TIERS: {
   },
 ];
 
-export function DashboardShell() {
-  const { user, logout } = useAuth();
+export const TOOLS_VIEWS: {
+  id: Exclude<ToolsSubView, "index">;
+  label: string;
+  badge: string;
+  desc: string;
+}[] = [
+  { id: "studio", label: "Visual Studio Dock", badge: "Tokens", desc: "Live token customizer and interactive SaaS template workbench" },
+  { id: "zeroflash", label: "ZeroFlash Brand", badge: "Brand Deck", desc: "Brand identity studio, 6-slide deck, W3C tokens & SVG extractor" },
+  { id: "zeroauditor", label: "ZeroAuditor", badge: "Audit", desc: "33-rule AI-slop footprint scanner & ZeroLight remediation engine" },
+  { id: "atlas", label: "World Atlas Map", badge: "Vector", desc: "2D flat monochrome vector maps with 6 pattern styles & SVG export" },
+];
+
+interface GlobalSearchEntry {
+  id: string;
+  label: string;
+  tierLabel: string;
+  keywords: string;
+  tab: DashboardTab;
+  docsTier?: DocsTier;
+  docsSubView?: DocsSubView;
+  toolsSubView?: ToolsSubView;
+  saasTemplate?: SaasTemplateKey;
+}
+
+const GLOBAL_SEARCH_ENTRIES: GlobalSearchEntry[] = [
+  ...DOCS_TIERS.flatMap((tier) =>
+    tier.tabs.map((sub) => ({
+      id: `sub-${sub.id}`,
+      label: sub.label,
+      tierLabel: `Design System / ${tier.label}`,
+      keywords: `${sub.label} ${sub.desc} ${tier.label}`.toLowerCase(),
+      tab: "docs" as DashboardTab,
+      docsTier: tier.id,
+      docsSubView: sub.id,
+    }))
+  ),
+  ...TOOLS_VIEWS.map((tool) => ({
+    id: `tool-${tool.id}`,
+    label: tool.label,
+    tierLabel: `Tools / ${tool.label}`,
+    keywords: `${tool.label} ${tool.desc} tools`.toLowerCase(),
+    tab: "tools" as DashboardTab,
+    toolsSubView: tool.id,
+  })),
+  { id: "comp-charts", label: "AreaChart, BarChart & DonutChart", tierLabel: "Molecules Directory", keywords: "chart analytics data viz svg bezier graph telemetry", tab: "docs", docsTier: "molecules", docsSubView: "catalog-molecules" },
+  { id: "comp-stageshow", label: "ProductWindow, HeroShowcase & BentoShowcase", tierLabel: "Tools / Visual Studio Dock", keywords: "hero stageshow bento cursor animation showcase window", tab: "tools", toolsSubView: "studio", saasTemplate: "hero_showcase" },
+  { id: "comp-datatable", label: "Enterprise DataTable & Kanban", tierLabel: "Organisms / Data & Tables", keywords: "table grid csv tsv export filter kanban sort", tab: "docs", docsTier: "organisms", docsSubView: "data" },
+  { id: "comp-otp", label: "OTP Input, Currency & Calendar", tierLabel: "Atoms / Inputs & Fields", keywords: "otp phone pin password datepicker currency inr usd", tab: "docs", docsTier: "atoms", docsSubView: "inputs" },
+  { id: "comp-cmdk", label: "Command Palette (⌘K), Modals & Drawers", tierLabel: "Organisms / Overlays", keywords: "modal dialog drawer cmdk command palette overlay sheet", tab: "docs", docsTier: "organisms", docsSubView: "overlays" },
+  { id: "comp-atlas", label: "Vector World Atlas Map Studio", tierLabel: "Tools / World Atlas Map", keywords: "world map svg vector continent atlas geo", tab: "tools", toolsSubView: "atlas" },
+  { id: "comp-mcp", label: "MCP Agent Server & Security Settings", tierLabel: "Settings & MCP", keywords: "mcp json-rpc api key webhook compliance soc2", tab: "settings" },
+  { id: "comp-console", label: "Enterprise Console Template", tierLabel: "Tools / Visual Studio Dock", keywords: "console enterprise clusters workloads template", tab: "tools", toolsSubView: "studio", saasTemplate: "unified_enterprise" },
+  { id: "comp-crm", label: "CRM Pipeline Template", tierLabel: "Tools / Visual Studio Dock", keywords: "crm sales deals pipeline template", tab: "tools", toolsSubView: "studio", saasTemplate: "customer_crm" },
+];
+
+export interface DashboardShellProps {
+  onRequireAuth?: () => void;
+}
+
+export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
+  const { isAuthenticated, user, logout } = useAuth();
   const { tokens } = useZeroLight();
-  const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
-  const [docsTier, setDocsTier] = useState<DocsTier>("atoms");
-  const [docsSubView, setDocsSubView] = useState<DocsSubView>("buttons");
+  const [activeTab, setActiveTab] = useState<DashboardTab>("tools");
+  const [toolsSubView, setToolsSubView] = useState<ToolsSubView>("index");
+  const [docsTier, setDocsTier] = useState<DocsTier>("foundations");
+  const [docsSubView, setDocsSubView] = useState<DocsSubView>("catalog");
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [docsMenuExpanded, setDocsMenuExpanded] = useState<boolean>(true);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
 
   useEffect(() => {
@@ -161,10 +226,42 @@ export function DashboardShell() {
     }
   }, [docsSubView, docsTier]);
 
-  const activeTierData = DOCS_TIERS.find((t) => t.id === docsTier) || DOCS_TIERS[1];
+  const activeTierData = DOCS_TIERS.find((t) => t.id === docsTier) || DOCS_TIERS[0];
+  const activeToolData = TOOLS_VIEWS.find((t) => t.id === toolsSubView) || TOOLS_VIEWS[0];
   const leaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const searchResults = useMemo(() => {
+    const q = globalSearch.trim().toLowerCase();
+    if (!q) return [];
+    return GLOBAL_SEARCH_ENTRIES.filter(
+      (entry) => entry.label.toLowerCase().includes(q) || entry.keywords.includes(q) || entry.tierLabel.toLowerCase().includes(q)
+    ).slice(0, 8);
+  }, [globalSearch]);
+
+  const handleSelectSearchResult = (entry: GlobalSearchEntry) => {
+    setActiveTab(entry.tab);
+    if (entry.docsTier) setDocsTier(entry.docsTier);
+    if (entry.docsSubView) setDocsSubView(entry.docsSubView);
+    if (entry.toolsSubView) setToolsSubView(entry.toolsSubView);
+    if (entry.saasTemplate) setActiveSaasTemplate(entry.saasTemplate);
+    if (entry.tab === "docs") setDocsMenuExpanded(true);
+    setGlobalSearch("");
+    setSearchFocused(false);
+  };
+
+  // Visual Studio Dock State
+  const [activeSaasTemplate, setActiveSaasTemplate] = useState<SaasTemplateKey>("zerolight_core");
+  const [brandName, setBrandName] = useState("ZeroLight OS");
+  const [brandMark, setBrandMark] = useState("ZL");
+  const [brandLogoUrl, setBrandLogoUrl] = useState<string | null>(null);
+  const [selectedIconMark, setSelectedIconMark] = useState<string>("shield");
   const [settingsTab, setSettingsTab] = useState<SettingsSubTab>("general");
 
   // Comprehensive Settings State
@@ -186,7 +283,6 @@ export function DashboardShell() {
   ]);
 
   // MCP & AI Settings
-  const [mcpStatus, setMcpStatus] = useState<"connected" | "standby">("connected");
   const [mcpToolList, setMcpToolList] = useState(true);
   const [mcpToolSchema, setMcpToolSchema] = useState(true);
   const [mcpToolAdd, setMcpToolAdd] = useState(true);
@@ -220,10 +316,22 @@ export function DashboardShell() {
       }
       if (e.key === "Escape") {
         setHoveredTab(null);
+        setShowNotifications(false);
+        setShowUserMenu(false);
+        setSearchFocused(false);
+      }
+    };
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setSearchFocused(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   // Hover grace timer handlers for collapsed flyout popover (150ms grace)
@@ -279,14 +387,19 @@ export function DashboardShell() {
 
   const navItems = [
     { id: "overview", label: "Overview", icon: <Home className="w-4 h-4" /> },
-    { id: "ds-editor", label: "Visual Studio Dock", icon: <SlidersHorizontal className="w-4 h-4" />, badge: "Tokens" },
-    { id: "docs", label: "Design System", icon: <Layers className="w-4 h-4" />, badge: "119" },
-    { id: "tools", label: "Map Studio & Tools", icon: <Wrench className="w-4 h-4" />, badge: "Vector" },
+    { id: "docs", label: "Design System", icon: <Layers className="w-4 h-4" />, badge: "120" },
+    { id: "tools", label: "Tools", icon: <Wrench className="w-4 h-4" />, badge: "4" },
     { id: "settings", label: "Settings & MCP", icon: <Settings className="w-4 h-4" /> },
   ];
 
+  const showToolToast = (msg: string) => {
+    setToastMessage(msg);
+    setSaveSuccessToast(true);
+    setTimeout(() => setSaveSuccessToast(false), 2500);
+  };
+
   return (
-    <div className="min-h-screen w-full bg-[#F8FAFC] text-zinc-950 flex relative font-sans">
+    <div className="h-screen w-full bg-[#F1F3F5] text-zinc-950 flex p-3 md:p-4 gap-3 md:gap-4 overflow-hidden font-sans">
       {/* Toast Notification */}
       {saveSuccessToast && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 text-white text-xs font-semibold shadow-xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-200">
@@ -295,18 +408,17 @@ export function DashboardShell() {
         </div>
       )}
 
-      {/* ── HIGH-DEPTH OBSIDIAN DARK FLOATING SIDEBAR ── */}
+      {/* ── HIGH-DEPTH OBSIDIAN DARK FIXED/STICKY SIDEBAR (EXACT MATCH TO ATOM/MOLECULE USER REFERENCE) ── */}
       <LayoutGroup>
         <motion.aside
-          animate={{ width: isCollapsed ? 72 : 260 }}
+          animate={{ width: isCollapsed ? 68 : 256 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed left-4 top-4 bottom-4 z-40 bg-[#0B0F19] text-white border border-white/[0.08] rounded-[24px] p-2.5 flex flex-col justify-between shadow-[0_12px_30px_rgba(0,0,0,0.5)] select-none overflow-hidden"
+          className="h-full bg-[#0B0F19] text-white border border-white/[0.08] rounded-[20px] p-2.5 flex flex-col justify-between shadow-lg select-none overflow-hidden shrink-0"
         >
-          <div className="space-y-4">
+          <div className="space-y-3 flex-1 flex flex-col min-h-0">
             {/* Top Brand Mark with Invariant Centroid + Collapse Button */}
-            <div className="h-10 px-1 flex items-center justify-between border-b border-white/[0.08] pb-2.5">
+            <div className="h-10 px-1 flex items-center justify-between border-b border-white/[0.08] pb-2 shrink-0">
               <div className="flex items-center min-w-0">
-                {/* Invariant horizontal icon centroid (centered at x = 36px) */}
                 <div className="w-8 h-8 rounded-xl bg-white/10 text-white flex items-center justify-center font-bold text-xs shadow-xs overflow-hidden shrink-0 border border-white/10">
                   {tokens.logoLight || tokens.logoDark ? (
                     <img
@@ -352,8 +464,8 @@ export function DashboardShell() {
               )}
             </div>
 
-            {/* Navigation Items with Shared Layout Glide Indicator */}
-            <nav className="space-y-1">
+            {/* Navigation Items */}
+            <nav className="space-y-1 flex-1 overflow-y-auto no-scrollbar">
               {navItems.map((item) => {
                 const active = activeTab === item.id;
                 return (
@@ -365,7 +477,23 @@ export function DashboardShell() {
                   >
                     <button
                       type="button"
-                      onClick={() => setActiveTab(item.id as DashboardTab)}
+                      onClick={() => {
+                        if (item.id === "docs") {
+                          if (activeTab === "docs") {
+                            setDocsMenuExpanded((p) => !p);
+                          } else {
+                            setActiveTab("docs");
+                            setDocsMenuExpanded(true);
+                            setDocsTier("foundations");
+                            setDocsSubView("catalog");
+                          }
+                        } else if (item.id === "tools") {
+                          setActiveTab("tools");
+                          setToolsSubView("index");
+                        } else {
+                          setActiveTab(item.id as DashboardTab);
+                        }
+                      }}
                       className={`w-full h-10 px-2 rounded-xl text-xs font-semibold flex items-center relative transition-colors cursor-pointer group ${
                         active ? "text-white" : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06]"
                       }`}
@@ -379,12 +507,10 @@ export function DashboardShell() {
                         />
                       )}
 
-                      {/* Invariant Horizontal Icon Centroid */}
                       <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 z-10">
                         {item.icon}
                       </div>
 
-                      {/* Animated Label & Badges Reveal */}
                       <AnimatePresence initial={false}>
                         {!isCollapsed && (
                           <motion.div
@@ -409,9 +535,9 @@ export function DashboardShell() {
                       </AnimatePresence>
                     </button>
 
-                    {/* Submenu for Design System in Expanded Mode: 6 Atomic Tiers */}
-                    {item.id === "docs" && !isCollapsed && (
-                      <div className="mx-2 my-2 p-1.5 rounded-xl bg-white/[0.06] border border-white/10 space-y-1 shadow-inner">
+                    {/* Submenu for Design System in Expanded Mode: 6 Atomic Tiers (Flat Quiet Option A) */}
+                    {item.id === "docs" && !isCollapsed && docsMenuExpanded && (
+                      <div className="ml-7 pl-3 py-1 my-1 border-l border-white/10 space-y-1 relative">
                         {DOCS_TIERS.map((tier) => {
                           const isTierActive = activeTab === "docs" && docsTier === tier.id;
                           return (
@@ -426,22 +552,22 @@ export function DashboardShell() {
                                   setDocsSubView(tier.defaultTab);
                                 }
                               }}
-                              className={`w-full px-3 py-1.5 rounded-lg text-[11px] font-medium flex items-center justify-between transition-colors cursor-pointer relative z-0 ${
+                              className={`w-full px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors cursor-pointer relative ${
                                 isTierActive
-                                  ? "text-white font-semibold"
-                                  : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
+                                  ? "text-white font-bold"
+                                  : "text-zinc-400 hover:text-zinc-200 font-normal"
                               }`}
                             >
-                              {/* Smooth kinetic background glider without awkward floating capsule */}
+                              {/* Left crisp white indicator pip on the tree guide line (Zero glow, zero drop-shadow, dead-center) */}
                               {isTierActive && (
                                 <motion.div
                                   layoutId="sidebar-sub-pip"
-                                  className="absolute inset-0 rounded-lg bg-white/[0.14] border border-white/10 shadow-xs -z-10"
-                                  transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                                  className="absolute -left-[15px] top-[calc(50%-7px)] w-1.5 h-3.5 rounded-full bg-white"
+                                  transition={{ type: "spring", stiffness: 450, damping: 30 }}
                                 />
                               )}
                               <span className="truncate">{tier.label}</span>
-                              <span className="text-[10px] font-sans tabular-nums text-zinc-400 font-bold ml-2 shrink-0">
+                              <span className="text-[10px] font-sans tabular-nums text-zinc-400 font-normal ml-2 shrink-0">
                                 {tier.count}
                               </span>
                             </button>
@@ -498,7 +624,7 @@ export function DashboardShell() {
           </div>
 
           {/* Floating Sidebar Footer: User Profile & Expand Button */}
-          <div className="space-y-2 pt-2.5 border-t border-white/[0.08]">
+          <div className="space-y-2 pt-2.5 border-t border-white/[0.08] shrink-0">
             {isCollapsed && (
               <button
                 type="button"
@@ -510,160 +636,330 @@ export function DashboardShell() {
               </button>
             )}
 
-            {/* User Profile Card */}
+            {/* Sidebar Footer: Authenticated Admin or Public ZeroRapid Studio Card */}
             <div className={`p-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center ${isCollapsed ? "justify-center" : "justify-between"}`}>
               <div className="flex items-center gap-2 min-w-0">
                 <div className="w-8 h-8 rounded-full bg-white/15 text-white font-bold flex items-center justify-center text-[11px] shrink-0 border border-white/10">
-                  {user?.avatar || "ZL"}
+                  {isAuthenticated ? (user?.avatar || "ZL") : "ZR"}
                 </div>
                 {!isCollapsed && (
                   <div className="min-w-0">
                     <span className="text-xs font-semibold text-white truncate block">
-                      {user?.username || "zerolight"}
+                      {isAuthenticated ? (user?.username || "zerolight") : "ZeroRapid Public"}
                     </span>
-                    <span className="text-[10px] text-zinc-400 truncate block">Root Admin</span>
+                    <span className="text-[10px] text-zinc-400 truncate block">
+                      {isAuthenticated ? "Root Admin" : "zerorapid.in"}
+                    </span>
                   </div>
                 )}
               </div>
 
               {!isCollapsed && (
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="p-1.5 text-zinc-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer"
-                  title="Sign Out / Lock Session"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </button>
+                isAuthenticated ? (
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="p-1.5 text-zinc-400 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors cursor-pointer"
+                    title="Sign Out / Lock Session"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <a
+                    href="https://zerorapid.in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+                    title="Visit ZeroRapid Agency (zerorapid.in)"
+                  >
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                )
               )}
             </div>
           </div>
         </motion.aside>
       </LayoutGroup>
 
-      {/* ── MAIN WORKSPACE CONTENT CANVAS ── */}
-      <main
-        className={`flex-1 transition-[margin] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-          isCollapsed ? "ml-[96px]" : "ml-[288px]"
-        } p-6 md:p-8 min-h-screen bg-[#F8FAFC]`}
-      >
-        {/* TAB 1: OVERVIEW DASHBOARD */}
-        {activeTab === "overview" && (
-          <div className="max-w-7xl mx-auto space-y-7 animate-in fade-in duration-200">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-zinc-200/80">
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight text-zinc-950">
-                  Welcome to ZeroLight OS
-                </h1>
-                <p className="text-xs text-zinc-500 mt-0.5">
-                  Authenticated as <strong className="text-zinc-800">zerolight</strong> • Session token active
-                </p>
-              </div>
+      {/* ── RIGHT COLUMN CONTAINER (TOP HEADER + BREADCRUMBS + BIG SCROLLABLE WORKSPACE BOX) ── */}
+      <div className="flex-1 flex flex-col h-full min-w-0 gap-2.5 md:gap-3 overflow-hidden">
+        {/* ── MASTER PERSISTENT TOP HEADER (OPTION A: GLOBAL SEARCH + UTILITY CONTROLS) ── */}
+        <header
+          data-zl-studio-chrome="true"
+          className="shrink-0 bg-white border border-zinc-200/80 rounded-[18px] px-4 py-2 flex items-center justify-between gap-4 shadow-2xs z-20"
+        >
+          {/* Global Search Bar with Live Instant Navigation Popover */}
+          <div ref={searchContainerRef} className="relative flex-1 max-w-sm sm:max-w-md">
+            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search components, tokens, docs..."
+              value={globalSearch}
+              onFocus={() => setSearchFocused(true)}
+              onChange={(e) => {
+                setGlobalSearch(e.target.value);
+                setSearchFocused(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && searchResults.length > 0) {
+                  e.preventDefault();
+                  handleSelectSearchResult(searchResults[0]);
+                }
+              }}
+              className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-zinc-50 border border-zinc-200/80 text-xs text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 transition-all font-sans"
+            />
+            {globalSearch && (
+              <button
+                type="button"
+                onClick={() => setGlobalSearch("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-800 cursor-pointer"
+                title="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
 
-              <div className="flex items-center gap-2.5">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  iconLeft={<Layers className="w-3.5 h-3.5" />}
-                  onClick={() => setActiveTab("docs")}
-                >
-                  Design System
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  iconLeft={<SlidersHorizontal className="w-3.5 h-3.5" />}
-                  onClick={() => setActiveTab("ds-editor")}
-                >
-                  Launch Visual Studio
-                </Button>
-              </div>
-            </div>
-
-            {/* 4 Live Informational Trust Data Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatCard
-                label="TOTAL COMPONENTS ADDED"
-                value="119 Primitives"
-                delta="42 Atoms • 44 Molecules • 18 Organisms • 15 Blocks"
-                trend="up"
-                comparisonText="Zero-dependency registry synced"
-              />
-              <StatCard
-                label="TOTAL SAAS TEMPLATES"
-                value="12 Templates"
-                delta="Production B2B & Fintech"
-                trend="up"
-                comparisonText="ZeroLight token-bound"
-              />
-              <StatCard
-                label="TOTAL NICHES COVERED"
-                value="8 Verticals"
-                delta="Fintech, DevTools, AI & Health"
-                trend="neutral"
-                comparisonText="Enterprise domain spectrum"
-              />
-              <StatCard
-                label="TOTAL CLIENTS SERVED"
-                value="1,420+ Teams"
-                delta="99.98% Uptime"
-                trend="up"
-                comparisonText="SOC2 Type II & HIPAA certified"
-              />
-            </div>
-
-            {/* Tools Section Preview Card */}
-            <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 shadow-xs space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-zinc-950 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <Wrench className="w-5 h-5" />
+            {/* Interactive Global Search Results Dropdown */}
+            {searchFocused && globalSearch.trim().length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-2 rounded-2xl bg-white border border-zinc-200 shadow-2xl p-1.5 z-50 max-h-80 overflow-y-auto animate-in fade-in zoom-in-95 duration-150">
+                {searchResults.length > 0 ? (
+                  <div className="space-y-0.5">
+                    {searchResults.map((res) => (
+                      <button
+                        key={res.id}
+                        type="button"
+                        onClick={() => handleSelectSearchResult(res)}
+                        className="w-full px-3 py-2 rounded-xl text-left hover:bg-zinc-100 flex items-center justify-between gap-2 transition-colors cursor-pointer"
+                      >
+                        <div className="min-w-0">
+                          <div className="text-xs font-semibold text-zinc-900 truncate">{res.label}</div>
+                          <div className="text-[10px] text-zinc-500 truncate">{res.tierLabel}</div>
+                        </div>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                      </button>
+                    ))}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-zinc-950 tracking-tight">
-                        Vector Map Studio & Asset Downloader
-                      </h3>
-                      <Badge variant="healthy">Tools Preview</Badge>
+                ) : (
+                  <div className="px-3 py-4 text-center text-xs text-zinc-500">
+                    No matching components or tokens for &ldquo;{globalSearch}&rdquo;
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Right Header Utility Actions: Notifications, Settings & User Profile Pill */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Notifications Bell */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => { setShowNotifications((p) => !p); setShowUserMenu(false); }}
+                className="p-2 text-zinc-500 hover:text-zinc-900 rounded-xl hover:bg-zinc-100 transition-colors relative cursor-pointer"
+                title="Notifications"
+              >
+                <Bell className="w-4 h-4" />
+                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-rose-500" />
+              </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-white border border-zinc-200 p-3 shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="flex items-center justify-between pb-2 border-b border-zinc-100">
+                    <span className="text-xs font-bold text-zinc-900">System Notifications</span>
+                    <span className="text-[10px] text-zinc-400 font-medium">3 New</span>
+                  </div>
+                  <div className="space-y-2 mt-2">
+                    <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+                      <p className="text-xs font-semibold text-zinc-900">HSM Vault Synchronized</p>
+                      <p className="text-[10px] text-zinc-400 mt-0.5">SOC2 Type II compliant encryption active</p>
                     </div>
-                    <p className="text-xs text-zinc-500 mt-1 max-w-2xl leading-relaxed">
-                      Interactive tool for customizing 6 monochrome render styles (Vector, Halftone Dots, Pixels, Architectural Crosses, Diamonds, and Hatching), projecting regional edge telemetry, and downloading standalone high-resolution SVG vector maps directly into your codebase.
-                    </p>
+                    <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+                      <p className="text-xs font-semibold text-zinc-900">295 Pattern Variants Verified</p>
+                      <p className="text-[10px] text-zinc-400 mt-0.5">Zero-dependency registry 100% healthy</p>
+                    </div>
+                    <div className="p-2 rounded-xl bg-zinc-50 border border-zinc-100">
+                      <p className="text-xs font-semibold text-zinc-900">MCP Server Ready on Stdio</p>
+                      <p className="text-[10px] text-zinc-400 mt-0.5">Cursor & Claude Code tools loaded</p>
+                    </div>
                   </div>
                 </div>
+              )}
+            </div>
 
-                <Button
-                  variant="primary"
-                  size="sm"
-                  iconRight={<ArrowUpRight className="w-3.5 h-3.5" />}
-                  onClick={() => setActiveTab("tools")}
-                  className="shrink-0"
+            {/* Settings Gear */}
+            <button
+              type="button"
+              onClick={() => setActiveTab("settings")}
+              className="p-2 text-zinc-500 hover:text-zinc-900 rounded-xl hover:bg-zinc-100 transition-colors cursor-pointer"
+              title="Settings & MCP"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+
+            {/* Public Agency CTA + Session Controls */}
+            <a href="https://zerorapid.in" target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex">
+              <Button variant="outline" size="sm" iconRight={<ArrowUpRight className="w-3.5 h-3.5" />}>
+                zerorapid.in
+              </Button>
+            </a>
+
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => { setShowUserMenu((p) => !p); setShowNotifications(false); }}
+                  className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-zinc-100 hover:bg-zinc-200/80 border border-zinc-200/80 transition-colors cursor-pointer"
+                  title="Account & Session"
                 >
-                  Launch Map Studio
-                </Button>
+                  <div className="w-7 h-7 rounded-full bg-black text-white text-[11px] font-bold flex items-center justify-center shrink-0 shadow-2xs">
+                    {user?.avatar || "ZL"}
+                  </div>
+                  <span className="text-xs font-semibold text-zinc-900 truncate max-w-[90px]">
+                    {user?.username || "zerolight"}
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-zinc-400" />
+                </button>
+
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white border border-zinc-200 p-2 shadow-xl z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-3 py-2 border-b border-zinc-100">
+                      <p className="text-xs font-semibold text-zinc-900">{user?.username || "zerolight"}</p>
+                      <p className="text-[10px] text-zinc-400 truncate">admin@zerorapid.in</p>
+                      <span className="inline-block mt-1 text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold">
+                        Root Admin • Active
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setActiveTab("settings"); setShowUserMenu(false); }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-zinc-700 hover:text-zinc-950 hover:bg-zinc-50 rounded-lg transition-colors cursor-pointer text-left mt-1"
+                    >
+                      <Settings className="w-3.5 h-3.5 text-zinc-500" />
+                      <span>Platform Settings</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { logout(); setShowUserMenu(false); }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer text-left"
+                    >
+                      <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  if (onRequireAuth) onRequireAuth();
+                  else setActiveTab("settings");
+                }}
+              >
+                Admin Sign In
+              </Button>
+            )}
+          </div>
+        </header>
+
+        {/* ── BREADCRUMB STRIP (BELOW HEADER IN GREY GAP) ── */}
+        <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-medium px-2 shrink-0">
+          <span className="hover:text-zinc-600 cursor-pointer" onClick={() => setActiveTab("overview")}>ZeroLight OS</span>
+          <span>/</span>
+          <span className="text-zinc-700 font-semibold capitalize">
+            {activeTab === "overview" && "Overview"}
+            {activeTab === "docs" && `Design System / ${activeTierData.label}`}
+            {activeTab === "tools" && (toolsSubView === "index" ? "Tools" : `Tools / ${activeToolData.label}`)}
+            {activeTab === "settings" && "Settings & MCP"}
+          </span>
+        </div>
+
+        {/* ── BIG ROUNDED WHITE WORKSPACE CARD (ONLY THIS BOX HAS OVERFLOW-Y-AUTO EXCEPT STUDIO DOCK WHICH IS A FULL-HEIGHT DOCK) ── */}
+        <main
+          className={`flex-1 rounded-[18px] border border-zinc-200/80 shadow-xs min-h-0 ${
+            activeTab === "tools" && toolsSubView === "studio"
+              ? "overflow-hidden flex flex-col p-0 bg-[#FAFAFA]"
+              : "overflow-y-auto p-6 md:p-8 bg-white"
+          }`}
+        >
+          {/* TAB 1: OVERVIEW DASHBOARD */}
+        {activeTab === "overview" && (
+          <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200">
+            {/* Header: Exact Same Consistent Typography, Color & Placement as Visual Studio Dock */}
+            <div className="pb-0.5 shrink-0">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                Welcome to ZeroLight OS
+              </h1>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Enterprise Design System & Component Workspace
+              </p>
+            </div>
+
+            {/* 4 Clean Metric Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Card 1: Primitives */}
+              <div className="p-5 rounded-2xl bg-white border border-zinc-200/90 shadow-2xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-zinc-400 tracking-wider uppercase">PRIMITIVES</span>
+                  <span className="sr-only">TOTAL COMPONENTS ADDED</span>
+                  <Sliders className="w-4 h-4 text-zinc-400" />
+                </div>
+                <div className="text-3xl font-extrabold text-zinc-950 tracking-tight font-sans tabular-nums">
+                  120
+                </div>
+                <div className="text-xs text-zinc-500 pt-1">
+                  43 Atoms • 45 Molecules • 19 Organisms • 13 Templates & Views
+                </div>
               </div>
 
-              {/* Feature Highlights Pills */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-zinc-100">
-                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
-                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">RENDER MODES</span>
-                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">6 Pattern Styles</span>
+              {/* Card 2: Templates */}
+              <div className="p-5 rounded-2xl bg-white border border-zinc-200/90 shadow-2xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-zinc-400 tracking-wider uppercase">TEMPLATES</span>
+                  <span className="sr-only">TOTAL SAAS TEMPLATES</span>
+                  <FileCode2 className="w-4 h-4 text-zinc-400" />
                 </div>
-                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
-                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">EXPORT FORMAT</span>
-                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">Standalone SVG</span>
+                <div className="text-3xl font-extrabold text-zinc-950 tracking-tight font-sans tabular-nums">
+                  12
                 </div>
-                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
-                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">EXTERNAL DEPENDENCY</span>
-                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">Zero API Keys</span>
+                <div className="text-xs text-zinc-500 pt-1">
+                  Production B2B & Fintech
                 </div>
-                <div className="p-3 rounded-xl bg-zinc-50/70 border border-zinc-200/60">
-                  <span className="text-[10px] font-bold text-zinc-400 block uppercase tracking-wider">GEOMETRY ENGINE</span>
-                  <span className="text-xs font-semibold text-zinc-900 mt-0.5 block">D3 Natural Earth</span>
+              </div>
+
+              {/* Card 3: Verticals */}
+              <div className="p-5 rounded-2xl bg-white border border-zinc-200/90 shadow-2xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-zinc-400 tracking-wider uppercase">VERTICALS</span>
+                  <span className="sr-only">TOTAL NICHES COVERED</span>
+                  <Building className="w-4 h-4 text-zinc-400" />
+                </div>
+                <div className="text-3xl font-extrabold text-zinc-950 tracking-tight font-sans tabular-nums">
+                  8
+                </div>
+                <div className="text-xs text-zinc-500 pt-1">
+                  Fintech, DevTools, AI & Health
+                </div>
+              </div>
+
+              {/* Card 4: Teams */}
+              <div className="p-5 rounded-2xl bg-white border border-zinc-200/90 shadow-2xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-zinc-400 tracking-wider uppercase">TEAMS</span>
+                  <span className="sr-only">TOTAL CLIENTS SERVED</span>
+                  <User className="w-4 h-4 text-zinc-400" />
+                </div>
+                <div className="text-3xl font-extrabold text-zinc-950 tracking-tight font-sans tabular-nums">
+                  1,420+
+                </div>
+                <div className="text-xs text-zinc-500 pt-1">
+                  99.98% Uptime • SOC2 Type II & HIPAA
                 </div>
               </div>
             </div>
+
+            {/* Vector Map Studio & Asset Downloader tools moved to dedicated Tools tab */}
 
             {/* Enterprise FAQ Section */}
             <div className="space-y-4 pt-1">
@@ -755,7 +1051,10 @@ export function DashboardShell() {
               </div>
 
               <div
-                onClick={() => setActiveTab("tools")}
+                onClick={() => {
+                  setActiveTab("tools");
+                  setToolsSubView("atlas");
+                }}
                 className="p-5 rounded-2xl bg-white border border-zinc-200/90 hover:border-zinc-400 transition-all cursor-pointer shadow-xs group space-y-2"
               >
                 <div className="flex items-center justify-between">
@@ -775,26 +1074,57 @@ export function DashboardShell() {
           </div>
         )}
 
-        {/* TAB 2: VISUAL STUDIO DOCK */}
-        {activeTab === "ds-editor" && (
-          <div className="w-full -mt-2 -ml-2 -mr-2 animate-in fade-in duration-200">
-            <ZeroLightStudio initialTier="atoms" />
-          </div>
-        )}
-
-        {/* TAB 3: ZEROLIGHT DESIGN SYSTEM DOCUMENTATION & LIBRARIES */}
+          {/* TAB 2: DESIGN SYSTEM */}
         {activeTab === "docs" && (
-          <div className="space-y-6 animate-in fade-in duration-200">
+          <div className="space-y-4 animate-in fade-in duration-200">
+            {/* ════ PINNED TITLE & HEADLINE (EXACT SAME STYLE & PLACEMENT AS VISUAL STUDIO DOCK) ════ */}
+            <div className="pb-0.5 shrink-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                  Design System
+                </h1>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  6-tier atomic component registry, token foundations, and enterprise SaaS UI patterns.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                {/* Live Token Sync Status Pills (Connected to Visual Studio Dock inside Tools) */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("tools");
+                    setToolsSubView("studio");
+                  }}
+                  className="px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200/80 text-[11px] font-semibold text-zinc-700 hover:border-zinc-400 transition flex items-center gap-2 cursor-pointer"
+                  title="Edit active Design System tokens in Visual Studio Dock"
+                >
+                  <span
+                    className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
+                    style={{ backgroundColor: tokens.primaryButtonColor || "#0F172A" }}
+                  />
+                  <span className="tabular-nums">{tokens.cornerRadius ?? 12}px</span>
+                  <span className="text-zinc-300">•</span>
+                  <span className="truncate max-w-[110px]" title={tokens.fontFamily || "Plus Jakarta Sans"}>
+                    {tokens.fontFamily || "Plus Jakarta Sans"}
+                  </span>
+                  <span className="text-zinc-300">•</span>
+                  <DynamicIcon name="sparkles" size={12} library={tokens.iconLibrary} />
+                  <span className="text-zinc-500">Tune Tokens</span>
+                </button>
+                <Badge variant="healthy">295 SaaS Pattern Variants Active</Badge>
+              </div>
+            </div>
+
             {/* Top Sub-Nav Switcher inside Big Container Card */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/10 shadow-xs space-y-4">
+            <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200/90 dark:border-white/10 shadow-xs space-y-3.5">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 {/* Active Tier Breadcrumb & Title */}
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Design System /</span>
-                    <span className="text-base font-extrabold text-zinc-950 dark:text-white tracking-tight">{activeTierData.label}</span>
+                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Tier /</span>
+                    <span className="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">{activeTierData.label}</span>
                   </div>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {activeTierData.id === "foundations" && "Core tokens, hairlines, dividers, and spring motion physics."}
                     {activeTierData.id === "atoms" && "Foundational interactive controls, inputs, and status indicators."}
                     {activeTierData.id === "molecules" && "Composite form fields, stat cards, alerts, and micro-charts."}
@@ -803,46 +1133,48 @@ export function DashboardShell() {
                     {activeTierData.id === "pages" && "Complete working SaaS destination applications with live workflows."}
                   </p>
                 </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <Badge variant="healthy">295 SaaS Pattern Variants Active</Badge>
-                </div>
               </div>
 
-              {/* Sub-menu Tabs Container */}
-              <div className="inline-flex max-w-fit p-1 rounded-xl bg-zinc-100/90 dark:bg-white/[0.06] border border-zinc-200/60 dark:border-white/10 items-center gap-1 overflow-x-auto no-scrollbar">
-                {activeTierData.tabs.map((sub) => {
-                  const active = docsSubView === sub.id;
-                  return (
-                    <button
-                      key={sub.id}
-                      type="button"
-                      onClick={() => setDocsSubView(sub.id as DocsSubView)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                        active
-                          ? "bg-white dark:bg-white/20 text-zinc-950 dark:text-white shadow-xs font-bold"
-                          : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/[0.08]"
-                      }`}
-                    >
-                      <span>{sub.label}</span>
-                      <span
-                        className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-full font-bold ${
+              {/* Sub-menu Tabs Container (Horizontally Scroll-Protected, Zero Content Bleeding) */}
+              <div className="w-full overflow-x-auto scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-700 pb-1">
+                <div className="inline-flex p-1 rounded-xl bg-zinc-100/90 dark:bg-white/[0.06] border border-zinc-200/60 dark:border-white/10 items-center gap-1">
+                  {activeTierData.tabs.map((sub) => {
+                    const active = docsSubView === sub.id;
+                    return (
+                      <button
+                        key={sub.id}
+                        type="button"
+                        onClick={() => setDocsSubView(sub.id as DocsSubView)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                           active
-                            ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
-                            : "bg-zinc-200/80 dark:bg-white/10 text-zinc-600 dark:text-zinc-400"
+                            ? "bg-white dark:bg-white/20 text-zinc-950 dark:text-white shadow-xs font-bold"
+                            : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white hover:bg-white/60 dark:hover:bg-white/[0.08]"
                         }`}
                       >
-                        {sub.count}
-                      </span>
-                    </button>
-                  );
-                })}
+                        <span>{sub.label}</span>
+                        <span
+                          className={`text-[10px] font-sans tabular-nums px-1.5 py-0.2 rounded-full font-bold ${
+                            active
+                              ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
+                              : "bg-zinc-200/80 dark:bg-white/10 text-zinc-600 dark:text-zinc-400"
+                          }`}
+                        >
+                          {sub.count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
             {/* Sub-view Content */}
             {docsSubView === "catalog" && <SaaSTokensLibrary />}
-            {false && <ZeroLightDocsPortal />}
+            {docsSubView === "catalog-molecules" && (
+              <div className="w-full">
+                <ZeroLightDocsPortal embedded defaultSectionId="area-chart" />
+              </div>
+            )}
             {docsSubView === "buttons" && <SaaSButtonLibrary />}
             {docsSubView === "inputs" && <SaaSInputFieldLibrary />}
             {docsSubView === "selections" && <SaaSSelectionLibrary />}
@@ -860,33 +1192,177 @@ export function DashboardShell() {
           </div>
         )}
 
-        {/* TAB 4: TOOLS & VECTOR MAP ASSET GENERATOR */}
+          {/* TAB 3: UNIFIED TOOLS HUB (COLLECTION PREVIEW CARDS FIRST -> DEDICATED TOOL WORKSPACE) */}
         {activeTab === "tools" && (
-          <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-200/80">
-              <div>
-                <h1 className="text-xl font-bold tracking-tight text-zinc-950">
-                  Vector Map Studio & Asset Generator
-                </h1>
-                <p className="text-xs text-zinc-500">
-                  Interactive tool for styling 2D monochrome vector maps, regional focus, and downloading standalone SVG assets.
-                </p>
-              </div>
+          <div className={toolsSubView === "studio" ? "w-full flex-1 flex flex-col min-h-0 animate-in fade-in duration-200" : "max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200"}>
+            {toolsSubView === "index" ? (
+              <ToolsDirectory
+                brandName={brandName}
+                onOpenTool={(toolId) => setToolsSubView(toolId)}
+              />
+            ) : (
+              <>
+                {/* Dedicated Tool Header Bar (No Tab Menu Across Tools) */}
+                <div
+                  data-zl-studio-chrome="true"
+                  className={
+                    toolsSubView === "studio"
+                      ? "px-4 py-2 bg-white border-b flex flex-wrap items-center justify-between gap-2 shrink-0"
+                      : "pb-3 border-b flex flex-wrap items-center justify-between gap-3"
+                  }
+                  style={{ borderColor: tokens.universalBorderColor }}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setToolsSubView("index")}
+                      iconLeft={<ChevronLeft className="w-3.5 h-3.5" />}
+                    >
+                      All Tools
+                    </Button>
+                    <span className="text-xs font-bold tracking-tight" style={{ color: tokens.textIconColor }}>
+                      {activeToolData.label}
+                    </span>
+                    <Badge variant="neutral" size="xs" showDot={false}>
+                      {activeToolData.badge}
+                    </Badge>
+                  </div>
 
-              <div className="flex items-center gap-2">
-                <Badge variant="healthy">6 Styles Active</Badge>
-                <Badge variant="neutral">SVG Export Ready</Badge>
-              </div>
-            </div>
+                  {toolsSubView === "studio" && (
+                    <div className="flex flex-wrap items-center gap-2 shrink-0">
+                      <SegmentedControl<SaasTemplateKey>
+                        value={activeSaasTemplate}
+                        onChange={(tmpl) => setActiveSaasTemplate(tmpl)}
+                        options={[
+                          { key: "zerolight_core", label: "Spec Catalog" },
+                          { key: "hero_showcase", label: "Hero & Bento" },
+                          { key: "unified_enterprise", label: "Enterprise Console" },
+                          { key: "customer_crm", label: "CRM Pipeline" },
+                          { key: "metric_deck", label: "SaaS Metrics" },
+                        ]}
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.print()}
+                        iconLeft={<Printer className="w-3.5 h-3.5" />}
+                      >
+                        Print PDF
+                      </Button>
+                      <Link href="/studio">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          iconLeft={<ExternalLink className="w-3.5 h-3.5" />}
+                        >
+                          Full Studio
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
 
-            <div className="rounded-2xl border border-zinc-200/90 bg-white p-4 shadow-xs">
-              <WorldAtlasMap className="w-full min-h-[580px]" />
-            </div>
+                {toolsSubView === "studio" && (
+                  <>
+                    <div className="w-full flex-1 min-h-0 flex flex-col lg:flex-row items-stretch">
+                      <div className="flex-1 min-w-0 flex flex-col h-full bg-[#FAFAFA]">
+                        <SaasTemplateStage
+                          activeTemplate={activeSaasTemplate}
+                          onTemplateChange={setActiveSaasTemplate}
+                          brandName={brandName}
+                          brandMark={brandMark}
+                          brandLogoUrl={brandLogoUrl}
+                          selectedIconMark={selectedIconMark}
+                          className="h-full"
+                        />
+                      </div>
+                      <div className="w-full lg:w-[320px] shrink-0 h-full flex flex-col border-t lg:border-t-0 lg:border-l border-zinc-200/80 bg-white">
+                        <TokenStudioSidebar
+                          brandName={brandName}
+                          onBrandNameChange={setBrandName}
+                          brandMark={brandMark}
+                          onBrandMarkChange={setBrandMark}
+                          brandLogoUrl={brandLogoUrl}
+                          onBrandLogoUpload={setBrandLogoUrl}
+                          selectedIconMark={selectedIconMark}
+                          onSelectedIconMarkChange={setSelectedIconMark}
+                          className="h-full"
+                        />
+                      </div>
+                    </div>
+                    <span className="sr-only">Visual Studio Dock Component Test Bench</span>
+                  </>
+                )}
+
+                {toolsSubView === "atlas" && (
+                  <div className="space-y-6">
+                    <div
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b"
+                      style={{ borderColor: tokens.universalBorderColor }}
+                    >
+                      <div>
+                        <h1 className="text-xl font-bold tracking-tight" style={{ color: tokens.textIconColor }}>
+                          Vector Map Studio & Asset Generator
+                        </h1>
+                        <p className="text-xs opacity-70" style={{ color: tokens.textIconColor }}>
+                          Interactive tool for styling 2D monochrome vector maps, regional focus, and downloading standalone SVG assets.
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Badge variant="healthy">6 Styles Active</Badge>
+                        <Badge variant="neutral">SVG Export Ready</Badge>
+                      </div>
+                    </div>
+
+                    <WorldAtlasMap className="w-full min-h-[580px]" />
+                  </div>
+                )}
+
+                {toolsSubView === "zeroflash" && (
+                  <ZeroFlashTool
+                    brandName={brandName}
+                    onBrandNameChange={setBrandName}
+                    brandLogoUrl={brandLogoUrl}
+                    onBrandLogoUpload={setBrandLogoUrl}
+                    onStatusToast={showToolToast}
+                  />
+                )}
+
+                {toolsSubView === "zeroauditor" && (
+                  <ZeroAuditorTool onStatusToast={showToolToast} />
+                )}
+              </>
+            )}
           </div>
         )}
 
-        {/* TAB 5: COMPREHENSIVE ENTERPRISE SETTINGS & MCP INTEGRATION */}
+          {/* TAB 5: COMPREHENSIVE ENTERPRISE SETTINGS & MCP INTEGRATION */}
         {activeTab === "settings" && (
+          !isAuthenticated ? (
+            <div className="max-w-xl mx-auto py-12 animate-in fade-in duration-200">
+              <Card padding="lg" className="space-y-4">
+                <div className="flex items-center gap-2.5">
+                  <ShieldCheck className="w-5 h-5" style={{ color: tokens.primaryButtonColor }} />
+                  <h2 className="text-base font-bold tracking-tight" style={{ color: tokens.textIconColor }}>
+                    Admin Sign-In Required for Settings & API Keys
+                  </h2>
+                </div>
+                <p className="text-xs opacity-75 leading-relaxed" style={{ color: tokens.textIconColor }}>
+                  Public visitors can freely use all ZeroLight components and creative tools. Sign in as a workspace administrator to inspect secret API keys, webhooks, passkeys, and compliance settings.
+                </p>
+                <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                  <Button variant="primary" size="sm" onClick={() => onRequireAuth?.()}>
+                    Sign In to Admin Settings
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setActiveTab("tools")}>
+                    Back to Tools
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          ) : (
           <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-200">
             {/* Header */}
             <div className="pb-3 border-b border-zinc-200/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -1545,8 +2021,10 @@ export function DashboardShell() {
               </div>
             </form>
           </div>
+          )
         )}
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

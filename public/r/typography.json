@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "typography",
+  "type": "registry:component",
+  "title": "Typography",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/typography.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\n\nexport type HeadingLevel = \"h1\" | \"h2\" | \"h3\" | \"h4\";\n\nexport interface HeadingProps {\n  level?: HeadingLevel;\n  children: React.ReactNode;\n  className?: string;\n  as?: React.ElementType;\n}\n\nexport function Heading({\n  level = \"h2\",\n  children,\n  className = \"\",\n  as,\n}: HeadingProps) {\n  const Component = as || level;\n\n  const styleMap: Record<HeadingLevel, string> = {\n    h1: \"text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-100\",\n    h2: \"text-xl sm:text-2xl font-bold tracking-tight text-neutral-100\",\n    h3: \"text-lg sm:text-xl font-bold tracking-normal text-neutral-200\",\n    h4: \"text-sm sm:text-base font-semibold tracking-normal text-neutral-200\",\n  };\n\n  return (\n    <Component className={`${styleMap[level]} font-sans ${className}`}>\n      {children}\n    </Component>\n  );\n}\n\nexport type TextVariant = \"body\" | \"body-bold\" | \"caption\" | \"label\" | \"code\";\nexport type TextColor = \"default\" | \"muted\" | \"secondary\" | \"error\" | \"success\" | \"brand\";\n\nexport interface TextProps {\n  variant?: TextVariant;\n  color?: TextColor;\n  children: React.ReactNode;\n  className?: string;\n  as?: React.ElementType;\n}\n\nexport function Text({\n  variant = \"body\",\n  color = \"default\",\n  children,\n  className = \"\",\n  as = \"p\",\n}: TextProps) {\n  const Component = variant === \"code\" ? \"code\" : as;\n\n  const variantStyles: Record<TextVariant, string> = {\n    body: \"text-sm font-normal leading-relaxed\",\n    \"body-bold\": \"text-sm font-semibold leading-relaxed\",\n    caption: \"text-xs font-medium leading-normal\",\n    label: \"text-[11px] font-semibold uppercase tracking-wider select-none\",\n    code: \"text-xs font-sans font-semibold px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-800 border border-neutral-200\",\n  };\n\n  const colorStyles: Record<TextColor, string> = {\n    default: \"text-neutral-200\",\n    muted: \"text-neutral-500\",\n    secondary: \"text-neutral-400\",\n    error: \"text-rose-400\",\n    success: \"text-emerald-400\",\n    brand: \"text-emerald-300\",\n  };\n\n  return (\n    <Component\n      className={`${variantStyles[variant]} ${colorStyles[color]} ${className}`}\n    >\n      {children}\n    </Component>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

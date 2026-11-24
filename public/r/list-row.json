@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "list-row",
+  "type": "registry:component",
+  "title": "List Row",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/molecules/list-row.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface ListRowProps {\n  title: React.ReactNode;\n  subtitle?: React.ReactNode;\n  leading?: React.ReactNode;\n  meta?: React.ReactNode;\n  trailing?: React.ReactNode;\n  selected?: boolean;\n  bordered?: boolean;\n  onClick?: () => void;\n  className?: string;\n}\n\n/**\n * Universal SaaS ListRow for people directories, settings rows, notification items, and selection lists.\n */\nexport function ListRow({\n  title,\n  subtitle,\n  leading,\n  meta,\n  trailing,\n  selected = false,\n  bordered = true,\n  onClick,\n  className = \"\",\n}: ListRowProps) {\n  const { tokens, scaled } = useZeroLight();\n  const interactive = Boolean(onClick);\n\n  return (\n    <div\n      role={interactive ? \"button\" : undefined}\n      tabIndex={interactive ? 0 : undefined}\n      onClick={onClick}\n      onKeyDown={\n        interactive\n          ? (e) => {\n              if (e.key === \"Enter\" || e.key === \" \") {\n                e.preventDefault();\n                onClick?.();\n              }\n            }\n          : undefined\n      }\n      style={{\n        backgroundColor: selected\n          ? tokens.hoverBackplateTint\n          : tokens.universalFillColor,\n        borderColor: tokens.universalBorderColor,\n        borderRadius: `${scaled.scaledInnerRadius}px`,\n        color: tokens.textIconColor,\n        transition: scaled.transitionStyle,\n      }}\n      className={`px-3.5 py-2.5 flex items-center justify-between gap-3 font-sans ${\n        bordered ? \"border\" : \"\"\n      } ${\n        interactive\n          ? \"cursor-pointer hover:brightness-95 active:scale-[0.995]\"\n          : \"\"\n      } ${className}`}\n    >\n      <div className=\"flex items-center gap-3 min-w-0 flex-1\">\n        {leading && <div className=\"shrink-0\">{leading}</div>}\n        <div className=\"min-w-0 flex-1\">\n          <div\n            style={{ fontSize: `${scaled.scaledFontSize}px` }}\n            className=\"font-medium truncate\"\n          >\n            {title}\n          </div>\n          {subtitle && (\n            <div\n              style={{ fontSize: `${scaled.sublabelFontSize}px` }}\n              className=\"opacity-65 truncate mt-0.5\"\n            >\n              {subtitle}\n            </div>\n          )}\n        </div>\n      </div>\n\n      {(meta || trailing) && (\n        <div className=\"flex items-center gap-3 shrink-0\">\n          {meta && (\n            <span\n              style={{ fontSize: `${scaled.sublabelFontSize}px` }}\n              className=\"opacity-60 tabular-nums whitespace-nowrap\"\n            >\n              {meta}\n            </span>\n          )}\n          {trailing}\n        </div>\n      )}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

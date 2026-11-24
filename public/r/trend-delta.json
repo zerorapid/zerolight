@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "trend-delta",
+  "type": "registry:component",
+  "title": "Trend Delta",
+  "dependencies": [],
+  "registryDependencies": [
+    "context"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/atoms/trend-delta.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { useZeroLight } from \"../context\";\n\nexport interface TrendDeltaProps {\n  value: number;\n  unit?: string;\n  prefix?: string;\n  isInverse?: boolean; // When true: negative is favorable (green), positive is unfavorable (rose) e.g. latency, churn\n  format?: (val: number) => string;\n  size?: \"xs\" | \"sm\" | \"md\";\n  showArrow?: boolean;\n  showSign?: boolean;\n  className?: string;\n}\n\nexport function TrendDelta({\n  value,\n  unit = \"%\",\n  prefix = \"\",\n  isInverse = false,\n  format,\n  size = \"xs\",\n  showArrow = true,\n  showSign = true,\n  className = \"\",\n}: TrendDeltaProps) {\n  const { scaled } = useZeroLight();\n  const isZero = value === 0;\n  const isPositive = value > 0;\n\n  // Compute sentiment considering inverse metrics (e.g., lower latency is favorable)\n  const isFavorable = isInverse ? value < 0 : value > 0;\n  const isUnfavorable = isInverse ? value > 0 : value < 0;\n\n  const sizeClasses = {\n    xs: \"text-[10px] px-1.5 py-0.5 tracking-tight gap-1 font-semibold\",\n    sm: \"text-xs px-2 py-0.5 tracking-tight gap-1 font-semibold\",\n    md: \"text-sm px-2.5 py-1 tracking-normal gap-1.5 font-semibold\",\n  }[size];\n\n  let colorClasses = scaled.isDarkSurface\n    ? \"bg-neutral-900 text-neutral-400 border-neutral-800\"\n    : \"bg-neutral-100 text-neutral-600 border-neutral-200\";\n  if (!isZero) {\n    if (isFavorable) {\n      colorClasses = scaled.isDarkSurface\n        ? \"bg-emerald-950/60 text-emerald-400 border-emerald-800/60\"\n        : \"bg-emerald-50 text-emerald-700 border-emerald-200\";\n    } else if (isUnfavorable) {\n      colorClasses = scaled.isDarkSurface\n        ? \"bg-rose-950/60 text-rose-400 border-rose-800/60\"\n        : \"bg-rose-50 text-rose-700 border-rose-200\";\n    }\n  }\n\n  const sign = showSign && isPositive ? \"+\" : \"\";\n  const formattedVal = format ? format(value) : `${sign}${prefix}${value}${unit}`;\n\n  return (\n    <span\n      className={`inline-flex items-center font-sans rounded border select-none tabular-nums ${sizeClasses} ${colorClasses} ${className}`}\n      aria-label={`Trend: ${formattedVal} ${isFavorable ? \"Favorable\" : isUnfavorable ? \"Unfavorable\" : \"Neutral\"}`}\n    >\n      {showArrow && !isZero && (\n        <span className=\"flex-shrink-0 text-[0.85em] leading-none font-bold\">\n          {isPositive ? \"▲\" : \"▼\"}\n        </span>\n      )}\n      <span>{formattedVal}</span>\n    </span>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

@@ -6,33 +6,23 @@ import {
   Minus,
   ChevronDown,
   Code2,
-  X,
   Star,
-  Search,
-  SlidersHorizontal,
   Shield,
   Zap,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle,
-  CreditCard,
-  Building2,
   UserCheck,
   Users,
-  Eye,
-  Calendar,
-  Lock,
-  Copy,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { Badge } from "../atoms/badge";
-import { CodeModal, LibraryHeader } from "./common";
+import { getContrastColor } from "../types";
+import { CodeModal, LibraryHeader, LibrarySegmentControl, getZeroLightCardStyle } from "./common";
 
 export type SelectionDensity = "small" | "medium" | "large";
 export type SelectionGlobalState = "ready" | "error" | "disabled";
 
 export function SaaSSelectionLibrary() {
-  const { tokens } = useZeroLight();
+  const { tokens, scaled } = useZeroLight();
+  const primColor = tokens.primaryButtonColor || "#09090B";
+  const primText = getContrastColor(primColor);
 
   // Sticky Bar States
   const [searchQuery, setSearchQuery] = useState("");
@@ -177,7 +167,7 @@ export function SaaSSelectionLibrary() {
     { id: "cat6", label: "6. Permissions & Rating" },
   ];
 
-  // Card Container Component
+  // Card Container Component (Token-bound & auto-filters category + search)
   const Card = ({
     number,
     title,
@@ -191,10 +181,15 @@ export function SaaSSelectionLibrary() {
     code: string;
     children: React.ReactNode;
   }) => {
+    if (activeCategory !== "all" && activeCategory !== category) return null;
     if (searchQuery.trim() && !title.toLowerCase().includes(searchQuery.toLowerCase())) return null;
 
     return (
-      <div className="rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs flex flex-col justify-between gap-4 transition-all hover:border-zinc-300">
+      <div
+        data-zl-card="true"
+        style={getZeroLightCardStyle(tokens, scaled)}
+        className="border p-5 shadow-xs flex flex-col justify-between gap-4 transition-all hover:border-zinc-400"
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-sans tabular-nums font-bold text-zinc-400">{number}</span>
@@ -233,13 +228,19 @@ export function SaaSSelectionLibrary() {
     return (
       <div
         onClick={() => !isStateDisabled && onChange?.()}
-        className={`${densityConfig.boxSize} rounded-md border flex items-center justify-center transition-all cursor-pointer select-none shrink-0 ${
+        style={{
+          backgroundColor: !isStateDisabled && !isError && (checked || indeterminate) ? primColor : undefined,
+          borderColor: !isStateDisabled && !isError && (checked || indeterminate) ? primColor : undefined,
+          color: !isStateDisabled && !isError && (checked || indeterminate) ? primText : undefined,
+          borderRadius: `${scaled.scaledRadius === 0 ? 0 : Math.min(scaled.scaledRadius, 6)}px`,
+        }}
+        className={`${densityConfig.boxSize} border flex items-center justify-center transition-all cursor-pointer select-none shrink-0 ${
           isStateDisabled
             ? "bg-zinc-100 border-zinc-200 cursor-not-allowed opacity-50"
             : isError
             ? "border-rose-500 bg-rose-50"
             : checked || indeterminate
-            ? "bg-zinc-950 border-zinc-950 text-white shadow-2xs"
+            ? "shadow-2xs"
             : "bg-white border-zinc-300 hover:border-zinc-500"
         }`}
       >
@@ -268,18 +269,19 @@ export function SaaSSelectionLibrary() {
     return (
       <div
         onClick={() => !isStateDisabled && onChange?.()}
+        style={{ borderColor: !isStateDisabled && !isError && selected ? primColor : undefined }}
         className={`${densityConfig.boxSize} rounded-full border flex items-center justify-center transition-all cursor-pointer select-none shrink-0 ${
           isStateDisabled
             ? "bg-zinc-100 border-zinc-200 cursor-not-allowed opacity-50"
             : isError
             ? "border-rose-500 bg-rose-50"
             : selected
-            ? "border-zinc-950 bg-white"
+            ? "bg-white"
             : "bg-white border-zinc-300 hover:border-zinc-500"
         }`}
       >
         {selected && (
-          <div className={`${densityConfig.radioInner} rounded-full bg-zinc-950`} />
+          <div style={{ backgroundColor: primColor }} className={`${densityConfig.radioInner} rounded-full`} />
         )}
       </div>
     );
@@ -301,13 +303,14 @@ export function SaaSSelectionLibrary() {
     return (
       <div
         onClick={() => !isStateDisabled && onChange?.()}
+        style={{ backgroundColor: !isStateDisabled && !isError && active ? primColor : undefined }}
         className={`${densityConfig.switchTrack} p-0.5 rounded-full transition-colors cursor-pointer select-none relative flex items-center shrink-0 ${
           isStateDisabled
             ? "bg-zinc-200 cursor-not-allowed opacity-50"
             : isError
             ? "bg-rose-200"
             : active
-            ? "bg-zinc-950"
+            ? ""
             : "bg-zinc-200 hover:bg-zinc-300"
         }`}
       >
@@ -337,42 +340,53 @@ export function SaaSSelectionLibrary() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search controls..."
+        categories={categories}
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
         action={
-          <div className="relative" data-select-popover>
-            <button
-              type="button"
-              onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
-              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-zinc-200 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 dark:hover:bg-white/5 transition cursor-pointer"
-            >
-              <span>State: <strong className="capitalize text-zinc-950 dark:text-white">{globalState}</strong></span>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-            </button>
+          <div className="flex items-center gap-2">
+            <LibrarySegmentControl
+              options={["small", "medium", "large"] as const}
+              value={density}
+              onChange={setDensity}
+              ariaLabel="Selection density"
+            />
+            <div className="relative" data-select-popover>
+              <button
+                type="button"
+                onClick={() => setStateDropdownOpen(!stateDropdownOpen)}
+                className="px-2.5 py-1.5 rounded-xl bg-white border border-zinc-200 text-zinc-800 text-xs font-semibold flex items-center gap-1.5 hover:bg-zinc-50 transition cursor-pointer"
+              >
+                <span>State: <strong className="capitalize text-zinc-950">{globalState}</strong></span>
+                <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+              </button>
 
-            {stateDropdownOpen && (
-              <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
-                {(["ready", "error", "disabled"] as const).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => {
-                      setGlobalState(s);
-                      setStateDropdownOpen(false);
-                    }}
-                    className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
-                      globalState === s ? "bg-zinc-950 text-white dark:bg-white dark:text-zinc-950" : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            )}
+              {stateDropdownOpen && (
+                <div className="absolute right-0 mt-1.5 w-36 rounded-xl bg-white border border-zinc-200 shadow-xl p-1 z-50 text-xs animate-in fade-in duration-150">
+                  {(["ready", "error", "disabled"] as const).map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setGlobalState(s);
+                        setStateDropdownOpen(false);
+                      }}
+                      className={`w-full px-2.5 py-1.5 rounded-lg text-left capitalize font-semibold cursor-pointer ${
+                        globalState === s ? "bg-zinc-950 text-white" : "text-zinc-700 hover:bg-zinc-100"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         }
       />
 
       {/* ── 1. CHECKBOXES & MULTI-SELECT LISTS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             1. Checkboxes & Multi-Select Lists
@@ -381,7 +395,7 @@ export function SaaSSelectionLibrary() {
             Standard checkboxes, indeterminate states, and inline helper labels.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="01"
           title="Simple Checkbox"
@@ -523,7 +537,7 @@ export function SaaSSelectionLibrary() {
       </section>
 
       {/* ── 2. RADIO BUTTONS — PICK ONE OPTION ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             2. Radio Buttons — Pick One Option
@@ -532,7 +546,7 @@ export function SaaSSelectionLibrary() {
             Stacked radio options, horizontal inline groups, and descriptive radio lists.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="07"
           title="Vertical Radio List"
@@ -668,7 +682,7 @@ export function SaaSSelectionLibrary() {
       </section>
 
       {/* ── 3. TOGGLE SWITCHES — ON / OFF CONTROLS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             3. Toggle Switches — On / Off Controls
@@ -677,7 +691,7 @@ export function SaaSSelectionLibrary() {
             Accessible toggle switches with icon glyphs and persistent states.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="12"
           title="Simple Toggle Switch"
@@ -768,7 +782,7 @@ export function SaaSSelectionLibrary() {
       </section>
 
       {/* ── 4. SELECTABLE CARDS & PLAN BOXES ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             4. Selectable Cards & Plan Boxes
@@ -777,7 +791,7 @@ export function SaaSSelectionLibrary() {
             Pricing tier cards, feature selectors, and checkmarked selection boxes.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="17"
           title="Single-Choice Plan Cards"
@@ -920,7 +934,7 @@ export function SaaSSelectionLibrary() {
       </section>
 
       {/* ── 5. CUSTOM SELECT & MULTI-SELECT BOXES ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             5. Custom Select & Multi-Select Boxes
@@ -929,7 +943,7 @@ export function SaaSSelectionLibrary() {
             Searchable dropdown selectors, tag pickers, and multi-select filters.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="21"
           title="Single Choice Select Box"
@@ -1075,7 +1089,7 @@ export function SaaSSelectionLibrary() {
       </section>
 
       {/* ── 6. PERMISSION MATRIX & DAY PICKERS ── */}
-      <section className="space-y-3">
+      <section className="space-y-3 [&:not(:has([data-zl-card='true']))]:hidden">
         <div>
           <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
             6. Permission Matrix & Day Pickers
@@ -1084,7 +1098,7 @@ export function SaaSSelectionLibrary() {
             Role permission matrices, week-day multi-selectors, and schedule switches.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
         <Card
           number="24"
           title="Weekly Working Days Selector"

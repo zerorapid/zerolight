@@ -145,8 +145,10 @@ export function BarChart({
         <div className="relative pl-10 pr-2 pb-6 pt-8 h-full flex items-end justify-between gap-2 z-10 overflow-visible">
           {data.map((item, idx) => {
             const isHovered = hoverIndex === idx;
-            const h1 = (item.value / scaleMax) * 100;
-            const h2 = item.secondaryValue ? (item.secondaryValue / scaleMax) * 100 : 0;
+            const h1 = Math.max(8, (item.value / scaleMax) * 100);
+            const h2 = item.secondaryValue ? Math.max(8, (item.secondaryValue / scaleMax) * 100) : 0;
+            const isLight1 = color1.toLowerCase() === "#ffffff" || color1.toLowerCase() === "#fff";
+            const isLight2 = color2.toLowerCase() === "#ffffff" || color2.toLowerCase() === "#fff";
 
             const isFirst = idx === 0;
             const isLast = idx === data.length - 1;
@@ -194,11 +196,12 @@ export function BarChart({
                       <motion.div
                         initial={{ height: 0 }}
                         animate={{ height: `${h2}%` }}
-                        transition={scaled.motionConfig.spring}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
                         style={{
                           backgroundColor: color2,
                           borderTopLeftRadius: `${barRadius}px`,
                           borderTopRightRadius: `${barRadius}px`,
+                          border: isLight2 ? "1px solid #CBD5E1" : "none",
                         }}
                         className={`w-full transition-opacity ${isHovered ? "opacity-100" : "opacity-90"}`}
                       />
@@ -206,13 +209,14 @@ export function BarChart({
                     <motion.div
                       initial={{ height: 0 }}
                       animate={{ height: `${h1}%` }}
-                      transition={scaled.motionConfig.spring}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       style={{
                         backgroundColor: color1,
                         borderTopLeftRadius: !item.secondaryValue ? `${barRadius}px` : 0,
                         borderTopRightRadius: !item.secondaryValue ? `${barRadius}px` : 0,
                         borderBottomLeftRadius: `${barRadius === 0 ? 0 : Math.max(1, Math.round(barRadius / 2))}px`,
                         borderBottomRightRadius: `${barRadius === 0 ? 0 : Math.max(1, Math.round(barRadius / 2))}px`,
+                        border: isLight1 ? "1px solid #CBD5E1" : "none",
                       }}
                       className={`w-full transition-opacity ${isHovered ? "opacity-100 brightness-110" : "opacity-90"}`}
                     />
@@ -222,11 +226,12 @@ export function BarChart({
                     <motion.div
                       initial={{ height: 0 }}
                       animate={{ height: `${h1}%` }}
-                      transition={scaled.motionConfig.spring}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       style={{
                         backgroundColor: color1,
                         borderTopLeftRadius: `${barRadius}px`,
                         borderTopRightRadius: `${barRadius}px`,
+                        border: isLight1 ? "1px solid #CBD5E1" : "none",
                       }}
                       className={`flex-1 min-w-[8px] transition-all ${
                         isHovered ? "brightness-110 scale-[1.02]" : "opacity-90"
@@ -236,11 +241,12 @@ export function BarChart({
                       <motion.div
                         initial={{ height: 0 }}
                         animate={{ height: `${h2}%` }}
-                        transition={scaled.motionConfig.spring}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
                         style={{
                           backgroundColor: color2,
                           borderTopLeftRadius: `${barRadius}px`,
                           borderTopRightRadius: `${barRadius}px`,
+                          border: isLight2 ? "1px solid #CBD5E1" : "none",
                         }}
                         className={`flex-1 min-w-[8px] transition-all ${
                           isHovered ? "brightness-110 scale-[1.02]" : "opacity-85"

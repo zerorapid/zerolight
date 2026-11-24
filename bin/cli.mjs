@@ -5,7 +5,10 @@ import https from "node:https";
 import http from "node:http";
 
 const PKG_VERSION = "0.1.0";
-const DEFAULT_REGISTRY_BASE = process.env.ZEROLIGHT_REGISTRY_URL || "https://raw.githubusercontent.com/zerorapid/zerolight/main/public/registry";
+const DEFAULT_REGISTRY_BASE = process.env.ZEROLIGHT_REGISTRY_URL || "https://ui.zerorapid.in/registry";
+const DEFAULT_SHADCN_REGISTRY_BASE = process.env.ZEROLIGHT_SHADCN_REGISTRY_URL || "https://ui.zerorapid.in/r";
+const GITHUB_REGISTRY_FALLBACK = "https://raw.githubusercontent.com/zerorapid/zerolight/main/public/registry";
+const GITHUB_SHADCN_FALLBACK = "https://raw.githubusercontent.com/zerorapid/zerolight/main/public/r";
 
 function printBanner() {
   console.log(`
@@ -21,6 +24,7 @@ function parseArgs(argv) {
     components: [],
     outDir: process.cwd(),
     localRegistry: null,
+    shadcn: false,
     force: false,
     yes: false,
   };
@@ -31,6 +35,8 @@ function parseArgs(argv) {
       flags.outDir = path.resolve(argv[++i]);
     } else if (a === "--registry" || a === "-r") {
       flags.localRegistry = path.resolve(argv[++i]);
+    } else if (a === "--shadcn") {
+      flags.shadcn = true;
     } else if (a === "--force" || a === "-f") {
       flags.force = true;
     } else if (a === "-y" || a === "--yes") {
@@ -66,29 +72,43 @@ function fetchJson(url) {
   });
 }
 
-async function loadRegistryIndex(localRegistry) {
+async function loadRegistryIndex(localRegistry, useShadcn = false) {
   if (localRegistry && fs.existsSync(path.join(localRegistry, "index.json"))) {
     return JSON.parse(fs.readFileSync(path.join(localRegistry, "index.json"), "utf8"));
   }
-  const fallbackLocal = path.join(process.cwd(), "public", "registry", "index.json");
+  const subDir = useShadcn ? "r" : "registry";
+  const fallbackLocal = path.join(process.cwd(), "public", subDir, "index.json");
   if (fs.existsSync(fallbackLocal)) {
     return JSON.parse(fs.readFileSync(fallbackLocal, "utf8"));
   }
-  return fetchJson(`${DEFAULT_REGISTRY_BASE}/index.json`);
+  const remoteBase = useShadcn ? DEFAULT_SHADCN_REGISTRY_BASE : DEFAULT_REGISTRY_BASE;
+  const fallbackRemote = useShadcn ? GITHUB_SHADCN_FALLBACK : GITHUB_REGISTRY_FALLBACK;
+  try {
+    return await fetchJson(`${remoteBase}/index.json`);
+  } catch {
+    return fetchJson(`${fallbackRemote}/index.json`);
+  }
 }
 
-async function loadRegistryItem(name, localRegistry) {
+async function loadRegistryItem(name, localRegistry, useShadcn = false) {
   if (localRegistry) {
     const localFile = path.join(localRegistry, `${name}.json`);
     if (fs.existsSync(localFile)) {
       return JSON.parse(fs.readFileSync(localFile, "utf8"));
     }
   }
-  const fallbackLocal = path.join(process.cwd(), "public", "registry", `${name}.json`);
+  const subDir = useShadcn ? "r" : "registry";
+  const fallbackLocal = path.join(process.cwd(), "public", subDir, `${name}.json`);
   if (fs.existsSync(fallbackLocal)) {
     return JSON.parse(fs.readFileSync(fallbackLocal, "utf8"));
   }
-  return fetchJson(`${DEFAULT_REGISTRY_BASE}/${name}.json`);
+  const remoteBase = useShadcn ? DEFAULT_SHADCN_REGISTRY_BASE : DEFAULT_REGISTRY_BASE;
+  const fallbackRemote = useShadcn ? GITHUB_SHADCN_FALLBACK : GITHUB_REGISTRY_FALLBACK;
+  try {
+    return await fetchJson(`${remoteBase}/${name}.json`);
+  } catch {
+    return fetchJson(`${fallbackRemote}/${name}.json`);
+  }
 }
 
 async function handleInit(flags) {
@@ -100,7 +120,7 @@ async function handleInit(flags) {
   const coreItems = ["types", "context", "utils"];
   for (const item of coreItems) {
     try {
-      const data = await loadRegistryItem(item, flags.localRegistry);
+      const data = await loadRegistryItem(item, flags.localRegistry, flags.shadcn);
       for (const file of data.files || []) {
         const dest = path.join(flags.outDir, file.path);
         fs.mkdirSync(path.dirname(dest), { recursive: true });
@@ -119,8 +139,8 @@ async function handleInit(flags) {
 
 async function handleList(flags) {
   try {
-    const index = await loadRegistryIndex(flags.localRegistry);
-    console.log(`Available ZeroLight Primitives (${index.items.length} items total):\n`);
+    const index = await loadRegistryIndex(flags.localRegistry, flags.shadcn);
+    console.log(`Available ZeroLight Primitives (${index.items.length} items total${flags.shadcn ? ", shadcn format" : ""}):\n`);
     const byType = {};
     for (const item of index.items) {
       const t = item.type || "other";
@@ -156,13 +176,16 @@ async function handleAdd(flags) {
     visited.add(name);
 
     try {
-      const item = await loadRegistryItem(name, flags.localRegistry);
+      const item = await loadRegistryItem(name, flags.localRegistry, flags.shadcn);
       for (const dep of item.dependencies || []) {
         npmDeps.add(dep);
       }
       for (const regDep of item.registryDependencies || []) {
-        if (!visited.has(regDep)) {
-          queue.push(regDep);
+        const depName = regDep.startsWith("@zerolight/")
+          ? regDep.slice("@zerolight/".length)
+          : regDep.replace(/\.json$/, "").split("/").pop();
+        if (depName && !visited.has(depName)) {
+          queue.push(depName);
         }
       }
 
@@ -206,13 +229,18 @@ async function main() {
     case "help":
     default:
       console.log(`Usage:
-  npx zerolight init [--out <dir>]
-  npx zerolight list
-  npx zerolight add <component-name...> [--out <dir>]
+  npx zerolight init [--out <dir>] [--shadcn]
+  npx zerolight list [--shadcn]
+  npx zerolight add <component-name...> [--out <dir>] [--shadcn]
+
+Options:
+  --shadcn   Use shadcn-compatible public/r/ registry payloads
+  --out, -o  Target project root directory (defaults to cwd)
+  --registry Override local registry directory
 
 Examples:
   npx zerolight add button stat-card data-table
-  npx zerolight add world-map geo-breakdown
+  npx zerolight add world-map geo-breakdown --shadcn
   npx zerolight add modal popover tabs toolbar
 `);
       break;
