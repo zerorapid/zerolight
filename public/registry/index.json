@@ -1,12 +1,12 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 125,
+  "totalCount": 130,
   "tiers": {
     "core": 3,
     "atoms": 43,
-    "molecules": 46,
-    "organisms": 19,
+    "molecules": 47,
+    "organisms": 23,
     "templates": 5,
     "views": 8,
     "tools": 0,
@@ -1073,6 +1073,24 @@
       "shadcnUrl": "/r/input-group.json"
     },
     {
+      "name": "inventory-stock-health",
+      "title": "Inventory Stock Health",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/inventory-stock-health.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "lines": 145,
+      "registryUrl": "/registry/inventory-stock-health.json",
+      "shadcnUrl": "/r/inventory-stock-health.json"
+    },
+    {
       "name": "list-row",
       "title": "List Row",
       "type": "registry:ui",
@@ -1424,6 +1442,24 @@
       "shadcnUrl": "/r/app-shell.json"
     },
     {
+      "name": "approval-workflow",
+      "title": "Approval Workflow",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/approval-workflow.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "lines": 195,
+      "registryUrl": "/registry/approval-workflow.json",
+      "shadcnUrl": "/r/approval-workflow.json"
+    },
+    {
       "name": "audit-log",
       "title": "Audit Log",
       "type": "registry:ui",
@@ -1613,6 +1649,41 @@
       "shadcnUrl": "/r/geo-breakdown.json"
     },
     {
+      "name": "ledger-balancer",
+      "title": "Ledger Balancer",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/ledger-balancer.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "lines": 174,
+      "registryUrl": "/registry/ledger-balancer.json",
+      "shadcnUrl": "/r/ledger-balancer.json"
+    },
+    {
+      "name": "line-item-matrix",
+      "title": "Line Item Matrix",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/line-item-matrix.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "lines": 178,
+      "registryUrl": "/registry/line-item-matrix.json",
+      "shadcnUrl": "/r/line-item-matrix.json"
+    },
+    {
       "name": "modal",
       "title": "Modal",
       "type": "registry:ui",
@@ -1712,6 +1783,23 @@
       "lines": 347,
       "registryUrl": "/registry/tenant-kit.json",
       "shadcnUrl": "/r/tenant-kit.json"
+    },
+    {
+      "name": "three-way-match",
+      "title": "Three Way Match",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/three-way-match.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context"
+      ],
+      "lines": 137,
+      "registryUrl": "/registry/three-way-match.json",
+      "shadcnUrl": "/r/three-way-match.json"
     },
     {
       "name": "toast",

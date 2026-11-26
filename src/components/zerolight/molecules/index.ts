@@ -43,3 +43,4 @@ export * from "./organization-switcher";
 export * from "./api-key-vault";
 export * from "./product-stage";
 export * from "./hero-showcase";
+export * from "./inventory-stock-health";

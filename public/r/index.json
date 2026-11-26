@@ -1134,6 +1134,25 @@
       ]
     },
     {
+      "name": "inventory-stock-health",
+      "type": "registry:component",
+      "title": "Inventory Stock Health",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/molecules/inventory-stock-health.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "list-row",
       "type": "registry:component",
       "title": "List Row",
@@ -1507,6 +1526,25 @@
       ]
     },
     {
+      "name": "approval-workflow",
+      "type": "registry:component",
+      "title": "Approval Workflow",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/approval-workflow.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "audit-log",
       "type": "registry:component",
       "title": "Audit Log",
@@ -1706,6 +1744,43 @@
       ]
     },
     {
+      "name": "ledger-balancer",
+      "type": "registry:component",
+      "title": "Ledger Balancer",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/ledger-balancer.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "line-item-matrix",
+      "type": "registry:component",
+      "title": "Line Item Matrix",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/line-item-matrix.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "modal",
       "type": "registry:component",
       "title": "Modal",
@@ -1808,6 +1883,24 @@
       "files": [
         {
           "path": "src/components/zerolight/organisms/tenant-kit.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "three-way-match",
+      "type": "registry:component",
+      "title": "Three Way Match",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/three-way-match.tsx",
           "type": "registry:component"
         }
       ]

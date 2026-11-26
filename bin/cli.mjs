@@ -17,6 +17,11 @@ const BLOCK_ALIASES = {
   "block/geo-breakdown": "geo-breakdown",
   "block/data-table": "data-table",
   "block/bento-showcase": "bento-showcase",
+  "block/approval-workflow": "approval-workflow",
+  "block/three-way-match": "three-way-match",
+  "block/ledger-balancer": "ledger-balancer",
+  "block/line-item-matrix": "line-item-matrix",
+  "block/inventory-stock-health": "inventory-stock-health",
 };
 
 function printBanner() {

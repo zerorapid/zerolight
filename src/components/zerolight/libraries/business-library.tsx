@@ -16,6 +16,11 @@ import {
 } from "lucide-react";
 import { useZeroLight } from "../context";
 import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
+import { InventoryStockHealth } from "../molecules/inventory-stock-health";
+import { ApprovalWorkflow } from "../organisms/approval-workflow";
+import { ThreeWayMatch } from "../organisms/three-way-match";
+import { LedgerBalancer } from "../organisms/ledger-balancer";
+import { LineItemMatrix } from "../organisms/line-item-matrix";
 
 export type BusinessDensity = "small" | "medium" | "large";
 
@@ -1674,6 +1679,71 @@ export function WorkspaceSwitchCard() {
             </div>
           </div>
         )}
+          </div>
+        </section>
+
+        {/* ── 5. ERP & OPERATIONS MODULES ── */}
+        <section className="space-y-4">
+          <div>
+            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+              5. ERP &amp; Operations Modules
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Procurement three-way matching, double-entry GL balancing, approval chains, PO line-item matrices, and warehouse stock health.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <ApprovalWorkflow
+              documentId="PO-2026-0891"
+              title="CNC Spindle Assembly Procurement"
+              amountLabel="₹4,85,000"
+              requester="Operations · Hyderabad Plant"
+              budgetImpact="+2.4% of Q3 CapEx"
+              steps={[
+                { id: "s1", role: "Requester", approver: "R. Sharma", status: "approved", timestamp: "Today 09:15" },
+                { id: "s2", role: "Plant Head", approver: "K. Reddy", status: "approved", timestamp: "Today 11:02" },
+                { id: "s3", role: "Finance", approver: "A. Nair", status: "pending" },
+                { id: "s4", role: "ERP Post", approver: "Auto-Sync", status: "waiting" },
+              ]}
+            />
+
+            <InventoryStockHealth
+              sku="MAT-SS316-042"
+              name="Stainless Steel 316L Seamless Pipe (25mm)"
+              warehouseBin={["WH-HYD", "Zone B", "Rack 04", "Bin 12"]}
+              onHand={180}
+              reorderPoint={250}
+              maxCapacity={1000}
+              unit="meters"
+              onReorder={() => {}}
+            />
+          </div>
+
+          <ThreeWayMatch
+            poNumber="PO-2026-0891"
+            grnNumber="GRN-88412"
+            invoiceNumber="INV-SUP-4490"
+            lines={[
+              { sku: "SPN-440", description: "High-Torque Servo Spindle", poQty: 4, grnQty: 4, invoiceQty: 4, poUnitPrice: 92000, invoiceUnitPrice: 92000 },
+              { sku: "BRG-108", description: "Ceramic Angular Bearing Set", poQty: 20, grnQty: 18, invoiceQty: 20, poUnitPrice: 3400, invoiceUnitPrice: 3400 },
+            ]}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <LedgerBalancer
+              initialLines={[
+                { id: "l1", accountCode: "5100-RM", accountName: "Raw Material Inventory", debit: 485000, credit: 0 },
+                { id: "l2", accountCode: "2100-AP", accountName: "Accounts Payable — Vendors", debit: 0, credit: 485000 },
+              ]}
+            />
+
+            <LineItemMatrix
+              initialItems={[
+                { id: "i1", sku: "SPN-440", name: "High-Torque Servo Spindle", qty: 4, unitPrice: 92000, taxPct: 18 },
+                { id: "i2", sku: "BRG-108", name: "Ceramic Angular Bearing Set", qty: 20, unitPrice: 3400, taxPct: 18 },
+              ]}
+            />
           </div>
         </section>
       </div>

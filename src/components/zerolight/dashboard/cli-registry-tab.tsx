@@ -40,6 +40,31 @@ const B2B_BLOCKS = [
     cmd: "npx zerolight add block/bento-showcase",
     desc: "Asymmetric SaaS Bento grid with ProductWindow & KPIs",
   },
+  {
+    name: "ERP Approval Workflow",
+    cmd: "npx zerolight add block/approval-workflow",
+    desc: "Multi-stage PO/budget approval chain with Reject reason & Delegate",
+  },
+  {
+    name: "ERP Three-Way Match",
+    cmd: "npx zerolight add block/three-way-match",
+    desc: "PO vs. Goods Receipt (GRN) vs. Supplier Invoice variance table",
+  },
+  {
+    name: "ERP Ledger Balancer",
+    cmd: "npx zerolight add block/ledger-balancer",
+    desc: "Double-entry GL journal with real-time Debit/Credit reconciliation",
+  },
+  {
+    name: "ERP Line-Item Matrix",
+    cmd: "npx zerolight add block/line-item-matrix",
+    desc: "Editable PO/invoice line items with live subtotal, tax & grand total",
+  },
+  {
+    name: "ERP Inventory Stock Health",
+    cmd: "npx zerolight add block/inventory-stock-health",
+    desc: "Warehouse bin breadcrumb, reorder threshold bar & stockout alert",
+  },
 ];
 
 const CLI_COMMANDS = [
