@@ -57,7 +57,7 @@ function TeamLoginForm() {
             ZeroLight Component Platform
           </h1>
           <p className="text-xs text-zinc-500">
-            Sign in with your Zerorapid team password to access all 200+ UI components, Visual Studio Dock, and the shadcn registry.
+            Sign in with your Zerorapid team password to access the ZeroLight UI component platform and shadcn registry.
           </p>
         </div>
 

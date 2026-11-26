@@ -1,39 +1,37 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ui.zerorapid.in";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://bricks.zerorapid.in";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ZeroLight UI & Craft Studio | ZeroRapid",
-    template: "%s | ZeroLight by ZeroRapid",
+    default: "ZeroLight Component Platform | Zerorapid",
+    template: "%s | ZeroLight by Zerorapid",
   },
   description:
-    "Token-driven B2B SaaS design system, ZeroFlash brand deck generator, 33-rule ZeroAuditor AI-footprint scanner, and vector World Atlas studio by ZeroRapid (zerorapid.in).",
+    "Token-driven B2B SaaS design system, 200+ production React UI components, and shadcn-compatible registry by Zerorapid.",
   keywords: [
-    "ZeroRapid",
+    "Zerorapid",
     "ZeroLight",
     "SaaS Design System",
     "shadcn registry",
-    "ZeroAuditor",
-    "ZeroFlash",
-    "UIUX Agency India",
-    "vibe coding agency",
+    "React UI components",
+    "Design Tokens",
   ],
   openGraph: {
     type: "website",
     url: SITE_URL,
-    siteName: "ZeroLight by ZeroRapid",
-    title: "ZeroLight UI & Craft Studio | ZeroRapid",
+    siteName: "ZeroLight by Zerorapid",
+    title: "ZeroLight Component Platform | Zerorapid",
     description:
-      "129+ token-driven UI components, 33-rule AI-slop UI auditor, brand token studio, and shadcn-compatible registry built by ZeroRapid.",
+      "200+ token-driven SaaS UI components, 6-tier atomic architecture, and shadcn-compatible registry built by Zerorapid.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ZeroLight UI & Craft Studio | ZeroRapid",
+    title: "ZeroLight Component Platform | Zerorapid",
     description:
-      "Audit SaaS interfaces against 33 craft rules, generate brand decks, and install token-safe React UI via npx zerolight.",
+      "Install token-safe React SaaS UI components via npx zerolight and shadcn-compatible registry.",
   },
   icons: {
     icon: "/icon.svg",

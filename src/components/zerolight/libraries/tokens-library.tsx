@@ -96,7 +96,7 @@ export function SaaSTokensLibrary() {
         }
       />
 
-      {/* ── LIVE RUNTIME PRIMITIVE TOKEN STRIP (PROVES REAL BINDING WITH VISUAL STUDIO DOCK) ── */}
+      {/* ── LIVE RUNTIME PRIMITIVE TOKEN STRIP ── */}
       <div
         style={{
           borderRadius: `${scaled.scaledCardRadius}px`,

@@ -1251,7 +1251,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                         Enterprise Token Synchronization Active
                       </span>
                       <p className="text-neutral-500 dark:text-neutral-400 text-[11px] leading-relaxed">
-                        All components above immediately re-render according to your active Visual Studio Dock theme, corner radius, and spring motion.
+                        All components above immediately re-render according to your active ZeroLight theme, corner radius, and spring motion.
                       </p>
                     </div>
                   </div>
