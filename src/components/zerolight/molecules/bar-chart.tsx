@@ -194,10 +194,12 @@ export function BarChart({
                   <div className="w-full max-w-[32px] flex flex-col justify-end h-full">
                     {item.secondaryValue !== undefined && (
                       <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: `${h2}%` }}
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: 1 }}
                         transition={{ duration: 0.35, ease: "easeOut" }}
                         style={{
+                          height: `${h2}%`,
+                          transformOrigin: "bottom",
                           backgroundColor: color2,
                           borderTopLeftRadius: `${barRadius}px`,
                           borderTopRightRadius: `${barRadius}px`,
@@ -207,10 +209,12 @@ export function BarChart({
                       />
                     )}
                     <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: `${h1}%` }}
+                      initial={{ scaleY: 0 }}
+                      animate={{ scaleY: 1 }}
                       transition={{ duration: 0.35, ease: "easeOut" }}
                       style={{
+                        height: `${h1}%`,
+                        transformOrigin: "bottom",
                         backgroundColor: color1,
                         borderTopLeftRadius: !item.secondaryValue ? `${barRadius}px` : 0,
                         borderTopRightRadius: !item.secondaryValue ? `${barRadius}px` : 0,
@@ -224,10 +228,12 @@ export function BarChart({
                 ) : (
                   <div className="w-full max-w-[48px] flex items-end justify-center gap-1 h-full">
                     <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: `${h1}%` }}
+                      initial={{ scaleY: 0 }}
+                      animate={{ scaleY: 1 }}
                       transition={{ duration: 0.35, ease: "easeOut" }}
                       style={{
+                        height: `${h1}%`,
+                        transformOrigin: "bottom",
                         backgroundColor: color1,
                         borderTopLeftRadius: `${barRadius}px`,
                         borderTopRightRadius: `${barRadius}px`,
@@ -239,10 +245,12 @@ export function BarChart({
                     />
                     {hasSecondary && (
                       <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: `${h2}%` }}
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: 1 }}
                         transition={{ duration: 0.35, ease: "easeOut" }}
                         style={{
+                          height: `${h2}%`,
+                          transformOrigin: "bottom",
                           backgroundColor: color2,
                           borderTopLeftRadius: `${barRadius}px`,
                           borderTopRightRadius: `${barRadius}px`,

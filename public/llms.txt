@@ -13,7 +13,8 @@
 1. **Token-Driven Surfaces Only (`useZeroLight()`)**: Never hardcode hex colors (`#3B82F6`), arbitrary radii, or shadows. Bind to `tokens.universalFillColor`, `tokens.universalBorderColor`, `tokens.textIconColor`, `tokens.primaryButtonColor`, `scaled.scaledCardRadius`, `scaled.scaledRadius`, and `scaled.cardShadow`.
 2. **Tabular Numerals**: Use `font-sans tabular-nums` on all KPIs, currency, counts, SKUs, and tables.
 3. **Popups Over Sidebars**: Use centered `Modal` / `DetailDrawer` popups for secondary details instead of edge slide-over sidebars.
-4. **Morphic Evolution (`M1 | M2 | M3`)**: `stage?: "M1" | "M2" | "M3"` (or `<MorphicScope stage="M2">`) is supported on core primitives & ERP modules (`Button`, `Input`, `Card`, `StatCard`, `InventoryStockHealth`, `ApprovalWorkflow`, `ThreeWayMatch`, `LedgerBalancer`, `LineItemMatrix`).
+4. **No Double-Card Nesting**: `BarChart`, `AreaChart`, `DonutChart`, `DataTable`, `ApprovalWorkflow`, `ThreeWayMatch`, `LedgerBalancer`, `LineItemMatrix`, and `InventoryStockHealth` already render their own card container — never wrap them inside another `<Card>` or bordered `<div>`.
+5. **Morphic Evolution (`M1 | M2 | M3`)**: `stage?: "M1" | "M2" | "M3"` (or `<MorphicScope stage="M2">`) is supported on core primitives & ERP modules (`Button`, `Input`, `Card`, `StatCard`, `InventoryStockHealth`, `ApprovalWorkflow`, `ThreeWayMatch`, `LedgerBalancer`, `LineItemMatrix`).
 
 ## Verified Prop Signatures (Compile-Ready Reference)
 Use these exact TypeScript prop names when generating TSX from `@/components/zerolight`:

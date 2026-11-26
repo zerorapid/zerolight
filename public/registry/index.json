@@ -740,7 +740,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 275,
+      "lines": 283,
       "registryUrl": "/registry/bar-chart.json",
       "shadcnUrl": "/r/bar-chart.json"
     },
