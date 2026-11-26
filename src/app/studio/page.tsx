@@ -6,7 +6,7 @@ import { ZeroLightProvider, DEFAULT_TOKENS, ZeroLightTokens } from "@/components
 import { SaasTemplateStage, SaasTemplateKey } from "@/components/zerolight/studio/saas-template-stage";
 import { TokenStudioSidebar } from "@/components/zerolight/studio/token-studio-sidebar";
 import { Button } from "@/components/zerolight/atoms/button";
-import { Code2, Printer, Share2, Download, Check, LayoutGrid } from "lucide-react";
+import { Code2, Printer, Share2, Download, Check, ChevronLeft } from "lucide-react";
 
 export default function StudioIsolatedPage() {
   const [tokens, setTokens] = useState<ZeroLightTokens>(DEFAULT_TOKENS);
@@ -129,13 +129,13 @@ export default zeroLightConfig;
 
           {/* Action Buttons using REAL ZeroLight Button Primitive */}
           <div className="flex items-center gap-2">
-            <Link href="/dashboard">
+            <Link href="/?tab=tools">
               <Button
                 variant="outline"
                 size="sm"
-                iconLeft={<LayoutGrid className="w-3.5 h-3.5" />}
+                iconLeft={<ChevronLeft className="w-3.5 h-3.5" />}
               >
-                Dashboard
+                Tools
               </Button>
             </Link>
             <Button

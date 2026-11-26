@@ -11,5 +11,4 @@ export * from "../WorldAtlasMap";
 export * from "./docs/zerolight-docs-portal";
 export * from "./libraries";
 export * from "./gen-ui/gen-ui-renderer";
-export * from "./tools";
 export { ZeroLightStudio } from "./docs-studio";

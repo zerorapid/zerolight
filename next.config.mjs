@@ -11,7 +11,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/:path*",
+        source: "/((?!api/proxy-site|api/audit-proxy).*)",
         headers: [
           {
             key: "X-Frame-Options",

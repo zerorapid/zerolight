@@ -240,7 +240,7 @@ export function UnifiedEnterpriseStage({
 
   return (
     <div
-      className={`w-full flex flex-col space-y-4 font-sans select-none ${className}`}
+      className={`w-full min-w-0 overflow-hidden flex flex-col space-y-4 font-sans select-none ${className}`}
       style={{
         color: tokens.textIconColor,
         fontFamily: scaled.resolvedFontFamily,

@@ -1,7 +1,7 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 129,
+  "totalCount": 125,
   "tiers": {
     "core": 3,
     "atoms": 43,
@@ -9,7 +9,7 @@
     "organisms": 19,
     "templates": 5,
     "views": 8,
-    "tools": 4,
+    "tools": 0,
     "gen-ui": 1
   },
   "items": [
@@ -1965,91 +1965,6 @@
       "lines": 292,
       "registryUrl": "/registry/settings-view.json",
       "shadcnUrl": "/r/settings-view.json"
-    },
-    {
-      "name": "ai-footprint-rules",
-      "title": "Ai Footprint Rules",
-      "type": "registry:ui",
-      "tier": "tools",
-      "targetPath": "src/components/zerolight/tools/ai-footprint-rules.ts",
-      "dependencies": [],
-      "registryDependencies": [],
-      "lines": 550,
-      "registryUrl": "/registry/ai-footprint-rules.json",
-      "shadcnUrl": "/r/ai-footprint-rules.json"
-    },
-    {
-      "name": "tools-directory",
-      "title": "Tools Directory",
-      "type": "registry:ui",
-      "tier": "tools",
-      "targetPath": "src/components/zerolight/tools/tools-directory.tsx",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "badge",
-        "button",
-        "card",
-        "context",
-        "progress-bar",
-        "switch",
-        "tag-chip"
-      ],
-      "lines": 360,
-      "registryUrl": "/registry/tools-directory.json",
-      "shadcnUrl": "/r/tools-directory.json"
-    },
-    {
-      "name": "zero-auditor-tool",
-      "title": "Zero Auditor Tool",
-      "type": "registry:ui",
-      "tier": "tools",
-      "targetPath": "src/components/zerolight/tools/zero-auditor-tool.tsx",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "ai-footprint-rules",
-        "alert-banner",
-        "badge",
-        "button",
-        "card",
-        "context",
-        "empty-state",
-        "input",
-        "segmented-control",
-        "stat-card",
-        "textarea"
-      ],
-      "lines": 449,
-      "registryUrl": "/registry/zero-auditor-tool.json",
-      "shadcnUrl": "/r/zero-auditor-tool.json"
-    },
-    {
-      "name": "zero-flash-tool",
-      "title": "Zero Flash Tool",
-      "type": "registry:ui",
-      "tier": "tools",
-      "targetPath": "src/components/zerolight/tools/zero-flash-tool.tsx",
-      "dependencies": [
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "badge",
-        "button",
-        "card",
-        "context",
-        "form-field",
-        "input",
-        "progress-bar",
-        "select",
-        "stat-card",
-        "types"
-      ],
-      "lines": 556,
-      "registryUrl": "/registry/zero-flash-tool.json",
-      "shadcnUrl": "/r/zero-flash-tool.json"
     },
     {
       "name": "gen-ui-renderer",

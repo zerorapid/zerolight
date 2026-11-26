@@ -7,7 +7,7 @@ const ZEROLIGHT_DIR = path.join(ROOT, "src", "components", "zerolight");
 const REGISTRY_OUT_DIR = path.join(ROOT, "public", "registry");
 const SHADCN_OUT_DIR = path.join(ROOT, "public", "r");
 
-const TIER_DIRS = ["atoms", "molecules", "organisms", "templates", "views", "tools", "gen-ui"];
+const TIER_DIRS = ["atoms", "molecules", "organisms", "templates", "views", "gen-ui"];
 
 function toTitleCase(slug) {
   return slug

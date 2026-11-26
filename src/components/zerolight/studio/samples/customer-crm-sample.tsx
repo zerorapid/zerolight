@@ -119,7 +119,10 @@ export function CustomerCrmSample({
 }: CustomerCrmSampleProps) {
   const { tokens, scaled } = useZeroLight();
   const [searchQuery, setSearchQuery] = useState("");
+  const [accounts, setAccounts] = useState<CustomerRecord[]>(CUSTOMER_DATA);
   const [selectedIds, setSelectedIds] = useState<string[]>(["cust-1", "cust-2"]);
+  const [showAddRow, setShowAddRow] = useState(false);
+  const [newCompany, setNewCompany] = useState("");
 
   const isCompact = (tokens.heightDensity ?? 44) <= 40;
   const isSpacious = (tokens.heightDensity ?? 44) >= 48;
@@ -132,23 +135,59 @@ export function CustomerCrmSample({
   };
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === CUSTOMER_DATA.length) {
+    if (selectedIds.length === accounts.length) {
       setSelectedIds([]);
     } else {
-      setSelectedIds(CUSTOMER_DATA.map((c) => c.id));
+      setSelectedIds(accounts.map((c) => c.id));
     }
   };
 
-  const filtered = CUSTOMER_DATA.filter(
+  const filtered = accounts.filter(
     (c) =>
       c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.domain.toLowerCase().includes(searchQuery.toLowerCase()) ||
       c.contactEmail.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleExportTsv = () => {
+    const header = "Company\tDomain\tStage\tACV\tContact\tHealth";
+    const rows = filtered.map(
+      (c) => `${c.name}\t${c.domain}\t${c.stage}\t${c.acv}\t${c.contactEmail}\t${c.health}%`
+    );
+    const blob = new Blob([[header, ...rows].join("\n")], { type: "text/tab-separated-values" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${brandName.toLowerCase().replace(/\s+/g, "-")}-crm.tsv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleAddAccount = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCompany.trim()) return;
+    const slug = newCompany.trim().toLowerCase().replace(/[^a-z0-9]+/g, "");
+    setAccounts((prev) => [
+      {
+        id: `cust-${Date.now()}`,
+        name: newCompany.trim(),
+        domain: `${slug || "account"}.io`,
+        stage: "pilot",
+        acv: "$18,000",
+        contactName: "New Contact",
+        contactEmail: `ops@${slug || "account"}.io`,
+        region: "US-East",
+        health: 90,
+      },
+      ...prev,
+    ]);
+    setNewCompany("");
+    setShowAddRow(false);
+  };
+
   return (
     <div
-      className="w-full flex flex-col space-y-4 font-sans select-none"
+      className="w-full min-w-0 flex flex-col space-y-4 font-sans select-none"
       style={{
         color: tokens.textIconColor,
         fontFamily: scaled.resolvedFontFamily,
@@ -161,12 +200,14 @@ export function CustomerCrmSample({
       >
         <div className="space-y-0.5">
           <div className="flex items-center gap-2.5">
-            <BrandLogoRenderer
-              brandLogoUrl={brandLogoUrl}
-              selectedIconMark={selectedIconMark}
-              brandMark={brandMark}
-              size="sm"
-            />
+            <div className="shrink-0">
+              <BrandLogoRenderer
+                brandLogoUrl={brandLogoUrl}
+                selectedIconMark={selectedIconMark}
+                brandMark={brandMark}
+                size="sm"
+              />
+            </div>
             <h2
               className="text-base font-bold tracking-tight"
               style={{
@@ -193,14 +234,51 @@ export function CustomerCrmSample({
               placeholder="Search accounts..."
             />
           </div>
-          <Button variant="outline" size="sm" iconLeft={<Download size={13} strokeWidth={tokens.iconStrokeWidth || 1.75} />}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportTsv}
+            iconLeft={<Download size={13} strokeWidth={tokens.iconStrokeWidth || 1.75} />}
+          >
             Export TSV
           </Button>
-          <Button variant="primary" size="sm" iconLeft={<Plus size={13} strokeWidth={tokens.iconStrokeWidth || 2} />}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setShowAddRow((v) => !v)}
+            iconLeft={<Plus size={13} strokeWidth={tokens.iconStrokeWidth || 2} />}
+          >
             Add Account
           </Button>
         </div>
       </div>
+
+      {showAddRow && (
+        <form
+          onSubmit={handleAddAccount}
+          className="p-3 border flex flex-wrap items-center gap-2"
+          style={{
+            backgroundColor: tokens.universalFillColor,
+            borderColor: tokens.universalBorderColor,
+            borderRadius: `${scaled.scaledRadius}px`,
+          }}
+        >
+          <input
+            type="text"
+            value={newCompany}
+            onChange={(e) => setNewCompany(e.target.value)}
+            placeholder="Company name (e.g. Lattice Pay)"
+            className="flex-1 min-w-[180px] px-3 py-1.5 text-xs border rounded-md bg-transparent outline-none"
+            style={{
+              borderColor: tokens.universalBorderColor,
+              color: tokens.textIconColor,
+            }}
+          />
+          <Button type="submit" variant="primary" size="sm">
+            Save Account
+          </Button>
+        </form>
+      )}
 
       {/* ── HIGH DENSITY ENTERPRISE TABLE ── */}
       <div

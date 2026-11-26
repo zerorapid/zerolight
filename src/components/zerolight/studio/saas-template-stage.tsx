@@ -134,8 +134,8 @@ export function SaasTemplateStage({
   };
 
   return (
-    <div className={`flex-1 flex flex-col min-w-0 font-sans select-none ${className}`}>
-      <div className="flex-1 min-h-0 overflow-y-auto relative scrollbar-thin scrollbar-thumb-slate-300">
+    <div className={`flex-1 flex flex-col min-w-0 font-sans select-none print:block print:h-auto print:overflow-visible ${className}`}>
+      <div className="flex-1 min-h-0 overflow-y-auto relative scrollbar-thin scrollbar-thumb-slate-300 print:overflow-visible print:h-auto">
         {renderTemplateContent()}
       </div>
     </div>

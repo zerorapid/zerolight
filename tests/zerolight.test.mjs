@@ -2273,24 +2273,25 @@ test("Stageshow Primitives: ProductWindow, ChoreographedCursor, HeroShowcase & B
 // -----------------------------------------------------------------
 console.log("\n=== Suite 45: Unified Tools Directory, Morphic Evolution & shadcn r/ Registry ===");
 
-test("Unified Tools Hub renders preview cards first, dedicated tool pages, zero sidebar submenu & Design System primitives", () => {
+test("Single Component Platform, Employee Password Gate, Morphic Evolution & shadcn r/ Registry", () => {
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
-  assert.ok(dashboardContent.includes("TOOLS_VIEWS") && dashboardContent.includes('useState<ToolsSubView>("index")'), "DashboardShell must open Tools directory preview cards first");
-  assert.ok(!dashboardContent.includes("toolsMenuExpanded") && !dashboardContent.includes("GenUIStudioTool"), "Sidebar Tools item must have no submenu and GenUIStudioTool must be removed from Tools");
-  assert.ok(dashboardContent.includes("<ToolsDirectory") && dashboardContent.includes("All Tools"), "Tools hub must show preview cards directory first with All Tools back navigation");
-  assert.ok(dashboardContent.includes("<ZeroFlashTool") && dashboardContent.includes("<ZeroAuditorTool") && dashboardContent.includes("<WorldAtlasMap"), "Tools hub must mount ZeroFlash, ZeroAuditor, and WorldAtlasMap");
-  assert.ok(!dashboardContent.includes("Map Studio & Tools"), "Old 'Map Studio & Tools' label must be renamed to 'Tools'");
+  assert.ok(dashboardContent.includes("TOOLS_VIEWS") && dashboardContent.includes('useState<DashboardTab>("docs")'), "DashboardShell must open directly into the Design System Component Catalog");
+  assert.ok(!dashboardContent.includes("toolsMenuExpanded") && !dashboardContent.includes("GenUIStudioTool"), "Sidebar Tools item must have no submenu and GenUIStudioTool must be removed");
+  assert.ok(!dashboardContent.includes("<ZeroFlashTool") && !dashboardContent.includes("<ZeroAuditorTool"), "ZeroFlash and ZeroAuditor must be cleanly separated from the Single Component Platform");
+  assert.ok(dashboardContent.includes("<WorldAtlasMap") && dashboardContent.includes("Visual Studio Dock"), "Platform must retain Visual Studio Dock and WorldAtlasMap");
 
-  // Verify every tool consumes ZeroLight primitives cleanly
-  const flashSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/tools/zero-flash-tool.tsx"), "utf8");
-  assert.ok(flashSrc.includes('from "../molecules/select"') && flashSrc.includes('from "../atoms/card"'), "ZeroFlashTool must use ZeroLight Select and Card primitives");
-  assert.ok(flashSrc.includes("detectedSvgHexes") && flashSrc.includes("deckSlides"), "ZeroFlashTool must support SVG hex extraction and 6-slide Brand Deck preview");
-
-  const auditorSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/tools/zero-auditor-tool.tsx"), "utf8");
-  assert.ok(auditorSrc.includes('from "../molecules/segmented-control"') && auditorSrc.includes('from "../atoms/card"'), "ZeroAuditorTool must use ZeroLight SegmentedControl and Card primitives");
+  // Verify Server-Side Employee Password Gate
+  const middlewarePath = path.join(rootDir, "src/middleware.ts");
+  const loginPagePath = path.join(rootDir, "src/app/login/page.tsx");
+  const authApiPath = path.join(rootDir, "src/app/api/auth/team/route.ts");
+  assert.ok(fs.existsSync(middlewarePath) && fs.existsSync(loginPagePath) && fs.existsSync(authApiPath), "Edge middleware, /login page, and /api/auth/team route must exist for employee password protection");
+  const middlewareSrc = fs.readFileSync(middlewarePath, "utf8");
+  assert.ok(middlewareSrc.includes("ZERORAPID_TEAM_PASSWORD") && middlewareSrc.includes("zl_team_session"), "Middleware must enforce ZERORAPID_TEAM_PASSWORD session cookie");
 
   const atlasSrc = fs.readFileSync(path.join(rootDir, "src/components/WorldAtlasMap.tsx"), "utf8");
   assert.ok(atlasSrc.includes("useZeroLight") && atlasSrc.includes("SegmentedControl") && atlasSrc.includes("Slider") && atlasSrc.includes("Switch"), "WorldAtlasMap must bind controls to ZeroLight primitives and tokens");
+
+  assert.ok(fs.existsSync(path.join(rootDir, "src/app/studio/page.tsx")), "Dedicated full-page Visual Studio Dock route must exist");
 
   const genUiPath = path.join(rootDir, "src/components/zerolight/gen-ui/gen-ui-renderer.tsx");
   assert.ok(fs.existsSync(genUiPath), "gen-ui-renderer.tsx must exist");
@@ -2301,12 +2302,6 @@ test("Unified Tools Hub renders preview cards first, dedicated tool pages, zero 
   assert.ok(fs.existsSync(shadcnIndex), "public/r/index.json must exist for shadcn-compatible CLI installs");
   const parsedShadcn = JSON.parse(fs.readFileSync(shadcnIndex, "utf8"));
   assert.ok(parsedShadcn.$schema === "https://ui.shadcn.com/schema/registry.json" && Array.isArray(parsedShadcn.items) && parsedShadcn.items.length >= 120, "public/r/index.json must conform to shadcn schema with 120+ items");
-
-  // Rules & TSV export already checked in Suite 45
-  const rulesSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/tools/ai-footprint-rules.ts"), "utf8");
-  const ruleMatches = rulesSrc.match(/ruleNumber:\s*\d+/g) || [];
-  assert.ok(ruleMatches.length >= 30, `Expected 30+ AI_FOOTPRINT_RULES definitions, found ${ruleMatches.length}`);
-  assert.ok(rulesSrc.includes("export function formatAuditTSV"), "ZeroAuditor rules must export formatAuditTSV for Excel copy");
 
   // Runtime Morphic Evolution (Stages 1-3)
   const statCardSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/stat-card.tsx"), "utf8");
@@ -2319,11 +2314,6 @@ test("Unified Tools Hub renders preview cards first, dedicated tool pages, zero 
   assert.ok(fs.existsSync(path.join(rootDir, ".github/labeler.yml")) && fs.existsSync(path.join(rootDir, ".github/workflows/labeler.yml")), "Single-branch monorepo tool labeler must exist under .github/");
   const cliSrc = fs.readFileSync(path.join(rootDir, "bin/cli.mjs"), "utf8");
   assert.ok(cliSrc.includes("DEFAULT_SHADCN_REGISTRY_BASE") && cliSrc.includes("--shadcn") && cliSrc.includes("ui.zerorapid.in"), "CLI must support --shadcn flag and ui.zerorapid.in registry host");
-
-  const auditRoutePath = path.join(rootDir, "src/app/api/audit-url/route.ts");
-  assert.ok(fs.existsSync(auditRoutePath), "Public ZeroAuditor URL scanning API route must exist");
-  const auditRouteSrc = fs.readFileSync(auditRoutePath, "utf8");
-  assert.ok(auditRouteSrc.includes("PRIVATE_HOST_PATTERN") && auditRouteSrc.includes("AuditUrlSchema"), "audit-url API route must validate input and guard against SSRF");
 
   const nextConfigSrc = fs.readFileSync(path.join(rootDir, "next.config.mjs"), "utf8");
   assert.ok(nextConfigSrc.includes("/r/:path*") && nextConfigSrc.includes("Access-Control-Allow-Origin"), "next.config.mjs must allow CORS on public registry payloads");

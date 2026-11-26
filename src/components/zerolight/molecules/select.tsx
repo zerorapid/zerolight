@@ -84,14 +84,14 @@ export function Select({
           paddingRight: `${isCompact ? 10 : scaled.scaledPaddingX}px`,
           transition: scaled.transitionStyle,
         }}
-        className={`${inline ? "inline-flex gap-2" : "w-full flex justify-between"} items-center border cursor-pointer select-none text-left`}
+        className={`${inline ? "inline-flex gap-2" : "w-full flex justify-between gap-2"} items-center border cursor-pointer select-none text-left min-w-0`}
       >
         <span
           style={{
             fontSize: `${isCompact ? Math.max(11, scaled.sublabelFontSize) : scaled.scaledFontSize}px`,
             color: selectedOpt ? tokens.textIconColor : "#A1A1AA",
           }}
-          className="font-medium truncate"
+          className="font-medium truncate min-w-0 flex-1"
         >
           {selectedOpt ? selectedOpt.label : placeholder}
         </span>

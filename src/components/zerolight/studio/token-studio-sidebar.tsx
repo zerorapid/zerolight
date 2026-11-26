@@ -25,6 +25,8 @@ import {
   Upload,
   Shapes,
   Download,
+  Landmark,
+  Stethoscope,
 } from "lucide-react";
 import { useZeroLight } from "../context";
 import {
@@ -106,7 +108,7 @@ export const INDUSTRY_ARCHETYPES = [
   {
     id: "fintech",
     label: "Fintech",
-    emoji: "🏦",
+    icon: Landmark,
     caption: "Obsidian & Emerald",
     brandName: "Finexy Ledger",
     brandMark: "FL",
@@ -128,7 +130,7 @@ export const INDUSTRY_ARCHETYPES = [
   {
     id: "healthcare",
     label: "Healthcare",
-    emoji: "🩺",
+    icon: Stethoscope,
     caption: "Clean Pure White",
     brandName: "MediPulse Health",
     brandMark: "MP",
@@ -150,7 +152,7 @@ export const INDUSTRY_ARCHETYPES = [
   {
     id: "devops",
     label: "DevOps",
-    emoji: "⚡",
+    icon: Terminal,
     caption: "Dark Slate & Amber",
     brandName: "KubeStream Ops",
     brandMark: "KS",
@@ -172,7 +174,7 @@ export const INDUSTRY_ARCHETYPES = [
   {
     id: "creative",
     label: "Creative",
-    emoji: "🎨",
+    icon: Palette,
     caption: "Violet & Stage Gray",
     brandName: "Vivid Studio",
     brandMark: "VS",
@@ -482,20 +484,25 @@ export default function App({ children }: { children: React.ReactNode }) {
             <span className="text-[9px] text-slate-400 font-medium">1-Click Live Transform</span>
           </div>
           <div className="grid grid-cols-2 gap-1.5">
-            {INDUSTRY_ARCHETYPES.map((arch) => (
+            {INDUSTRY_ARCHETYPES.map((arch) => {
+              const IconComp = arch.icon;
+              return (
               <button
                 key={arch.id}
                 type="button"
                 onClick={() => applyArchetype(arch)}
-                className="p-2 rounded-lg border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all flex items-center gap-2 text-left cursor-pointer group"
+                className="p-2 rounded-lg border border-slate-200 bg-white hover:border-slate-400 hover:shadow-xs transition-all flex items-center gap-2 text-left cursor-pointer group min-w-0"
               >
-                <span className="text-base shrink-0">{arch.emoji}</span>
+                <div className="w-6 h-6 rounded-md bg-slate-100 flex items-center justify-center shrink-0 text-slate-700 group-hover:text-slate-950">
+                  <IconComp className="w-3.5 h-3.5" />
+                </div>
                 <div className="min-w-0">
-                  <div className="text-[11px] font-bold text-slate-800 leading-tight group-hover:text-slate-900">{arch.label}</div>
+                  <div className="text-[11px] font-bold text-slate-800 leading-tight group-hover:text-slate-900 truncate">{arch.label}</div>
                   <div className="text-[9px] text-slate-400 truncate">{arch.caption}</div>
                 </div>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 

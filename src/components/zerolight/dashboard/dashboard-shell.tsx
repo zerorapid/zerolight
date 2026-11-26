@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import {
   Home,
@@ -38,6 +39,7 @@ import {
   Bell,
   ExternalLink,
   Printer,
+  Menu,
   X,
 } from "lucide-react";
 import { useAuth } from "../auth/auth-context";
@@ -52,10 +54,9 @@ import { DynamicIcon } from "../atoms/dynamic-icon";
 import { SegmentedControl } from "../molecules/segmented-control";
 import { TokenStudioSidebar } from "../studio/token-studio-sidebar";
 import { SaasTemplateStage, SaasTemplateKey } from "../studio/saas-template-stage";
-import { ToolsDirectory, ZeroFlashTool, ZeroAuditorTool } from "../tools";
 
 export type DashboardTab = "overview" | "docs" | "tools" | "settings";
-export type ToolsSubView = "index" | "studio" | "atlas" | "zeroflash" | "zeroauditor";
+export type ToolsSubView = "studio" | "atlas";
 export type DocsTier = "foundations" | "atoms" | "molecules" | "organisms" | "templates" | "pages";
 export type DocsSubView =
   | "catalog"
@@ -150,14 +151,12 @@ export const DOCS_TIERS: {
 ];
 
 export const TOOLS_VIEWS: {
-  id: Exclude<ToolsSubView, "index">;
+  id: ToolsSubView;
   label: string;
   badge: string;
   desc: string;
 }[] = [
   { id: "studio", label: "Visual Studio Dock", badge: "Tokens", desc: "Live token customizer and interactive SaaS template workbench" },
-  { id: "zeroflash", label: "ZeroFlash Brand", badge: "Brand Deck", desc: "Brand identity studio, 6-slide deck, W3C tokens & SVG extractor" },
-  { id: "zeroauditor", label: "ZeroAuditor", badge: "Audit", desc: "33-rule AI-slop footprint scanner & ZeroLight remediation engine" },
   { id: "atlas", label: "World Atlas Map", badge: "Vector", desc: "2D flat monochrome vector maps with 6 pattern styles & SVG export" },
 ];
 
@@ -211,8 +210,18 @@ export interface DashboardShellProps {
 export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   const { isAuthenticated, user, logout } = useAuth();
   const { tokens } = useZeroLight();
-  const [activeTab, setActiveTab] = useState<DashboardTab>("tools");
-  const [toolsSubView, setToolsSubView] = useState<ToolsSubView>("index");
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<DashboardTab>("docs");
+  const [toolsSubView, setToolsSubView] = useState<ToolsSubView>("studio");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get("tab") as DashboardTab | null;
+    if (tabParam && ["overview", "docs", "tools", "settings"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, []);
   const [docsTier, setDocsTier] = useState<DocsTier>("foundations");
   const [docsSubView, setDocsSubView] = useState<DocsSubView>("catalog");
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
@@ -263,6 +272,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   const [brandLogoUrl, setBrandLogoUrl] = useState<string | null>(null);
   const [selectedIconMark, setSelectedIconMark] = useState<string>("shield");
   const [settingsTab, setSettingsTab] = useState<SettingsSubTab>("general");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Comprehensive Settings State
   const [displayName, setDisplayName] = useState(user?.name || "ZeroLight Root Admin");
@@ -399,7 +409,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   };
 
   return (
-    <div className="h-screen w-full bg-[#F1F3F5] text-zinc-950 flex p-3 md:p-4 gap-3 md:gap-4 overflow-hidden font-sans">
+    <div className="h-screen w-full bg-[#F1F3F5] text-zinc-950 flex p-3 md:p-4 gap-3 md:gap-4 overflow-hidden font-sans print:h-auto print:overflow-visible print:bg-white print:p-0 print:block">
       {/* Toast Notification */}
       {saveSuccessToast && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-900 text-white text-xs font-semibold shadow-xl border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-200">
@@ -408,12 +418,61 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
         </div>
       )}
 
+      {/* Mobile Slide-Over Navigation Drawer */}
+      {mobileNavOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs"
+            onClick={() => setMobileNavOpen(false)}
+          />
+          <div className="relative z-10 w-64 h-full bg-[#0B0F19] text-white p-3 flex flex-col justify-between shadow-2xl">
+            <div className="space-y-3">
+              <div className="h-10 px-1 flex items-center justify-between border-b border-white/[0.08] pb-2">
+                <span className="font-bold text-sm tracking-tight">ZeroLight OS</span>
+                <button
+                  type="button"
+                  onClick={() => setMobileNavOpen(false)}
+                  className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10"
+                  aria-label="Close navigation menu"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <nav className="space-y-1">
+                {navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveTab(item.id as DashboardTab);
+                      if (item.id === "tools") setToolsSubView("studio");
+                      setMobileNavOpen(false);
+                    }}
+                    className={`w-full px-3 py-2.5 rounded-xl flex items-center gap-2.5 text-xs font-medium ${
+                      activeTab === item.id ? "bg-white/15 text-white font-semibold" : "text-zinc-400 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+            <div className="pt-2 border-t border-white/[0.08] text-[11px] text-zinc-400 px-2">
+              <a href="https://zerorapid.in" target="_blank" rel="noopener noreferrer" className="hover:text-white">
+                zerorapid.in
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── HIGH-DEPTH OBSIDIAN DARK FIXED/STICKY SIDEBAR (EXACT MATCH TO ATOM/MOLECULE USER REFERENCE) ── */}
       <LayoutGroup>
         <motion.aside
           animate={{ width: isCollapsed ? 68 : 256 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="h-full bg-[#0B0F19] text-white border border-white/[0.08] rounded-[20px] p-2.5 flex flex-col justify-between shadow-lg select-none overflow-hidden shrink-0"
+          className="hidden lg:flex h-full bg-[#0B0F19] text-white border border-white/[0.08] rounded-[20px] p-2.5 flex-col justify-between shadow-lg select-none overflow-hidden shrink-0 print:hidden"
         >
           <div className="space-y-3 flex-1 flex flex-col min-h-0">
             {/* Top Brand Mark with Invariant Centroid + Collapse Button */}
@@ -489,7 +548,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                           }
                         } else if (item.id === "tools") {
                           setActiveTab("tools");
-                          setToolsSubView("index");
+                          setToolsSubView("studio");
                         } else {
                           setActiveTab(item.id as DashboardTab);
                         }
@@ -682,12 +741,29 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
       </LayoutGroup>
 
       {/* ── RIGHT COLUMN CONTAINER (TOP HEADER + BREADCRUMBS + BIG SCROLLABLE WORKSPACE BOX) ── */}
-      <div className="flex-1 flex flex-col h-full min-w-0 gap-2.5 md:gap-3 overflow-hidden">
+      <div className="flex-1 flex flex-col h-full min-w-0 gap-2.5 md:gap-3 overflow-hidden print:h-auto print:overflow-visible print:block">
         {/* ── MASTER PERSISTENT TOP HEADER (OPTION A: GLOBAL SEARCH + UTILITY CONTROLS) ── */}
         <header
           data-zl-studio-chrome="true"
-          className="shrink-0 bg-white border border-zinc-200/80 rounded-[18px] px-4 py-2 flex items-center justify-between gap-4 shadow-2xs z-20"
+          className="shrink-0 border rounded-[18px] px-3 sm:px-4 py-2 flex items-center justify-between gap-2 sm:gap-4 shadow-2xs z-20 print:hidden"
+          style={{
+            backgroundColor: tokens.universalFillColor,
+            borderColor: tokens.universalBorderColor,
+            color: tokens.textIconColor,
+          }}
         >
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen(true)}
+            aria-label="Open navigation menu"
+            className="lg:hidden p-2 rounded-xl border shrink-0 cursor-pointer"
+            style={{
+              borderColor: tokens.universalBorderColor,
+              color: tokens.textIconColor,
+            }}
+          >
+            <Menu className="w-4 h-4" />
+          </button>
           {/* Global Search Bar with Live Instant Navigation Popover */}
           <div ref={searchContainerRef} className="relative flex-1 max-w-sm sm:max-w-md">
             <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -864,24 +940,29 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
         </header>
 
         {/* ── BREADCRUMB STRIP (BELOW HEADER IN GREY GAP) ── */}
-        <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-medium px-2 shrink-0">
+        <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-medium px-2 shrink-0 print:hidden">
           <span className="hover:text-zinc-600 cursor-pointer" onClick={() => setActiveTab("overview")}>ZeroLight OS</span>
           <span>/</span>
           <span className="text-zinc-700 font-semibold capitalize">
             {activeTab === "overview" && "Overview"}
             {activeTab === "docs" && `Design System / ${activeTierData.label}`}
-            {activeTab === "tools" && (toolsSubView === "index" ? "Tools" : `Tools / ${activeToolData.label}`)}
+            {activeTab === "tools" && `Tools / ${activeToolData.label}`}
             {activeTab === "settings" && "Settings & MCP"}
           </span>
         </div>
 
         {/* ── BIG ROUNDED WHITE WORKSPACE CARD (ONLY THIS BOX HAS OVERFLOW-Y-AUTO EXCEPT STUDIO DOCK WHICH IS A FULL-HEIGHT DOCK) ── */}
         <main
-          className={`flex-1 rounded-[18px] border border-zinc-200/80 shadow-xs min-h-0 ${
+          className={`flex-1 rounded-[18px] border shadow-xs min-h-0 print:border-0 print:shadow-none print:rounded-none print:overflow-visible print:h-auto print:block ${
             activeTab === "tools" && toolsSubView === "studio"
-              ? "overflow-hidden flex flex-col p-0 bg-[#FAFAFA]"
-              : "overflow-y-auto p-6 md:p-8 bg-white"
+              ? "overflow-hidden flex flex-col p-0"
+              : "overflow-y-auto p-4 sm:p-6 md:p-8"
           }`}
+          style={{
+            backgroundColor: tokens.universalFillColor,
+            borderColor: tokens.universalBorderColor,
+            color: tokens.textIconColor,
+          }}
         >
           {/* TAB 1: OVERVIEW DASHBOARD */}
         {activeTab === "overview" && (
@@ -1195,53 +1276,39 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
           {/* TAB 3: UNIFIED TOOLS HUB (COLLECTION PREVIEW CARDS FIRST -> DEDICATED TOOL WORKSPACE) */}
         {activeTab === "tools" && (
           <div className={toolsSubView === "studio" ? "w-full flex-1 flex flex-col min-h-0 animate-in fade-in duration-200" : "max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200"}>
-            {toolsSubView === "index" ? (
-              <ToolsDirectory
-                brandName={brandName}
-                onOpenTool={(toolId) => setToolsSubView(toolId)}
-              />
-            ) : (
               <>
-                {/* Dedicated Tool Header Bar (No Tab Menu Across Tools) */}
+                {/* Studio / Atlas Switcher Bar */}
                 <div
                   data-zl-studio-chrome="true"
                   className={
                     toolsSubView === "studio"
-                      ? "px-4 py-2 bg-white border-b flex flex-wrap items-center justify-between gap-2 shrink-0"
-                      : "pb-3 border-b flex flex-wrap items-center justify-between gap-3"
+                      ? "px-4 py-2 border-b flex flex-wrap items-center justify-between gap-2 shrink-0 print:hidden"
+                      : "pb-3 border-b flex flex-wrap items-center justify-between gap-3 print:hidden"
                   }
-                  style={{ borderColor: tokens.universalBorderColor }}
+                  style={{
+                    borderColor: tokens.universalBorderColor,
+                    backgroundColor: toolsSubView === "studio" ? tokens.universalFillColor : undefined,
+                  }}
                 >
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2">
                     <Button
-                      variant="outline"
+                      variant={toolsSubView === "studio" ? "primary" : "outline"}
                       size="sm"
-                      onClick={() => setToolsSubView("index")}
-                      iconLeft={<ChevronLeft className="w-3.5 h-3.5" />}
+                      onClick={() => setToolsSubView("studio")}
                     >
-                      All Tools
+                      Visual Studio Dock
                     </Button>
-                    <span className="text-xs font-bold tracking-tight" style={{ color: tokens.textIconColor }}>
-                      {activeToolData.label}
-                    </span>
-                    <Badge variant="neutral" size="xs" showDot={false}>
-                      {activeToolData.badge}
-                    </Badge>
+                    <Button
+                      variant={toolsSubView === "atlas" ? "primary" : "outline"}
+                      size="sm"
+                      onClick={() => setToolsSubView("atlas")}
+                    >
+                      World Atlas Map
+                    </Button>
                   </div>
 
                   {toolsSubView === "studio" && (
                     <div className="flex flex-wrap items-center gap-2 shrink-0">
-                      <SegmentedControl<SaasTemplateKey>
-                        value={activeSaasTemplate}
-                        onChange={(tmpl) => setActiveSaasTemplate(tmpl)}
-                        options={[
-                          { key: "zerolight_core", label: "Spec Catalog" },
-                          { key: "hero_showcase", label: "Hero & Bento" },
-                          { key: "unified_enterprise", label: "Enterprise Console" },
-                          { key: "customer_crm", label: "CRM Pipeline" },
-                          { key: "metric_deck", label: "SaaS Metrics" },
-                        ]}
-                      />
                       <Button
                         variant="outline"
                         size="sm"
@@ -1265,8 +1332,14 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
 
                 {toolsSubView === "studio" && (
                   <>
-                    <div className="w-full flex-1 min-h-0 flex flex-col lg:flex-row items-stretch">
-                      <div className="flex-1 min-w-0 flex flex-col h-full bg-[#FAFAFA]">
+                    <div className="w-full flex-1 min-h-0 flex flex-col lg:flex-row items-stretch overflow-y-auto lg:overflow-hidden print:block print:h-auto print:overflow-visible">
+                      <div
+                        className="flex-1 min-w-0 min-h-[540px] lg:min-h-0 flex flex-col lg:h-full overflow-hidden print:h-auto print:min-h-0 print:overflow-visible print:block"
+                        style={{
+                          backgroundColor:
+                            tokens.universalFillColor === "#FFFFFF" ? "#FAFAFA" : tokens.universalFillColor,
+                        }}
+                      >
                         <SaasTemplateStage
                           activeTemplate={activeSaasTemplate}
                           onTemplateChange={setActiveSaasTemplate}
@@ -1277,7 +1350,10 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                           className="h-full"
                         />
                       </div>
-                      <div className="w-full lg:w-[320px] shrink-0 h-full flex flex-col border-t lg:border-t-0 lg:border-l border-zinc-200/80 bg-white">
+                      <div
+                        className="w-full lg:w-[320px] shrink-0 lg:h-full flex flex-col border-t lg:border-t-0 lg:border-l bg-white print:hidden"
+                        style={{ borderColor: tokens.universalBorderColor }}
+                      >
                         <TokenStudioSidebar
                           brandName={brandName}
                           onBrandNameChange={setBrandName}
@@ -1320,21 +1396,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                   </div>
                 )}
 
-                {toolsSubView === "zeroflash" && (
-                  <ZeroFlashTool
-                    brandName={brandName}
-                    onBrandNameChange={setBrandName}
-                    brandLogoUrl={brandLogoUrl}
-                    onBrandLogoUpload={setBrandLogoUrl}
-                    onStatusToast={showToolToast}
-                  />
-                )}
-
-                {toolsSubView === "zeroauditor" && (
-                  <ZeroAuditorTool onStatusToast={showToolToast} />
-                )}
               </>
-            )}
           </div>
         )}
 
