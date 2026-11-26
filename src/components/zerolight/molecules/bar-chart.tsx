@@ -121,13 +121,13 @@ export function BarChart({
       )}
 
       {/* Chart Canvas */}
-      <div className="relative flex-1 flex flex-col justify-end" style={{ height }}>
+      <div className="relative shrink-0 w-full flex flex-col justify-end" style={{ height: `${height}px` }}>
         {/* Background Grid Lines */}
         {effectiveGridStyle !== "none" && (
           <div className="absolute inset-x-0 bottom-6 top-2 flex flex-col justify-between pointer-events-none">
             {yTicks.map((tick, idx) => (
               <div key={idx} className="flex items-center w-full">
-                <span className="w-10 text-[10px] text-neutral-500 font-semibold tabular-nums text-right pr-2 shrink-0">
+                <span className="min-w-12 whitespace-nowrap text-[10px] text-neutral-500 font-semibold tabular-nums text-right pr-2 shrink-0">
                   {valueFormatter(tick.val)}
                 </span>
                 <div
@@ -142,7 +142,7 @@ export function BarChart({
         )}
 
         {/* Bars Container */}
-        <div className="relative pl-10 pr-2 pb-6 pt-8 h-full flex items-end justify-between gap-2 z-10 overflow-visible">
+        <div className="relative pl-14 pr-2 pb-6 pt-8 h-full flex items-end justify-between gap-2 z-10 overflow-visible">
           {data.map((item, idx) => {
             const isHovered = hoverIndex === idx;
             const h1 = Math.max(8, (item.value / scaleMax) * 100);
