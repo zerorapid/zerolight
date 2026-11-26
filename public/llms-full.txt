@@ -1,0 +1,2076 @@
+# ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)
+
+> Generated automatically from source files (130 items). Public registry: https://bricks.zerorapid.in/r/index.json
+
+## types (registry:lib)
+- Install: `npx zerolight add types`
+- Registry JSON: https://bricks.zerorapid.in/r/types.json
+- Exports: GOOGLE_FONT_CATALOG, FONT_PAIRING_PRESETS, DEFAULT_TOKENS, THEME_PRESETS
+
+## context (registry:lib)
+- Install: `npx zerolight add context`
+- Registry JSON: https://bricks.zerorapid.in/r/context.json
+- Exports: ZeroLightProvider
+```ts
+export interface ZeroLightProviderProps {
+  tokens?: ZeroLightTokens;
+  updateTokens?: (updates: Partial<ZeroLightTokens>) => void;
+  children: React.ReactNode;
+}
+```
+
+## zerolight-index (registry:lib)
+- Install: `npx zerolight add zerolight-index`
+- Registry JSON: https://bricks.zerorapid.in/r/zerolight-index.json
+
+## aperture-action (registry:ui)
+- Install: `npx zerolight add aperture-action`
+- Registry JSON: https://bricks.zerorapid.in/r/aperture-action.json
+- Exports: ApertureAction
+```ts
+export interface ApertureActionProps {
+  label: string;
+  variant?: ApertureActionVariant;
+  onClick: () => void;
+  disabled?: boolean;
+  type?: "button" | "submit";
+  className?: string;
+  icon?: React.ReactNode;
+  ariaLabel?: string;
+}
+```
+
+## aperture-slider (registry:ui)
+- Install: `npx zerolight add aperture-slider`
+- Registry JSON: https://bricks.zerorapid.in/r/aperture-slider.json
+- Exports: ApertureSlider
+```ts
+export interface ApertureSliderProps {
+  min?: number;
+  max?: number;
+  step?: number;
+  value: number;
+  onChange: (val: number) => void;
+  disabled?: boolean;
+  label?: string;
+  unit?: string;
+  className?: string;
+  showLimits?: boolean;
+}
+```
+
+## aperture-switch (registry:ui)
+- Install: `npx zerolight add aperture-switch`
+- Registry JSON: https://bricks.zerorapid.in/r/aperture-switch.json
+- Exports: ApertureSwitch
+```ts
+export interface ApertureSwitchProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  label?: string;
+  description?: string;
+  className?: string;
+  ariaLabel?: string;
+}
+```
+
+## audit-timestamp (registry:ui)
+- Install: `npx zerolight add audit-timestamp`
+- Registry JSON: https://bricks.zerorapid.in/r/audit-timestamp.json
+- Exports: AuditTimestamp
+```ts
+export interface AuditTimestampProps {
+  date?: Date | string | number;
+  format?: AuditTimestampFormat;
+  showPill?: boolean;
+  className?: string;
+}
+```
+
+## avatar (registry:ui)
+- Install: `npx zerolight add avatar`
+- Registry JSON: https://bricks.zerorapid.in/r/avatar.json
+- Exports: Avatar
+```ts
+export interface AvatarProps {
+  initials?: string;
+  src?: string;
+  alt?: string;
+  size?: AvatarSize;
+  status?: AvatarStatus;
+  className?: string;
+}
+```
+
+## badge (registry:ui)
+- Install: `npx zerolight add badge`
+- Registry JSON: https://bricks.zerorapid.in/r/badge.json
+- Exports: Badge
+```ts
+export interface BadgeProps {
+  variant?: BadgeVariant;
+  children: React.ReactNode;
+  pulse?: boolean;
+  showDot?: boolean;
+  size?: "xs" | "sm";
+  className?: string;
+}
+```
+
+## button-group (registry:ui)
+- Install: `npx zerolight add button-group`
+- Registry JSON: https://bricks.zerorapid.in/r/button-group.json
+- Exports: ButtonGroup
+```ts
+export interface ButtonGroupProps {
+  children: React.ReactNode;
+  orientation?: "horizontal" | "vertical";
+  className?: string;
+}
+```
+
+## button (registry:ui)
+- Install: `npx zerolight add button`
+- Registry JSON: https://bricks.zerorapid.in/r/button.json
+- Exports: Button
+```ts
+export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  loading?: boolean;
+  iconLeft?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  children?: React.ReactNode;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## capacity-meter (registry:ui)
+- Install: `npx zerolight add capacity-meter`
+- Registry JSON: https://bricks.zerorapid.in/r/capacity-meter.json
+- Exports: CapacityMeter
+```ts
+export interface CapacityMeterProps {
+  value: number;
+  max?: number;
+  unit?: string;
+  label?: string;
+  warningThreshold?: number; // Default 75%
+  criticalThreshold?: number; // Default 90%
+  showLabel?: boolean;
+  className?: string;
+}
+```
+
+## card (registry:ui)
+- Install: `npx zerolight add card`
+- Registry JSON: https://bricks.zerorapid.in/r/card.json
+- Exports: Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+```ts
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: "default" | "elevated" | "muted" | "interactive";
+  padding?: "none" | "sm" | "md" | "lg";
+  stage?: MorphicStage;
+}
+```
+
+## checkbox (registry:ui)
+- Install: `npx zerolight add checkbox`
+- Registry JSON: https://bricks.zerorapid.in/r/checkbox.json
+- Exports: Checkbox
+```ts
+export interface CheckboxProps {
+  checked?: boolean;
+  indeterminate?: boolean;
+  onChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  label?: string;
+  description?: string;
+  id?: string;
+}
+```
+
+## copy-trigger (registry:ui)
+- Install: `npx zerolight add copy-trigger`
+- Registry JSON: https://bricks.zerorapid.in/r/copy-trigger.json
+- Exports: CopyTrigger
+```ts
+export interface CopyTriggerProps {
+  text: string;
+  label?: string;
+  displayText?: string;
+  showText?: boolean;
+  timeoutMs?: number;
+  variant?: "surface" | "dark" | "ghost";
+  className?: string;
+}
+```
+
+## currency-pill (registry:ui)
+- Install: `npx zerolight add currency-pill`
+- Registry JSON: https://bricks.zerorapid.in/r/currency-pill.json
+- Exports: CurrencyPill
+```ts
+export interface CurrencyPillProps {
+  flag: string;
+  currencyCode: string;
+  balance: string;
+  monthlyLimit: string;
+  status?: "Active" | "Inactive";
+  onMenuClick?: () => void;
+  className?: string;
+}
+```
+
+## dynamic-icon (registry:ui)
+- Install: `npx zerolight add dynamic-icon`
+- Registry JSON: https://bricks.zerorapid.in/r/dynamic-icon.json
+- Exports: DynamicIcon
+```ts
+export interface DynamicIconProps extends React.SVGProps<SVGSVGElement> {
+  name:
+    | "shield"
+    | "shield-check"
+    | "zap"
+    | "terminal"
+    | "cpu"
+    | "globe"
+    | "activity"
+    | "server"
+    | "database"
+    | "key"
+    | "sparkles"
+    | "mail"
+    | "check"
+    | "x";
+  library?: IconLibraryPreset;
+  size?: number;
+  strokeWidth?: number;
+  color?: string;
+  fill?: string;
+  className?: string;
+}
+```
+
+## entity-avatar (registry:ui)
+- Install: `npx zerolight add entity-avatar`
+- Registry JSON: https://bricks.zerorapid.in/r/entity-avatar.json
+- Exports: EntityAvatar
+```ts
+export interface EntityAvatarProps {
+  name: string;
+  size?: "xs" | "sm" | "md" | "lg";
+  className?: string;
+}
+```
+
+## icon-button (registry:ui)
+- Install: `npx zerolight add icon-button`
+- Registry JSON: https://bricks.zerorapid.in/r/icon-button.json
+- Exports: IconButton
+```ts
+export interface IconButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
+  icon: React.ReactNode;
+  ariaLabel: string;
+  variant?: "ghost" | "outline" | "solid";
+  size?: "sm" | "md" | "lg";
+}
+```
+
+## icon (registry:ui)
+- Install: `npx zerolight add icon`
+- Registry JSON: https://bricks.zerorapid.in/r/icon.json
+- Exports: Icon
+```ts
+export interface IconProps {
+  name: IconName;
+  size?: IconSize | number;
+  stroke?: IconStroke | number;
+  color?: string;
+  fill?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  ariaLabel?: string;
+}
+```
+
+## input (registry:ui)
+- Install: `npx zerolight add input`
+- Registry JSON: https://bricks.zerorapid.in/r/input.json
+- Exports: Input
+```ts
+export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
+  iconLeft?: React.ReactNode;
+  iconRight?: React.ReactNode;
+  error?: boolean;
+  stage?: MorphicStage;
+}
+```
+
+## kbd-shortcut (registry:ui)
+- Install: `npx zerolight add kbd-shortcut`
+- Registry JSON: https://bricks.zerorapid.in/r/kbd-shortcut.json
+- Exports: KbdShortcut
+```ts
+export interface KbdShortcutProps {
+  keys?: string[];
+  shortcut?: string;
+  size?: "xs" | "sm";
+  className?: string;
+}
+```
+
+## kbd (registry:ui)
+- Install: `npx zerolight add kbd`
+- Registry JSON: https://bricks.zerorapid.in/r/kbd.json
+- Exports: Kbd
+```ts
+export interface KbdProps {
+  children: React.ReactNode;
+  className?: string;
+}
+```
+
+## key-badge (registry:ui)
+- Install: `npx zerolight add key-badge`
+- Registry JSON: https://bricks.zerorapid.in/r/key-badge.json
+- Exports: KeyBadge
+```ts
+export interface KeyBadgeProps {
+  label: string;
+  variant?: KeyBadgeVariant;
+  size?: KeyBadgeSize;
+  className?: string;
+}
+```
+
+## label (registry:ui)
+- Install: `npx zerolight add label`
+- Registry JSON: https://bricks.zerorapid.in/r/label.json
+- Exports: Label
+```ts
+export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+  required?: boolean;
+  hint?: string;
+  error?: boolean;
+}
+```
+
+## message-status (registry:ui)
+- Install: `npx zerolight add message-status`
+- Registry JSON: https://bricks.zerorapid.in/r/message-status.json
+- Exports: MessageStatus
+```ts
+export interface MessageStatusProps {
+  status: MessageStatusType;
+  size?: number;
+  className?: string;
+}
+```
+
+## micro-input (registry:ui)
+- Install: `npx zerolight add micro-input`
+- Registry JSON: https://bricks.zerorapid.in/r/micro-input.json
+- Exports: MicroInput
+```ts
+export interface MicroInputProps {
+  value: string | number;
+  onChange: (val: string) => void;
+  type?: "text" | "number";
+  prefix?: string;
+  suffix?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+  size?: "sm" | "md";
+  align?: "left" | "right";
+  className?: string;
+  ariaLabel?: string;
+}
+```
+
+## mono-value (registry:ui)
+- Install: `npx zerolight add mono-value`
+- Registry JSON: https://bricks.zerorapid.in/r/mono-value.json
+- Exports: MonoValue
+```ts
+export interface MonoValueProps {
+  value: number | string;
+  prefix?: string;
+  suffix?: string;
+  previousValue?: number | string;
+  variant?: MonoValueVariant;
+  size?: MonoValueSize;
+  className?: string;
+}
+```
+
+## payment-card (registry:ui)
+- Install: `npx zerolight add payment-card`
+- Registry JSON: https://bricks.zerorapid.in/r/payment-card.json
+- Exports: PaymentCard
+```ts
+export interface PaymentCardProps {
+  last4: string;
+  expiry: string;
+  cvv?: string;
+  cardholderName?: string;
+  cardholder?: string;
+  brand?: "mastercard" | "visa";
+  variant?: "dark" | "gradient" | "emerald";
+  status?: "active" | "inactive";
+  isDefault?: boolean;
+  className?: string;
+}
+```
+
+## progress-bar (registry:ui)
+- Install: `npx zerolight add progress-bar`
+- Registry JSON: https://bricks.zerorapid.in/r/progress-bar.json
+- Exports: ProgressBar
+```ts
+export interface ProgressBarProps {
+  value: number;
+  max?: number;
+  label?: string;
+  showValue?: boolean;
+}
+```
+
+## radio-group (registry:ui)
+- Install: `npx zerolight add radio-group`
+- Registry JSON: https://bricks.zerorapid.in/r/radio-group.json
+- Exports: RadioGroup
+```ts
+export interface RadioGroupProps {
+  name?: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: RadioOption[];
+  orientation?: "vertical" | "horizontal";
+  cardMode?: boolean; // When true, renders each option as a clickable card
+  className?: string;
+}
+```
+
+## scroll-area (registry:ui)
+- Install: `npx zerolight add scroll-area`
+- Registry JSON: https://bricks.zerorapid.in/r/scroll-area.json
+- Exports: ScrollArea
+```ts
+export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
+  maxHeight?: number | string;
+  orientation?: "vertical" | "horizontal" | "both";
+  bordered?: boolean;
+}
+```
+
+## segment-pill (registry:ui)
+- Install: `npx zerolight add segment-pill`
+- Registry JSON: https://bricks.zerorapid.in/r/segment-pill.json
+- Exports: SegmentPill
+```ts
+export interface SegmentPillProps {
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+  disabled?: boolean;
+  className?: string;
+  ariaLabel?: string;
+}
+```
+
+## separator (registry:ui)
+- Install: `npx zerolight add separator`
+- Registry JSON: https://bricks.zerorapid.in/r/separator.json
+- Exports: Separator
+```ts
+export interface SeparatorProps {
+  orientation?: "horizontal" | "vertical";
+  label?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+```
+
+## skeleton-bar (registry:ui)
+- Install: `npx zerolight add skeleton-bar`
+- Registry JSON: https://bricks.zerorapid.in/r/skeleton-bar.json
+- Exports: SkeletonBar
+```ts
+export interface SkeletonBarProps {
+  width?: string;
+  height?: string;
+  className?: string;
+  rounded?: "sm" | "md" | "lg" | "full";
+}
+```
+
+## skeleton (registry:ui)
+- Install: `npx zerolight add skeleton`
+- Registry JSON: https://bricks.zerorapid.in/r/skeleton.json
+- Exports: Skeleton
+```ts
+export interface SkeletonProps {
+  variant?: "rect" | "circle" | "text";
+  width?: string | number;
+  height?: string | number;
+  className?: string;
+  style?: React.CSSProperties;
+}
+```
+
+## slider (registry:ui)
+- Install: `npx zerolight add slider`
+- Registry JSON: https://bricks.zerorapid.in/r/slider.json
+- Exports: Slider
+```ts
+export interface SliderProps {
+  value: number;
+  onChange: (val: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  disabled?: boolean;
+  label?: string;
+  id?: string;
+}
+```
+
+## spinner (registry:ui)
+- Install: `npx zerolight add spinner`
+- Registry JSON: https://bricks.zerorapid.in/r/spinner.json
+- Exports: Spinner
+```ts
+export interface SpinnerProps {
+  size?: "xs" | "sm" | "md" | "lg";
+  color?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+```
+
+## status-pill (registry:ui)
+- Install: `npx zerolight add status-pill`
+- Registry JSON: https://bricks.zerorapid.in/r/status-pill.json
+- Exports: StatusPill
+```ts
+export interface StatusPillProps {
+  label: string;
+  variant?: StatusPillVariant;
+  showDot?: boolean;
+  className?: string;
+}
+```
+
+## switch (registry:ui)
+- Install: `npx zerolight add switch`
+- Registry JSON: https://bricks.zerorapid.in/r/switch.json
+- Exports: Switch
+```ts
+export interface SwitchProps {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+  label?: string;
+  description?: string;
+  id?: string;
+}
+```
+
+## tag-chip (registry:ui)
+- Install: `npx zerolight add tag-chip`
+- Registry JSON: https://bricks.zerorapid.in/r/tag-chip.json
+- Exports: TagChip
+```ts
+export interface TagChipProps {
+  label: string;
+  onRemove?: () => void;
+  className?: string;
+}
+```
+
+## textarea (registry:ui)
+- Install: `npx zerolight add textarea`
+- Registry JSON: https://bricks.zerorapid.in/r/textarea.json
+- Exports: Textarea, InputArea
+```ts
+export interface TextareaProps
+  extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, "style"> {
+  error?: boolean;
+  autoResize?: boolean;
+  maxRows?: number;
+  showCount?: boolean;
+  style?: React.CSSProperties;
+}
+```
+
+## trace-dot (registry:ui)
+- Install: `npx zerolight add trace-dot`
+- Registry JSON: https://bricks.zerorapid.in/r/trace-dot.json
+- Exports: TraceDot
+```ts
+export interface TraceDotProps {
+  status?: TraceDotStatus;
+  className?: string;
+  ariaLabel?: string;
+}
+```
+
+## trend-delta (registry:ui)
+- Install: `npx zerolight add trend-delta`
+- Registry JSON: https://bricks.zerorapid.in/r/trend-delta.json
+- Exports: TrendDelta
+```ts
+export interface TrendDeltaProps {
+  value: number;
+  unit?: string;
+  prefix?: string;
+  isInverse?: boolean; // When true: negative is favorable (green), positive is unfavorable (rose) e.g. latency, churn
+  format?: (val: number) => string;
+  size?: "xs" | "sm" | "md";
+  showArrow?: boolean;
+  showSign?: boolean;
+  className?: string;
+}
+```
+
+## typing-indicator (registry:ui)
+- Install: `npx zerolight add typing-indicator`
+- Registry JSON: https://bricks.zerorapid.in/r/typing-indicator.json
+- Exports: TypingIndicator
+```ts
+export interface TypingIndicatorProps {
+  label?: string;
+  size?: "sm" | "md";
+  className?: string;
+}
+```
+
+## typography (registry:ui)
+- Install: `npx zerolight add typography`
+- Registry JSON: https://bricks.zerorapid.in/r/typography.json
+- Exports: Heading, Text
+```ts
+export interface HeadingProps {
+  level?: HeadingLevel;
+  children: React.ReactNode;
+  className?: string;
+  as?: React.ElementType;
+}
+
+export interface TextProps {
+  variant?: TextVariant;
+  color?: TextColor;
+  children: React.ReactNode;
+  className?: string;
+  as?: React.ElementType;
+}
+```
+
+## accordion (registry:ui)
+- Install: `npx zerolight add accordion`
+- Registry JSON: https://bricks.zerorapid.in/r/accordion.json
+- Exports: Accordion
+```ts
+export interface AccordionProps {
+  items: AccordionItem[];
+  defaultOpenId?: string;
+  allowMultiple?: boolean;
+  className?: string;
+}
+```
+
+## alert-banner (registry:ui)
+- Install: `npx zerolight add alert-banner`
+- Registry JSON: https://bricks.zerorapid.in/r/alert-banner.json
+- Exports: AlertBanner
+```ts
+export interface AlertBannerProps {
+  severity?: AlertSeverity;
+  title: string;
+  description?: string;
+  onDismiss?: () => void;
+  action?: React.ReactNode;
+  className?: string;
+}
+```
+
+## api-key-vault (registry:ui)
+- Install: `npx zerolight add api-key-vault`
+- Registry JSON: https://bricks.zerorapid.in/r/api-key-vault.json
+- Exports: ApiKeyVault
+```ts
+export interface ApiKeyVaultProps {
+  keys?: ApiKeyItem[];
+  onGenerateKey?: (name: string, scopes: string[]) => void;
+  onRevokeKey?: (id: string) => void;
+  className?: string;
+}
+```
+
+## area-chart (registry:ui)
+- Install: `npx zerolight add area-chart`
+- Registry JSON: https://bricks.zerorapid.in/r/area-chart.json
+- Exports: AreaChart
+```ts
+export interface AreaChartProps {
+  data: AreaDataPoint[];
+  title?: string;
+  subtitle?: string;
+  headerMeta?: React.ReactNode;
+  kpiHeader?: React.ReactNode;
+  curve?: "smooth" | "linear";
+  showArea?: boolean;
+  showLegend?: boolean;
+  height?: number;
+  primaryColor?: string;
+  secondaryColor?: string;
+  primaryLabel?: string;
+  secondaryLabel?: string;
+  valueFormatter?: (val: number) => string;
+  yAxisFormatter?: (val: number) => string;
+  showGrid?: boolean;
+  className?: string;
+}
+```
+
+## bar-chart (registry:ui)
+- Install: `npx zerolight add bar-chart`
+- Registry JSON: https://bricks.zerorapid.in/r/bar-chart.json
+- Exports: BarChart
+```ts
+export interface BarChartProps {
+  data: BarDataPoint[];
+  title?: string;
+  subtitle?: string;
+  height?: number;
+  primaryColor?: string;
+  secondaryColor?: string;
+  primaryLabel?: string;
+  secondaryLabel?: string;
+  valueFormatter?: (val: number) => string;
+  mode?: "grouped" | "stacked";
+  className?: string;
+}
+```
+
+## breadcrumbs (registry:ui)
+- Install: `npx zerolight add breadcrumbs`
+- Registry JSON: https://bricks.zerorapid.in/r/breadcrumbs.json
+- Exports: Breadcrumbs
+```ts
+export interface BreadcrumbsProps {
+  items: BreadcrumbItem[];
+  className?: string;
+}
+```
+
+## calendar (registry:ui)
+- Install: `npx zerolight add calendar`
+- Registry JSON: https://bricks.zerorapid.in/r/calendar.json
+- Exports: Calendar
+```ts
+export interface CalendarProps {
+  selectedDate?: Date;
+  onSelectDate?: (date: Date) => void;
+  className?: string;
+}
+```
+
+## cascader (registry:ui)
+- Install: `npx zerolight add cascader`
+- Registry JSON: https://bricks.zerorapid.in/r/cascader.json
+- Exports: Cascader
+```ts
+export interface CascaderProps {
+  options: CascaderOption[];
+  value: string[];
+  onChange: (value: string[], selectedOptions: CascaderOption[]) => void;
+  label?: string;
+  placeholder?: string;
+  separator?: string;
+  changeOnSelect?: boolean;
+  className?: string;
+}
+```
+
+## chat-bubble (registry:ui)
+- Install: `npx zerolight add chat-bubble`
+- Registry JSON: https://bricks.zerorapid.in/r/chat-bubble.json
+- Exports: ChatBubble
+```ts
+export interface ChatBubbleProps {
+  id?: string;
+  message: string;
+  sender: "user" | "peer" | "bot";
+  senderName?: string;
+  avatarSrc?: string;
+  avatarInitials?: string;
+  timestamp?: string;
+  status?: MessageStatusType;
+  attachment?: ChatAttachment;
+  reactions?: ChatReaction[];
+  onReact?: (emoji: string) => void;
+  onReply?: () => void;
+  onCopy?: () => void;
+  className?: string;
+}
+```
+
+## chat-input (registry:ui)
+- Install: `npx zerolight add chat-input`
+- Registry JSON: https://bricks.zerorapid.in/r/chat-input.json
+- Exports: ChatInput
+```ts
+export interface ChatInputProps {
+  placeholder?: string;
+  value?: string;
+  onChange?: (val: string) => void;
+  onSend: (message: string) => void;
+  onAttach?: () => void;
+  disabled?: boolean;
+  className?: string;
+}
+```
+
+## conjoined-field (registry:ui)
+- Install: `npx zerolight add conjoined-field`
+- Registry JSON: https://bricks.zerorapid.in/r/conjoined-field.json
+- Exports: ConjoinedField
+```ts
+export interface ConjoinedFieldProps {
+  children: React.ReactNode;
+  label?: string;
+  helperText?: string;
+  error?: string;
+  id?: string;
+  className?: string;
+}
+```
+
+## date-range-picker (registry:ui)
+- Install: `npx zerolight add date-range-picker`
+- Registry JSON: https://bricks.zerorapid.in/r/date-range-picker.json
+- Exports: DateRangePicker
+```ts
+export interface DateRangePickerProps {
+  value?: DateRange;
+  onChange?: (range: DateRange) => void;
+  presets?: DateRangePreset[];
+  className?: string;
+}
+```
+
+## donut-chart (registry:ui)
+- Install: `npx zerolight add donut-chart`
+- Registry JSON: https://bricks.zerorapid.in/r/donut-chart.json
+- Exports: DonutChart
+```ts
+export interface DonutChartProps {
+  data: DonutSegment[];
+  title?: string;
+  subtitle?: string;
+  centerLabel?: string;
+  centerValue?: string;
+  valueFormatter?: (val: number) => string;
+  size?: number;
+  strokeWidth?: number;
+  className?: string;
+}
+```
+
+## dropdown-menu (registry:ui)
+- Install: `npx zerolight add dropdown-menu`
+- Registry JSON: https://bricks.zerorapid.in/r/dropdown-menu.json
+- Exports: DropdownMenu
+```ts
+export interface DropdownMenuProps {
+  trigger: React.ReactNode;
+  items: DropdownMenuItem[];
+  align?: "left" | "right";
+  width?: number | string;
+  className?: string;
+}
+```
+
+## empty-state (registry:ui)
+- Install: `npx zerolight add empty-state`
+- Registry JSON: https://bricks.zerorapid.in/r/empty-state.json
+- Exports: EmptyState
+```ts
+export interface EmptyStateProps {
+  icon?: React.ReactNode;
+  title: string;
+  description: string;
+  actionText?: string;
+  onAction?: () => void;
+  secondaryActionText?: string;
+  onSecondaryAction?: () => void;
+  className?: string;
+}
+```
+
+## file-card (registry:ui)
+- Install: `npx zerolight add file-card`
+- Registry JSON: https://bricks.zerorapid.in/r/file-card.json
+- Exports: FileCard
+```ts
+export interface FileCardProps {
+  name: string;
+  size?: string;
+  status?: "ready" | "uploading" | "error";
+  progress?: number;
+  icon?: React.ReactNode;
+  onDownload?: () => void;
+  onRemove?: () => void;
+  className?: string;
+}
+```
+
+## file-upload (registry:ui)
+- Install: `npx zerolight add file-upload`
+- Registry JSON: https://bricks.zerorapid.in/r/file-upload.json
+- Exports: DEFAULT_MOCK_FILES, FileUpload
+```ts
+export interface FileUploadProps {
+  label?: string;
+  acceptText?: string;
+  maxSizeText?: string;
+  accept?: string;
+  files?: UploadedFile[];
+  onUpload?: (files: FileList) => void;
+  onRemoveFile?: (id: string) => void;
+  compact?: boolean;
+  className?: string;
+}
+```
+
+## form-field (registry:ui)
+- Install: `npx zerolight add form-field`
+- Registry JSON: https://bricks.zerorapid.in/r/form-field.json
+- Exports: FormField
+```ts
+export interface FormFieldProps extends InputProps {
+  label: string;
+  helperText?: string;
+  errorMessage?: string;
+  successMessage?: string;
+  id: string;
+}
+```
+
+## form (registry:ui)
+- Install: `npx zerolight add form`
+- Registry JSON: https://bricks.zerorapid.in/r/form.json
+- Exports: Form, FormItem, FormLabel, FormControl, FormDescription, FormMessage
+```ts
+export interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
+  children: React.ReactNode;
+}
+
+export interface FormItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  name?: string;
+  error?: string;
+  id?: string;
+  children: React.ReactNode;
+}
+
+export interface FormLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+  children: React.ReactNode;
+}
+
+export interface FormControlProps {
+  children: React.ReactElement<any>;
+}
+
+export interface FormDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children: React.ReactNode;
+}
+
+export interface FormMessageProps extends React.HTMLAttributes<HTMLParagraphElement> {
+  children?: React.ReactNode;
+}
+```
+
+## funnel-chart (registry:ui)
+- Install: `npx zerolight add funnel-chart`
+- Registry JSON: https://bricks.zerorapid.in/r/funnel-chart.json
+- Exports: FunnelChart
+```ts
+export interface FunnelChartProps {
+  stages: FunnelStage[];
+  title?: string;
+  subtitle?: string;
+  primaryColor?: string;
+  valueFormatter?: (val: number) => string;
+  className?: string;
+}
+```
+
+## gauge-chart (registry:ui)
+- Install: `npx zerolight add gauge-chart`
+- Registry JSON: https://bricks.zerorapid.in/r/gauge-chart.json
+- Exports: GaugeChart
+```ts
+export interface GaugeChartProps {
+  value: number; // e.g. 74
+  min?: number;
+  max?: number;
+  title?: string;
+  subtitle?: string;
+  unit?: string; // e.g. "%" or "pts"
+  healthyThreshold?: number; // e.g. 95 for higher-is-better, or 60 for lower-is-better
+  criticalThreshold?: number; // e.g. 90 for higher-is-better, or 85 for lower-is-better
+  mode?: "higher-is-better" | "lower-is-better";
+  color?: string;
+  statusText?: string;
+  size?: number;
+  className?: string;
+}
+```
+
+## heatmap-matrix (registry:ui)
+- Install: `npx zerolight add heatmap-matrix`
+- Registry JSON: https://bricks.zerorapid.in/r/heatmap-matrix.json
+- Exports: HeatmapMatrix
+```ts
+export interface HeatmapMatrixProps {
+  data: HeatmapCell[];
+  xLabels?: string[];
+  yLabels?: string[];
+  title?: string;
+  subtitle?: string;
+  color?: string; // base brand color (default: tokens.primaryButtonColor)
+  className?: string;
+}
+```
+
+## hero-showcase (registry:ui)
+- Install: `npx zerolight add hero-showcase`
+- Registry JSON: https://bricks.zerorapid.in/r/hero-showcase.json
+- Exports: HeroShowcase
+```ts
+export interface HeroShowcaseProps {
+  className?: string;
+  autoPlay?: boolean;
+}
+```
+
+## horizontal-bar-chart (registry:ui)
+- Install: `npx zerolight add horizontal-bar-chart`
+- Registry JSON: https://bricks.zerorapid.in/r/horizontal-bar-chart.json
+- Exports: HorizontalBarChart
+```ts
+export interface HorizontalBarChartProps {
+  data: HorizontalBarItem[];
+  title?: string;
+  subtitle?: string;
+  primaryColor?: string;
+  valueFormatter?: (val: number) => string;
+  showRank?: boolean;
+  className?: string;
+}
+```
+
+## input-group (registry:ui)
+- Install: `npx zerolight add input-group`
+- Registry JSON: https://bricks.zerorapid.in/r/input-group.json
+- Exports: InputGroup
+```ts
+export interface InputGroupProps {
+  label: string;
+  value: string;
+  prefix?: string;
+  masked?: boolean;
+  canCopy?: boolean;
+  onCopy?: () => void;
+  id: string;
+}
+```
+
+## inventory-stock-health (registry:ui)
+- Install: `npx zerolight add inventory-stock-health`
+- Registry JSON: https://bricks.zerorapid.in/r/inventory-stock-health.json
+- Exports: InventoryStockHealth
+```ts
+export interface InventoryStockHealthProps {
+  sku: string;
+  name: string;
+  warehouseBin: string[];
+  onHand: number;
+  reorderPoint: number;
+  maxCapacity: number;
+  unit?: string;
+  onReorder?: (sku: string) => void;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## list-row (registry:ui)
+- Install: `npx zerolight add list-row`
+- Registry JSON: https://bricks.zerorapid.in/r/list-row.json
+- Exports: ListRow
+```ts
+export interface ListRowProps {
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+  leading?: React.ReactNode;
+  meta?: React.ReactNode;
+  trailing?: React.ReactNode;
+  selected?: boolean;
+  bordered?: boolean;
+  onClick?: () => void;
+  className?: string;
+}
+```
+
+## organization-switcher (registry:ui)
+- Install: `npx zerolight add organization-switcher`
+- Registry JSON: https://bricks.zerorapid.in/r/organization-switcher.json
+- Exports: OrganizationSwitcher
+```ts
+export interface OrganizationSwitcherProps {
+  organizations?: Organization[];
+  activeOrgId?: string;
+  onSelectOrg?: (org: Organization) => void;
+  onCreateOrg?: () => void;
+  className?: string;
+}
+```
+
+## pagination (registry:ui)
+- Install: `npx zerolight add pagination`
+- Registry JSON: https://bricks.zerorapid.in/r/pagination.json
+- Exports: Pagination
+```ts
+export interface PaginationProps {
+  currentPage: number;
+  totalItems: number;
+  pageSize?: number;
+  pageSizeOptions?: number[];
+  onPageChange: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  itemNoun?: string;
+  className?: string;
+}
+```
+
+## popover (registry:ui)
+- Install: `npx zerolight add popover`
+- Registry JSON: https://bricks.zerorapid.in/r/popover.json
+- Exports: Popover
+```ts
+export interface PopoverProps {
+  trigger: React.ReactNode;
+  children: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  align?: "start" | "center" | "end";
+  width?: number | string;
+  className?: string;
+}
+```
+
+## product-stage (registry:ui)
+- Install: `npx zerolight add product-stage`
+- Registry JSON: https://bricks.zerorapid.in/r/product-stage.json
+- Exports: ProductWindow, ChoreographedCursor, CounterRoll, PlaceholderLines
+```ts
+export interface ProductWindowProps {
+  children: React.ReactNode;
+  chrome?: WindowChromeKind;
+  title?: string;
+  url?: string;
+  tabs?: { id: string; label: string; active?: boolean }[];
+  toolbar?: React.ReactNode;
+  bleed?: "none" | "bottom" | "right" | "bottom-right";
+  showTrafficLights?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export interface ChoreographedCursorProps {
+  x: number;
+  y: number;
+  isPressing?: boolean;
+  cursorState?: "default" | "pointer" | "text" | "grab" | "grabbing";
+  label?: string;
+  avatarInitials?: string;
+  avatarColor?: string;
+  color?: string;
+  className?: string;
+}
+
+export interface CounterRollProps {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  formatter?: (val: number) => string;
+  className?: string;
+}
+
+export interface PlaceholderLinesProps {
+  count?: number;
+  widths?: (string | number)[];
+  className?: string;
+}
+```
+
+## profit-loss-chart (registry:ui)
+- Install: `npx zerolight add profit-loss-chart`
+- Registry JSON: https://bricks.zerorapid.in/r/profit-loss-chart.json
+- Exports: ProfitLossChart
+```ts
+export interface ProfitLossChartProps {
+  title?: string;
+  subtitle?: string;
+  data?: MonthlyBarData[];
+  profitColor?: string;
+  lossColor?: string;
+  className?: string;
+}
+```
+
+## search-bar (registry:ui)
+- Install: `npx zerolight add search-bar`
+- Registry JSON: https://bricks.zerorapid.in/r/search-bar.json
+- Exports: SearchBar
+```ts
+export interface SearchBarProps {
+  value: string;
+  onChange: (val: string) => void;
+  onClear?: () => void;
+  placeholder?: string;
+  showKbd?: boolean;
+  className?: string;
+}
+```
+
+## segmented-control (registry:ui)
+- Install: `npx zerolight add segmented-control`
+- Registry JSON: https://bricks.zerorapid.in/r/segmented-control.json
+- Exports: SegmentedControl
+```ts
+export interface SegmentedControlProps<T extends string = string> {
+  options: readonly SegmentOption<T>[];
+  value: T;
+  onChange: (val: T) => void;
+  className?: string;
+}
+```
+
+## select (registry:ui)
+- Install: `npx zerolight add select`
+- Registry JSON: https://bricks.zerorapid.in/r/select.json
+- Exports: Select
+```ts
+export interface SelectProps {
+  options: SelectOption[];
+  value: string;
+  onChange: (val: string) => void;
+  label?: string;
+  placeholder?: string;
+  id?: string;
+  size?: "md" | "sm";
+  inline?: boolean;
+  className?: string;
+}
+```
+
+## sparkline (registry:ui)
+- Install: `npx zerolight add sparkline`
+- Registry JSON: https://bricks.zerorapid.in/r/sparkline.json
+- Exports: Sparkline
+```ts
+export interface SparklineProps {
+  data: number[] | SparklinePoint[];
+  width?: number;
+  height?: number;
+  color?: string;
+  fillOpacity?: number;
+  showMinMax?: boolean;
+  strokeWidth?: number;
+  className?: string;
+}
+```
+
+## split-button (registry:ui)
+- Install: `npx zerolight add split-button`
+- Registry JSON: https://bricks.zerorapid.in/r/split-button.json
+- Exports: SplitButton
+```ts
+export interface SplitButtonProps {
+  label: string;
+  onClick: () => void;
+  options: SplitButtonOption[];
+  iconLeft?: React.ReactNode;
+  variant?: "primary" | "secondary" | "outline";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  className?: string;
+}
+```
+
+## stat-card (registry:ui)
+- Install: `npx zerolight add stat-card`
+- Registry JSON: https://bricks.zerorapid.in/r/stat-card.json
+- Exports: StatCard
+```ts
+export interface StatCardProps {
+  label: string;
+  value: string | number;
+  delta?: string;
+  trend?: "up" | "down" | "neutral";
+  comparisonText?: string;
+  subValue?: string;
+  layout?: "vertical" | "horizontal";
+  /** Scalar Morphic Evolution stage: 1/M1 = Compact Atom, 2/M2 = Standard Analytical, 3/M3 = Command Capsule */
+  stage?: StatCardStage;
+  timeframeLabel?: string;
+  minorDecimal?: boolean;
+  deltaPill?: React.ReactNode;
+  icon?: React.ReactNode;
+  badge?: React.ReactNode;
+  sparkline?: React.ReactNode;
+  className?: string;
+}
+```
+
+## stepper (registry:ui)
+- Install: `npx zerolight add stepper`
+- Registry JSON: https://bricks.zerorapid.in/r/stepper.json
+- Exports: Stepper
+```ts
+export interface StepperProps {
+  steps: StepItem[];
+  currentStepIndex: number;
+  onStepClick?: (idx: number) => void;
+  className?: string;
+}
+```
+
+## tabs (registry:ui)
+- Install: `npx zerolight add tabs`
+- Registry JSON: https://bricks.zerorapid.in/r/tabs.json
+- Exports: Tabs
+```ts
+export interface TabsProps {
+  items: TabItem[];
+  value?: string;
+  defaultValue?: string;
+  onChange?: (id: string) => void;
+  variant?: "underline" | "pills";
+  className?: string;
+}
+```
+
+## tag-input (registry:ui)
+- Install: `npx zerolight add tag-input`
+- Registry JSON: https://bricks.zerorapid.in/r/tag-input.json
+- Exports: TagInput
+```ts
+export interface TagInputProps {
+  tags: string[];
+  onChange: (tags: string[]) => void;
+  placeholder?: string;
+  maxTags?: number;
+  label?: string;
+  id?: string;
+}
+```
+
+## toolbar (registry:ui)
+- Install: `npx zerolight add toolbar`
+- Registry JSON: https://bricks.zerorapid.in/r/toolbar.json
+- Exports: Toolbar
+```ts
+export interface ToolbarProps {
+  leading?: React.ReactNode;
+  children?: React.ReactNode;
+  trailing?: React.ReactNode;
+  variant?: "surface" | "floating";
+  className?: string;
+}
+```
+
+## tooltip (registry:ui)
+- Install: `npx zerolight add tooltip`
+- Registry JSON: https://bricks.zerorapid.in/r/tooltip.json
+- Exports: Tooltip
+```ts
+export interface TooltipProps {
+  content: string;
+  children: React.ReactNode;
+  position?: "top" | "bottom" | "left" | "right";
+  className?: string;
+  delay?: number;
+}
+```
+
+## transfer (registry:ui)
+- Install: `npx zerolight add transfer`
+- Registry JSON: https://bricks.zerorapid.in/r/transfer.json
+- Exports: Transfer
+```ts
+export interface TransferProps {
+  dataSource: TransferItem[];
+  targetKeys: string[];
+  onChange: (nextTargetKeys: string[], direction: "left" | "right", moveKeys: string[]) => void;
+  titles?: [string, string];
+  showSearch?: boolean;
+  searchPlaceholder?: string;
+  className?: string;
+}
+```
+
+## tree-select (registry:ui)
+- Install: `npx zerolight add tree-select`
+- Registry JSON: https://bricks.zerorapid.in/r/tree-select.json
+- Exports: TreeSelect
+```ts
+export interface TreeSelectProps {
+  data: TreeSelectNode[];
+  value: string[];
+  onChange: (nextValue: string[]) => void;
+  label?: string;
+  placeholder?: string;
+  maxTagCount?: number;
+  showSearch?: boolean;
+  className?: string;
+}
+```
+
+## world-map-data (registry:ui)
+- Install: `npx zerolight add world-map-data`
+- Registry JSON: https://bricks.zerorapid.in/r/world-map-data.json
+- Exports: GLOBAL_LAND_PATH, REAL_WORLD_COUNTRIES
+
+## world-map (registry:ui)
+- Install: `npx zerolight add world-map`
+- Registry JSON: https://bricks.zerorapid.in/r/world-map.json
+- Exports: WORLD_COUNTRIES, REGION_VIEWBOXES, WorldMap
+```ts
+export interface WorldMapProps {
+  data?: WorldMapRegionDatum[];
+  markers?: WorldMapMarker[];
+  arcs?: WorldMapArc[];
+  defaultRegion?: WorldMapRegionPreset;
+  selectedRegionId?: string | null;
+  onSelectRegion?: (regionId: string, datum?: WorldMapRegionDatum) => void;
+  showControls?: boolean;
+  showLegend?: boolean;
+  height?: number;
+  className?: string;
+  renderStyle?: MapRenderStyle;
+  patternDensity?: PatternDensity;
+}
+```
+
+## app-shell (registry:ui)
+- Install: `npx zerolight add app-shell`
+- Registry JSON: https://bricks.zerorapid.in/r/app-shell.json
+- Exports: AppShell
+```ts
+export interface AppShellProps {
+  brandName?: string;
+  brandLogo?: React.ReactNode;
+  navItems?: NavItem[];
+  navSections?: NavSection[];
+  sidebarWidgets?: React.ReactNode;
+  headerRight?: React.ReactNode;
+  children: React.ReactNode;
+  defaultCollapsed?: boolean;
+  hideHeader?: boolean;
+  hideCollapseToggle?: boolean;
+  activeIndicator?: "solid" | "left-bar";
+  accentColor?: string;
+  footerAction?: React.ReactNode;
+  className?: string;
+}
+```
+
+## approval-workflow (registry:ui)
+- Install: `npx zerolight add approval-workflow`
+- Registry JSON: https://bricks.zerorapid.in/r/approval-workflow.json
+- Exports: ApprovalWorkflow
+```ts
+export interface ApprovalWorkflowProps {
+  documentId: string;
+  title: string;
+  amountLabel: string;
+  requester: string;
+  budgetImpact: string;
+  steps: ApprovalStep[];
+  onApprove?: (comment: string) => void;
+  onReject?: (reason: string) => void;
+  onDelegate?: () => void;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## audit-log (registry:ui)
+- Install: `npx zerolight add audit-log`
+- Registry JSON: https://bricks.zerorapid.in/r/audit-log.json
+- Exports: AuditLog
+```ts
+export interface AuditLogProps {
+  events?: AuditEvent[];
+  className?: string;
+}
+```
+
+## bento-showcase (registry:ui)
+- Install: `npx zerolight add bento-showcase`
+- Registry JSON: https://bricks.zerorapid.in/r/bento-showcase.json
+- Exports: BentoShowcase
+```ts
+export interface BentoShowcaseProps {
+  className?: string;
+  title?: string;
+  subtitle?: string;
+}
+```
+
+## billing-portal (registry:ui)
+- Install: `npx zerolight add billing-portal`
+- Registry JSON: https://bricks.zerorapid.in/r/billing-portal.json
+- Exports: BillingPortal
+```ts
+export interface BillingPortalProps {
+  currentTierId?: "starter" | "growth" | "enterprise";
+  invoices?: InvoiceItem[];
+  className?: string;
+  onUpgradeTier?: (tierId: string, cycle: "monthly" | "annual") => void;
+  onDownloadInvoice?: (invoice: InvoiceItem) => void;
+}
+```
+
+## chat-conversation (registry:ui)
+- Install: `npx zerolight add chat-conversation`
+- Registry JSON: https://bricks.zerorapid.in/r/chat-conversation.json
+- Exports: ChatConversation
+```ts
+export interface ChatConversationProps {
+  initialMessages?: Omit<ChatBubbleProps, "onReact" | "onReply" | "onCopy">[];
+  peerName?: string;
+  peerRole?: string;
+  peerAvatar?: string;
+  className?: string;
+}
+```
+
+## command-palette (registry:ui)
+- Install: `npx zerolight add command-palette`
+- Registry JSON: https://bricks.zerorapid.in/r/command-palette.json
+- Exports: CommandPalette
+```ts
+export interface CommandPaletteProps {
+  isOpen: boolean;
+  onClose: () => void;
+  items?: CommandItem[];
+}
+```
+
+## confirmation-modal (registry:ui)
+- Install: `npx zerolight add confirmation-modal`
+- Registry JSON: https://bricks.zerorapid.in/r/confirmation-modal.json
+- Exports: ConfirmationModal
+```ts
+export interface ConfirmationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title?: string;
+  description?: string;
+  verificationPhrase?: string;
+  confirmButtonText?: string;
+}
+```
+
+## data-table (registry:ui)
+- Install: `npx zerolight add data-table`
+- Registry JSON: https://bricks.zerorapid.in/r/data-table.json
+- Exports: DataTable
+```ts
+export interface DataTableProps<T = NodeRecord> {
+  columns?: DataTableColumn<T>[];
+  rows?: T[];
+  rowKey?: (row: T, index: number) => string;
+  selectable?: boolean;
+  selectedRowKeys?: string[];
+  onSelectionChange?: (keys: string[]) => void;
+  showToolbar?: boolean;
+  searchPlaceholder?: string;
+  searchAccessor?: (row: T) => string;
+  footerAction?: React.ReactNode;
+  nodes?: NodeRecord[];
+  onSelectNode?: (nodeId: string) => void;
+  editable?: boolean;
+  onUpdateNode?: (nodeId: string, patch: Partial<NodeRecord>) => void;
+  enableClipboardPaste?: boolean;
+  enableExport?: boolean;
+  pinSelectionColumn?: boolean;
+  pinActionsColumn?: boolean;
+  onPasteRows?: (pastedRows: Partial<T>[]) => void;
+  className?: string;
+}
+```
+
+## detail-drawer (registry:ui)
+- Install: `npx zerolight add detail-drawer`
+- Registry JSON: https://bricks.zerorapid.in/r/detail-drawer.json
+- Exports: DetailDrawer
+```ts
+export interface DetailDrawerProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  subtitle?: string;
+  onSave?: () => void;
+  children?: React.ReactNode;
+  footer?: React.ReactNode;
+}
+```
+
+## filter-builder (registry:ui)
+- Install: `npx zerolight add filter-builder`
+- Registry JSON: https://bricks.zerorapid.in/r/filter-builder.json
+- Exports: FilterBuilder
+```ts
+export interface FilterBuilderProps {
+  conditions?: FilterCondition[];
+  onChange?: (conditions: FilterCondition[]) => void;
+  className?: string;
+}
+```
+
+## geo-breakdown (registry:ui)
+- Install: `npx zerolight add geo-breakdown`
+- Registry JSON: https://bricks.zerorapid.in/r/geo-breakdown.json
+- Exports: GeoBreakdown
+```ts
+export interface GeoBreakdownProps {
+  title?: string;
+  subtitle?: string;
+  items?: GeoBreakdownItem[];
+  markers?: WorldMapMarker[];
+  arcs?: WorldMapArc[];
+  defaultRegion?: WorldMapRegionPreset;
+  className?: string;
+}
+```
+
+## ledger-balancer (registry:ui)
+- Install: `npx zerolight add ledger-balancer`
+- Registry JSON: https://bricks.zerorapid.in/r/ledger-balancer.json
+- Exports: LedgerBalancer
+```ts
+export interface LedgerBalancerProps {
+  journalId?: string;
+  fiscalPeriod?: string;
+  periodLocked?: boolean;
+  currency?: string;
+  initialLines: JournalLine[];
+  onPostJournal?: (lines: JournalLine[]) => void;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## line-item-matrix (registry:ui)
+- Install: `npx zerolight add line-item-matrix`
+- Registry JSON: https://bricks.zerorapid.in/r/line-item-matrix.json
+- Exports: LineItemMatrix
+```ts
+export interface LineItemMatrixProps {
+  title?: string;
+  currency?: string;
+  initialItems: MatrixLineItem[];
+  onSave?: (items: MatrixLineItem[], grandTotal: number) => void;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## modal (registry:ui)
+- Install: `npx zerolight add modal`
+- Registry JSON: https://bricks.zerorapid.in/r/modal.json
+- Exports: Modal, Dialog
+```ts
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  children?: React.ReactNode;
+  footer?: React.ReactNode;
+  size?: "sm" | "md" | "lg" | "xl";
+  closeOnOverlayClick?: boolean;
+  className?: string;
+}
+```
+
+## page-header (registry:ui)
+- Install: `npx zerolight add page-header`
+- Registry JSON: https://bricks.zerorapid.in/r/page-header.json
+- Exports: PageHeader
+```ts
+export interface PageHeaderProps {
+  title: React.ReactNode;
+  description?: React.ReactNode;
+  breadcrumbs?: React.ReactNode;
+  badge?: React.ReactNode;
+  actions?: React.ReactNode;
+  bottomSlot?: React.ReactNode;
+  bordered?: boolean;
+  className?: string;
+}
+```
+
+## page-layout (registry:ui)
+- Install: `npx zerolight add page-layout`
+- Registry JSON: https://bricks.zerorapid.in/r/page-layout.json
+- Exports: PageGrid, ContentSection
+```ts
+export interface PageGridProps extends React.HTMLAttributes<HTMLDivElement> {
+  cols?: 1 | 2 | 3 | 4;
+  gap?: "sm" | "md" | "lg";
+}
+
+export interface ContentSectionProps {
+  title?: React.ReactNode;
+  description?: React.ReactNode;
+  actions?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+}
+```
+
+## quota-matrix (registry:ui)
+- Install: `npx zerolight add quota-matrix`
+- Registry JSON: https://bricks.zerorapid.in/r/quota-matrix.json
+- Exports: QuotaMatrix
+```ts
+export interface QuotaMatrixProps {
+  quotas?: QuotaItem[];
+  onRequestIncrease?: () => void;
+  className?: string;
+}
+```
+
+## team-permissions (registry:ui)
+- Install: `npx zerolight add team-permissions`
+- Registry JSON: https://bricks.zerorapid.in/r/team-permissions.json
+- Exports: TeamPermissions
+```ts
+export interface TeamPermissionsProps {
+  initialMembers?: TeamMember[];
+  className?: string;
+  onInviteMember?: (member: Omit<TeamMember, "id" | "lastActive">) => void;
+  onUpdateRole?: (memberId: string, newRole: TeamRole) => void;
+  onRevokeMember?: (memberId: string) => void;
+}
+```
+
+## tenant-kit (registry:ui)
+- Install: `npx zerolight add tenant-kit`
+- Registry JSON: https://bricks.zerorapid.in/r/tenant-kit.json
+- Exports: TenantKit
+```ts
+export interface TenantKitProps {
+  tenants?: TenantOrganization[];
+  activeTenantId?: string;
+  onSelectTenant?: (tenantId: string) => void;
+  onInviteMember?: (tenantId: string) => void;
+  onUpgradeTier?: (tenantId: string) => void;
+  className?: string;
+}
+```
+
+## three-way-match (registry:ui)
+- Install: `npx zerolight add three-way-match`
+- Registry JSON: https://bricks.zerorapid.in/r/three-way-match.json
+- Exports: ThreeWayMatch
+```ts
+export interface ThreeWayMatchProps {
+  poNumber: string;
+  grnNumber: string;
+  invoiceNumber: string;
+  currency?: string;
+  lines: ThreeWayMatchLine[];
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## toast (registry:ui)
+- Install: `npx zerolight add toast`
+- Registry JSON: https://bricks.zerorapid.in/r/toast.json
+- Exports: ToastProvider
+
+## tree-view (registry:ui)
+- Install: `npx zerolight add tree-view`
+- Registry JSON: https://bricks.zerorapid.in/r/tree-view.json
+- Exports: TreeView
+```ts
+export interface TreeViewProps {
+  data?: TreeNode[];
+  onSelectNode?: (node: TreeNode) => void;
+  className?: string;
+}
+```
+
+## analytics-report-template (registry:ui)
+- Install: `npx zerolight add analytics-report-template`
+- Registry JSON: https://bricks.zerorapid.in/r/analytics-report-template.json
+- Exports: AnalyticsReportTemplate
+```ts
+export interface AnalyticsReportTemplateProps {
+  /** Report title */
+  title: string;
+  /** Subtitle context */
+  subtitle?: string;
+  /** Period selector or DateRangePicker slot */
+  dateRangeFilter?: React.ReactNode;
+  /** Export or secondary action (e.g. Export CSV, Share Report) */
+  exportAction?: React.ReactNode;
+  /** High-signal top metrics deck (3 to 4 StatCards with Sparklines) */
+  kpiCards?: React.ReactNode;
+  /** Primary hero visualization (e.g. AreaChart) */
+  heroChart: React.ReactNode;
+  /** Companion composite visualization row (e.g. DonutChart + HeatmapMatrix + FunnelChart) */
+  compositeGrid?: React.ReactNode;
+  /** Bottom drill-down table or breakdown list */
+  breakdownSection?: React.ReactNode;
+  /** Zone 3: Progressive disclosure drawer or modal */
+  progressiveDisclosure?: React.ReactNode;
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## chat-workspace-template (registry:ui)
+- Install: `npx zerolight add chat-workspace-template`
+- Registry JSON: https://bricks.zerorapid.in/r/chat-workspace-template.json
+- Exports: ChatWorkspaceTemplate
+```ts
+export interface ChatWorkspaceTemplateProps {
+  /** Copilot or assistant title (e.g. "ZeroLight AI Copilot") */
+  assistantTitle: string;
+  /** Active model pill or badge (e.g. "Claude 3.7 Sonnet" or "Gemini 2.5 Pro") */
+  modelBadge?: React.ReactNode;
+  /** Left sidebar: Past chat sessions list */
+  sessions: ChatSessionItem[];
+  /** Callback when user selects a past chat session */
+  onSelectSession: (id: string) => void;
+  /** Callback when user clicks "New Chat" */
+  onNewSession: () => void;
+  /** Main conversation stream element (e.g. ChatConversation organism) */
+  conversationStream: React.ReactNode;
+  /** Bottom input area element (e.g. ChatInput organism) */
+  inputArea: React.ReactNode;
+  /** Suggested prompt chips or quick starters */
+  quickStarters?: React.ReactNode;
+  /** Right panel inspector (e.g. retrieved docs, token usage, system prompt) */
+  inspectorPanel?: React.ReactNode;
+  /** Whether the inspector panel is open by default */
+  defaultInspectorOpen?: boolean;
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## console-table-template (registry:ui)
+- Install: `npx zerolight add console-table-template`
+- Registry JSON: https://bricks.zerorapid.in/r/console-table-template.json
+- Exports: ConsoleTableTemplate
+```ts
+export interface ConsoleTableTemplateProps {
+  /** Optional breadcrumbs trail */
+  breadcrumbs?: React.ReactNode;
+  /** Entity/Fleet title (e.g. "Student Roster", "API Keys", "Cloud Clusters") */
+  title: string;
+  /** Subtitle context */
+  subtitle?: string;
+  /** Status or count pill (e.g. "438 Active Students") */
+  badge?: React.ReactNode;
+  /** Exactly 1 Primary Action button (e.g. "Register Student", "Create Key") */
+  primaryAction?: React.ReactNode;
+  /** Optional secondary actions (e.g. "Export CSV", "Sync") */
+  secondaryActions?: React.ReactNode;
+  /** Filter & search toolbar row (SearchBar, Status Filter, SegmentedControl) */
+  toolbar?: React.ReactNode;
+  /** Batch selection floating bar (renders when 1 or more rows are selected) */
+  batchActionBar?: React.ReactNode;
+  /** The primary DataTable component */
+  table: React.ReactNode;
+  /** Pagination controls */
+  pagination?: React.ReactNode;
+  /** Zone 3: Progressive disclosure drawer (e.g. DetailDrawer) */
+  detailDrawer?: React.ReactNode;
+  /** Zone 3: Progressive disclosure modal (e.g. ConfirmationModal) */
+  modal?: React.ReactNode;
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## dashboard-template (registry:ui)
+- Install: `npx zerolight add dashboard-template`
+- Registry JSON: https://bricks.zerorapid.in/r/dashboard-template.json
+- Exports: DashboardTemplate
+```ts
+export interface DashboardTemplateProps {
+  /** Page title (max 4-6 words) */
+  title: string;
+  /** Subtitle context (max 12-16 words) */
+  subtitle?: string;
+  /** Status badge or live indicator (e.g., "Live Production") */
+  statusIndicator?: React.ReactNode;
+  /** Exactly 1 primary CTA action button */
+  primaryAction?: React.ReactNode;
+  /** Optional secondary action buttons (e.g., Export, Refresh) */
+  secondaryActions?: React.ReactNode;
+  /** High-signal telemetry metrics: Strictly 3 to 4 metrics */
+  metrics?: React.ReactNode;
+  /** Zone 2: Main primary visualization or primary workspace (e.g., AreaChart, Fleet map) */
+  primaryWidget: React.ReactNode;
+  /** Zone 2: Secondary companion widget (e.g., Ranked list, Donut chart, Activity stream) */
+  secondaryWidget?: React.ReactNode;
+  /** Zone 2: Additional full-width data section below the split row (e.g., Recent Activities table) */
+  dataSection?: React.ReactNode;
+  /** Zone 3: Progressive disclosure drawer, modal, or toast host */
+  progressiveDisclosure?: React.ReactNode;
+  /** Optional AppShell wrapper configuration (if true or props provided, wraps in AppShell) */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## settings-form-template (registry:ui)
+- Install: `npx zerolight add settings-form-template`
+- Registry JSON: https://bricks.zerorapid.in/r/settings-form-template.json
+- Exports: SettingsFormTemplate
+```ts
+export interface SettingsFormTemplateProps {
+  /** Settings section title */
+  title: string;
+  /** Subtitle context */
+  subtitle?: string;
+  /** Navigation tabs list */
+  tabs: SettingsTabItem[];
+  /** Current active tab id */
+  activeTabId: string;
+  /** Tab change callback */
+  onTabChange: (id: string) => void;
+  /** Main active form content */
+  children: React.ReactNode;
+  /** Whether the user has modified fields without saving */
+  isDirty?: boolean;
+  /** Save callback for unsaved changes bar */
+  onSave?: () => void;
+  /** Discard callback for unsaved changes bar */
+  onDiscard?: () => void;
+  /** Saving spinner state */
+  isSaving?: boolean;
+  /** Orientation of navigation tabs (default: "horizontal" on mobile, "vertical" on desktop or flexible) */
+  navLayout?: "vertical" | "horizontal";
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## ai-assistant-view (registry:ui)
+- Install: `npx zerolight add ai-assistant-view`
+- Registry JSON: https://bricks.zerorapid.in/r/ai-assistant-view.json
+- Exports: AiAssistantView
+
+## billing-view (registry:ui)
+- Install: `npx zerolight add billing-view`
+- Registry JSON: https://bricks.zerorapid.in/r/billing-view.json
+- Exports: BillingView
+
+## dev-console-view (registry:ui)
+- Install: `npx zerolight add dev-console-view`
+- Registry JSON: https://bricks.zerorapid.in/r/dev-console-view.json
+- Exports: DevConsoleView
+
+## donations-view (registry:ui)
+- Install: `npx zerolight add donations-view`
+- Registry JSON: https://bricks.zerorapid.in/r/donations-view.json
+- Exports: DonationsInner, DonationsView
+
+## finexy-view (registry:ui)
+- Install: `npx zerolight add finexy-view`
+- Registry JSON: https://bricks.zerorapid.in/r/finexy-view.json
+- Exports: FinexyDashboardInner
+
+## notifications-view (registry:ui)
+- Install: `npx zerolight add notifications-view`
+- Registry JSON: https://bricks.zerorapid.in/r/notifications-view.json
+- Exports: NotificationsView
+
+## school-attendance-view (registry:ui)
+- Install: `npx zerolight add school-attendance-view`
+- Registry JSON: https://bricks.zerorapid.in/r/school-attendance-view.json
+- Exports: SchoolAttendanceInner
+
+## settings-view (registry:ui)
+- Install: `npx zerolight add settings-view`
+- Registry JSON: https://bricks.zerorapid.in/r/settings-view.json
+- Exports: SettingsView
+
+## gen-ui-renderer (registry:ui)
+- Install: `npx zerolight add gen-ui-renderer`
+- Registry JSON: https://bricks.zerorapid.in/r/gen-ui-renderer.json
+- Exports: StatGridBlockSchema, AreaChartBlockSchema, BarChartBlockSchema, DonutChartBlockSchema, AlertBannerBlockSchema, ApprovalCardBlockSchema, GenUIBlockSchema, GenUIPayloadSchema, ZeroLightGenUIRenderer
+```ts
+export interface ZeroLightGenUIRendererProps {
+  spec: unknown;
+  morphicStageOverride?: 1 | 2 | 3;
+  onApprove?: (blockTitle: string) => void;
+  onReject?: (blockTitle: string) => void;
+  className?: string;
+}
+```

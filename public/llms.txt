@@ -3,9 +3,11 @@
 > Public, token-driven B2B SaaS & ERP design system at https://bricks.zerorapid.in with 130 registry payloads, 6-tier atomic architecture, Mathematical Morphic Evolution (M1/M2/M3), and shadcn `/r/` compatibility.
 
 ## Quick Endpoints for AI Web Chats & Agents
+- Complete Single-File Reference (All 130 Components + Exact Props): https://bricks.zerorapid.in/llms-full.txt
 - Component Index (130 items): https://bricks.zerorapid.in/r/index.json
 - Individual Component TSX + Props: https://bricks.zerorapid.in/r/{name}.json
 - Native ZeroLight Registry: https://bricks.zerorapid.in/registry/{name}.json
+- ChatGPT Custom GPT OpenAPI Schema: https://bricks.zerorapid.in/openapi-chatgpt.json
 
 ## Non-Negotiable Design Rules (ZeroLight Tactile Calm)
 1. **Token-Driven Surfaces Only (`useZeroLight()`)**: Never hardcode hex colors (`#3B82F6`), arbitrary radii, or shadows. Bind to `tokens.universalFillColor`, `tokens.universalBorderColor`, `tokens.textIconColor`, `tokens.primaryButtonColor`, `scaled.scaledCardRadius`, `scaled.scaledRadius`, and `scaled.cardShadow`.

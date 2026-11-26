@@ -226,10 +226,45 @@ function main() {
     "utf-8"
   );
 
+  // Generate public/llms-full.txt with exact TypeScript prop interfaces for AI web chats
+  const llmsFullLines = [
+    "# ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)",
+    "",
+    `> Generated automatically from source files (${indexItems.length} items). Public registry: https://bricks.zerorapid.in/r/index.json`,
+    "",
+  ];
+
+  for (const item of indexItems) {
+    const itemJsonPath = path.join(REGISTRY_OUT_DIR, `${item.name}.json`);
+    const itemData = JSON.parse(fs.readFileSync(itemJsonPath, "utf-8"));
+    const tsxContent = (itemData.files && itemData.files[0] && itemData.files[0].content) || "";
+    const propsMatches = tsxContent.match(/export\s+interface\s+\w*Props[\s\S]*?\n\}/g) || [];
+    const fnMatches = tsxContent.match(/export\s+(?:function|const)\s+[A-Z]\w*/g) || [];
+
+    llmsFullLines.push(`## ${item.name} (${item.type})`);
+    llmsFullLines.push(`- Install: \`npx zerolight add ${item.name}\``);
+    llmsFullLines.push(`- Registry JSON: https://bricks.zerorapid.in/r/${item.name}.json`);
+    if (fnMatches.length > 0) {
+      llmsFullLines.push(`- Exports: ${fnMatches.map((m) => m.replace(/export\s+(?:function|const)\s+/, "")).join(", ")}`);
+    }
+    if (propsMatches.length > 0) {
+      llmsFullLines.push("```ts");
+      llmsFullLines.push(propsMatches.join("\n\n"));
+      llmsFullLines.push("```");
+    }
+    llmsFullLines.push("");
+  }
+
+  fs.writeFileSync(
+    path.join(ROOT, "public", "llms-full.txt"),
+    llmsFullLines.join("\n"),
+    "utf-8"
+  );
+
   console.log(
     `Built ZeroLight registry: ${indexItems.length} items (${Object.entries(tierCounts)
       .map(([k, v]) => `${k}=${v}`)
-      .join(", ")}) -> public/registry/ & public/r/`
+      .join(", ")}) -> public/registry/, public/r/ & public/llms-full.txt`
   );
 }
 

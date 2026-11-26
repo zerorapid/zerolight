@@ -2364,6 +2364,21 @@ test("Morphic Evolution Engine implements 6 equations and drives ERP & core comp
   }
 });
 
+console.log("\n=== Suite 47: LLM & AI Web Chat Readiness (llms-full.txt & OpenAPI) ===");
+
+test("llms-full.txt and ChatGPT OpenAPI spec expose synced ZeroLight component props", () => {
+  const llmsFullPath = path.join(rootDir, "public/llms-full.txt");
+  const openApiPath = path.join(rootDir, "public/openapi-chatgpt.json");
+  assert.ok(fs.existsSync(llmsFullPath), "public/llms-full.txt must exist");
+  assert.ok(fs.existsSync(openApiPath), "public/openapi-chatgpt.json must exist");
+
+  const llmsFull = fs.readFileSync(llmsFullPath, "utf8");
+  assert.ok(llmsFull.includes("StatCardProps") && llmsFull.includes("ApprovalWorkflowProps") && llmsFull.includes("DataTableProps"), "llms-full.txt must include extracted TypeScript Props interfaces");
+
+  const openApi = JSON.parse(fs.readFileSync(openApiPath, "utf8"));
+  assert.ok(openApi.paths["/llms-full.txt"] && openApi.paths["/r/index.json"] && openApi.paths["/r/{name}.json"], "OpenAPI spec must expose /llms-full.txt, /r/index.json, and /r/{name}.json");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");
