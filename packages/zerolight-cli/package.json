@@ -1,0 +1,32 @@
+{
+  "name": "zerolight",
+  "version": "0.1.0",
+  "description": "ZeroLight Design System CLI & MCP server — install token-driven React SaaS & ERP components from bricks.zerorapid.in",
+  "license": "MIT",
+  "homepage": "https://bricks.zerorapid.in",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zerorapid/zerolight.git"
+  },
+  "keywords": [
+    "zerolight",
+    "zerorapid",
+    "design-system",
+    "shadcn",
+    "react",
+    "erp",
+    "saas",
+    "mcp"
+  ],
+  "bin": {
+    "zerolight": "bin/cli.mjs",
+    "zerolight-mcp": "bin/zerolight-mcp.mjs"
+  },
+  "files": [
+    "bin/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
