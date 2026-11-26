@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "ai-agent-console-block",
+  "type": "registry:component",
+  "title": "Ai Agent Console Block",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "approval-workflow",
+    "layout-grammar",
+    "prompt-composer",
+    "stat-card",
+    "streaming-message",
+    "tool-call-card"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/templates/ai-agent-console-block.tsx",
+      "content": "\"use client\";\n\nimport React, { useState } from \"react\";\nimport { Bot, Cpu, ShieldCheck, Activity } from \"lucide-react\";\nimport { StatCard } from \"../molecules/stat-card\";\nimport { StreamingMessage } from \"../molecules/streaming-message\";\nimport { ToolCallCard } from \"../molecules/tool-call-card\";\nimport { PromptComposer } from \"../organisms/prompt-composer\";\nimport { ApprovalWorkflow, type ApprovalStep } from \"../organisms/approval-workflow\";\nimport { Page, Section, MetricGrid, Split, Panel } from \"./layout-grammar\";\n\nexport interface AIAgentConsoleBlockProps {\n  title?: string;\n  subtitle?: string;\n  className?: string;\n}\n\nconst AGENT_APPROVAL_STEPS: ApprovalStep[] = [\n  { id: \"a1\", role: \"Policy Check\", approver: \"Guardrail Engine\", status: \"approved\", timestamp: \"12s ago\" },\n  { id: \"a2\", role: \"Human Authorization\", approver: \"Operations Lead\", status: \"pending\" },\n];\n\n/**\n * Tier 3 AI Agent Command Center Block — built with ZeroLight Layout Grammar,\n * StreamingMessage, ToolCallCard, PromptComposer, and ApprovalWorkflow.\n */\nexport function AIAgentConsoleBlock({\n  title = \"AI Agent Command Center\",\n  subtitle = \"Live agent execution traces, tool calls, and human-in-the-loop approval gates.\",\n  className = \"\",\n}: AIAgentConsoleBlockProps) {\n  const [messages, setMessages] = useState([\n    \"Audited PO-2026-0842 across 3 suppliers. Found a +4.2% freight variance on ALU-6061-RAW; awaiting budget authorization before releasing.\",\n  ]);\n\n  return (\n    <Page density=\"compact\" className={className}>\n      <Section title={title} subtitle={subtitle} density=\"compact\">\n        <MetricGrid columns={4} density=\"compact\">\n          <StatCard label=\"Active Runs\" value=\"14\" delta=\"+3\" trend=\"up\" icon={<Bot className=\"w-4 h-4\" />} />\n          <StatCard label=\"Tool Calls (24h)\" value=\"1,842\" delta=\"99.4% ok\" trend=\"up\" icon={<Cpu className=\"w-4 h-4\" />} />\n          <StatCard label=\"Pending Gates\" value=\"02\" delta=\"Action needed\" trend=\"neutral\" icon={<ShieldCheck className=\"w-4 h-4\" />} />\n          <StatCard label=\"Avg Latency\" value=\"420ms\" delta=\"-18%\" trend=\"up\" icon={<Activity className=\"w-4 h-4\" />} />\n        </MetricGrid>\n      </Section>\n\n      <Split\n        ratio=\"2:1\"\n        density=\"compact\"\n        left={\n          <div className=\"space-y-3\">\n            <ToolCallCard\n              toolName=\"fetch_purchase_order\"\n              status=\"success\"\n              durationMs={142}\n              argumentsJson={'{ \"po\": \"PO-2026-0842\" }'}\n              resultText=\"3 line items · Subtotal $148,600 · Supplier verified\"\n            />\n            <ToolCallCard\n              toolName=\"check_freight_variance\"\n              status=\"running\"\n              durationMs={86}\n              argumentsJson={'{ \"sku\": \"ALU-6061-RAW\" }'}\n              defaultExpanded={true}\n              resultText=\"Comparing Q4 contract rate vs spot carrier quote...\"\n            />\n            {messages.map((msg, idx) => (\n              <StreamingMessage\n                key={idx}\n                modelName=\"Procurement Agent\"\n                timestamp=\"Just now\"\n                content={msg}\n                citations={[\n                  { id: \"c1\", label: \"PO-2026-0842\" },\n                  { id: \"c2\", label: \"Q4 Rate Card\" },\n                ]}\n              />\n            ))}\n            <PromptComposer\n              contextChips={[\n                { id: \"po\", label: \"PO-2026-0842\" },\n                { id: \"tier\", label: \"tier:enterprise\" },\n              ]}\n              onSubmit={(prompt) => {\n                setMessages((prev) => [...prev, `Executed instruction: \"${prompt}\"`]);\n              }}\n            />\n          </div>\n        }\n        right={\n          <Panel density=\"compact\" className=\"space-y-3\">\n            <ApprovalWorkflow\n              layout=\"vertical\"\n              documentId=\"RUN-AG-0824\"\n              title=\"Release Budget Hold\"\n              amountLabel=\"$148,600\"\n              requester=\"Procurement Agent\"\n              budgetImpact=\"Within Q4 Cap\"\n              steps={AGENT_APPROVAL_STEPS}\n            />\n          </Panel>\n        }\n      />\n    </Page>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

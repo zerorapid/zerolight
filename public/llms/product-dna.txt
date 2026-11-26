@@ -1,0 +1,254 @@
+# ZeroLight Product DNA (Levels 4-6: Archetypes, Entities, State Machines & ZP001-ZP025)
+
+```ts
+/**
+ * ZeroLight Product DNA (Levels 4-6: Workflow, Product Architecture & Product Intelligence)
+ * Encodes Product Archetypes, Navigation Models, Entity Relationships, State Machines,
+ * Role Permissions, and Universal Product Design Laws (ZP001-ZP025).
+ */
+
+export type ProductArchetypeId =
+  | "crm"
+  | "procurement"
+  | "subscription-saas"
+  | "ai-agent-platform"
+  | "helpdesk"
+  | "erp";
+
+export type NavigationArchitecture =
+  | "workspace-centric"
+  | "module-centric"
+  | "entity-centric"
+  | "inbox-centric"
+  | "canvas-centric"
+  | "conversation-centric";
+
+export interface ProductStateMachine {
+  entity: string;
+  states: string[];
+  transitions: Array<{ from: string; to: string; action: string; guard?: string }>;
+}
+
+export interface ProductArchetypeSpec {
+  id: ProductArchetypeId;
+  name: string;
+  coreObject: string;
+  navigationModel: NavigationArchitecture;
+  personas: string[];
+  entities: Array<{ name: string; relationships: string[] }>;
+  routes: Array<{ path: string; level: "L1" | "L2" | "L3"; purpose: string }>;
+  stateMachines: ProductStateMachine[];
+  recommendedBlocks: string[];
+  recommendedComponents: string[];
+}
+
+export const PRODUCT_ARCHETYPES: Record<ProductArchetypeId, ProductArchetypeSpec> = {
+  crm: {
+    id: "crm",
+    name: "CRM & Sales Operations",
+    coreObject: "Lead / Deal",
+    navigationModel: "entity-centric",
+    personas: ["admin", "sales-manager", "sales-rep"],
+    entities: [
+      { name: "Account", relationships: ["hasMany:Contact", "hasMany:Deal"] },
+      { name: "Lead", relationships: ["convertsTo:Deal", "belongsTo:User"] },
+      { name: "Deal", relationships: ["belongsTo:Account", "hasMany:Activity", "hasMany:Quote"] },
+      { name: "Activity", relationships: ["belongsTo:Deal", "belongsTo:User"] },
+    ],
+    routes: [
+      { path: "/overview", level: "L1", purpose: "Pipeline metrics and follow-ups" },
+      { path: "/leads", level: "L1", purpose: "Lead directory, assignment, and qualification" },
+      { path: "/deals", level: "L1", purpose: "Opportunity pipeline and forecasting" },
+      { path: "/deals/[id]", level: "L3", purpose: "Deal detail, activity timeline, and quote actions" },
+      { path: "/settings/team", level: "L2", purpose: "Roles, permissions, and territories" },
+    ],
+    stateMachines: [
+      {
+        entity: "Lead",
+        states: ["new", "contacted", "qualified", "converted", "disqualified"],
+        transitions: [
+          { from: "new", to: "contacted", action: "log_outreach" },
+          { from: "contacted", to: "qualified", action: "qualify_lead" },
+          { from: "qualified", to: "converted", action: "convert_to_deal", guard: "ownerAssigned" },
+        ],
+      },
+    ],
+    recommendedBlocks: ["block/analytics/simple-overview"],
+    recommendedComponents: ["stat-card", "data-table", "async-combobox", "detail-drawer", "approval-workflow"],
+  },
+  procurement: {
+    id: "procurement",
+    name: "Supply Chain & Procurement Desk",
+    coreObject: "Purchase Order",
+    navigationModel: "module-centric",
+    personas: ["procurement-manager", "finance-controller", "operations-director", "cfo"],
+    entities: [
+      { name: "Supplier", relationships: ["hasMany:PurchaseOrder"] },
+      { name: "PurchaseOrder", relationships: ["belongsTo:Supplier", "hasMany:LineItem", "hasOne:ApprovalChain"] },
+      { name: "GoodsReceipt", relationships: ["belongsTo:PurchaseOrder"] },
+    ],
+    routes: [
+      { path: "/control-tower", level: "L1", purpose: "Shipments, freight spend, and regional breakdown" },
+      { path: "/purchase-orders", level: "L1", purpose: "PO queue and line-item editing" },
+      { path: "/purchase-orders/[id]", level: "L3", purpose: "PO detail, 3-way match, and multi-stage approval" },
+      { path: "/suppliers", level: "L1", purpose: "Vendor directory and scorecards" },
+    ],
+    stateMachines: [
+      {
+        entity: "PurchaseOrder",
+        states: ["draft", "submitted", "under-review", "approved", "issued", "received", "closed"],
+        transitions: [
+          { from: "draft", to: "submitted", action: "submit_po", guard: "hasValidLineItems" },
+          { from: "submitted", to: "under-review", action: "assign_reviewer" },
+          { from: "under-review", to: "approved", action: "approve_step", guard: "allStagesApproved" },
+          { from: "approved", to: "issued", action: "issue_to_supplier" },
+          { from: "issued", to: "received", action: "record_receipt" },
+        ],
+      },
+    ],
+    recommendedBlocks: ["block/supply-chain/po-desk"],
+    recommendedComponents: ["stat-card", "geo-breakdown", "area-chart", "line-item-matrix", "approval-workflow", "three-way-match"],
+  },
+  "subscription-saas": {
+    id: "subscription-saas",
+    name: "Subscription & Billing SaaS",
+    coreObject: "Subscription",
+    navigationModel: "workspace-centric",
+    personas: ["org-owner", "billing-admin", "member"],
+    entities: [
+      { name: "Organization", relationships: ["hasOne:Subscription", "hasMany:Member"] },
+      { name: "Subscription", relationships: ["belongsTo:Plan", "hasMany:Invoice"] },
+      { name: "Invoice", relationships: ["belongsTo:Subscription"] },
+    ],
+    routes: [
+      { path: "/dashboard", level: "L1", purpose: "Usage overview and key metrics" },
+      { path: "/billing", level: "L1", purpose: "Plan selection, payment methods, and invoices" },
+      { path: "/team", level: "L1", purpose: "Member invites and RBAC scopes" },
+    ],
+    stateMachines: [
+      {
+        entity: "Subscription",
+        states: ["trialing", "active", "past_due", "canceled"],
+        transitions: [
+          { from: "trialing", to: "active", action: "activate_payment" },
+          { from: "active", to: "past_due", action: "payment_failed" },
+          { from: "past_due", to: "active", action: "retry_payment_succeeded" },
+        ],
+      },
+    ],
+    recommendedBlocks: ["block/saas/billing-portal", "block/saas/admin-console"],
+    recommendedComponents: ["billing-portal", "team-permissions", "tenant-kit", "payment-card", "stat-card"],
+  },
+  "ai-agent-platform": {
+    id: "ai-agent-platform",
+    name: "AI Agent & Copilot Platform",
+    coreObject: "Agent Run",
+    navigationModel: "conversation-centric",
+    personas: ["operator", "reviewer", "admin"],
+    entities: [
+      { name: "Conversation", relationships: ["hasMany:Message", "hasMany:AgentRun"] },
+      { name: "AgentRun", relationships: ["hasMany:ToolCall", "hasMany:ApprovalGate"] },
+    ],
+    routes: [
+      { path: "/workspace", level: "L1", purpose: "Prompt composer, streaming output, and tool traces" },
+      { path: "/approvals", level: "L1", purpose: "Human-in-the-loop authorization queue" },
+    ],
+    stateMachines: [
+      {
+        entity: "AgentRun",
+        states: ["queued", "running", "awaiting_approval", "completed", "failed"],
+        transitions: [
+          { from: "queued", to: "running", action: "start_run" },
+          { from: "running", to: "awaiting_approval", action: "request_human_gate" },
+          { from: "awaiting_approval", to: "running", action: "authorize_tool" },
+          { from: "running", to: "completed", action: "finish_run" },
+        ],
+      },
+    ],
+    recommendedBlocks: ["block/ai/agent-command-center"],
+    recommendedComponents: ["streaming-message", "tool-call-card", "prompt-composer", "approval-workflow", "resizable-panels"],
+  },
+  helpdesk: {
+    id: "helpdesk",
+    name: "Customer Support Helpdesk",
+    coreObject: "Ticket",
+    navigationModel: "inbox-centric",
+    personas: ["support-agent", "team-lead", "admin"],
+    entities: [
+      { name: "Ticket", relationships: ["belongsTo:Customer", "belongsTo:Agent", "hasMany:Reply"] },
+    ],
+    routes: [
+      { path: "/inbox", level: "L1", purpose: "Ticket queue, triage, and assignment" },
+      { path: "/inbox/[id]", level: "L3", purpose: "Conversation thread and customer context" },
+    ],
+    stateMachines: [
+      {
+        entity: "Ticket",
+        states: ["open", "pending", "escalated", "resolved", "closed"],
+        transitions: [
+          { from: "open", to: "pending", action: "reply_to_customer" },
+          { from: "open", to: "escalated", action: "escalate_ticket" },
+          { from: "pending", to: "resolved", action: "mark_resolved" },
+        ],
+      },
+    ],
+    recommendedBlocks: ["block/analytics/simple-overview"],
+    recommendedComponents: ["data-table", "detail-drawer", "streaming-message", "prompt-composer"],
+  },
+  erp: {
+    id: "erp",
+    name: "Enterprise Accounting & ERP",
+    coreObject: "Journal / Ledger Entry",
+    navigationModel: "module-centric",
+    personas: ["accountant", "controller", "auditor"],
+    entities: [
+      { name: "LedgerEntry", relationships: ["hasMany:JournalLine"] },
+      { name: "InvoiceMatch", relationships: ["belongsTo:PurchaseOrder", "belongsTo:GoodsReceipt"] },
+    ],
+    routes: [
+      { path: "/ledger", level: "L1", purpose: "Balanced debits/credits and period close" },
+      { path: "/reconciliation", level: "L1", purpose: "Three-way match and exception resolution" },
+    ],
+    stateMachines: [
+      {
+        entity: "LedgerEntry",
+        states: ["draft", "balanced", "posted", "reconciled"],
+        transitions: [
+          { from: "draft", to: "balanced", action: "verify_balance", guard: "debitsEqualCredits" },
+          { from: "balanced", to: "posted", action: "post_to_gl" },
+        ],
+      },
+    ],
+    recommendedBlocks: ["block/fintech/reconciliation-desk", "block/erp/general-ledger"],
+    recommendedComponents: ["ledger-balancer", "three-way-match", "currency-input", "data-table", "audit-log"],
+  },
+};
+
+export const PRODUCT_LAWS: Array<{ id: string; rule: string }> = [
+  { id: "ZP001", rule: "Every screen must serve a defined user objective." },
+  { id: "ZP002", rule: "Every module must justify its presence in the product." },
+  { id: "ZP003", rule: "Every primary action must have a defined outcome." },
+  { id: "ZP004", rule: "Every business entity must have a clear identity and ownership model." },
+  { id: "ZP005", rule: "Every workflow must have an entry and completion condition." },
+  { id: "ZP006", rule: "Every lifecycle transition must be explicitly permitted." },
+  { id: "ZP007", rule: "Every protected action must have backend authorization." },
+  { id: "ZP008", rule: "Related records must remain connected across screens." },
+  { id: "ZP010", rule: "Navigation must reflect user tasks; record actions stay inside record context." },
+  { id: "ZP012", rule: "Every asynchronous operation must communicate loading, success, and error states." },
+  { id: "ZP013", rule: "Every data-driven screen must handle loading, empty, and error states." },
+  { id: "ZP022", rule: "Mock integrations must never be represented as live functionality." },
+  { id: "ZP024", rule: "A screen must not exist solely because a component is available." },
+  { id: "ZP025", rule: "Build the minimum coherent product before adding optional functionality." },
+];
+
+export function architectProduct(prompt: string): ProductArchetypeSpec {
+  const p = prompt.toLowerCase();
+  if (/crm|real estate|lead|pipeline|sales|deal/.test(p)) return PRODUCT_ARCHETYPES.crm;
+  if (/supply chain|procurement|purchase order|\bpo\b|vendor|supplier/.test(p)) return PRODUCT_ARCHETYPES.procurement;
+  if (/agent|copilot|ai assistant|llm|tool call/.test(p)) return PRODUCT_ARCHETYPES["ai-agent-platform"];
+  if (/helpdesk|support|ticket|inbox/.test(p)) return PRODUCT_ARCHETYPES.helpdesk;
+  if (/ledger|accounting|reconciliation|three[- ]?way|erp|fintech/.test(p)) return PRODUCT_ARCHETYPES.erp;
+  return PRODUCT_ARCHETYPES["subscription-saas"];
+}
+
+```

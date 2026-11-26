@@ -2,13 +2,13 @@
 
 import React from "react";
 import { Package, Clock, DollarSign, ShieldAlert, Download, Plus } from "lucide-react";
-import { useZeroLight } from "../context";
 import { Button } from "../atoms/button";
 import { StatCard } from "../molecules/stat-card";
 import { AreaChart, type AreaDataPoint } from "../molecules/area-chart";
 import { GeoBreakdown } from "../organisms/geo-breakdown";
 import { LineItemMatrix, type MatrixLineItem } from "../organisms/line-item-matrix";
 import { ApprovalWorkflow, type ApprovalStep } from "../organisms/approval-workflow";
+import { Page, MetricGrid, Split } from "./layout-grammar";
 
 export interface SupplyChainDeskBlockProps {
   title?: string;
@@ -46,21 +46,11 @@ export function SupplyChainDeskBlock({
   subtitle = "Global supplier intelligence, freight spend, and purchase order authorization.",
   className = "",
 }: SupplyChainDeskBlockProps) {
-  const { tokens, scaled } = useZeroLight();
-
   return (
-    <div
-      style={{ color: tokens.textIconColor, fontFamily: scaled.resolvedFontFamily }}
-      className={`space-y-6 ${className}`}
-    >
+    <Page density="standard" className={className}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1
-            style={{ fontFamily: scaled.resolvedHeadingFontFamily, fontWeight: scaled.headingWeight }}
-            className="text-xl font-bold tracking-tight"
-          >
-            {title}
-          </h1>
+          <h1 className="text-xl font-bold tracking-tight">{title}</h1>
           <p className="text-xs opacity-65 mt-0.5">{subtitle}</p>
         </div>
         <div className="flex items-center gap-2">
@@ -69,12 +59,12 @@ export function SupplyChainDeskBlock({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <MetricGrid columns={4} density="standard">
         <StatCard label="Active Shipments" value="1,284" delta="+12.8%" trend="up" subValue="186 arriving this week" icon={<Package className="w-4 h-4" />} />
         <StatCard label="On-Time Rate" value="96.4%" delta="+2.1%" trend="up" subValue="Target: 95%" icon={<Clock className="w-4 h-4" />} />
         <StatCard label="Open PO Value" value="$4.82M" delta="+8.3%" trend="up" subValue="142 open orders" icon={<DollarSign className="w-4 h-4" />} />
         <StatCard label="Customs Holds" value="12" delta="-3 cases" trend="up" subValue="4 exceeding 48 hours" icon={<ShieldAlert className="w-4 h-4" />} />
-      </div>
+      </MetricGrid>
 
       <GeoBreakdown
         title="Regional Supplier & Shipment Breakdown"
@@ -93,15 +83,17 @@ export function SupplyChainDeskBlock({
         ]}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <div className="lg:col-span-8">
+      <Split
+        ratio="8:4"
+        density="standard"
+        left={
           <LineItemMatrix
             title="PO-2026-0842 · Raw Material Procurement"
             currency="$"
             initialItems={PO_ITEMS}
           />
-        </div>
-        <div className="lg:col-span-4">
+        }
+        right={
           <ApprovalWorkflow
             layout="vertical"
             documentId="PO-2026-0842"
@@ -111,8 +103,8 @@ export function SupplyChainDeskBlock({
             budgetImpact="Within Q4 Cap"
             steps={APPROVAL_STEPS}
           />
-        </div>
-      </div>
-    </div>
+        }
+      />
+    </Page>
   );
 }

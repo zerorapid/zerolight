@@ -105,6 +105,47 @@ const TOOLS = [
       required: ["prompt"],
     },
   },
+  {
+    name: "validate_composition",
+    description: "Validate a planned screen composition against ZeroLight archetype budgets, component min-widths, and anti-crowding rules.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        archetype: {
+          type: "string",
+          enum: ["simple-dashboard", "analytics-dashboard", "erp-workbench", "ai-chat", "ai-agent-console", "billing-workspace", "settings-workspace", "auth-screen"],
+        },
+        modules: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              componentId: { type: "string" },
+              instances: { type: "number" },
+              containerWidth: { type: "number" },
+            },
+            required: ["componentId", "instances"],
+          },
+        },
+        primaryActions: { type: "number" },
+      },
+      required: ["archetype", "modules"],
+    },
+  },
+  {
+    name: "architect_product",
+    description: "Generate a ZeroLight Product DNA blueprint (archetype, navigation model, personas, entity relationships, state machines, routes, and recommended blocks) from a product prompt.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        prompt: {
+          type: "string",
+          description: "High-level product prompt (e.g. 'Build a real estate CRM SaaS')",
+        },
+      },
+      required: ["prompt"],
+    },
+  },
 ];
 
 function handleToolCall(name, args) {
@@ -254,6 +295,105 @@ function handleToolCall(name, args) {
         },
       };
       return plans[tier] || plans.simple;
+    }
+
+    case "validate_composition": {
+      const archetype = args?.archetype || "simple-dashboard";
+      const modules = Array.isArray(args?.modules) ? args.modules : [];
+      const primaryActions = typeof args?.primaryActions === "number" ? args.primaryActions : 1;
+      const limits = {
+        "auth-screen": { maxModules: 4, maxStatCards: 0, maxCharts: 0 },
+        "simple-dashboard": { maxModules: 7, maxStatCards: 4, maxCharts: 1 },
+        "analytics-dashboard": { maxModules: 10, maxStatCards: 4, maxCharts: 2 },
+        "erp-workbench": { maxModules: 9, maxStatCards: 4, maxCharts: 1 },
+        "ai-chat": { maxModules: 5, maxStatCards: 0, maxCharts: 0 },
+        "ai-agent-console": { maxModules: 8, maxStatCards: 3, maxCharts: 1 },
+        "billing-workspace": { maxModules: 7, maxStatCards: 3, maxCharts: 1 },
+        "settings-workspace": { maxModules: 6, maxStatCards: 0, maxCharts: 0 },
+      }[archetype] || { maxModules: 7, maxStatCards: 4, maxCharts: 1 };
+
+      const warnings = [];
+      const errors = [];
+      let totalModules = 0;
+      let statCards = 0;
+      let charts = 0;
+      for (const m of modules) {
+        totalModules += m.instances || 1;
+        if (m.componentId === "stat-card") statCards += m.instances || 1;
+        if ((m.componentId || "").includes("chart")) charts += m.instances || 1;
+        if (m.componentId === "geo-breakdown" && m.containerWidth && m.containerWidth < 640) {
+          errors.push(`ZL017: geo-breakdown rendered at ${m.containerWidth}px (< 640px minWidth).`);
+        }
+      }
+      if (totalModules > limits.maxModules) warnings.push(`ZL009: ${totalModules} modules exceeds ${archetype} limit (${limits.maxModules}).`);
+      if (statCards > limits.maxStatCards) warnings.push(`ZL009: ${statCards} StatCards exceeds limit (${limits.maxStatCards}).`);
+      if (charts > limits.maxCharts) warnings.push(`ZL013: ${charts} charts exceeds limit (${limits.maxCharts}).`);
+      if (primaryActions > 1) warnings.push(`ZL008: ${primaryActions} competing primary actions. Keep 1 primary CTA.`);
+
+      const score = Math.max(0, 100 - errors.length * 15 - warnings.length * 5);
+      return { score, passed: errors.length === 0 && score >= 85, warnings, errors };
+    }
+
+    case "architect_product": {
+      const p = String(args?.prompt || "").toLowerCase();
+      let archetype = "subscription-saas";
+      if (/crm|real estate|lead|pipeline|sales|deal/.test(p)) archetype = "crm";
+      else if (/supply chain|procurement|purchase order|\bpo\b|vendor|supplier/.test(p)) archetype = "procurement";
+      else if (/agent|copilot|ai assistant|llm|tool call/.test(p)) archetype = "ai-agent-platform";
+      else if (/helpdesk|support|ticket|inbox/.test(p)) archetype = "helpdesk";
+      else if (/ledger|accounting|reconciliation|three[- ]?way|erp|fintech/.test(p)) archetype = "erp";
+
+      const blueprints = {
+        crm: {
+          archetype: "crm",
+          navigationModel: "entity-centric",
+          personas: ["admin", "sales-manager", "sales-rep"],
+          entities: ["Account", "Lead", "Deal", "Activity"],
+          routes: ["/overview", "/leads", "/deals", "/deals/[id]", "/settings/team"],
+          recommendedComponents: ["stat-card", "data-table", "async-combobox", "detail-drawer", "approval-workflow"],
+        },
+        procurement: {
+          archetype: "procurement",
+          navigationModel: "module-centric",
+          personas: ["procurement-manager", "finance-controller", "operations-director", "cfo"],
+          entities: ["Supplier", "PurchaseOrder", "GoodsReceipt"],
+          routes: ["/control-tower", "/purchase-orders", "/purchase-orders/[id]", "/suppliers"],
+          recommendedBlocks: ["block/supply-chain/po-desk"],
+        },
+        "ai-agent-platform": {
+          archetype: "ai-agent-platform",
+          navigationModel: "conversation-centric",
+          personas: ["operator", "reviewer", "admin"],
+          entities: ["Conversation", "AgentRun", "ToolCall"],
+          routes: ["/workspace", "/approvals"],
+          recommendedBlocks: ["block/ai/agent-command-center"],
+        },
+        helpdesk: {
+          archetype: "helpdesk",
+          navigationModel: "inbox-centric",
+          personas: ["support-agent", "team-lead", "admin"],
+          entities: ["Ticket", "Customer", "Reply"],
+          routes: ["/inbox", "/inbox/[id]"],
+          recommendedComponents: ["data-table", "detail-drawer", "streaming-message", "prompt-composer"],
+        },
+        erp: {
+          archetype: "erp",
+          navigationModel: "module-centric",
+          personas: ["accountant", "controller", "auditor"],
+          entities: ["LedgerEntry", "InvoiceMatch"],
+          routes: ["/ledger", "/reconciliation"],
+          recommendedBlocks: ["block/fintech/reconciliation-desk", "block/erp/general-ledger"],
+        },
+        "subscription-saas": {
+          archetype: "subscription-saas",
+          navigationModel: "workspace-centric",
+          personas: ["org-owner", "billing-admin", "member"],
+          entities: ["Organization", "Subscription", "Invoice"],
+          routes: ["/dashboard", "/billing", "/team"],
+          recommendedBlocks: ["block/saas/billing-portal", "block/saas/admin-console"],
+        },
+      };
+      return blueprints[archetype];
     }
 
     default:

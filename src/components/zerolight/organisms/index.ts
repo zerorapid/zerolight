@@ -21,3 +21,4 @@ export * from "./approval-workflow";
 export * from "./three-way-match";
 export * from "./ledger-balancer";
 export * from "./line-item-matrix";
+export * from "./prompt-composer";

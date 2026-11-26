@@ -345,12 +345,22 @@ function main() {
     `- Enterprise SaaS (${domainBuckets.enterprise.length}): https://bricks.zerorapid.in/llms/enterprise.txt`,
     `- ERP & Supply Chain (${domainBuckets.erp.length}): https://bricks.zerorapid.in/llms/erp.txt`,
     `- Full-Page Blocks (${domainBuckets.blocks.length}): https://bricks.zerorapid.in/llms/blocks.txt`,
+    `- Product DNA (Archetypes, Entities & State Machines): https://bricks.zerorapid.in/llms/product-dna.txt`,
     `- Complete Reference: https://bricks.zerorapid.in/llms-full.txt`,
     `- Registry Index: https://bricks.zerorapid.in/r/index.json`,
     "",
   ].join("\n");
 
   fs.writeFileSync(path.join(ROOT, "public", "llms.txt"), llmsRouter, "utf-8");
+
+  const productDnaPath = path.join(ROOT, "src", "components", "zerolight", "product-dna.ts");
+  if (fs.existsSync(productDnaPath)) {
+    fs.writeFileSync(
+      path.join(llmsDir, "product-dna.txt"),
+      `# ZeroLight Product DNA (Levels 4-6: Archetypes, Entities, State Machines & ZP001-ZP025)\n\n\`\`\`ts\n${fs.readFileSync(productDnaPath, "utf-8")}\n\`\`\`\n`,
+      "utf-8"
+    );
+  }
 
   console.log(
     `Built ZeroLight registry: ${indexItems.length} items (${Object.entries(tierCounts)

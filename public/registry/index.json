@@ -1,13 +1,13 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 132,
+  "totalCount": 141,
   "tiers": {
     "core": 3,
-    "atoms": 43,
-    "molecules": 47,
-    "organisms": 23,
-    "templates": 7,
+    "atoms": 45,
+    "molecules": 51,
+    "organisms": 24,
+    "templates": 9,
     "views": 8,
     "tools": 0,
     "gen-ui": 1
@@ -49,17 +49,19 @@
       "registryDependencies": [
         "WorldAtlasMap",
         "auth-context",
+        "composition-engine",
         "context",
         "dashboard-shell",
         "docs-studio",
         "gen-ui-renderer",
         "libraries",
         "morphic-engine",
+        "product-dna",
         "sign-in-card",
         "types",
         "zerolight-docs-portal"
       ],
-      "lines": 16,
+      "lines": 18,
       "registryUrl": "/registry/zerolight-index.json",
       "shadcnUrl": "/r/zerolight-index.json"
     },
@@ -230,6 +232,20 @@
       "shadcnUrl": "/r/copy-trigger.json"
     },
     {
+      "name": "currency-input",
+      "title": "Currency Input",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/currency-input.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 154,
+      "registryUrl": "/registry/currency-input.json",
+      "shadcnUrl": "/r/currency-input.json"
+    },
+    {
       "name": "currency-pill",
       "title": "Currency Pill",
       "type": "registry:ui",
@@ -301,6 +317,20 @@
       "lines": 195,
       "registryUrl": "/registry/icon.json",
       "shadcnUrl": "/r/icon.json"
+    },
+    {
+      "name": "input-otp",
+      "title": "Input Otp",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/input-otp.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 111,
+      "registryUrl": "/registry/input-otp.json",
+      "shadcnUrl": "/r/input-otp.json"
     },
     {
       "name": "input",
@@ -727,6 +757,22 @@
       "lines": 472,
       "registryUrl": "/registry/area-chart.json",
       "shadcnUrl": "/r/area-chart.json"
+    },
+    {
+      "name": "async-combobox",
+      "title": "Async Combobox",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/async-combobox.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 185,
+      "registryUrl": "/registry/async-combobox.json",
+      "shadcnUrl": "/r/async-combobox.json"
     },
     {
       "name": "bar-chart",
@@ -1192,6 +1238,22 @@
       "shadcnUrl": "/r/profit-loss-chart.json"
     },
     {
+      "name": "resizable-panels",
+      "title": "Resizable Panels",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/resizable-panels.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 104,
+      "registryUrl": "/registry/resizable-panels.json",
+      "shadcnUrl": "/r/resizable-panels.json"
+    },
+    {
       "name": "search-bar",
       "title": "Search Bar",
       "type": "registry:ui",
@@ -1307,6 +1369,23 @@
       "shadcnUrl": "/r/stepper.json"
     },
     {
+      "name": "streaming-message",
+      "title": "Streaming Message",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/streaming-message.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context"
+      ],
+      "lines": 136,
+      "registryUrl": "/registry/streaming-message.json",
+      "shadcnUrl": "/r/streaming-message.json"
+    },
+    {
       "name": "tabs",
       "title": "Tabs",
       "type": "registry:ui",
@@ -1336,6 +1415,23 @@
       "lines": 92,
       "registryUrl": "/registry/tag-input.json",
       "shadcnUrl": "/r/tag-input.json"
+    },
+    {
+      "name": "tool-call-card",
+      "title": "Tool Call Card",
+      "type": "registry:ui",
+      "tier": "molecules",
+      "targetPath": "src/components/zerolight/molecules/tool-call-card.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context"
+      ],
+      "lines": 118,
+      "registryUrl": "/registry/tool-call-card.json",
+      "shadcnUrl": "/r/tool-call-card.json"
     },
     {
       "name": "toolbar",
@@ -1738,6 +1834,23 @@
       "shadcnUrl": "/r/page-layout.json"
     },
     {
+      "name": "prompt-composer",
+      "title": "Prompt Composer",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/prompt-composer.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "lines": 172,
+      "registryUrl": "/registry/prompt-composer.json",
+      "shadcnUrl": "/r/prompt-composer.json"
+    },
+    {
       "name": "quota-matrix",
       "title": "Quota Matrix",
       "type": "registry:ui",
@@ -1845,6 +1958,27 @@
       "shadcnUrl": "/r/tree-view.json"
     },
     {
+      "name": "ai-agent-console-block",
+      "title": "Ai Agent Console Block",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/ai-agent-console-block.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "approval-workflow",
+        "layout-grammar",
+        "prompt-composer",
+        "stat-card",
+        "streaming-message",
+        "tool-call-card"
+      ],
+      "lines": 107,
+      "registryUrl": "/registry/ai-agent-console-block.json",
+      "shadcnUrl": "/r/ai-agent-console-block.json"
+    },
+    {
       "name": "analytics-report-template",
       "title": "Analytics Report Template",
       "type": "registry:ui",
@@ -1907,6 +2041,21 @@
       "shadcnUrl": "/r/dashboard-template.json"
     },
     {
+      "name": "layout-grammar",
+      "title": "Layout Grammar",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/layout-grammar.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "composition-engine",
+        "context"
+      ],
+      "lines": 176,
+      "registryUrl": "/registry/layout-grammar.json",
+      "shadcnUrl": "/r/layout-grammar.json"
+    },
+    {
       "name": "settings-form-template",
       "title": "Settings Form Template",
       "type": "registry:ui",
@@ -1937,11 +2086,11 @@
         "area-chart",
         "badge",
         "button",
-        "context",
         "data-table",
+        "layout-grammar",
         "stat-card"
       ],
-      "lines": 116,
+      "lines": 108,
       "registryUrl": "/registry/simple-analytics-block.json",
       "shadcnUrl": "/r/simple-analytics-block.json"
     },
@@ -1958,12 +2107,12 @@
         "approval-workflow",
         "area-chart",
         "button",
-        "context",
         "geo-breakdown",
+        "layout-grammar",
         "line-item-matrix",
         "stat-card"
       ],
-      "lines": 119,
+      "lines": 111,
       "registryUrl": "/registry/supply-chain-desk-block.json",
       "shadcnUrl": "/r/supply-chain-desk-block.json"
     },

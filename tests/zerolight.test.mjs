@@ -2379,6 +2379,62 @@ test("llms-full.txt and ChatGPT OpenAPI spec expose synced ZeroLight component p
   assert.ok(openApi.paths["/llms-full.txt"] && openApi.paths["/r/index.json"] && openApi.paths["/r/{name}.json"], "OpenAPI spec must expose /llms-full.txt, /r/index.json, and /r/{name}.json");
 });
 
+console.log("\n=== Suite 48: Composition Engine, Layout Grammar & P0 Core/AI Expansion ===");
+
+test("Composition Engine, Layout Grammar, Split llms/*.txt & P0 primitives exist and validate", () => {
+  const compEngine = fs.readFileSync(path.join(rootDir, "src/components/zerolight/composition-engine.ts"), "utf8");
+  for (const sym of ["ARCHETYPE_BUDGETS", "COMPONENT_COMPOSITION_META", "analyzePromptArchetype", "validateComposition"]) {
+    assert.ok(compEngine.includes(sym), `composition-engine.ts must export ${sym}`);
+  }
+
+  const grammar = fs.readFileSync(path.join(rootDir, "src/components/zerolight/templates/layout-grammar.tsx"), "utf8");
+  for (const sym of ["export function Page", "export function Section", "export function MetricGrid", "export function Split", "export function Panel"]) {
+    assert.ok(grammar.includes(sym), `layout-grammar.tsx must define ${sym}`);
+  }
+
+  for (const file of [
+    "src/components/zerolight/atoms/currency-input.tsx",
+    "src/components/zerolight/atoms/input-otp.tsx",
+    "src/components/zerolight/molecules/async-combobox.tsx",
+    "src/components/zerolight/molecules/resizable-panels.tsx",
+    "src/components/zerolight/molecules/streaming-message.tsx",
+    "src/components/zerolight/molecules/tool-call-card.tsx",
+    "src/components/zerolight/organisms/prompt-composer.tsx",
+    "src/components/zerolight/templates/simple-analytics-block.tsx",
+    "src/components/zerolight/templates/supply-chain-desk-block.tsx",
+    "src/components/zerolight/templates/ai-agent-console-block.tsx",
+  ]) {
+    assert.ok(fs.existsSync(path.join(rootDir, file)), `${file} must exist`);
+  }
+
+  assert.ok(fs.existsSync(path.join(rootDir, "public/llms.txt")), "public/llms.txt router must exist");
+  for (const slice of ["core.txt", "charts.txt", "ai.txt", "enterprise.txt", "erp.txt", "blocks.txt"]) {
+    assert.ok(fs.existsSync(path.join(rootDir, "public/llms", slice)), `public/llms/${slice} must exist`);
+  }
+
+  const mcpSrc = fs.readFileSync(path.join(rootDir, "bin/zerolight-mcp.mjs"), "utf8");
+  assert.ok(mcpSrc.includes("plan_screen") && mcpSrc.includes("validate_composition"), "MCP server must expose plan_screen and validate_composition");
+
+  const cliSrc = fs.readFileSync(path.join(rootDir, "bin/cli.mjs"), "utf8");
+  assert.ok(cliSrc.includes("handleLint") && cliSrc.includes("--with-skill"), "CLI must support lint and --with-skill");
+});
+
+console.log("\n=== Suite 49: ZeroLight Product DNA (Levels 4-6) ===");
+
+test("Product DNA archetypes, state machines, laws, MCP & CLI architect exist", () => {
+  const dna = fs.readFileSync(path.join(rootDir, "src/components/zerolight/product-dna.ts"), "utf8");
+  for (const sym of ["PRODUCT_ARCHETYPES", "PRODUCT_LAWS", "architectProduct", "ZP001", "ZP025"]) {
+    assert.ok(dna.includes(sym), `product-dna.ts must define ${sym}`);
+  }
+  assert.ok(fs.existsSync(path.join(rootDir, "public/llms/product-dna.txt")), "public/llms/product-dna.txt must exist");
+
+  const mcpSrc = fs.readFileSync(path.join(rootDir, "bin/zerolight-mcp.mjs"), "utf8");
+  assert.ok(mcpSrc.includes("architect_product"), "MCP server must expose architect_product");
+
+  const cliSrc = fs.readFileSync(path.join(rootDir, "bin/cli.mjs"), "utf8");
+  assert.ok(cliSrc.includes("handleArchitect"), "CLI must support architect command");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

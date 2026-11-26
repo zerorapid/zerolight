@@ -39,12 +39,14 @@
       "registryDependencies": [
         "WorldAtlasMap",
         "auth-context",
+        "composition-engine",
         "context",
         "dashboard-shell",
         "docs-studio",
         "gen-ui-renderer",
         "libraries",
         "morphic-engine",
+        "product-dna",
         "sign-in-card",
         "types",
         "zerolight-docs-portal"
@@ -235,6 +237,21 @@
       ]
     },
     {
+      "name": "currency-input",
+      "type": "registry:component",
+      "title": "Currency Input",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/atoms/currency-input.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "currency-pill",
       "type": "registry:component",
       "title": "Currency Pill",
@@ -308,6 +325,21 @@
       "files": [
         {
           "path": "src/components/zerolight/atoms/icon.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:component",
+      "title": "Input Otp",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/atoms/input-otp.tsx",
           "type": "registry:component"
         }
       ]
@@ -764,6 +796,23 @@
       "files": [
         {
           "path": "src/components/zerolight/molecules/area-chart.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "async-combobox",
+      "type": "registry:component",
+      "title": "Async Combobox",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/molecules/async-combobox.tsx",
           "type": "registry:component"
         }
       ]
@@ -1260,6 +1309,23 @@
       ]
     },
     {
+      "name": "resizable-panels",
+      "type": "registry:component",
+      "title": "Resizable Panels",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/molecules/resizable-panels.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "search-bar",
       "type": "registry:component",
       "title": "Search Bar",
@@ -1382,6 +1448,24 @@
       ]
     },
     {
+      "name": "streaming-message",
+      "type": "registry:component",
+      "title": "Streaming Message",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/molecules/streaming-message.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "tabs",
       "type": "registry:component",
       "title": "Tabs",
@@ -1410,6 +1494,24 @@
       "files": [
         {
           "path": "src/components/zerolight/molecules/tag-input.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "tool-call-card",
+      "type": "registry:component",
+      "title": "Tool Call Card",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/molecules/tool-call-card.tsx",
           "type": "registry:component"
         }
       ]
@@ -1838,6 +1940,24 @@
       ]
     },
     {
+      "name": "prompt-composer",
+      "type": "registry:component",
+      "title": "Prompt Composer",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/prompt-composer.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "quota-matrix",
       "type": "registry:component",
       "title": "Quota Matrix",
@@ -1951,6 +2071,28 @@
       ]
     },
     {
+      "name": "ai-agent-console-block",
+      "type": "registry:component",
+      "title": "Ai Agent Console Block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "approval-workflow",
+        "layout-grammar",
+        "prompt-composer",
+        "stat-card",
+        "streaming-message",
+        "tool-call-card"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/templates/ai-agent-console-block.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "analytics-report-template",
       "type": "registry:component",
       "title": "Analytics Report Template",
@@ -2017,6 +2159,22 @@
       ]
     },
     {
+      "name": "layout-grammar",
+      "type": "registry:component",
+      "title": "Layout Grammar",
+      "dependencies": [],
+      "registryDependencies": [
+        "composition-engine",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/templates/layout-grammar.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "settings-form-template",
       "type": "registry:component",
       "title": "Settings Form Template",
@@ -2046,8 +2204,8 @@
         "area-chart",
         "badge",
         "button",
-        "context",
         "data-table",
+        "layout-grammar",
         "stat-card"
       ],
       "files": [
@@ -2068,8 +2226,8 @@
         "approval-workflow",
         "area-chart",
         "button",
-        "context",
         "geo-breakdown",
+        "layout-grammar",
         "line-item-matrix",
         "stat-card"
       ],

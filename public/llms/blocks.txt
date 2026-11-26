@@ -1,4 +1,4 @@
-# ZeroLight Design System — BLOCKS Reference (16 items)
+# ZeroLight Design System — BLOCKS Reference (17 items)
 
 ## tree-view (registry:ui)
 - Install: `npx zerolight add tree-view`
@@ -7,6 +7,17 @@
 export interface TreeViewProps {
   data?: TreeNode[];
   onSelectNode?: (node: TreeNode) => void;
+  className?: string;
+}
+```
+
+## ai-agent-console-block (registry:ui)
+- Install: `npx zerolight add ai-agent-console-block`
+- Registry: https://bricks.zerorapid.in/r/ai-agent-console-block.json
+```ts
+export interface AIAgentConsoleBlockProps {
+  title?: string;
+  subtitle?: string;
   className?: string;
 }
 ```

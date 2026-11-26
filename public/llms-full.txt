@@ -1,6 +1,6 @@
 # ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)
 
-> Generated automatically from source files (132 items). Public registry: https://bricks.zerorapid.in/r/index.json
+> Generated automatically from source files (141 items). Public registry: https://bricks.zerorapid.in/r/index.json
 
 ## AI Prompt-to-Tier Governance (Read Before Generating UI)
 
@@ -223,6 +223,29 @@ export interface CopyTriggerProps {
 }
 ```
 
+## currency-input (registry:ui)
+- Install: `npx zerolight add currency-input`
+- Registry JSON: https://bricks.zerorapid.in/r/currency-input.json
+- Exports: CurrencyInput
+```ts
+export interface CurrencyInputProps {
+  value?: number;
+  defaultValue?: number;
+  onChange?: (value: number) => void;
+  currency?: "USD" | "INR" | "EUR" | "GBP" | "JPY" | string;
+  locale?: string;
+  min?: number;
+  max?: number;
+  disabled?: boolean;
+  readOnly?: boolean;
+  placeholder?: string;
+  label?: string;
+  error?: string;
+  className?: string;
+  "aria-label"?: string;
+}
+```
+
 ## currency-pill (registry:ui)
 - Install: `npx zerolight add currency-pill`
 - Registry JSON: https://bricks.zerorapid.in/r/currency-pill.json
@@ -308,6 +331,25 @@ export interface IconProps {
   className?: string;
   style?: React.CSSProperties;
   ariaLabel?: string;
+}
+```
+
+## input-otp (registry:ui)
+- Install: `npx zerolight add input-otp`
+- Registry JSON: https://bricks.zerorapid.in/r/input-otp.json
+- Exports: InputOTP
+```ts
+export interface InputOTPProps {
+  length?: number;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  onComplete?: (value: string) => void;
+  disabled?: boolean;
+  masked?: boolean;
+  label?: string;
+  error?: string;
+  className?: string;
 }
 ```
 
@@ -751,6 +793,25 @@ export interface AreaChartProps {
   valueFormatter?: (val: number) => string;
   yAxisFormatter?: (val: number) => string;
   showGrid?: boolean;
+  className?: string;
+}
+```
+
+## async-combobox (registry:ui)
+- Install: `npx zerolight add async-combobox`
+- Registry JSON: https://bricks.zerorapid.in/r/async-combobox.json
+- Exports: AsyncCombobox
+```ts
+export interface AsyncComboboxProps {
+  value?: string;
+  onChange?: (value: string, option?: AsyncComboboxOption) => void;
+  options?: AsyncComboboxOption[];
+  onSearch?: (query: string) => Promise<AsyncComboboxOption[]> | AsyncComboboxOption[];
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyText?: string;
+  label?: string;
+  disabled?: boolean;
   className?: string;
 }
 ```
@@ -1253,6 +1314,22 @@ export interface ProfitLossChartProps {
 }
 ```
 
+## resizable-panels (registry:ui)
+- Install: `npx zerolight add resizable-panels`
+- Registry JSON: https://bricks.zerorapid.in/r/resizable-panels.json
+- Exports: ResizablePanels
+```ts
+export interface ResizablePanelsProps {
+  left: React.ReactNode;
+  right: React.ReactNode;
+  direction?: "horizontal" | "vertical";
+  defaultSplit?: number; // percentage 20-80
+  minSplit?: number;
+  maxSplit?: number;
+  className?: string;
+}
+```
+
 ## search-bar (registry:ui)
 - Install: `npx zerolight add search-bar`
 - Registry JSON: https://bricks.zerorapid.in/r/search-bar.json
@@ -1371,6 +1448,22 @@ export interface StepperProps {
 }
 ```
 
+## streaming-message (registry:ui)
+- Install: `npx zerolight add streaming-message`
+- Registry JSON: https://bricks.zerorapid.in/r/streaming-message.json
+- Exports: StreamingMessage
+```ts
+export interface StreamingMessageProps {
+  content: string;
+  isStreaming?: boolean;
+  modelName?: string;
+  citations?: StreamingCitation[];
+  timestamp?: string;
+  onCopy?: () => void;
+  className?: string;
+}
+```
+
 ## tabs (registry:ui)
 - Install: `npx zerolight add tabs`
 - Registry JSON: https://bricks.zerorapid.in/r/tabs.json
@@ -1398,6 +1491,22 @@ export interface TagInputProps {
   maxTags?: number;
   label?: string;
   id?: string;
+}
+```
+
+## tool-call-card (registry:ui)
+- Install: `npx zerolight add tool-call-card`
+- Registry JSON: https://bricks.zerorapid.in/r/tool-call-card.json
+- Exports: ToolCallCard
+```ts
+export interface ToolCallCardProps {
+  toolName: string;
+  status: "running" | "success" | "error";
+  durationMs?: number;
+  argumentsJson?: string;
+  resultText?: string;
+  defaultExpanded?: boolean;
+  className?: string;
 }
 ```
 
@@ -1779,6 +1888,28 @@ export interface ContentSectionProps {
 }
 ```
 
+## prompt-composer (registry:ui)
+- Install: `npx zerolight add prompt-composer`
+- Registry JSON: https://bricks.zerorapid.in/r/prompt-composer.json
+- Exports: PromptComposer
+```ts
+export interface PromptComposerProps {
+  value?: string;
+  onChange?: (val: string) => void;
+  onSubmit?: (prompt: string, contextIds: string[]) => void;
+  onStop?: () => void;
+  onAttach?: () => void;
+  isGenerating?: boolean;
+  placeholder?: string;
+  models?: string[];
+  selectedModel?: string;
+  onModelChange?: (model: string) => void;
+  contextChips?: PromptContextChip[];
+  onRemoveContext?: (id: string) => void;
+  className?: string;
+}
+```
+
 ## quota-matrix (registry:ui)
 - Install: `npx zerolight add quota-matrix`
 - Registry JSON: https://bricks.zerorapid.in/r/quota-matrix.json
@@ -1849,6 +1980,18 @@ export interface ThreeWayMatchProps {
 export interface TreeViewProps {
   data?: TreeNode[];
   onSelectNode?: (node: TreeNode) => void;
+  className?: string;
+}
+```
+
+## ai-agent-console-block (registry:ui)
+- Install: `npx zerolight add ai-agent-console-block`
+- Registry JSON: https://bricks.zerorapid.in/r/ai-agent-console-block.json
+- Exports: AIAgentConsoleBlock
+```ts
+export interface AIAgentConsoleBlockProps {
+  title?: string;
+  subtitle?: string;
   className?: string;
 }
 ```
@@ -2003,6 +2146,48 @@ export interface DashboardTemplateProps {
     headerRight?: React.ReactNode;
     footerAction?: React.ReactNode;
   };
+  className?: string;
+}
+```
+
+## layout-grammar (registry:ui)
+- Install: `npx zerolight add layout-grammar`
+- Registry JSON: https://bricks.zerorapid.in/r/layout-grammar.json
+- Exports: Page, Section, MetricGrid, Split, Panel
+```ts
+export interface PageProps {
+  density?: SpatialDensity;
+  maxWidth?: "6xl" | "7xl" | "full";
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface SectionProps {
+  title?: string;
+  subtitle?: string;
+  density?: SpatialDensity;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface MetricGridProps {
+  columns?: 2 | 3 | 4;
+  density?: SpatialDensity;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface SplitProps {
+  ratio?: "1:1" | "2:1" | "3:1" | "8:4";
+  density?: SpatialDensity;
+  left: React.ReactNode;
+  right: React.ReactNode;
+  className?: string;
+}
+
+export interface PanelProps {
+  density?: SpatialDensity;
+  children: React.ReactNode;
   className?: string;
 }
 ```

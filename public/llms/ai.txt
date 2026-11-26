@@ -1,4 +1,4 @@
-# ZeroLight Design System — AI Reference (6 items)
+# ZeroLight Design System — AI Reference (7 items)
 
 ## message-status (registry:ui)
 - Install: `npx zerolight add message-status`
@@ -55,6 +55,21 @@ export interface ChatInputProps {
   onSend: (message: string) => void;
   onAttach?: () => void;
   disabled?: boolean;
+  className?: string;
+}
+```
+
+## streaming-message (registry:ui)
+- Install: `npx zerolight add streaming-message`
+- Registry: https://bricks.zerorapid.in/r/streaming-message.json
+```ts
+export interface StreamingMessageProps {
+  content: string;
+  isStreaming?: boolean;
+  modelName?: string;
+  citations?: StreamingCitation[];
+  timestamp?: string;
+  onCopy?: () => void;
   className?: string;
 }
 ```
