@@ -114,7 +114,7 @@ export function SaaSTokensLibrary() {
             </span>
           </div>
           <p className="text-xs text-zinc-500">
-            All real ZeroLight atoms below update immediately whenever tokens change in Visual Studio Dock.
+            All real ZeroLight atoms below bind directly to live <code className="font-mono text-[11px]">useZeroLight()</code> context tokens.
           </p>
         </div>
 

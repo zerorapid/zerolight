@@ -7,6 +7,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 
+function readDashboardSource() {
+  const dir = path.join(rootDir, "src/components/zerolight/dashboard");
+  return [
+    "dashboard-shell.tsx",
+    "overview-tab.tsx",
+    "design-system-tab.tsx",
+    "settings-tab.tsx",
+  ]
+    .map((f) => fs.readFileSync(path.join(dir, f), "utf8"))
+    .join("\n");
+}
+
 console.log("==================================================");
 console.log("  ZEROLIGHT DESIGN SYSTEM AUTOMATED TEST SUITE    ");
 console.log("==================================================\n");
@@ -1120,15 +1132,15 @@ test("Enterprise Authentication Gate and Floating Sidebar Dashboard Shell exist 
   assert.ok(signInContent.includes("Password"), "SignInCard must have password field with toggle");
   assert.ok(signInContent.includes("<Kbd"), "SignInCard must include Kbd keyboard shortcut accelerator");
 
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("Overview"), "DashboardShell must have Overview view");
   assert.ok(dashboardContent.includes("TOTAL COMPONENTS ADDED"), "DashboardShell Overview must feature total components metric");
   assert.ok(dashboardContent.includes("TOTAL SAAS TEMPLATES"), "DashboardShell Overview must feature total SaaS templates metric");
   assert.ok(dashboardContent.includes("TOTAL NICHES COVERED"), "DashboardShell Overview must feature total niches metric");
   assert.ok(dashboardContent.includes("TOTAL CLIENTS SERVED"), "DashboardShell Overview must feature total clients metric");
   assert.ok(dashboardContent.includes("Frequently Asked Questions & Architecture"), "DashboardShell Overview must feature FAQ section");
-  assert.ok(dashboardContent.includes("Vector Map Studio & Asset Downloader"), "DashboardShell Overview must feature Tools preview card");
-  assert.ok(dashboardContent.includes("Visual Studio Dock"), "DashboardShell must have DS Editor trigger");
+  assert.ok(!dashboardContent.includes("Vector Map Studio & Asset Downloader"), "DashboardShell Overview must not feature removed Tools preview");
+  assert.ok(!dashboardContent.includes("Visual Studio Dock"), "DashboardShell must not reference removed Visual Studio Dock");
   assert.ok(dashboardContent.includes("Design System"), "DashboardShell must have Design System Docs view");
   assert.ok(!dashboardContent.includes('label: "Tools"'), "DashboardShell must not expose removed Tools label");
   assert.ok(dashboardContent.includes("Settings & MCP"), "DashboardShell must have Settings view with MCP status");
@@ -1174,7 +1186,7 @@ test("WorldAtlasMap: 2D flat canvas, 6 customizable render styles, floating cont
   const zlIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
   assert.ok(zlIndex.includes("WorldAtlasMap"), "src/components/zerolight/index.ts must export WorldAtlasMap");
 
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(!dashboardContent.includes("<WorldAtlasMap"), "DashboardShell must not integrate removed WorldAtlasMap tool");
 });
 
@@ -1208,7 +1220,7 @@ test("ZeroLightDocsPortal: Visual Foundations, UI Components, Brand Assets & Zer
   const zlIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
   assert.ok(zlIndex.includes("zerolight-docs-portal"), "src/components/zerolight/index.ts must export ZeroLightDocsPortal");
 
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("<ZeroLightDocsPortal"), "DashboardShell must integrate ZeroLightDocsPortal for docs tab");
   assert.ok(!dashboardContent.includes("Vector Map Studio & Asset Generator"), "DashboardShell must not feature Map Studio tool");
 });
@@ -1388,7 +1400,7 @@ test("SaaS Input Field Library: 44 interactive variants, 10 categories, zero nat
   const rootIndex = fs.readFileSync(path.join(rootDir, "src/components/zerolight/index.ts"), "utf8");
   assert.ok(rootIndex.includes("./libraries"), "src/components/zerolight/index.ts must export libraries");
 
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSButtonLibrary") && dashboardContent.includes("SaaSInputFieldLibrary"), "DashboardShell must integrate Button & Input libraries");
   assert.ok(dashboardContent.includes("sidebar-sub-pip"), "DashboardShell must implement kinetic sub-pip for sidebar submenus");
 });
@@ -1430,7 +1442,7 @@ test("SaaS Selection Controls Library: 26 interactive variants across 6 categori
   assert.ok(selContent.includes("CustomSwitch"), "must use custom switches (zero native controls)");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSSelectionLibrary"), "DashboardShell must integrate SaaSSelectionLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 249 SaaS pattern variants active badge");
 });
@@ -1480,7 +1492,7 @@ test("SaaS Status & Indicator Library: 28 interactive variants across 6 categori
   assert.ok(libIdx.includes('export * from "./indicator-library";'), "libraries/index.ts must export indicator-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSIndicatorLibrary"), "DashboardShell must integrate SaaSIndicatorLibrary");
   assert.ok(dashboardContent.includes("docsSubView === \"indicators\""), "DashboardShell must render SaaSIndicatorLibrary on indicators tab");
 });
@@ -1540,7 +1552,7 @@ test("SaaS Divider & Spacer Library: 22 interactive variants across 6 categories
   assert.ok(libIdx.includes('export * from "./divider-library";'), "libraries/index.ts must export divider-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSDividerLibrary"), "DashboardShell must integrate SaaSDividerLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 249 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"dividers\""), "DashboardShell must render SaaSDividerLibrary on dividers tab");
@@ -1614,7 +1626,7 @@ test("SaaS Tooltip & Popover Library: 22 interactive variants across 6 categorie
   assert.ok(libIdx.includes('export * from "./tooltip-library";'), "libraries/index.ts must export tooltip-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSTooltipLibrary"), "DashboardShell must integrate SaaSTooltipLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 249 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"tooltips\""), "DashboardShell must render SaaSTooltipLibrary on tooltips tab");
@@ -1678,7 +1690,7 @@ test("SaaS Feedback, Alerts & Empty States: 20 interactive variants across 5 cat
   assert.ok(libIdx.includes('export * from "./feedback-library";'), "libraries/index.ts must export feedback-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSFeedbackLibrary"), "DashboardShell must integrate SaaSFeedbackLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 249 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"feedback\""), "DashboardShell must render SaaSFeedbackLibrary on feedback tab");
@@ -1746,7 +1758,7 @@ test("Suite 35: SaaS Overlays, Modals, Drawers & ⌘K Command Palette (16 Varian
   assert.ok(libIdx.includes('export * from "./overlays-library";'), "libraries/index.ts must export overlays-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSOverlaysLibrary"), "DashboardShell must integrate SaaSOverlaysLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 249 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"overlays\""), "DashboardShell must render SaaSOverlaysLibrary on overlays tab");
@@ -1820,7 +1832,7 @@ test("Suite 36: SaaS Navigation, Breadcrumbs, Tabs, Steppers & Sidebars (20 Vari
   assert.ok(libIdx.includes('export * from "./navigation-library";'), "libraries/index.ts must export navigation-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSNavigationLibrary"), "DashboardShell must integrate SaaSNavigationLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 249 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"navigation\""), "DashboardShell must render SaaSNavigationLibrary on navigation tab");
@@ -1891,7 +1903,7 @@ test("Suite 37: SaaS Data, Tables, Filters & Kanban (18 Variants)", () => {
   assert.ok(libIdx.includes('export * from "./data-library";'), "libraries/index.ts must export data-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSDataLibrary"), "DashboardShell must integrate SaaSDataLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 265 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"data\""), "DashboardShell must render SaaSDataLibrary on data tab");
@@ -1962,7 +1974,7 @@ test("Suite 38: SaaS Business, Billing & Analytics Modules (16 Modules)", () => 
   assert.ok(libIdx.includes('export * from "./business-library";'), "libraries/index.ts must export business-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSBusinessLibrary"), "DashboardShell must integrate SaaSBusinessLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 277 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"business\""), "DashboardShell must render SaaSBusinessLibrary on business tab");
@@ -2028,7 +2040,7 @@ test("Suite 39: SaaS Page Skeletons & Layout Blueprints (12 Templates)", () => {
   assert.ok(libIdx.includes('export * from "./layout-library";'), "libraries/index.ts must export layout-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSLayoutLibrary"), "DashboardShell must integrate SaaSLayoutLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 283 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"layouts\""), "DashboardShell must render SaaSLayoutLibrary on layouts tab");
@@ -2089,7 +2101,7 @@ test("Suite 40: SaaS Complete Interactive Multi-Page Application (6 Full Pages)"
   assert.ok(libIdx.includes('export * from "./app-screens-library";'), "libraries/index.ts must export app-screens-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSAppScreensLibrary"), "DashboardShell must integrate SaaSAppScreensLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 283 active variants badge");
   assert.ok(dashboardContent.includes("docsSubView === \"screens\""), "DashboardShell must render SaaSAppScreensLibrary on screens tab");
@@ -2150,7 +2162,7 @@ test("SaaS Smart Hierarchy, Layout & Edge Cases: 12 interactive patterns, spring
   assert.ok(libIdx.includes('export * from "./edge-cases-library";'), "libraries/index.ts must export edge-cases-library");
 
   // Dashboard integration
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes("SaaSEdgeCasesLibrary"), "DashboardShell must integrate SaaSEdgeCasesLibrary");
   assert.ok(dashboardContent.includes("295 SaaS Pattern Variants Active"), "DashboardShell must synchronize 295 active variants badge");
   assert.ok(dashboardContent.includes('docsSubView === "edge-cases"'), 'DashboardShell must render SaaSEdgeCasesLibrary on edge-cases tab');
@@ -2162,7 +2174,7 @@ test("SaaS Smart Hierarchy, Layout & Edge Cases: 12 interactive patterns, spring
 console.log("\n=== Suite 42: 6-Tier Atomic Architecture & Icon Hardening Verification ===");
 
 test("Atomic Hierarchy: 6 clean sidebar tiers (Foundations, Atoms, Molecules, Organisms, Templates, Pages) with contextual tabs", () => {
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   
   // Verify 6 Tiers definition
   assert.ok(dashboardContent.includes('id: "foundations"'), "must define Foundations tier");
@@ -2274,7 +2286,7 @@ test("Stageshow Primitives: ProductWindow, ChoreographedCursor, HeroShowcase & B
 console.log("\n=== Suite 45: Unified Tools Directory, Morphic Evolution & shadcn r/ Registry ===");
 
 test("Single Component Platform, Employee Password Gate, Morphic Evolution & shadcn r/ Registry", () => {
-  const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
+  const dashboardContent = readDashboardSource();
   assert.ok(dashboardContent.includes('useState<DashboardTab>("docs")'), "DashboardShell must open directly into the Design System Component Catalog");
   assert.ok(!dashboardContent.includes("toolsMenuExpanded") && !dashboardContent.includes("GenUIStudioTool"), "Sidebar must have no Tools submenu and GenUIStudioTool must be removed");
   assert.ok(!dashboardContent.includes("<ZeroFlashTool") && !dashboardContent.includes("<ZeroAuditorTool") && !dashboardContent.includes("<TokenStudioSidebar"), "Tools studios must be cleanly removed from DashboardShell");
