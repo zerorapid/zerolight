@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Code2, Copy, Check } from "lucide-react";
 import { useZeroLight } from "../../context";
+import { MorphicScope, type MorphicStage } from "../../morphic-engine";
 import type { ScaledTokens, ZeroLightTokens } from "../../types";
 
 /** Canonical token-bound surface style for showcase cards across all 15 libraries. */
@@ -50,8 +51,6 @@ export interface VariantCardProps {
   /** Optional registry slug for `npx zerolight add <slug>` */
   cliName?: string;
 }
-
-type MorphicStage = "M1" | "M2" | "M3";
 
 const MORPHIC_STYLES: Record<MorphicStage, { padding: string; bg: string; label: string }> = {
   M1: { padding: "p-3", bg: "bg-zinc-50/50", label: "Compact" },
@@ -168,7 +167,7 @@ export function VariantCard({
           style={{ borderRadius: `${scaled.scaledRadius}px` }}
           className={`w-full flex items-center justify-center border border-zinc-200/60 relative transition-all ${MORPHIC_STYLES[morphicStage].padding} ${MORPHIC_STYLES[morphicStage].bg} ${minHeight}`}
         >
-          {children}
+          <MorphicScope stage={morphicStage}>{children}</MorphicScope>
         </div>
       </div>
 

@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useZeroLight } from "../context";
+import { MorphicScope, type MorphicStage } from "../morphic-engine";
 import { LibraryHeader, LibrarySegmentControl, CodeModal, getZeroLightCardStyle } from "./common";
 import { InventoryStockHealth } from "../molecules/inventory-stock-health";
 import { ApprovalWorkflow } from "../organisms/approval-workflow";
@@ -31,6 +32,7 @@ export function SaaSBusinessLibrary() {
   const [searchQuery, setSearchQuery] = useState("");
   const [density, setDensity] = useState<BusinessDensity>("medium");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [erpMorphicStage, setErpMorphicStage] = useState<MorphicStage>("M2");
 
   // Code Modal State
   const [activeCodeModal, setActiveCodeModal] = useState<{ title: string; code: string } | null>(null);
@@ -1684,15 +1686,33 @@ export function WorkspaceSwitchCard() {
 
         {/* ── 5. ERP & OPERATIONS MODULES ── */}
         <section className="space-y-4">
-          <div>
-            <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
-              5. ERP &amp; Operations Modules
-            </h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-              Procurement three-way matching, double-entry GL balancing, approval chains, PO line-item matrices, and warehouse stock health.
-            </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
+                5. ERP &amp; Operations Modules
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                Procurement three-way matching, double-entry GL balancing, approval chains, PO line-item matrices, and warehouse stock health.
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-zinc-100 border border-zinc-200/80 text-xs">
+              <span className="px-2 text-[11px] font-semibold text-zinc-500">Morphic Stage:</span>
+              {(["M1", "M2", "M3"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setErpMorphicStage(s)}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition cursor-pointer ${
+                    erpMorphicStage === s ? "bg-white text-zinc-950 shadow-2xs" : "text-zinc-500 hover:text-zinc-900"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
           </div>
 
+          <MorphicScope stage={erpMorphicStage}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ApprovalWorkflow
               documentId="PO-2026-0891"
@@ -1745,6 +1765,7 @@ export function WorkspaceSwitchCard() {
               ]}
             />
           </div>
+          </MorphicScope>
         </section>
       </div>
 

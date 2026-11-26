@@ -1,5 +1,6 @@
 export * from "./types";
 export * from "./context";
+export * from "./morphic-engine";
 export * from "./atoms";
 export * from "./molecules";
 export * from "./organisms";

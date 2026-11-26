@@ -2,11 +2,13 @@
 
 import React from "react";
 import { useZeroLight } from "../context";
+import { useMorphic, type MorphicStage } from "../morphic-engine";
 
 export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
   error?: boolean;
+  stage?: MorphicStage;
 }
 
 export function Input({
@@ -14,11 +16,16 @@ export function Input({
   iconRight,
   error = false,
   disabled,
+  stage,
   className = "",
   style,
   ...props
 }: InputProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(stage);
+  const morphicHeight = Math.round(
+    scaled.scaledHeight * (m.isM1 ? 0.88 : m.isM3 ? 1.06 : 1.0)
+  );
 
   const renderIcon = (node: React.ReactNode) => {
     if (!node || !React.isValidElement(node)) return node;
@@ -38,7 +45,7 @@ export function Input({
         borderColor: error ? "#F43F5E" : tokens.universalBorderColor,
         borderWidth: `${tokens.borderWidth}px`,
         backgroundColor: scaled.effectiveInputFill,
-        height: `${scaled.scaledHeight}px`,
+        height: `${morphicHeight}px`,
         transition: scaled.transitionStyle,
       }}
       className={`flex items-center gap-2 border px-3 transition-colors ${

@@ -2313,7 +2313,7 @@ test("Single Component Platform, Employee Password Gate, Morphic Evolution & sha
 
   // Runtime Morphic Evolution (Stages 1-3)
   const statCardSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/molecules/stat-card.tsx"), "utf8");
-  assert.ok(statCardSrc.includes("export type MorphicStage = 1 | 2 | 3") && statCardSrc.includes("data-zl-morphic-stage"), "StatCard must implement MorphicStage 1-3 runtime morphing");
+  assert.ok(statCardSrc.includes("export type StatCardStage") && statCardSrc.includes("data-zl-morphic-stage"), "StatCard must implement MorphicStage 1-3 runtime morphing");
 
   const genUiSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/gen-ui/gen-ui-renderer.tsx"), "utf8");
   assert.ok(genUiSrc.includes("morphicStageOverride"), "ZeroLightGenUIRenderer must accept morphicStageOverride for runtime morphing");
@@ -2326,6 +2326,41 @@ test("Single Component Platform, Employee Password Gate, Morphic Evolution & sha
   const nextConfigSrc = fs.readFileSync(path.join(rootDir, "next.config.mjs"), "utf8");
   assert.ok(nextConfigSrc.includes("/r/:path*") && nextConfigSrc.includes("Access-Control-Allow-Origin"), "next.config.mjs must allow CORS on public registry payloads");
   assert.ok(fs.existsSync(path.join(rootDir, "src/app/robots.ts")) && fs.existsSync(path.join(rootDir, "src/app/sitemap.ts")), "robots.ts and sitemap.ts must exist for SEO indexing");
+});
+
+console.log("\n=== Suite 46: Mathematical Morphic Evolution Engine & ERP Modules ===");
+
+test("Morphic Evolution Engine implements 6 equations and drives ERP & core components", () => {
+  const engineSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/morphic-engine.tsx"), "utf8");
+  for (const sym of [
+    "quinticSmoothstep",
+    "modularScale",
+    "GOLDEN_RATIO",
+    "hickHymanLatencyMs",
+    "shannonEntropyBits",
+    "computeDampedSpring",
+    "interpolateOklch",
+    "exponentialElevation",
+    "MorphicScope",
+    "MorphicSlot",
+    "useMorphic",
+  ]) {
+    assert.ok(engineSrc.includes(sym), `morphic-engine.tsx must export ${sym}`);
+  }
+
+  for (const file of [
+    "src/components/zerolight/molecules/inventory-stock-health.tsx",
+    "src/components/zerolight/organisms/approval-workflow.tsx",
+    "src/components/zerolight/organisms/three-way-match.tsx",
+    "src/components/zerolight/organisms/ledger-balancer.tsx",
+    "src/components/zerolight/organisms/line-item-matrix.tsx",
+    "src/components/zerolight/atoms/button.tsx",
+    "src/components/zerolight/atoms/input.tsx",
+    "src/components/zerolight/atoms/card.tsx",
+  ]) {
+    const src = fs.readFileSync(path.join(rootDir, file), "utf8");
+    assert.ok(src.includes("useMorphic"), `${file} must consume useMorphic()`);
+  }
 });
 
 console.log("\n==================================================");

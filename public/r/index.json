@@ -44,6 +44,7 @@
         "docs-studio",
         "gen-ui-renderer",
         "libraries",
+        "morphic-engine",
         "sign-in-card",
         "types",
         "zerolight-docs-portal"
@@ -161,7 +162,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -189,7 +191,8 @@
       "title": "Card",
       "dependencies": [],
       "registryDependencies": [
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -315,7 +318,8 @@
       "title": "Input",
       "dependencies": [],
       "registryDependencies": [
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -1143,7 +1147,8 @@
       "registryDependencies": [
         "badge",
         "button",
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -1349,7 +1354,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -1535,7 +1541,8 @@
       "registryDependencies": [
         "badge",
         "button",
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -1753,7 +1760,8 @@
       "registryDependencies": [
         "badge",
         "button",
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -1771,7 +1779,8 @@
       ],
       "registryDependencies": [
         "button",
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {
@@ -1896,7 +1905,8 @@
       ],
       "registryDependencies": [
         "badge",
-        "context"
+        "context",
+        "morphic-engine"
       ],
       "files": [
         {

@@ -2,9 +2,10 @@
 
 import React from "react";
 import { useZeroLight } from "../context";
+import { useMorphic, type MorphicStage as EngineMorphicStage } from "../morphic-engine";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
-export type MorphicStage = 1 | 2 | 3;
+export type StatCardStage = 1 | 2 | 3 | EngineMorphicStage;
 
 export interface StatCardProps {
   label: string;
@@ -14,8 +15,8 @@ export interface StatCardProps {
   comparisonText?: string;
   subValue?: string;
   layout?: "vertical" | "horizontal";
-  /** Scalar Morphic Evolution stage: 1 = Compact Atom, 2 = Standard Analytical, 3 = Command Capsule */
-  stage?: MorphicStage;
+  /** Scalar Morphic Evolution stage: 1/M1 = Compact Atom, 2/M2 = Standard Analytical, 3/M3 = Command Capsule */
+  stage?: StatCardStage;
   timeframeLabel?: string;
   minorDecimal?: boolean;
   deltaPill?: React.ReactNode;
@@ -46,7 +47,7 @@ export function StatCard({
   comparisonText = "vs last month",
   subValue,
   layout = "vertical",
-  stage = 2,
+  stage: stageProp,
   timeframeLabel,
   minorDecimal = false,
   deltaPill,
@@ -56,6 +57,19 @@ export function StatCard({
   className = "",
 }: StatCardProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(typeof stageProp === "string" ? stageProp : undefined);
+  const stage: 1 | 2 | 3 =
+    stageProp === 1 || stageProp === "M1"
+      ? 1
+      : stageProp === 3 || stageProp === "M3"
+      ? 3
+      : stageProp === 2 || stageProp === "M2"
+      ? 2
+      : m.isM1
+      ? 1
+      : m.isM3
+      ? 3
+      : 2;
 
   if (stage === 1) {
     return (

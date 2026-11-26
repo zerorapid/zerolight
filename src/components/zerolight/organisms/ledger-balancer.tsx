@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Lock, Scale, CheckCircle2, AlertCircle } from "lucide-react";
 import { useZeroLight } from "../context";
+import { useMorphic, MorphicSlot, type MorphicStage } from "../morphic-engine";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
@@ -21,6 +22,7 @@ export interface LedgerBalancerProps {
   currency?: string;
   initialLines: JournalLine[];
   onPostJournal?: (lines: JournalLine[]) => void;
+  stage?: MorphicStage;
   className?: string;
 }
 
@@ -35,9 +37,11 @@ export function LedgerBalancer({
   currency = "₹",
   initialLines,
   onPostJournal,
+  stage,
   className = "",
 }: LedgerBalancerProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(stage);
   const [lines, setLines] = useState<JournalLine[]>(initialLines);
 
   const totalDebit = lines.reduce((sum, l) => sum + (Number(l.debit) || 0), 0);
@@ -52,6 +56,7 @@ export function LedgerBalancer({
 
   return (
     <div
+      data-morphic-stage={m.stage}
       style={{
         backgroundColor: tokens.universalFillColor,
         borderColor: tokens.universalBorderColor,
@@ -59,21 +64,23 @@ export function LedgerBalancer({
         borderStyle: "solid",
         borderRadius: `${scaled.scaledCardRadius}px`,
         color: tokens.textIconColor,
-        boxShadow: scaled.cardShadow,
+        boxShadow: m.isM1 ? "none" : scaled.cardShadow,
       }}
       className={`overflow-hidden ${className}`}
     >
       <div
         style={{ borderColor: tokens.universalBorderColor }}
-        className="p-4 border-b flex flex-wrap items-center justify-between gap-3"
+        className={`${m.isM1 ? "p-3" : "p-4"} border-b flex flex-wrap items-center justify-between gap-3`}
       >
         <div className="flex items-center gap-2">
           <Scale className="w-4 h-4 opacity-70" />
           <div>
             <h3 className="text-xs font-bold tracking-tight">General Ledger Journal Entry</h3>
-            <p className="text-[11px] opacity-65 font-sans tabular-nums">
-              {journalId} &bull; {fiscalPeriod}
-            </p>
+            <MorphicSlot minStage="M2" stage={stage}>
+              <p className="text-[11px] opacity-65 font-sans tabular-nums">
+                {journalId} &bull; {fiscalPeriod}
+              </p>
+            </MorphicSlot>
           </div>
         </div>
 

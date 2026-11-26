@@ -3,6 +3,7 @@
 import React from "react";
 import { AlertTriangle, CheckCircle2, FileCheck2 } from "lucide-react";
 import { useZeroLight } from "../context";
+import { useMorphic, MorphicSlot, type MorphicStage } from "../morphic-engine";
 import { Badge } from "../atoms/badge";
 
 export interface ThreeWayMatchLine {
@@ -21,6 +22,7 @@ export interface ThreeWayMatchProps {
   invoiceNumber: string;
   currency?: string;
   lines: ThreeWayMatchLine[];
+  stage?: MorphicStage;
   className?: string;
 }
 
@@ -34,9 +36,11 @@ export function ThreeWayMatch({
   invoiceNumber,
   currency = "₹",
   lines,
+  stage,
   className = "",
 }: ThreeWayMatchProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(stage);
 
   const evaluated = lines.map((line) => {
     const qtyMismatch = line.poQty !== line.grnQty || line.grnQty !== line.invoiceQty;
@@ -49,6 +53,7 @@ export function ThreeWayMatch({
 
   return (
     <div
+      data-morphic-stage={m.stage}
       style={{
         backgroundColor: tokens.universalFillColor,
         borderColor: tokens.universalBorderColor,
@@ -56,21 +61,23 @@ export function ThreeWayMatch({
         borderStyle: "solid",
         borderRadius: `${scaled.scaledCardRadius}px`,
         color: tokens.textIconColor,
-        boxShadow: scaled.cardShadow,
+        boxShadow: m.isM1 ? "none" : scaled.cardShadow,
       }}
       className={`overflow-hidden ${className}`}
     >
       <div
         style={{ borderColor: tokens.universalBorderColor }}
-        className="p-4 border-b flex flex-wrap items-center justify-between gap-3"
+        className={`${m.isM1 ? "p-3" : "p-4"} border-b flex flex-wrap items-center justify-between gap-3`}
       >
         <div className="flex items-center gap-2">
           <FileCheck2 className="w-4 h-4 opacity-70" />
           <div>
             <h3 className="text-xs font-bold tracking-tight">Three-Way Procurement Match</h3>
-            <p className="text-[11px] opacity-65 font-sans tabular-nums">
-              {poNumber} &bull; {grnNumber} &bull; {invoiceNumber}
-            </p>
+            <MorphicSlot minStage="M2" stage={stage}>
+              <p className="text-[11px] opacity-65 font-sans tabular-nums">
+                {poNumber} &bull; {grnNumber} &bull; {invoiceNumber}
+              </p>
+            </MorphicSlot>
           </div>
         </div>
 
@@ -79,7 +86,8 @@ export function ThreeWayMatch({
         </Badge>
       </div>
 
-      <div className="overflow-x-auto">
+      <MorphicSlot minStage="M2" stage={stage}>
+        <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr
@@ -130,7 +138,8 @@ export function ThreeWayMatch({
             ))}
           </tbody>
         </table>
-      </div>
+        </div>
+      </MorphicSlot>
     </div>
   );
 }

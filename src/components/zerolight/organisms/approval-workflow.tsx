@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { CheckCircle2, Clock, XCircle, Send, UserCheck } from "lucide-react";
 import { useZeroLight } from "../context";
+import { useMorphic, MorphicSlot, type MorphicStage } from "../morphic-engine";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 
@@ -24,6 +25,7 @@ export interface ApprovalWorkflowProps {
   onApprove?: (comment: string) => void;
   onReject?: (reason: string) => void;
   onDelegate?: () => void;
+  stage?: MorphicStage;
   className?: string;
 }
 
@@ -41,9 +43,11 @@ export function ApprovalWorkflow({
   onApprove,
   onReject,
   onDelegate,
+  stage,
   className = "",
 }: ApprovalWorkflowProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(stage);
   const [steps, setSteps] = useState<ApprovalStep[]>(initialSteps);
   const [reason, setReason] = useState("");
   const [showRejectInput, setShowRejectInput] = useState(false);
@@ -80,6 +84,7 @@ export function ApprovalWorkflow({
 
   return (
     <div
+      data-morphic-stage={m.stage}
       style={{
         backgroundColor: tokens.universalFillColor,
         borderColor: tokens.universalBorderColor,
@@ -87,9 +92,9 @@ export function ApprovalWorkflow({
         borderStyle: "solid",
         borderRadius: `${scaled.scaledCardRadius}px`,
         color: tokens.textIconColor,
-        boxShadow: scaled.cardShadow,
+        boxShadow: m.isM1 ? "none" : scaled.cardShadow,
       }}
-      className={`p-5 space-y-4 ${className}`}
+      className={`${m.padClass} space-y-4 ${className}`}
     >
       <div className="flex flex-wrap items-start justify-between gap-3 pb-3 border-b" style={{ borderColor: tokens.universalBorderColor }}>
         <div className="space-y-0.5">
@@ -100,61 +105,69 @@ export function ApprovalWorkflow({
             </Badge>
           </div>
           <h3 className="text-sm font-bold tracking-tight">{title}</h3>
-          <p className="text-xs opacity-65">Requested by {requester}</p>
+          <MorphicSlot minStage="M2" stage={stage}>
+            <p className="text-xs opacity-65">Requested by {requester}</p>
+          </MorphicSlot>
         </div>
 
         <div className="text-right font-sans tabular-nums">
           <div className="text-base font-extrabold">{amountLabel}</div>
-          <div className="text-[11px] opacity-65">{budgetImpact}</div>
+          <MorphicSlot minStage="M3" stage={stage}>
+            <div className="text-[11px] opacity-65">{budgetImpact}</div>
+          </MorphicSlot>
         </div>
       </div>
 
-      {/* Approval Chain */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-        {steps.map((step) => {
-          const Icon =
-            step.status === "approved"
-              ? CheckCircle2
-              : step.status === "rejected"
-              ? XCircle
-              : step.status === "pending"
-              ? Clock
-              : UserCheck;
-          const iconColor =
-            step.status === "approved"
-              ? "#10B981"
-              : step.status === "rejected"
-              ? "#EF4444"
-              : step.status === "pending"
-              ? "#F59E0B"
-              : undefined;
+      {/* Approval Chain (M2+) */}
+      <MorphicSlot minStage="M2" stage={stage}>
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+          {steps.map((step) => {
+            const Icon =
+              step.status === "approved"
+                ? CheckCircle2
+                : step.status === "rejected"
+                ? XCircle
+                : step.status === "pending"
+                ? Clock
+                : UserCheck;
+            const iconColor =
+              step.status === "approved"
+                ? "#10B981"
+                : step.status === "rejected"
+                ? "#EF4444"
+                : step.status === "pending"
+                ? "#F59E0B"
+                : undefined;
 
-          return (
-            <div
-              key={step.id}
-              style={{
-                backgroundColor: tokens.hoverBackplateTint,
-                borderRadius: `${scaled.scaledRadius}px`,
-                borderColor: tokens.universalBorderColor,
-                borderWidth: `${tokens.borderWidth}px`,
-                borderStyle: "solid",
-              }}
-              className="p-3 space-y-1"
-            >
-              <div className="flex items-center justify-between gap-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider opacity-60 truncate">
-                  {step.role}
-                </span>
-                <Icon className="w-3.5 h-3.5 shrink-0" style={iconColor ? { color: iconColor } : { opacity: 0.45 }} />
+            return (
+              <div
+                key={step.id}
+                style={{
+                  backgroundColor: tokens.hoverBackplateTint,
+                  borderRadius: `${scaled.scaledRadius}px`,
+                  borderColor: tokens.universalBorderColor,
+                  borderWidth: `${tokens.borderWidth}px`,
+                  borderStyle: "solid",
+                }}
+                className="p-3 space-y-1"
+              >
+                <div className="flex items-center justify-between gap-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider opacity-60 truncate">
+                    {step.role}
+                  </span>
+                  <Icon className="w-3.5 h-3.5 shrink-0" style={iconColor ? { color: iconColor } : { opacity: 0.45 }} />
+                </div>
+                <div className="text-xs font-semibold truncate">{step.approver}</div>
+                <MorphicSlot minStage="M3" stage={stage}>
+                  <div className="text-[10px] opacity-60 font-sans tabular-nums">
+                    {step.timestamp || step.status}
+                  </div>
+                </MorphicSlot>
               </div>
-              <div className="text-xs font-semibold truncate">{step.approver}</div>
-              <div className="text-[10px] opacity-60 font-sans tabular-nums">
-                {step.timestamp || step.status}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </MorphicSlot>
 
       {showRejectInput && (
         <div className="space-y-1.5">

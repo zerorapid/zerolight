@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useZeroLight } from "../context";
+import { useMorphic, type MorphicStage } from "../morphic-engine";
 import { Loader2 } from "lucide-react";
 import { motion, HTMLMotionProps } from "framer-motion";
 
@@ -15,6 +16,7 @@ export interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children">
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
   children?: React.ReactNode;
+  stage?: MorphicStage;
   className?: string;
 }
 
@@ -26,15 +28,18 @@ export function Button({
   iconRight,
   children,
   disabled,
+  stage,
   className = "",
   style,
   type = "button",
   ...props
 }: ButtonProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(stage);
   const isDisabled = Boolean(disabled || loading);
 
-  const sizeMultiplier = size === "sm" ? 0.85 : size === "lg" ? 1.15 : 1.0;
+  const morphicScale = m.isM1 ? 0.92 : m.isM3 ? 1.06 : 1.0;
+  const sizeMultiplier = (size === "sm" ? 0.85 : size === "lg" ? 1.15 : 1.0) * morphicScale;
   const height = Math.round(scaled.scaledHeight * sizeMultiplier);
   const paddingX = Math.round(scaled.scaledPaddingX * sizeMultiplier);
   const fontSize = Math.max(11, Math.round(scaled.ctaFontSize * (size === "sm" ? 0.9 : size === "lg" ? 1.1 : 1.0)));
@@ -116,7 +121,11 @@ export function Button({
       disabled={isDisabled}
       whileHover={{ scale: isDisabled ? 1 : scaled.motionConfig.hoverScale }}
       whileTap={{ scale: isDisabled ? 1 : scaled.motionConfig.tapScale }}
-      transition={scaled.motionConfig.transition}
+      transition={
+        scaled.motionConfig.transition.duration === 0
+          ? scaled.motionConfig.transition
+          : { type: "spring", stiffness: m.spring.stiffness, damping: m.spring.damping, mass: m.spring.mass }
+      }
       style={{
         borderRadius: `${scaled.scaledRadius}px`,
         borderWidth: `${variant === "ghost" ? 0 : Math.max(1, tokens.borderWidth)}px`,

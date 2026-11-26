@@ -2,10 +2,12 @@
 
 import React from "react";
 import { useZeroLight } from "../context";
+import { useMorphic, type MorphicStage } from "../morphic-engine";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "elevated" | "muted" | "interactive";
   padding?: "none" | "sm" | "md" | "lg";
+  stage?: MorphicStage;
 }
 
 const PADDING_MAP = {
@@ -21,22 +23,25 @@ const PADDING_MAP = {
 export function Card({
   variant = "default",
   padding = "md",
+  stage,
   className = "",
   style,
   children,
   ...props
 }: CardProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(stage);
 
   const backgroundColor =
     variant === "muted" ? tokens.hoverBackplateTint : tokens.universalFillColor;
 
-  const boxShadow =
-    variant === "elevated"
-      ? scaled.isDarkSurface
-        ? "0 12px 32px rgba(0, 0, 0, 0.45)"
-        : "0 10px 28px rgba(15, 23, 42, 0.08)"
-      : scaled.cardShadow;
+  const boxShadow = m.isM1
+    ? "none"
+    : variant === "elevated"
+    ? scaled.isDarkSurface
+      ? "0 12px 32px rgba(0, 0, 0, 0.45)"
+      : "0 10px 28px rgba(15, 23, 42, 0.08)"
+    : scaled.cardShadow;
 
   return (
     <div

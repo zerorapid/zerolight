@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Plus, Trash2, Receipt } from "lucide-react";
 import { useZeroLight } from "../context";
+import { useMorphic, MorphicSlot, type MorphicStage } from "../morphic-engine";
 import { Button } from "../atoms/button";
 
 export interface MatrixLineItem {
@@ -19,6 +20,7 @@ export interface LineItemMatrixProps {
   currency?: string;
   initialItems: MatrixLineItem[];
   onSave?: (items: MatrixLineItem[], grandTotal: number) => void;
+  stage?: MorphicStage;
   className?: string;
 }
 
@@ -31,9 +33,11 @@ export function LineItemMatrix({
   currency = "₹",
   initialItems,
   onSave,
+  stage,
   className = "",
 }: LineItemMatrixProps) {
   const { tokens, scaled } = useZeroLight();
+  const m = useMorphic(stage);
   const [items, setItems] = useState<MatrixLineItem[]>(initialItems);
 
   const updateItem = (id: string, field: "qty" | "unitPrice" | "taxPct", raw: string) => {
@@ -65,6 +69,7 @@ export function LineItemMatrix({
 
   return (
     <div
+      data-morphic-stage={m.stage}
       style={{
         backgroundColor: tokens.universalFillColor,
         borderColor: tokens.universalBorderColor,
@@ -72,21 +77,23 @@ export function LineItemMatrix({
         borderStyle: "solid",
         borderRadius: `${scaled.scaledCardRadius}px`,
         color: tokens.textIconColor,
-        boxShadow: scaled.cardShadow,
+        boxShadow: m.isM1 ? "none" : scaled.cardShadow,
       }}
       className={`overflow-hidden ${className}`}
     >
       <div
         style={{ borderColor: tokens.universalBorderColor }}
-        className="p-4 border-b flex items-center justify-between gap-3"
+        className={`${m.isM1 ? "p-3" : "p-4"} border-b flex items-center justify-between gap-3`}
       >
         <div className="flex items-center gap-2">
           <Receipt className="w-4 h-4 opacity-70" />
           <h3 className="text-xs font-bold tracking-tight">{title}</h3>
         </div>
-        <Button variant="outline" size="sm" iconLeft={<Plus className="w-3.5 h-3.5" />} onClick={addRow}>
-          Add Line
-        </Button>
+        <MorphicSlot minStage="M2" stage={stage}>
+          <Button variant="outline" size="sm" iconLeft={<Plus className="w-3.5 h-3.5" />} onClick={addRow}>
+            Add Line
+          </Button>
+        </MorphicSlot>
       </div>
 
       <div className="overflow-x-auto">
