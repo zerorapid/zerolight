@@ -2036,6 +2036,51 @@
       ]
     },
     {
+      "name": "simple-analytics-block",
+      "type": "registry:component",
+      "title": "Simple Analytics Block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "area-chart",
+        "badge",
+        "button",
+        "context",
+        "data-table",
+        "stat-card"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/templates/simple-analytics-block.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "supply-chain-desk-block",
+      "type": "registry:component",
+      "title": "Supply Chain Desk Block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "approval-workflow",
+        "area-chart",
+        "button",
+        "context",
+        "geo-breakdown",
+        "line-item-matrix",
+        "stat-card"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/templates/supply-chain-desk-block.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "ai-assistant-view",
       "type": "registry:component",
       "title": "Ai Assistant View",

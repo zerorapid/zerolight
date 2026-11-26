@@ -8,6 +8,7 @@ import { Button } from "../../atoms/button";
 export interface CodeModalData {
   title: string;
   code: string;
+  prompt?: string;
 }
 
 export interface CodeModalProps {
@@ -18,11 +19,21 @@ export interface CodeModalProps {
 export function CodeModal({ modal, onClose }: CodeModalProps) {
   const { tokens, scaled } = useZeroLight();
   const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<"code" | "prompt">("code");
 
   if (!modal) return null;
 
+  const generatedPrompt =
+    modal.prompt ||
+    `Use the ZeroLight Design System (https://bricks.zerorapid.in/llms-full.txt) to implement "${modal.title}".\n` +
+      `- Bind all surfaces, borders, radii, and motion to useZeroLight().\n` +
+      `- Do not hardcode hex colors or pixel radii.\n` +
+      `- Reference TSX:\n\`\`\`tsx\n${modal.code}\n\`\`\``;
+
+  const activeContent = tab === "code" ? modal.code : generatedPrompt;
+
   const handleCopy = () => {
-    navigator.clipboard?.writeText(modal.code);
+    navigator.clipboard?.writeText(activeContent);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -44,9 +55,29 @@ export function CodeModal({ modal, onClose }: CodeModalProps) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-xs" />
             <h4 className="text-xs font-bold text-zinc-900">{modal.title}</h4>
+            <div className="inline-flex items-center rounded-md border border-zinc-200 bg-zinc-50 p-0.5 text-[11px] font-semibold">
+              <button
+                type="button"
+                onClick={() => setTab("code")}
+                className={`px-2 py-0.5 rounded transition cursor-pointer ${
+                  tab === "code" ? "bg-white text-zinc-900 shadow-xs" : "text-zinc-500 hover:text-zinc-900"
+                }`}
+              >
+                Code
+              </button>
+              <button
+                type="button"
+                onClick={() => setTab("prompt")}
+                className={`px-2 py-0.5 rounded transition cursor-pointer ${
+                  tab === "prompt" ? "bg-white text-zinc-900 shadow-xs" : "text-zinc-500 hover:text-zinc-900"
+                }`}
+              >
+                AI Prompt
+              </button>
+            </div>
           </div>
           <button
             type="button"
@@ -57,21 +88,23 @@ export function CodeModal({ modal, onClose }: CodeModalProps) {
           </button>
         </div>
 
-        {/* Code Content */}
+        {/* Code / Prompt Content */}
         <div className="p-4 bg-zinc-950 text-emerald-400 font-sans tabular-nums text-xs overflow-x-auto max-h-[460px] no-scrollbar">
-          <pre className="font-mono text-xs leading-relaxed">{modal.code}</pre>
+          <pre className="font-mono text-xs leading-relaxed whitespace-pre-wrap">{activeContent}</pre>
         </div>
 
         {/* Footer */}
         <div className="flex items-center justify-between px-5 py-3 border-t border-zinc-100 bg-zinc-50">
-          <span className="text-[11px] text-zinc-500">ZeroLight Design System TSX Component</span>
+          <span className="text-[11px] text-zinc-500">
+            {tab === "code" ? "ZeroLight Design System TSX Component" : "Ready-to-paste AI Prompt (ChatGPT / Claude / Cursor)"}
+          </span>
           <Button
             variant="primary"
             size="sm"
             onClick={handleCopy}
             iconLeft={copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
           >
-            {copied ? "Copied!" : "Copy TSX Code"}
+            {copied ? "Copied!" : tab === "code" ? "Copy TSX Code" : "Copy AI Prompt"}
           </Button>
         </div>
       </div>

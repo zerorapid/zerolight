@@ -232,6 +232,21 @@ function main() {
     "",
     `> Generated automatically from source files (${indexItems.length} items). Public registry: https://bricks.zerorapid.in/r/index.json`,
     "",
+    "## AI Prompt-to-Tier Governance (Read Before Generating UI)",
+    "",
+    "Match the user's prompt to ONE complexity tier instead of blindly dumping heavy organisms:",
+    "",
+    "1. **Tier 1 — Simple Dashboard (`simple`)**: For prompts like 'simple dashboard', 'overview page', 'KPI tracker'.",
+    "   - Allowed: `StatCard` (max 4), `AreaChart` or `BarChart` (max 1), `DataTable` or `Card` (max 1), `Button`, `Badge`.",
+    "   - Forbidden: `GeoBreakdown`, `ApprovalWorkflow`, `LineItemMatrix`, `ThreeWayMatch`, `LedgerBalancer`.",
+    "2. **Tier 2 — Operational Console (`operational`)**: For prompts like 'inventory manager', 'billing portal', 'support desk'.",
+    "   - Allowed: Tier 1 + `InventoryStockHealth`, `BillingPortal`, `FilterBar`, `DetailDrawer`, `Modal`.",
+    "   - Rule: Max 2 primary workspaces visible at once; place secondary details inside `DetailDrawer` or `Modal`.",
+    "3. **Tier 3 — Enterprise Desk (`enterprise`)**: For prompts like 'supply chain & PO desk', '3-way invoice match ERP', 'multi-tenant RBAC'.",
+    "   - Allowed: Full organisms (`GeoBreakdown`, `LineItemMatrix`, `ApprovalWorkflow`, `LedgerBalancer`, `ThreeWayMatch`, `TenantKit`, `TeamPermissions`).",
+    "   - Layout Rules: `GeoBreakdown` MUST span `lg:col-span-8` or `lg:col-span-12` (never pair two competing regional cards side-by-side); use ISO country IDs (`US`, `GB`, `IN`, `DE`, `SG`) or `compactMode=\"auto\"` on `WorldMap`.",
+    "4. **Iconography (`lucide-react`)**: ZeroLight ships with `lucide-react`. Always pass crisp `lucide-react` icons into `StatCard` (`icon={<Package className=\"w-4 h-4\" />}`) and primary `Button`s (`iconLeft={<Plus className=\"w-3.5 h-3.5\" />}`) for instant visual hierarchy—never use raw `+` text or decorative emojis.",
+    "",
   ];
 
   for (const item of indexItems) {
@@ -261,10 +276,86 @@ function main() {
     "utf-8"
   );
 
+  // Generate concise /llms.txt router + domain-specific /llms/*.txt slices
+  const llmsDir = path.join(ROOT, "public", "llms");
+  fs.mkdirSync(llmsDir, { recursive: true });
+
+  const domainBuckets = {
+    core: [],
+    charts: [],
+    ai: [],
+    enterprise: [],
+    erp: [],
+    blocks: [],
+  };
+
+  for (const item of indexItems) {
+    const n = item.name.toLowerCase();
+    const itemJsonPath = path.join(REGISTRY_OUT_DIR, `${item.name}.json`);
+    const itemData = JSON.parse(fs.readFileSync(itemJsonPath, "utf-8"));
+    const tsxContent = (itemData.files && itemData.files[0] && itemData.files[0].content) || "";
+    const propsMatches = tsxContent.match(/export\s+interface\s+\w*Props[\s\S]*?\n\}/g) || [];
+    const entry = [
+      `## ${item.name} (${item.type})`,
+      `- Install: \`npx zerolight add ${item.name}\``,
+      `- Registry: https://bricks.zerorapid.in/r/${item.name}.json`,
+      ...(propsMatches.length > 0 ? ["```ts", propsMatches.join("\n\n"), "```"] : []),
+      "",
+    ].join("\n");
+
+    if (item.type === "registry:block" || n.endsWith("-block") || n.endsWith("-template") || n.endsWith("-view")) {
+      domainBuckets.blocks.push(entry);
+    } else if (/chart|sparkline|heatmap|gauge|world-map|geo-breakdown|stat-card/.test(n)) {
+      domainBuckets.charts.push(entry);
+    } else if (/chat|typing|message|gen-ui|ai-assistant/.test(n)) {
+      domainBuckets.ai.push(entry);
+    } else if (/ledger|three-way|line-item|approval|inventory-stock|donations/.test(n)) {
+      domainBuckets.erp.push(entry);
+    } else if (/billing|tenant|permission|audit|data-table|command-palette|sign-in/.test(n)) {
+      domainBuckets.enterprise.push(entry);
+    } else {
+      domainBuckets.core.push(entry);
+    }
+  }
+
+  for (const [bucket, entries] of Object.entries(domainBuckets)) {
+    fs.writeFileSync(
+      path.join(llmsDir, `${bucket}.txt`),
+      `# ZeroLight Design System — ${bucket.toUpperCase()} Reference (${entries.length} items)\n\n${entries.join("\n")}`,
+      "utf-8"
+    );
+  }
+
+  const llmsRouter = [
+    "# ZeroLight Design System",
+    "",
+    `> Source-installable React design system for SaaS, AI, and Enterprise apps (${indexItems.length} registry items).`,
+    "",
+    "## Default AI Workflow",
+    "1. Match user intent to a tier (`simple`, `operational`, `enterprise`).",
+    "2. Prefer an existing `block/...` or template before composing from scratch.",
+    "3. Bind all colors, radii, and motion to `useZeroLight()` tokens.",
+    "4. Use `lucide-react` icons on `StatCard` (`icon`) and primary `Button`s (`iconLeft`).",
+    "5. Use `tabular-nums` with `font-sans` for KPIs, currency, and counts.",
+    "",
+    "## Domain References",
+    `- Core UI (${domainBuckets.core.length}): https://bricks.zerorapid.in/llms/core.txt`,
+    `- Charts & Geo (${domainBuckets.charts.length}): https://bricks.zerorapid.in/llms/charts.txt`,
+    `- AI & Chat (${domainBuckets.ai.length}): https://bricks.zerorapid.in/llms/ai.txt`,
+    `- Enterprise SaaS (${domainBuckets.enterprise.length}): https://bricks.zerorapid.in/llms/enterprise.txt`,
+    `- ERP & Supply Chain (${domainBuckets.erp.length}): https://bricks.zerorapid.in/llms/erp.txt`,
+    `- Full-Page Blocks (${domainBuckets.blocks.length}): https://bricks.zerorapid.in/llms/blocks.txt`,
+    `- Complete Reference: https://bricks.zerorapid.in/llms-full.txt`,
+    `- Registry Index: https://bricks.zerorapid.in/r/index.json`,
+    "",
+  ].join("\n");
+
+  fs.writeFileSync(path.join(ROOT, "public", "llms.txt"), llmsRouter, "utf-8");
+
   console.log(
     `Built ZeroLight registry: ${indexItems.length} items (${Object.entries(tierCounts)
       .map(([k, v]) => `${k}=${v}`)
-      .join(", ")}) -> public/registry/, public/r/ & public/llms-full.txt`
+      .join(", ")}) -> public/registry/, public/r/, public/llms.txt & public/llms/*.txt`
   );
 }
 

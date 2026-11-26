@@ -14,8 +14,8 @@ export interface ExportRegistryModalProps {
   isOpen: boolean;
   onClose: () => void;
   tokens: ZeroLightTokens;
-  exportFormat: "tailwind" | "css" | "json" | "registry";
-  setExportFormat: (fmt: "tailwind" | "css" | "json" | "registry") => void;
+  exportFormat: "tailwind" | "css" | "json" | "preset" | "typeset" | "registry";
+  setExportFormat: (fmt: "tailwind" | "css" | "json" | "preset" | "typeset" | "registry") => void;
   isExportCopied: boolean;
   setIsExportCopied: (val: boolean) => void;
   registryItems: RegistryIndexItem[];
@@ -98,6 +98,8 @@ export function ExportRegistryModal({
               <div className="p-1 bg-[#121214] rounded-lg border border-[#27272A] flex flex-wrap items-center gap-1 text-xs">
                 {(
                   [
+                    { key: "preset", label: "CLI Preset" },
+                    { key: "typeset", label: "Typeset CSS" },
                     { key: "tailwind", label: "Tailwind CSS" },
                     { key: "css", label: "CSS Variables" },
                     { key: "json", label: "TypeScript / JSON" },

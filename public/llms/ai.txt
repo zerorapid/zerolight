@@ -1,0 +1,86 @@
+# ZeroLight Design System — AI Reference (6 items)
+
+## message-status (registry:ui)
+- Install: `npx zerolight add message-status`
+- Registry: https://bricks.zerorapid.in/r/message-status.json
+```ts
+export interface MessageStatusProps {
+  status: MessageStatusType;
+  size?: number;
+  className?: string;
+}
+```
+
+## typing-indicator (registry:ui)
+- Install: `npx zerolight add typing-indicator`
+- Registry: https://bricks.zerorapid.in/r/typing-indicator.json
+```ts
+export interface TypingIndicatorProps {
+  label?: string;
+  size?: "sm" | "md";
+  className?: string;
+}
+```
+
+## chat-bubble (registry:ui)
+- Install: `npx zerolight add chat-bubble`
+- Registry: https://bricks.zerorapid.in/r/chat-bubble.json
+```ts
+export interface ChatBubbleProps {
+  id?: string;
+  message: string;
+  sender: "user" | "peer" | "bot";
+  senderName?: string;
+  avatarSrc?: string;
+  avatarInitials?: string;
+  timestamp?: string;
+  status?: MessageStatusType;
+  attachment?: ChatAttachment;
+  reactions?: ChatReaction[];
+  onReact?: (emoji: string) => void;
+  onReply?: () => void;
+  onCopy?: () => void;
+  className?: string;
+}
+```
+
+## chat-input (registry:ui)
+- Install: `npx zerolight add chat-input`
+- Registry: https://bricks.zerorapid.in/r/chat-input.json
+```ts
+export interface ChatInputProps {
+  placeholder?: string;
+  value?: string;
+  onChange?: (val: string) => void;
+  onSend: (message: string) => void;
+  onAttach?: () => void;
+  disabled?: boolean;
+  className?: string;
+}
+```
+
+## chat-conversation (registry:ui)
+- Install: `npx zerolight add chat-conversation`
+- Registry: https://bricks.zerorapid.in/r/chat-conversation.json
+```ts
+export interface ChatConversationProps {
+  initialMessages?: Omit<ChatBubbleProps, "onReact" | "onReply" | "onCopy">[];
+  peerName?: string;
+  peerRole?: string;
+  peerAvatar?: string;
+  className?: string;
+}
+```
+
+## gen-ui-renderer (registry:ui)
+- Install: `npx zerolight add gen-ui-renderer`
+- Registry: https://bricks.zerorapid.in/r/gen-ui-renderer.json
+```ts
+export interface ZeroLightGenUIRendererProps {
+  spec: unknown;
+  morphicStageOverride?: 1 | 2 | 3;
+  onApprove?: (blockTitle: string) => void;
+  onReject?: (blockTitle: string) => void;
+  className?: string;
+}
+```

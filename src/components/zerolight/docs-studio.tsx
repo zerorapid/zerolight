@@ -485,7 +485,7 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
 
   // Token Export & Shadcn-style Component Registry modal state
   const [isExportOpen, setIsExportOpen] = useState<boolean>(false);
-  const [exportFormat, setExportFormat] = useState<"tailwind" | "css" | "json" | "registry">("tailwind");
+  const [exportFormat, setExportFormat] = useState<"tailwind" | "css" | "json" | "preset" | "typeset" | "registry">("tailwind");
   const [isExportCopied, setIsExportCopied] = useState<boolean>(false);
   const [registryItems, setRegistryItems] = useState<RegistryIndexItem[]>([]);
   const [registryTier, setRegistryTier] = useState<"all" | "atoms" | "molecules" | "organisms" | "templates" | "views" | "core">("all");
@@ -1043,6 +1043,29 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
           >
             Scale: {tokens.scaleMultiplier.toFixed(2)}x • {tokens.motionPhysics}
           </span>
+          <button
+            type="button"
+            onClick={() => {
+              const presetKeys = Object.keys(THEME_PRESETS) as Array<keyof typeof THEME_PRESETS>;
+              const randomKey = presetKeys[Math.floor(Math.random() * presetKeys.length)];
+              const nextPreset = THEME_PRESETS[randomKey];
+              if (nextPreset) {
+                setTokens((prev) => ({ ...prev, ...nextPreset.tokens }));
+                triggerToast(`Shuffled preset: ${String(randomKey)}`);
+              }
+            }}
+            style={{
+              borderRadius: `${scaled.scaledPillRadius}px`,
+              borderColor: tokens.universalBorderColor,
+              borderWidth: `${Math.max(1, tokens.borderWidth)}px`,
+              color: tokens.textIconColor,
+              backgroundColor: tokens.universalFillColor,
+            }}
+            className="px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs whitespace-nowrap"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Shuffle</span>
+          </button>
           <button
             type="button"
             onClick={() => {

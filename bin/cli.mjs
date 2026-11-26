@@ -22,6 +22,14 @@ const BLOCK_ALIASES = {
   "block/ledger-balancer": "ledger-balancer",
   "block/line-item-matrix": "line-item-matrix",
   "block/inventory-stock-health": "inventory-stock-health",
+  "block/simple-analytics": "simple-analytics-block",
+  "block/analytics/simple-overview": "simple-analytics-block",
+  "block/supply-chain-desk": "supply-chain-desk-block",
+  "block/supply-chain/po-desk": "supply-chain-desk-block",
+  "block/saas/billing-portal": "billing-portal",
+  "block/saas/admin-console": "team-permissions",
+  "block/fintech/reconciliation-desk": "three-way-match",
+  "block/erp/general-ledger": "ledger-balancer",
 };
 
 function printBanner() {
@@ -41,6 +49,9 @@ function parseArgs(argv) {
     shadcn: false,
     force: false,
     yes: false,
+    withSkill: false,
+    tier: "simple",
+    preset: null,
   };
 
   for (let i = 1; i < argv.length; i++) {
@@ -51,6 +62,12 @@ function parseArgs(argv) {
       flags.localRegistry = path.resolve(argv[++i]);
     } else if (a === "--shadcn") {
       flags.shadcn = true;
+    } else if (a === "--with-skill") {
+      flags.withSkill = true;
+    } else if (a === "--tier") {
+      flags.tier = argv[++i] || "simple";
+    } else if (a === "--preset") {
+      flags.preset = argv[++i] || null;
     } else if (a === "--force" || a === "-f") {
       flags.force = true;
     } else if (a === "-y" || a === "--yes") {
@@ -148,6 +165,57 @@ async function handleInit(flags) {
     } catch (e) {
       console.warn(`  \x1b[33m!\x1b[0m Could not install core item "${item}": ${e.message}`);
     }
+  }
+
+  // Write zerolight.config.json for tier governance & preset reproducibility
+  let parsedPreset = null;
+  if (flags.preset) {
+    try {
+      parsedPreset = JSON.parse(Buffer.from(flags.preset, "base64").toString("utf8"));
+    } catch {
+      parsedPreset = { name: flags.preset };
+    }
+  }
+  const configPath = path.join(flags.outDir, "zerolight.config.json");
+  fs.writeFileSync(
+    configPath,
+    JSON.stringify(
+      {
+        version: PKG_VERSION,
+        tier: flags.tier,
+        preset: parsedPreset,
+        registry: flags.shadcn ? "https://bricks.zerorapid.in/r" : "https://bricks.zerorapid.in/registry",
+      },
+      null,
+      2
+    ) + "\n",
+    "utf8"
+  );
+  console.log(`  \x1b[32m+\x1b[0m zerolight.config.json (tier: ${flags.tier})`);
+
+  if (flags.withSkill) {
+    const skillDir = path.join(flags.outDir, ".claude", "skills", "zerolight");
+    fs.mkdirSync(skillDir, { recursive: true });
+    const skillPath = path.join(skillDir, "SKILL.md");
+    fs.writeFileSync(
+      skillPath,
+      `---
+name: zerolight
+description: ZeroLight Design System governance skill. Enforces token invariants, Prompt-to-Tier component budgets, and layout rules.
+---
+
+# ZeroLight Design System Rules
+
+1. **Token Invariant**: Never hardcode hex colors or pixel radii. Always read from \`useZeroLight()\`.
+2. **Active Tier Budget (\`${flags.tier}\`)**:
+   - \`simple\`: Max 4 \`StatCard\`, 1 Chart (\`AreaChart\`/\`BarChart\`), 1 \`DataTable\`, \`Button\`, \`Badge\`. Do NOT add \`GeoBreakdown\` or \`ApprovalWorkflow\`.
+   - \`operational\`: Simple + \`InventoryStockHealth\`, \`BillingPortal\`, \`DetailDrawer\`, \`Modal\`.
+   - \`enterprise\`: Full organisms (\`GeoBreakdown\`, \`LineItemMatrix\`, \`ApprovalWorkflow\`, \`ThreeWayMatch\`, \`LedgerBalancer\`). \`GeoBreakdown\` MUST span \`lg:col-span-8\` or \`lg:col-span-12\`.
+3. **Typography**: Use \`tabular-nums\` with \`font-sans\` for KPIs, currency, and counts.
+`,
+      "utf8"
+    );
+    console.log(`  \x1b[32m+\x1b[0m .claude/skills/zerolight/SKILL.md`);
   }
 
   console.log(`\n\x1b[32m✓ ZeroLight initialized successfully.\x1b[0m`);

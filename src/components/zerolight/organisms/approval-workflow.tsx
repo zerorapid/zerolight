@@ -25,6 +25,7 @@ export interface ApprovalWorkflowProps {
   onApprove?: (comment: string) => void;
   onReject?: (reason: string) => void;
   onDelegate?: () => void;
+  layout?: "horizontal" | "vertical";
   stage?: MorphicStage;
   className?: string;
 }
@@ -43,6 +44,7 @@ export function ApprovalWorkflow({
   onApprove,
   onReject,
   onDelegate,
+  layout = "horizontal",
   stage,
   className = "",
 }: ApprovalWorkflowProps) {
@@ -120,7 +122,7 @@ export function ApprovalWorkflow({
 
       {/* Approval Chain (M2+) */}
       <MorphicSlot minStage="M2" stage={stage}>
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+        <div className={layout === "vertical" ? "flex flex-col gap-2" : "grid grid-cols-1 sm:grid-cols-4 gap-2.5"}>
           {steps.map((step) => {
             const Icon =
               step.status === "approved"

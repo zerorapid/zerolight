@@ -50,6 +50,16 @@ export interface WorldAtlasMapProps {
   showTelemetryMarkers?: boolean;
   showChoropleth?: boolean;
   interactive?: boolean;
+  showToolbar?: boolean;
+  showSearch?: boolean;
+  showStyleSwitcher?: boolean;
+  showAdvancedButton?: boolean;
+  showZoomControls?: boolean;
+  showSelectedBadges?: boolean;
+  compactMode?: "auto" | "micro" | "compact" | "full";
+  aspectRatio?: "16/9" | "2/1" | "4/3" | "auto";
+  height?: number | string;
+  accentColor?: string;
 }
 
 // Major edge telemetry hubs for pulse visualization
@@ -88,6 +98,16 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
   showTelemetryMarkers: initialTelemetry = true,
   showChoropleth: initialChoropleth = false,
   interactive = true,
+  showToolbar = true,
+  showSearch = true,
+  showStyleSwitcher = true,
+  showAdvancedButton = true,
+  showZoomControls = true,
+  showSelectedBadges = true,
+  compactMode = "auto",
+  aspectRatio = "16/9",
+  height,
+  accentColor,
 }) => {
   const { tokens, scaled } = useZeroLight();
   // Render Config State
@@ -118,6 +138,44 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(640);
+
+  // Track container width so the map adapts to 1/2/3/4-column grids independent of window width
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    setContainerWidth(el.getBoundingClientRect().width || 640);
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentRect.width > 0) {
+          setContainerWidth(entry.contentRect.width);
+        }
+      }
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const layoutTier: "micro" | "compact" | "full" =
+    compactMode !== "auto"
+      ? compactMode
+      : containerWidth < 340
+      ? "micro"
+      : containerWidth < 520
+      ? "compact"
+      : "full";
+
+  const resolvedAccent = accentColor || tokens.primaryButtonColor || "#18181B";
+  const aspectClass =
+    height !== undefined
+      ? ""
+      : aspectRatio === "2/1"
+      ? "aspect-[2/1] min-h-[180px]"
+      : aspectRatio === "4/3"
+      ? "aspect-[4/3] min-h-[220px]"
+      : aspectRatio === "auto"
+      ? "min-h-[220px]"
+      : "aspect-[16/9] min-h-[200px]";
 
   // Effective selected country IDs
   const selectedIds = useMemo(() => {
@@ -262,9 +320,11 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full select-none overflow-hidden border font-sans transition-all duration-300 ${className}`}
+      className={`relative w-full ${aspectClass} select-none overflow-hidden border font-sans transition-all duration-300 ${className}`}
       style={{
-        minHeight: "440px",
+        ...(height !== undefined
+          ? { height: typeof height === "number" ? `${height}px` : height }
+          : {}),
         borderRadius: `${scaled.scaledCardRadius}px`,
         borderColor: tokens.universalBorderColor,
         borderWidth: `${tokens.borderWidth}px`,
@@ -278,8 +338,14 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
       {/* =========================================================================
           TOP FLOATING BAR (Search capsule + Style switcher + Advanced button)
          ========================================================================= */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 p-3 sm:p-5">
+      {showToolbar && (
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-wrap items-center justify-between ${
+          layoutTier === "micro" ? "gap-1.5 p-2" : layoutTier === "compact" ? "gap-2 p-2.5" : "gap-2.5 p-4"
+        }`}
+      >
         {/* Top-Left: Search Capsule */}
+        {showSearch ? (
         <div className="pointer-events-auto relative">
           <Button
             variant="outline"
@@ -287,11 +353,14 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
             onClick={() => setIsSearchOpen((prev) => !prev)}
             iconLeft={<Search className="h-3.5 w-3.5 shrink-0" />}
             style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
+            aria-label={activeInspectorCountry ? activeInspectorCountry.name : "Select country"}
           >
-            <span className="font-medium truncate max-w-[110px] sm:max-w-none">
-              {activeInspectorCountry ? activeInspectorCountry.name : "Select country..."}
-            </span>
-            <Kbd className="hidden sm:inline-flex">/</Kbd>
+            {layoutTier !== "micro" && (
+              <span className="font-medium truncate max-w-[96px] sm:max-w-[130px]">
+                {activeInspectorCountry ? activeInspectorCountry.name : "Select country..."}
+              </span>
+            )}
+            {layoutTier === "full" && <Kbd className="hidden sm:inline-flex">/</Kbd>}
           </Button>
 
           {/* Search Dropdown Modal */}
@@ -345,29 +414,51 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
             </Card>
           )}
         </div>
+        ) : <div />}
 
         {/* Top-Right: Style Segmented Pill + Advanced Button */}
-        <div className="pointer-events-auto flex items-center gap-2">
-          <SegmentedControl<"vector" | "dots" | "pixels">
-            value={style === "dots" || style === "pixels" ? style : "vector"}
-            onChange={(s) => setStyle(s)}
-            options={[
-              { key: "vector", label: "Vector" },
-              { key: "dots", label: "Dots" },
-              { key: "pixels", label: "Pixels" },
-            ]}
-          />
+        <div className="pointer-events-auto flex flex-wrap items-center gap-1.5">
+          {showStyleSwitcher && (
+            layoutTier === "micro" ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const order: Array<"vector" | "dots" | "pixels"> = ["vector", "dots", "pixels"];
+                  const cur = style === "dots" || style === "pixels" ? style : "vector";
+                  setStyle(order[(order.indexOf(cur) + 1) % order.length]);
+                }}
+                style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
+              >
+                {style === "dots" ? "Dots" : style === "pixels" ? "Pixels" : "Vector"}
+              </Button>
+            ) : (
+              <SegmentedControl<"vector" | "dots" | "pixels">
+                value={style === "dots" || style === "pixels" ? style : "vector"}
+                onChange={(s) => setStyle(s)}
+                options={[
+                  { key: "vector", label: "Vector" },
+                  { key: "dots", label: "Dots" },
+                  { key: "pixels", label: "Pixels" },
+                ]}
+              />
+            )
+          )}
 
-          <Button
-            variant={isAdvancedOpen ? "primary" : "outline"}
-            size="sm"
-            onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-            iconLeft={<SlidersHorizontal className="h-3.5 w-3.5" />}
-          >
-            Advanced
-          </Button>
+          {showAdvancedButton && (
+            <Button
+              variant={isAdvancedOpen ? "primary" : "outline"}
+              size="sm"
+              onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
+              iconLeft={<SlidersHorizontal className="h-3.5 w-3.5" />}
+              aria-label="Advanced map settings"
+            >
+              {layoutTier !== "micro" && "Advanced"}
+            </Button>
+          )}
         </div>
       </div>
+      )}
 
       {/* =========================================================================
           ADVANCED STUDIO DRAWER (Collapsible right panel)
@@ -820,10 +911,13 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
       {/* =========================================================================
           BOTTOM-RIGHT VERTICAL ZOOM PILL [ + | - | ↺ ]
          ========================================================================= */}
+      {showZoomControls && (
       <Card
         variant="elevated"
         padding="none"
-        className="absolute bottom-5 right-5 z-30 flex flex-col items-center p-1 gap-0.5"
+        className={`absolute z-30 flex flex-col items-center p-1 gap-0.5 ${
+          layoutTier === "micro" ? "bottom-2 right-2" : layoutTier === "compact" ? "bottom-3 right-3" : "bottom-5 right-5"
+        }`}
         style={{ borderRadius: `${scaled.scaledPillRadius}px` }}
       >
         <IconButton
@@ -845,11 +939,17 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
           onClick={handleReset}
         />
       </Card>
+      )}
 
       {/* =========================================================================
           BOTTOM-LEFT SELECTED COUNTRIES PILL BAR & INSPECTOR
          ========================================================================= */}
-      <div className="pointer-events-none absolute bottom-5 left-5 z-30 flex flex-wrap items-center gap-2">
+      {showSelectedBadges && layoutTier !== "micro" && (
+      <div
+        className={`pointer-events-none absolute z-30 flex flex-wrap items-center gap-2 ${
+          layoutTier === "compact" ? "bottom-3 left-3 max-w-[calc(100%-64px)]" : "bottom-5 left-5"
+        }`}
+      >
         {selectedIds.length > 0 && (
           <Card
             variant="elevated"
@@ -898,6 +998,7 @@ export const WorldAtlasMap: React.FC<WorldAtlasMapProps> = ({
           </Badge>
         )}
       </div>
+      )}
     </div>
   );
 };

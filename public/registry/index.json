@@ -1,13 +1,13 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 130,
+  "totalCount": 132,
   "tiers": {
     "core": 3,
     "atoms": 43,
     "molecules": 47,
     "organisms": 23,
-    "templates": 5,
+    "templates": 7,
     "views": 8,
     "tools": 0,
     "gen-ui": 1
@@ -724,7 +724,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 455,
+      "lines": 472,
       "registryUrl": "/registry/area-chart.json",
       "shadcnUrl": "/r/area-chart.json"
     },
@@ -1426,7 +1426,7 @@
         "WorldAtlasMap",
         "world-map-data"
       ],
-      "lines": 101,
+      "lines": 132,
       "registryUrl": "/registry/world-map.json",
       "shadcnUrl": "/r/world-map.json"
     },
@@ -1462,7 +1462,7 @@
         "context",
         "morphic-engine"
       ],
-      "lines": 208,
+      "lines": 210,
       "registryUrl": "/registry/approval-workflow.json",
       "shadcnUrl": "/r/approval-workflow.json"
     },
@@ -1923,6 +1923,49 @@
       "lines": 256,
       "registryUrl": "/registry/settings-form-template.json",
       "shadcnUrl": "/r/settings-form-template.json"
+    },
+    {
+      "name": "simple-analytics-block",
+      "title": "Simple Analytics Block",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/simple-analytics-block.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "area-chart",
+        "badge",
+        "button",
+        "context",
+        "data-table",
+        "stat-card"
+      ],
+      "lines": 116,
+      "registryUrl": "/registry/simple-analytics-block.json",
+      "shadcnUrl": "/r/simple-analytics-block.json"
+    },
+    {
+      "name": "supply-chain-desk-block",
+      "title": "Supply Chain Desk Block",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/supply-chain-desk-block.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "approval-workflow",
+        "area-chart",
+        "button",
+        "context",
+        "geo-breakdown",
+        "line-item-matrix",
+        "stat-card"
+      ],
+      "lines": 119,
+      "registryUrl": "/registry/supply-chain-desk-block.json",
+      "shadcnUrl": "/r/supply-chain-desk-block.json"
     },
     {
       "name": "ai-assistant-view",

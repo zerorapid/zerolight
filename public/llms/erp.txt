@@ -1,0 +1,84 @@
+# ZeroLight Design System — ERP Reference (5 items)
+
+## inventory-stock-health (registry:ui)
+- Install: `npx zerolight add inventory-stock-health`
+- Registry: https://bricks.zerorapid.in/r/inventory-stock-health.json
+```ts
+export interface InventoryStockHealthProps {
+  sku: string;
+  name: string;
+  warehouseBin: string[];
+  onHand: number;
+  reorderPoint: number;
+  maxCapacity: number;
+  unit?: string;
+  onReorder?: (sku: string) => void;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## approval-workflow (registry:ui)
+- Install: `npx zerolight add approval-workflow`
+- Registry: https://bricks.zerorapid.in/r/approval-workflow.json
+```ts
+export interface ApprovalWorkflowProps {
+  documentId: string;
+  title: string;
+  amountLabel: string;
+  requester: string;
+  budgetImpact: string;
+  steps: ApprovalStep[];
+  onApprove?: (comment: string) => void;
+  onReject?: (reason: string) => void;
+  onDelegate?: () => void;
+  layout?: "horizontal" | "vertical";
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## ledger-balancer (registry:ui)
+- Install: `npx zerolight add ledger-balancer`
+- Registry: https://bricks.zerorapid.in/r/ledger-balancer.json
+```ts
+export interface LedgerBalancerProps {
+  journalId?: string;
+  fiscalPeriod?: string;
+  periodLocked?: boolean;
+  currency?: string;
+  initialLines: JournalLine[];
+  onPostJournal?: (lines: JournalLine[]) => void;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## line-item-matrix (registry:ui)
+- Install: `npx zerolight add line-item-matrix`
+- Registry: https://bricks.zerorapid.in/r/line-item-matrix.json
+```ts
+export interface LineItemMatrixProps {
+  title?: string;
+  currency?: string;
+  initialItems: MatrixLineItem[];
+  onSave?: (items: MatrixLineItem[], grandTotal: number) => void;
+  stage?: MorphicStage;
+  className?: string;
+}
+```
+
+## three-way-match (registry:ui)
+- Install: `npx zerolight add three-way-match`
+- Registry: https://bricks.zerorapid.in/r/three-way-match.json
+```ts
+export interface ThreeWayMatchProps {
+  poNumber: string;
+  grnNumber: string;
+  invoiceNumber: string;
+  currency?: string;
+  lines: ThreeWayMatchLine[];
+  stage?: MorphicStage;
+  className?: string;
+}
+```

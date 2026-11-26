@@ -86,6 +86,25 @@ const TOOLS = [
       properties: {},
     },
   },
+  {
+    name: "plan_screen",
+    description: "Recommend the exact ZeroLight component budget and Tailwind grid layout for a user prompt based on complexity tier (simple, operational, enterprise) to prevent over-engineering.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        prompt: {
+          type: "string",
+          description: "The user's screen or dashboard request",
+        },
+        tier: {
+          type: "string",
+          enum: ["auto", "simple", "operational", "enterprise"],
+          description: "Optional explicit complexity tier override",
+        },
+      },
+      required: ["prompt"],
+    },
+  },
 ];
 
 function handleToolCall(name, args) {
@@ -196,6 +215,45 @@ function handleToolCall(name, args) {
           },
         },
       };
+    }
+
+    case "plan_screen": {
+      const prompt = String(args?.prompt || "").toLowerCase();
+      let tier = args?.tier && args.tier !== "auto" ? args.tier : "simple";
+      if (tier === "simple" && (!args?.tier || args.tier === "auto")) {
+        if (/supply chain|purchase order|\bpo\b|three[- ]?way|ledger|erp|tenant|rbac/.test(prompt)) {
+          tier = "enterprise";
+        } else if (/inventory|billing|invoice|attendance|queue|tickets|analytics/.test(prompt)) {
+          tier = "operational";
+        }
+      }
+      const plans = {
+        simple: {
+          tier: "simple",
+          install: "npx zerolight add stat-card area-chart data-table button badge",
+          maxStatCards: 4,
+          allowed: ["StatCard", "AreaChart", "BarChart", "DataTable", "Card", "Button", "Badge"],
+          forbidden: ["GeoBreakdown", "ApprovalWorkflow", "LineItemMatrix", "ThreeWayMatch", "LedgerBalancer"],
+          gridRule: "Header (1 primary CTA) -> 4-col StatCard row -> 1 Chart + 1 DataTable",
+        },
+        operational: {
+          tier: "operational",
+          install: "npx zerolight add stat-card bar-chart inventory-stock-health data-table modal button badge",
+          maxStatCards: 4,
+          allowed: ["StatCard", "BarChart", "AreaChart", "InventoryStockHealth", "BillingPortal", "DataTable", "DetailDrawer", "Modal", "Button", "Badge"],
+          forbidden: ["ThreeWayMatch", "LedgerBalancer"],
+          gridRule: "Header -> 4-col StatCard row -> 8/4 or stacked primary workspace + DetailDrawer/Modal",
+        },
+        enterprise: {
+          tier: "enterprise",
+          install: "npx zerolight add stat-card geo-breakdown area-chart line-item-matrix approval-workflow three-way-match ledger-balancer button",
+          maxStatCards: 4,
+          allowed: ["StatCard", "GeoBreakdown", "AreaChart", "LineItemMatrix", "ApprovalWorkflow", "LedgerBalancer", "ThreeWayMatch", "DataTable", "Button", "Badge"],
+          forbidden: [],
+          gridRule: "GeoBreakdown MUST span lg:col-span-8 or lg:col-span-12; pair LineItemMatrix + ApprovalWorkflow cleanly without duplicate regional cards.",
+        },
+      };
+      return plans[tier] || plans.simple;
     }
 
     default:

@@ -1,0 +1,255 @@
+# ZeroLight Design System — BLOCKS Reference (16 items)
+
+## tree-view (registry:ui)
+- Install: `npx zerolight add tree-view`
+- Registry: https://bricks.zerorapid.in/r/tree-view.json
+```ts
+export interface TreeViewProps {
+  data?: TreeNode[];
+  onSelectNode?: (node: TreeNode) => void;
+  className?: string;
+}
+```
+
+## analytics-report-template (registry:ui)
+- Install: `npx zerolight add analytics-report-template`
+- Registry: https://bricks.zerorapid.in/r/analytics-report-template.json
+```ts
+export interface AnalyticsReportTemplateProps {
+  /** Report title */
+  title: string;
+  /** Subtitle context */
+  subtitle?: string;
+  /** Period selector or DateRangePicker slot */
+  dateRangeFilter?: React.ReactNode;
+  /** Export or secondary action (e.g. Export CSV, Share Report) */
+  exportAction?: React.ReactNode;
+  /** High-signal top metrics deck (3 to 4 StatCards with Sparklines) */
+  kpiCards?: React.ReactNode;
+  /** Primary hero visualization (e.g. AreaChart) */
+  heroChart: React.ReactNode;
+  /** Companion composite visualization row (e.g. DonutChart + HeatmapMatrix + FunnelChart) */
+  compositeGrid?: React.ReactNode;
+  /** Bottom drill-down table or breakdown list */
+  breakdownSection?: React.ReactNode;
+  /** Zone 3: Progressive disclosure drawer or modal */
+  progressiveDisclosure?: React.ReactNode;
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## chat-workspace-template (registry:ui)
+- Install: `npx zerolight add chat-workspace-template`
+- Registry: https://bricks.zerorapid.in/r/chat-workspace-template.json
+```ts
+export interface ChatWorkspaceTemplateProps {
+  /** Copilot or assistant title (e.g. "ZeroLight AI Copilot") */
+  assistantTitle: string;
+  /** Active model pill or badge (e.g. "Claude 3.7 Sonnet" or "Gemini 2.5 Pro") */
+  modelBadge?: React.ReactNode;
+  /** Left sidebar: Past chat sessions list */
+  sessions: ChatSessionItem[];
+  /** Callback when user selects a past chat session */
+  onSelectSession: (id: string) => void;
+  /** Callback when user clicks "New Chat" */
+  onNewSession: () => void;
+  /** Main conversation stream element (e.g. ChatConversation organism) */
+  conversationStream: React.ReactNode;
+  /** Bottom input area element (e.g. ChatInput organism) */
+  inputArea: React.ReactNode;
+  /** Suggested prompt chips or quick starters */
+  quickStarters?: React.ReactNode;
+  /** Right panel inspector (e.g. retrieved docs, token usage, system prompt) */
+  inspectorPanel?: React.ReactNode;
+  /** Whether the inspector panel is open by default */
+  defaultInspectorOpen?: boolean;
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## console-table-template (registry:ui)
+- Install: `npx zerolight add console-table-template`
+- Registry: https://bricks.zerorapid.in/r/console-table-template.json
+```ts
+export interface ConsoleTableTemplateProps {
+  /** Optional breadcrumbs trail */
+  breadcrumbs?: React.ReactNode;
+  /** Entity/Fleet title (e.g. "Student Roster", "API Keys", "Cloud Clusters") */
+  title: string;
+  /** Subtitle context */
+  subtitle?: string;
+  /** Status or count pill (e.g. "438 Active Students") */
+  badge?: React.ReactNode;
+  /** Exactly 1 Primary Action button (e.g. "Register Student", "Create Key") */
+  primaryAction?: React.ReactNode;
+  /** Optional secondary actions (e.g. "Export CSV", "Sync") */
+  secondaryActions?: React.ReactNode;
+  /** Filter & search toolbar row (SearchBar, Status Filter, SegmentedControl) */
+  toolbar?: React.ReactNode;
+  /** Batch selection floating bar (renders when 1 or more rows are selected) */
+  batchActionBar?: React.ReactNode;
+  /** The primary DataTable component */
+  table: React.ReactNode;
+  /** Pagination controls */
+  pagination?: React.ReactNode;
+  /** Zone 3: Progressive disclosure drawer (e.g. DetailDrawer) */
+  detailDrawer?: React.ReactNode;
+  /** Zone 3: Progressive disclosure modal (e.g. ConfirmationModal) */
+  modal?: React.ReactNode;
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## dashboard-template (registry:ui)
+- Install: `npx zerolight add dashboard-template`
+- Registry: https://bricks.zerorapid.in/r/dashboard-template.json
+```ts
+export interface DashboardTemplateProps {
+  /** Page title (max 4-6 words) */
+  title: string;
+  /** Subtitle context (max 12-16 words) */
+  subtitle?: string;
+  /** Status badge or live indicator (e.g., "Live Production") */
+  statusIndicator?: React.ReactNode;
+  /** Exactly 1 primary CTA action button */
+  primaryAction?: React.ReactNode;
+  /** Optional secondary action buttons (e.g., Export, Refresh) */
+  secondaryActions?: React.ReactNode;
+  /** High-signal telemetry metrics: Strictly 3 to 4 metrics */
+  metrics?: React.ReactNode;
+  /** Zone 2: Main primary visualization or primary workspace (e.g., AreaChart, Fleet map) */
+  primaryWidget: React.ReactNode;
+  /** Zone 2: Secondary companion widget (e.g., Ranked list, Donut chart, Activity stream) */
+  secondaryWidget?: React.ReactNode;
+  /** Zone 2: Additional full-width data section below the split row (e.g., Recent Activities table) */
+  dataSection?: React.ReactNode;
+  /** Zone 3: Progressive disclosure drawer, modal, or toast host */
+  progressiveDisclosure?: React.ReactNode;
+  /** Optional AppShell wrapper configuration (if true or props provided, wraps in AppShell) */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## settings-form-template (registry:ui)
+- Install: `npx zerolight add settings-form-template`
+- Registry: https://bricks.zerorapid.in/r/settings-form-template.json
+```ts
+export interface SettingsFormTemplateProps {
+  /** Settings section title */
+  title: string;
+  /** Subtitle context */
+  subtitle?: string;
+  /** Navigation tabs list */
+  tabs: SettingsTabItem[];
+  /** Current active tab id */
+  activeTabId: string;
+  /** Tab change callback */
+  onTabChange: (id: string) => void;
+  /** Main active form content */
+  children: React.ReactNode;
+  /** Whether the user has modified fields without saving */
+  isDirty?: boolean;
+  /** Save callback for unsaved changes bar */
+  onSave?: () => void;
+  /** Discard callback for unsaved changes bar */
+  onDiscard?: () => void;
+  /** Saving spinner state */
+  isSaving?: boolean;
+  /** Orientation of navigation tabs (default: "horizontal" on mobile, "vertical" on desktop or flexible) */
+  navLayout?: "vertical" | "horizontal";
+  /** Optional AppShell wrapper configuration */
+  shellConfig?: {
+    brandName?: string;
+    brandLogo?: React.ReactNode;
+    navItems?: NavItem[];
+    headerRight?: React.ReactNode;
+    footerAction?: React.ReactNode;
+  };
+  className?: string;
+}
+```
+
+## simple-analytics-block (registry:ui)
+- Install: `npx zerolight add simple-analytics-block`
+- Registry: https://bricks.zerorapid.in/r/simple-analytics-block.json
+```ts
+export interface SimpleAnalyticsBlockProps {
+  title?: string;
+  subtitle?: string;
+  className?: string;
+}
+```
+
+## supply-chain-desk-block (registry:ui)
+- Install: `npx zerolight add supply-chain-desk-block`
+- Registry: https://bricks.zerorapid.in/r/supply-chain-desk-block.json
+```ts
+export interface SupplyChainDeskBlockProps {
+  title?: string;
+  subtitle?: string;
+  className?: string;
+}
+```
+
+## ai-assistant-view (registry:ui)
+- Install: `npx zerolight add ai-assistant-view`
+- Registry: https://bricks.zerorapid.in/r/ai-assistant-view.json
+
+## billing-view (registry:ui)
+- Install: `npx zerolight add billing-view`
+- Registry: https://bricks.zerorapid.in/r/billing-view.json
+
+## dev-console-view (registry:ui)
+- Install: `npx zerolight add dev-console-view`
+- Registry: https://bricks.zerorapid.in/r/dev-console-view.json
+
+## donations-view (registry:ui)
+- Install: `npx zerolight add donations-view`
+- Registry: https://bricks.zerorapid.in/r/donations-view.json
+
+## finexy-view (registry:ui)
+- Install: `npx zerolight add finexy-view`
+- Registry: https://bricks.zerorapid.in/r/finexy-view.json
+
+## notifications-view (registry:ui)
+- Install: `npx zerolight add notifications-view`
+- Registry: https://bricks.zerorapid.in/r/notifications-view.json
+
+## school-attendance-view (registry:ui)
+- Install: `npx zerolight add school-attendance-view`
+- Registry: https://bricks.zerorapid.in/r/school-attendance-view.json
+
+## settings-view (registry:ui)
+- Install: `npx zerolight add settings-view`
+- Registry: https://bricks.zerorapid.in/r/settings-view.json

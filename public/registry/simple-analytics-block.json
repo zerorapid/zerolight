@@ -1,0 +1,24 @@
+{
+  "$schema": "https://zerolight.dev/schema/registry-item.json",
+  "name": "simple-analytics-block",
+  "title": "Simple Analytics Block",
+  "type": "registry:ui",
+  "tier": "templates",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "area-chart",
+    "badge",
+    "button",
+    "context",
+    "data-table",
+    "stat-card"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/templates/simple-analytics-block.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { DollarSign, Users, TrendingUp, AlertCircle, Download, Plus } from \"lucide-react\";\nimport { useZeroLight } from \"../context\";\nimport { Button } from \"../atoms/button\";\nimport { Badge } from \"../atoms/badge\";\nimport { StatCard } from \"../molecules/stat-card\";\nimport { AreaChart, type AreaDataPoint } from \"../molecules/area-chart\";\nimport { DataTable, type DataTableColumn } from \"../organisms/data-table\";\n\nexport interface SimpleAnalyticsBlockProps {\n  title?: string;\n  subtitle?: string;\n  className?: string;\n}\n\nconst DEFAULT_TREND: AreaDataPoint[] = [\n  { label: \"Jan\", value: 42000 },\n  { label: \"Feb\", value: 48500 },\n  { label: \"Mar\", value: 46200 },\n  { label: \"Apr\", value: 53800 },\n  { label: \"May\", value: 59400 },\n  { label: \"Jun\", value: 64200 },\n];\n\ninterface RecentAccountRow {\n  id: string;\n  account: string;\n  plan: string;\n  mrr: string;\n  status: string;\n}\n\nconst DEFAULT_ROWS: RecentAccountRow[] = [\n  { id: \"1\", account: \"Northstar Logistics\", plan: \"Enterprise\", mrr: \"$4,800\", status: \"Active\" },\n  { id: \"2\", account: \"Apex Manufacturing\", plan: \"Growth\", mrr: \"$1,450\", status: \"Active\" },\n  { id: \"3\", account: \"Vertex BioLabs\", plan: \"Enterprise\", mrr: \"$6,200\", status: \"Trial\" },\n];\n\nconst COLUMNS: DataTableColumn<RecentAccountRow>[] = [\n  { key: \"account\", header: \"Account\" },\n  { key: \"plan\", header: \"Plan\" },\n  { key: \"mrr\", header: \"MRR\", align: \"right\" },\n  {\n    key: \"status\",\n    header: \"Status\",\n    render: (row) => (\n      <Badge variant={row.status === \"Active\" ? \"healthy\" : \"degraded\"} size=\"xs\">\n        {row.status}\n      </Badge>\n    ),\n  },\n];\n\n/**\n * Tier 1 Simple Analytics Block — clean 4-KPI + 1 Chart + 1 DataTable layout.\n */\nexport function SimpleAnalyticsBlock({\n  title = \"Revenue Overview\",\n  subtitle = \"Recurring revenue, active workspaces, and recent account activity.\",\n  className = \"\",\n}: SimpleAnalyticsBlockProps) {\n  const { tokens, scaled } = useZeroLight();\n\n  return (\n    <div\n      style={{ color: tokens.textIconColor, fontFamily: scaled.resolvedFontFamily }}\n      className={`space-y-6 ${className}`}\n    >\n      <div className=\"flex flex-wrap items-center justify-between gap-3\">\n        <div>\n          <h1\n            style={{ fontFamily: scaled.resolvedHeadingFontFamily, fontWeight: scaled.headingWeight }}\n            className=\"text-xl font-bold tracking-tight\"\n          >\n            {title}\n          </h1>\n          <p className=\"text-xs opacity-65 mt-0.5\">{subtitle}</p>\n        </div>\n        <div className=\"flex items-center gap-2\">\n          <Button variant=\"outline\" size=\"sm\" iconLeft={<Download className=\"w-3.5 h-3.5\" />}>Export CSV</Button>\n          <Button variant=\"primary\" size=\"sm\" iconLeft={<Plus className=\"w-3.5 h-3.5\" />}>New Report</Button>\n        </div>\n      </div>\n\n      <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\">\n        <StatCard label=\"Monthly Recurring Revenue\" value=\"$64,200\" delta=\"+14.2%\" trend=\"up\" subValue=\"vs. $56,210 last month\" icon={<DollarSign className=\"w-4 h-4\" />} />\n        <StatCard label=\"Active Workspaces\" value=\"1,284\" delta=\"+8.1%\" trend=\"up\" subValue=\"42 upgraded this week\" icon={<Users className=\"w-4 h-4\" />} />\n        <StatCard label=\"Net Retention\" value=\"112.4%\" delta=\"+2.1%\" trend=\"up\" subValue=\"Target: 108%\" icon={<TrendingUp className=\"w-4 h-4\" />} />\n        <StatCard label=\"Churn Rate\" value=\"1.4%\" delta=\"-0.3%\" trend=\"up\" subValue=\"3 accounts flagged\" icon={<AlertCircle className=\"w-4 h-4\" />} />\n      </div>\n\n      <AreaChart\n        title=\"MRR Growth\"\n        subtitle=\"Six-month recurring revenue trajectory\"\n        data={DEFAULT_TREND}\n        height={240}\n        summaryStats={[\n          { label: \"6-Month Total\", value: \"$314,100\" },\n          { label: \"Monthly Average\", value: \"$52,350\" },\n          { label: \"Peak Month\", value: \"$64,200\" },\n        ]}\n      />\n\n      <DataTable\n        rows={DEFAULT_ROWS}\n        columns={COLUMNS}\n        rowKey={(r) => r.id}\n        showToolbar={true}\n        searchPlaceholder=\"Search accounts...\"\n      />\n    </div>\n  );\n}\n"
+    }
+  ]
+}

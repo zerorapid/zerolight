@@ -1,61 +1,20 @@
-# ZeroLight Design System by Zerorapid
+# ZeroLight Design System
 
-> Public, token-driven B2B SaaS & ERP design system at https://bricks.zerorapid.in with 130 registry payloads, 6-tier atomic architecture, Mathematical Morphic Evolution (M1/M2/M3), and shadcn `/r/` compatibility.
+> Source-installable React design system for SaaS, AI, and Enterprise apps (132 registry items).
 
-## Quick Endpoints for AI Web Chats & Agents
-- Complete Single-File Reference (All 130 Components + Exact Props): https://bricks.zerorapid.in/llms-full.txt
-- Component Index (130 items): https://bricks.zerorapid.in/r/index.json
-- Individual Component TSX + Props: https://bricks.zerorapid.in/r/{name}.json
-- Native ZeroLight Registry: https://bricks.zerorapid.in/registry/{name}.json
-- ChatGPT Custom GPT OpenAPI Schema: https://bricks.zerorapid.in/openapi-chatgpt.json
+## Default AI Workflow
+1. Match user intent to a tier (`simple`, `operational`, `enterprise`).
+2. Prefer an existing `block/...` or template before composing from scratch.
+3. Bind all colors, radii, and motion to `useZeroLight()` tokens.
+4. Use `lucide-react` icons on `StatCard` (`icon`) and primary `Button`s (`iconLeft`).
+5. Use `tabular-nums` with `font-sans` for KPIs, currency, and counts.
 
-## Non-Negotiable Design Rules (ZeroLight Tactile Calm)
-1. **Token-Driven Surfaces Only (`useZeroLight()`)**: Never hardcode hex colors (`#3B82F6`), arbitrary radii, or shadows. Bind to `tokens.universalFillColor`, `tokens.universalBorderColor`, `tokens.textIconColor`, `tokens.primaryButtonColor`, `scaled.scaledCardRadius`, `scaled.scaledRadius`, and `scaled.cardShadow`.
-2. **Tabular Numerals**: Use `font-sans tabular-nums` on all KPIs, currency, counts, SKUs, and tables.
-3. **Popups Over Sidebars**: Use centered `Modal` / `DetailDrawer` popups for secondary details instead of edge slide-over sidebars.
-4. **No Double-Card Nesting**: `BarChart`, `AreaChart`, `DonutChart`, `DataTable`, `ApprovalWorkflow`, `ThreeWayMatch`, `LedgerBalancer`, `LineItemMatrix`, and `InventoryStockHealth` already render their own card container — never wrap them inside another `<Card>` or bordered `<div>`.
-5. **Morphic Evolution (`M1 | M2 | M3`)**: `stage?: "M1" | "M2" | "M3"` (or `<MorphicScope stage="M2">`) is supported on core primitives & ERP modules (`Button`, `Input`, `Card`, `StatCard`, `InventoryStockHealth`, `ApprovalWorkflow`, `ThreeWayMatch`, `LedgerBalancer`, `LineItemMatrix`).
-
-## Verified Prop Signatures (Compile-Ready Reference)
-Use these exact TypeScript prop names when generating TSX from `@/components/zerolight`:
-
-- **`StatCard`**:
-  `label: string; value: string | number; delta?: string; trend?: "up" | "down" | "neutral"; comparisonText?: string; stage?: 1 | 2 | 3 | "M1" | "M2" | "M3";`
-  *(Note: uses `label` and `comparisonText`, NOT `title`/`description`.)*
-
-- **`Button`**:
-  `variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive"; size?: "sm" | "md" | "lg"; loading?: boolean; iconLeft?: ReactNode; iconRight?: ReactNode; stage?: "M1" | "M2" | "M3"; onClick?: () => void;`
-
-- **`Badge`**:
-  `variant?: "healthy" | "degraded" | "syncing" | "critical" | "neutral" | "info"; size?: "xs" | "sm" | "md"; showDot?: boolean;`
-
-- **`Modal`**:
-  `isOpen: boolean; onClose: () => void; title?: ReactNode; description?: ReactNode; footer?: ReactNode; size?: "sm" | "md" | "lg" | "xl"; children?: ReactNode;`
-  *(Note: uses `isOpen` and `onClose`, NOT `open`/`onOpenChange`.)*
-
-- **`BarChart`**:
-  `data: Array<{ label: string; value: number; secondaryValue?: number }>; title?: string; subtitle?: string; primaryLabel?: string; secondaryLabel?: string; mode?: "grouped" | "stacked";`
-
-- **`DataTable<T>`**:
-  `columns?: Array<{ key: string; header: ReactNode; align?: "left" | "right" | "center"; render?: (row: T) => ReactNode }>; rows?: T[]; rowKey?: (row: T, index: number) => string; onRowClick?: (row: T) => void; showToolbar?: boolean;`
-  *(Note: uses `rows` and `columns[{ key, header }]`, NOT `data` or `accessorKey`.)*
-
-- **`InventoryStockHealth`**:
-  `sku: string; name: string; warehouseBin: string[]; onHand: number; reorderPoint: number; maxCapacity: number; unit?: string; onReorder?: (sku: string) => void; stage?: "M1" | "M2" | "M3";`
-
-- **`ApprovalWorkflow`**:
-  `documentId: string; title: string; amountLabel: string; requester: string; budgetImpact: string; steps: Array<{ id: string; role: string; approver: string; status: "approved" | "pending" | "rejected" | "waiting"; timestamp?: string }>; onApprove?: (comment: string) => void; onReject?: (reason: string) => void; stage?: "M1" | "M2" | "M3";`
-
-- **`ThreeWayMatch`**:
-  `poNumber: string; grnNumber: string; invoiceNumber: string; currency?: string; lines: Array<{ sku: string; description: string; poQty: number; grnQty: number; invoiceQty: number; poUnitPrice: number; invoiceUnitPrice: number }>; stage?: "M1" | "M2" | "M3";`
-
-- **`LedgerBalancer`**:
-  `journalId?: string; fiscalPeriod?: string; periodLocked?: boolean; currency?: string; initialLines: Array<{ id: string; accountCode: string; accountName: string; debit: number; credit: number }>; onPostJournal?: (lines) => void; stage?: "M1" | "M2" | "M3";`
-
-- **`LineItemMatrix`**:
-  `title?: string; currency?: string; initialItems: Array<{ id: string; sku: string; name: string; qty: number; unitPrice: number; taxPct: number }>; onSave?: (items, grandTotal) => void; stage?: "M1" | "M2" | "M3";`
-
-## CLI Installation
-- Node CLI: `npx zerolight add <component|block/name>`
-- Native Rust CLI: `zerolight add <component>`, `zerolight check ./src`, `zerolight diff <component>`
-- MCP Server: `node bin/zerolight-mcp.mjs`
+## Domain References
+- Core UI (85): https://bricks.zerorapid.in/llms/core.txt
+- Charts & Geo (13): https://bricks.zerorapid.in/llms/charts.txt
+- AI & Chat (6): https://bricks.zerorapid.in/llms/ai.txt
+- Enterprise SaaS (7): https://bricks.zerorapid.in/llms/enterprise.txt
+- ERP & Supply Chain (5): https://bricks.zerorapid.in/llms/erp.txt
+- Full-Page Blocks (16): https://bricks.zerorapid.in/llms/blocks.txt
+- Complete Reference: https://bricks.zerorapid.in/llms-full.txt
+- Registry Index: https://bricks.zerorapid.in/r/index.json

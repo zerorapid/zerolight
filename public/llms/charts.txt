@@ -1,0 +1,230 @@
+# ZeroLight Design System — CHARTS Reference (13 items)
+
+## area-chart (registry:ui)
+- Install: `npx zerolight add area-chart`
+- Registry: https://bricks.zerorapid.in/r/area-chart.json
+```ts
+export interface AreaChartProps {
+  data: AreaDataPoint[];
+  title?: string;
+  subtitle?: string;
+  headerMeta?: React.ReactNode;
+  kpiHeader?: React.ReactNode;
+  summaryStats?: Array<{ label: string; value: string }>;
+  curve?: "smooth" | "linear";
+  showArea?: boolean;
+  showLegend?: boolean;
+  height?: number;
+  primaryColor?: string;
+  secondaryColor?: string;
+  primaryLabel?: string;
+  secondaryLabel?: string;
+  valueFormatter?: (val: number) => string;
+  yAxisFormatter?: (val: number) => string;
+  showGrid?: boolean;
+  className?: string;
+}
+```
+
+## bar-chart (registry:ui)
+- Install: `npx zerolight add bar-chart`
+- Registry: https://bricks.zerorapid.in/r/bar-chart.json
+```ts
+export interface BarChartProps {
+  data: BarDataPoint[];
+  title?: string;
+  subtitle?: string;
+  height?: number;
+  primaryColor?: string;
+  secondaryColor?: string;
+  primaryLabel?: string;
+  secondaryLabel?: string;
+  valueFormatter?: (val: number) => string;
+  mode?: "grouped" | "stacked";
+  className?: string;
+}
+```
+
+## donut-chart (registry:ui)
+- Install: `npx zerolight add donut-chart`
+- Registry: https://bricks.zerorapid.in/r/donut-chart.json
+```ts
+export interface DonutChartProps {
+  data: DonutSegment[];
+  title?: string;
+  subtitle?: string;
+  centerLabel?: string;
+  centerValue?: string;
+  valueFormatter?: (val: number) => string;
+  size?: number;
+  strokeWidth?: number;
+  className?: string;
+}
+```
+
+## funnel-chart (registry:ui)
+- Install: `npx zerolight add funnel-chart`
+- Registry: https://bricks.zerorapid.in/r/funnel-chart.json
+```ts
+export interface FunnelChartProps {
+  stages: FunnelStage[];
+  title?: string;
+  subtitle?: string;
+  primaryColor?: string;
+  valueFormatter?: (val: number) => string;
+  className?: string;
+}
+```
+
+## gauge-chart (registry:ui)
+- Install: `npx zerolight add gauge-chart`
+- Registry: https://bricks.zerorapid.in/r/gauge-chart.json
+```ts
+export interface GaugeChartProps {
+  value: number; // e.g. 74
+  min?: number;
+  max?: number;
+  title?: string;
+  subtitle?: string;
+  unit?: string; // e.g. "%" or "pts"
+  healthyThreshold?: number; // e.g. 95 for higher-is-better, or 60 for lower-is-better
+  criticalThreshold?: number; // e.g. 90 for higher-is-better, or 85 for lower-is-better
+  mode?: "higher-is-better" | "lower-is-better";
+  color?: string;
+  statusText?: string;
+  size?: number;
+  className?: string;
+}
+```
+
+## heatmap-matrix (registry:ui)
+- Install: `npx zerolight add heatmap-matrix`
+- Registry: https://bricks.zerorapid.in/r/heatmap-matrix.json
+```ts
+export interface HeatmapMatrixProps {
+  data: HeatmapCell[];
+  xLabels?: string[];
+  yLabels?: string[];
+  title?: string;
+  subtitle?: string;
+  color?: string; // base brand color (default: tokens.primaryButtonColor)
+  className?: string;
+}
+```
+
+## horizontal-bar-chart (registry:ui)
+- Install: `npx zerolight add horizontal-bar-chart`
+- Registry: https://bricks.zerorapid.in/r/horizontal-bar-chart.json
+```ts
+export interface HorizontalBarChartProps {
+  data: HorizontalBarItem[];
+  title?: string;
+  subtitle?: string;
+  primaryColor?: string;
+  valueFormatter?: (val: number) => string;
+  showRank?: boolean;
+  className?: string;
+}
+```
+
+## profit-loss-chart (registry:ui)
+- Install: `npx zerolight add profit-loss-chart`
+- Registry: https://bricks.zerorapid.in/r/profit-loss-chart.json
+```ts
+export interface ProfitLossChartProps {
+  title?: string;
+  subtitle?: string;
+  data?: MonthlyBarData[];
+  profitColor?: string;
+  lossColor?: string;
+  className?: string;
+}
+```
+
+## sparkline (registry:ui)
+- Install: `npx zerolight add sparkline`
+- Registry: https://bricks.zerorapid.in/r/sparkline.json
+```ts
+export interface SparklineProps {
+  data: number[] | SparklinePoint[];
+  width?: number;
+  height?: number;
+  color?: string;
+  fillOpacity?: number;
+  showMinMax?: boolean;
+  strokeWidth?: number;
+  className?: string;
+}
+```
+
+## stat-card (registry:ui)
+- Install: `npx zerolight add stat-card`
+- Registry: https://bricks.zerorapid.in/r/stat-card.json
+```ts
+export interface StatCardProps {
+  label: string;
+  value: string | number;
+  delta?: string;
+  trend?: "up" | "down" | "neutral";
+  comparisonText?: string;
+  subValue?: string;
+  layout?: "vertical" | "horizontal";
+  /** Scalar Morphic Evolution stage: 1/M1 = Compact Atom, 2/M2 = Standard Analytical, 3/M3 = Command Capsule */
+  stage?: StatCardStage;
+  timeframeLabel?: string;
+  minorDecimal?: boolean;
+  deltaPill?: React.ReactNode;
+  icon?: React.ReactNode;
+  badge?: React.ReactNode;
+  sparkline?: React.ReactNode;
+  className?: string;
+}
+```
+
+## world-map-data (registry:ui)
+- Install: `npx zerolight add world-map-data`
+- Registry: https://bricks.zerorapid.in/r/world-map-data.json
+
+## world-map (registry:ui)
+- Install: `npx zerolight add world-map`
+- Registry: https://bricks.zerorapid.in/r/world-map.json
+```ts
+export interface WorldMapProps {
+  data?: WorldMapRegionDatum[];
+  markers?: WorldMapMarker[];
+  arcs?: WorldMapArc[];
+  defaultRegion?: WorldMapRegionPreset;
+  selectedRegionId?: string | null;
+  onSelectRegion?: (regionId: string, datum?: WorldMapRegionDatum) => void;
+  showControls?: boolean;
+  showLegend?: boolean;
+  showToolbar?: boolean;
+  showSearch?: boolean;
+  showStyleSwitcher?: boolean;
+  showAdvancedButton?: boolean;
+  showZoomControls?: boolean;
+  showSelectedBadges?: boolean;
+  compactMode?: "auto" | "micro" | "compact" | "full";
+  aspectRatio?: "16/9" | "2/1" | "4/3" | "auto";
+  height?: number | string;
+  accentColor?: string;
+  className?: string;
+  renderStyle?: MapRenderStyle;
+  patternDensity?: PatternDensity;
+}
+```
+
+## geo-breakdown (registry:ui)
+- Install: `npx zerolight add geo-breakdown`
+- Registry: https://bricks.zerorapid.in/r/geo-breakdown.json
+```ts
+export interface GeoBreakdownProps {
+  title?: string;
+  subtitle?: string;
+  items?: GeoBreakdownItem[];
+  markers?: WorldMapMarker[];
+  arcs?: WorldMapArc[];
+  defaultRegion?: WorldMapRegionPreset;
+  className?: string;
+}
+```

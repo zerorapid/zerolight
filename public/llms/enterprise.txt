@@ -1,0 +1,102 @@
+# ZeroLight Design System — ENTERPRISE Reference (7 items)
+
+## audit-timestamp (registry:ui)
+- Install: `npx zerolight add audit-timestamp`
+- Registry: https://bricks.zerorapid.in/r/audit-timestamp.json
+```ts
+export interface AuditTimestampProps {
+  date?: Date | string | number;
+  format?: AuditTimestampFormat;
+  showPill?: boolean;
+  className?: string;
+}
+```
+
+## audit-log (registry:ui)
+- Install: `npx zerolight add audit-log`
+- Registry: https://bricks.zerorapid.in/r/audit-log.json
+```ts
+export interface AuditLogProps {
+  events?: AuditEvent[];
+  className?: string;
+}
+```
+
+## billing-portal (registry:ui)
+- Install: `npx zerolight add billing-portal`
+- Registry: https://bricks.zerorapid.in/r/billing-portal.json
+```ts
+export interface BillingPortalProps {
+  currentTierId?: "starter" | "growth" | "enterprise";
+  invoices?: InvoiceItem[];
+  className?: string;
+  onUpgradeTier?: (tierId: string, cycle: "monthly" | "annual") => void;
+  onDownloadInvoice?: (invoice: InvoiceItem) => void;
+}
+```
+
+## command-palette (registry:ui)
+- Install: `npx zerolight add command-palette`
+- Registry: https://bricks.zerorapid.in/r/command-palette.json
+```ts
+export interface CommandPaletteProps {
+  isOpen: boolean;
+  onClose: () => void;
+  items?: CommandItem[];
+}
+```
+
+## data-table (registry:ui)
+- Install: `npx zerolight add data-table`
+- Registry: https://bricks.zerorapid.in/r/data-table.json
+```ts
+export interface DataTableProps<T = NodeRecord> {
+  columns?: DataTableColumn<T>[];
+  rows?: T[];
+  rowKey?: (row: T, index: number) => string;
+  selectable?: boolean;
+  selectedRowKeys?: string[];
+  onSelectionChange?: (keys: string[]) => void;
+  showToolbar?: boolean;
+  searchPlaceholder?: string;
+  searchAccessor?: (row: T) => string;
+  footerAction?: React.ReactNode;
+  nodes?: NodeRecord[];
+  onSelectNode?: (nodeId: string) => void;
+  editable?: boolean;
+  onUpdateNode?: (nodeId: string, patch: Partial<NodeRecord>) => void;
+  enableClipboardPaste?: boolean;
+  enableExport?: boolean;
+  pinSelectionColumn?: boolean;
+  pinActionsColumn?: boolean;
+  onPasteRows?: (pastedRows: Partial<T>[]) => void;
+  className?: string;
+}
+```
+
+## team-permissions (registry:ui)
+- Install: `npx zerolight add team-permissions`
+- Registry: https://bricks.zerorapid.in/r/team-permissions.json
+```ts
+export interface TeamPermissionsProps {
+  initialMembers?: TeamMember[];
+  className?: string;
+  onInviteMember?: (member: Omit<TeamMember, "id" | "lastActive">) => void;
+  onUpdateRole?: (memberId: string, newRole: TeamRole) => void;
+  onRevokeMember?: (memberId: string) => void;
+}
+```
+
+## tenant-kit (registry:ui)
+- Install: `npx zerolight add tenant-kit`
+- Registry: https://bricks.zerorapid.in/r/tenant-kit.json
+```ts
+export interface TenantKitProps {
+  tenants?: TenantOrganization[];
+  activeTenantId?: string;
+  onSelectTenant?: (tenantId: string) => void;
+  onInviteMember?: (tenantId: string) => void;
+  onUpgradeTier?: (tenantId: string) => void;
+  className?: string;
+}
+```

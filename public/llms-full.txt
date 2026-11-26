@@ -1,6 +1,21 @@
 # ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)
 
-> Generated automatically from source files (130 items). Public registry: https://bricks.zerorapid.in/r/index.json
+> Generated automatically from source files (132 items). Public registry: https://bricks.zerorapid.in/r/index.json
+
+## AI Prompt-to-Tier Governance (Read Before Generating UI)
+
+Match the user's prompt to ONE complexity tier instead of blindly dumping heavy organisms:
+
+1. **Tier 1 — Simple Dashboard (`simple`)**: For prompts like 'simple dashboard', 'overview page', 'KPI tracker'.
+   - Allowed: `StatCard` (max 4), `AreaChart` or `BarChart` (max 1), `DataTable` or `Card` (max 1), `Button`, `Badge`.
+   - Forbidden: `GeoBreakdown`, `ApprovalWorkflow`, `LineItemMatrix`, `ThreeWayMatch`, `LedgerBalancer`.
+2. **Tier 2 — Operational Console (`operational`)**: For prompts like 'inventory manager', 'billing portal', 'support desk'.
+   - Allowed: Tier 1 + `InventoryStockHealth`, `BillingPortal`, `FilterBar`, `DetailDrawer`, `Modal`.
+   - Rule: Max 2 primary workspaces visible at once; place secondary details inside `DetailDrawer` or `Modal`.
+3. **Tier 3 — Enterprise Desk (`enterprise`)**: For prompts like 'supply chain & PO desk', '3-way invoice match ERP', 'multi-tenant RBAC'.
+   - Allowed: Full organisms (`GeoBreakdown`, `LineItemMatrix`, `ApprovalWorkflow`, `LedgerBalancer`, `ThreeWayMatch`, `TenantKit`, `TeamPermissions`).
+   - Layout Rules: `GeoBreakdown` MUST span `lg:col-span-8` or `lg:col-span-12` (never pair two competing regional cards side-by-side); use ISO country IDs (`US`, `GB`, `IN`, `DE`, `SG`) or `compactMode="auto"` on `WorldMap`.
+4. **Iconography (`lucide-react`)**: ZeroLight ships with `lucide-react`. Always pass crisp `lucide-react` icons into `StatCard` (`icon={<Package className="w-4 h-4" />}`) and primary `Button`s (`iconLeft={<Plus className="w-3.5 h-3.5" />}`) for instant visual hierarchy—never use raw `+` text or decorative emojis.
 
 ## types (registry:lib)
 - Install: `npx zerolight add types`
@@ -724,6 +739,7 @@ export interface AreaChartProps {
   subtitle?: string;
   headerMeta?: React.ReactNode;
   kpiHeader?: React.ReactNode;
+  summaryStats?: Array<{ label: string; value: string }>;
   curve?: "smooth" | "linear";
   showArea?: boolean;
   showLegend?: boolean;
@@ -1465,7 +1481,16 @@ export interface WorldMapProps {
   onSelectRegion?: (regionId: string, datum?: WorldMapRegionDatum) => void;
   showControls?: boolean;
   showLegend?: boolean;
-  height?: number;
+  showToolbar?: boolean;
+  showSearch?: boolean;
+  showStyleSwitcher?: boolean;
+  showAdvancedButton?: boolean;
+  showZoomControls?: boolean;
+  showSelectedBadges?: boolean;
+  compactMode?: "auto" | "micro" | "compact" | "full";
+  aspectRatio?: "16/9" | "2/1" | "4/3" | "auto";
+  height?: number | string;
+  accentColor?: string;
   className?: string;
   renderStyle?: MapRenderStyle;
   patternDensity?: PatternDensity;
@@ -1510,6 +1535,7 @@ export interface ApprovalWorkflowProps {
   onApprove?: (comment: string) => void;
   onReject?: (reason: string) => void;
   onDelegate?: () => void;
+  layout?: "horizontal" | "vertical";
   stage?: MorphicStage;
   className?: string;
 }
@@ -2017,6 +2043,30 @@ export interface SettingsFormTemplateProps {
     headerRight?: React.ReactNode;
     footerAction?: React.ReactNode;
   };
+  className?: string;
+}
+```
+
+## simple-analytics-block (registry:ui)
+- Install: `npx zerolight add simple-analytics-block`
+- Registry JSON: https://bricks.zerorapid.in/r/simple-analytics-block.json
+- Exports: SimpleAnalyticsBlock
+```ts
+export interface SimpleAnalyticsBlockProps {
+  title?: string;
+  subtitle?: string;
+  className?: string;
+}
+```
+
+## supply-chain-desk-block (registry:ui)
+- Install: `npx zerolight add supply-chain-desk-block`
+- Registry JSON: https://bricks.zerorapid.in/r/supply-chain-desk-block.json
+- Exports: SupplyChainDeskBlock
+```ts
+export interface SupplyChainDeskBlockProps {
+  title?: string;
+  subtitle?: string;
   className?: string;
 }
 ```

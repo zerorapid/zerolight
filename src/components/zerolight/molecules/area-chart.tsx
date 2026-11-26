@@ -16,6 +16,7 @@ export interface AreaChartProps {
   subtitle?: string;
   headerMeta?: React.ReactNode;
   kpiHeader?: React.ReactNode;
+  summaryStats?: Array<{ label: string; value: string }>;
   curve?: "smooth" | "linear";
   showArea?: boolean;
   showLegend?: boolean;
@@ -36,6 +37,7 @@ export function AreaChart({
   subtitle,
   headerMeta,
   kpiHeader,
+  summaryStats,
   curve = "smooth",
   showArea = true,
   showLegend = true,
@@ -172,7 +174,7 @@ export function AreaChart({
       className={`p-5 border shadow-2xs flex flex-col justify-between select-none relative ${className}`}
     >
       {/* Header & Legend */}
-      {(title || hasSecondary || headerMeta || kpiHeader) && (
+      {(title || hasSecondary || headerMeta || kpiHeader || (summaryStats && summaryStats.length > 0)) && (
         <div className="space-y-3 mb-4">
           {(title || headerMeta || (showLegend && (hasSecondary || !kpiHeader))) && (
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -222,6 +224,21 @@ export function AreaChart({
             </div>
           )}
           {kpiHeader && <div>{kpiHeader}</div>}
+          {summaryStats && summaryStats.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1">
+              {summaryStats.map((stat) => (
+                <div key={stat.label} className="min-w-0">
+                  <div className="text-[11px] font-medium opacity-60 truncate">{stat.label}</div>
+                  <div
+                    style={{ color: tokens.textIconColor }}
+                    className="text-base font-bold font-sans tabular-nums tracking-tight truncate"
+                  >
+                    {stat.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

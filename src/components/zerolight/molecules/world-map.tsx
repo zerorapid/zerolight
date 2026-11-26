@@ -62,7 +62,16 @@ export interface WorldMapProps {
   onSelectRegion?: (regionId: string, datum?: WorldMapRegionDatum) => void;
   showControls?: boolean;
   showLegend?: boolean;
-  height?: number;
+  showToolbar?: boolean;
+  showSearch?: boolean;
+  showStyleSwitcher?: boolean;
+  showAdvancedButton?: boolean;
+  showZoomControls?: boolean;
+  showSelectedBadges?: boolean;
+  compactMode?: "auto" | "micro" | "compact" | "full";
+  aspectRatio?: "16/9" | "2/1" | "4/3" | "auto";
+  height?: number | string;
+  accentColor?: string;
   className?: string;
   renderStyle?: MapRenderStyle;
   patternDensity?: PatternDensity;
@@ -79,6 +88,18 @@ export function WorldMap({
   className = "",
   renderStyle = "vector",
   patternDensity = "standard",
+  showControls = true,
+  showLegend = true,
+  showToolbar,
+  showSearch,
+  showStyleSwitcher,
+  showAdvancedButton,
+  showZoomControls,
+  showSelectedBadges,
+  compactMode = "auto",
+  aspectRatio = "16/9",
+  height,
+  accentColor,
 }: WorldMapProps) {
   const selectedCountryIds = selectedRegionId ? [selectedRegionId] : [];
 
@@ -93,6 +114,16 @@ export function WorldMap({
       }}
       showTelemetryMarkers={true}
       interactive={true}
+      showToolbar={showToolbar ?? showControls}
+      showSearch={showSearch}
+      showStyleSwitcher={showStyleSwitcher}
+      showAdvancedButton={showAdvancedButton}
+      showZoomControls={showZoomControls ?? showControls}
+      showSelectedBadges={showSelectedBadges ?? showLegend}
+      compactMode={compactMode}
+      aspectRatio={aspectRatio}
+      height={height}
+      accentColor={accentColor}
     />
   );
 }
