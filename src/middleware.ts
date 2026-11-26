@@ -29,7 +29,8 @@ export async function middleware(req: NextRequest) {
     pathname === "/favicon.ico" ||
     pathname === "/icon.svg" ||
     pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml"
+    pathname === "/sitemap.xml" ||
+    pathname === "/llms.txt"
   ) {
     return NextResponse.next();
   }

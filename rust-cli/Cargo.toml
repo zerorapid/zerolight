@@ -1,0 +1,17 @@
+[package]
+name = "zerolight-cli"
+version = "0.1.0"
+edition = "2021"
+description = "Native Rust CLI and token-invariant checker for the ZeroLight Design System"
+
+[[bin]]
+name = "zerolight"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive", "env"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ureq = { version = "2.10", features = ["json"] }
+walkdir = "2.5"
+regex = "1.11"

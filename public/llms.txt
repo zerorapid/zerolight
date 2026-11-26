@@ -1,0 +1,17 @@
+# ZeroLight Design System by Zerorapid
+
+> Token-driven B2B SaaS design system with 125+ registry payloads, 6-tier atomic architecture, and shadcn `/r/` compatibility.
+
+## Architecture
+- Foundations: Live runtime tokens, YIQ auto-contrast, spring motion physics, elevation
+- Atoms (43): Buttons, Inputs, Switches, Checkboxes, Badges, Skeletons, Spinners, Kbd, Avatars
+- Molecules (46): FormFields, SearchBars, Selects, DateRangePicker, AreaChart, BarChart, DonutChart, WorldMap
+- Organisms (19): BillingPortal, TenantKit, TeamPermissions, DataTable, CommandPalette, GeoBreakdown, BentoShowcase
+- Templates (5): DashboardTemplate, AnalyticsReportTemplate, ConsoleTableTemplate, ChatWorkspaceTemplate
+- Views (8): FinexyView, BillingView, DonationsView, DevConsoleView, SchoolAttendanceView
+
+## CLI & Registry
+- Node CLI: `npx zerolight add <component|block/name>`
+- Native Rust CLI: `rust-cli/` (`zerolight add`, `zerolight list`, `zerolight check`, `zerolight diff`)
+- MCP Server: `node bin/zerolight-mcp.mjs`
+- Registry Formats: `/registry/<name>.json` and `/r/<name>.json` (shadcn-compatible)

@@ -2321,7 +2321,7 @@ test("Single Component Platform, Employee Password Gate, Morphic Evolution & sha
   // GitHub monorepo tool labeler, shadcn CLI & zerorapid.in Go-Live readiness
   assert.ok(fs.existsSync(path.join(rootDir, ".github/labeler.yml")) && fs.existsSync(path.join(rootDir, ".github/workflows/labeler.yml")), "Single-branch monorepo tool labeler must exist under .github/");
   const cliSrc = fs.readFileSync(path.join(rootDir, "bin/cli.mjs"), "utf8");
-  assert.ok(cliSrc.includes("DEFAULT_SHADCN_REGISTRY_BASE") && cliSrc.includes("--shadcn") && cliSrc.includes("ui.zerorapid.in"), "CLI must support --shadcn flag and ui.zerorapid.in registry host");
+  assert.ok(cliSrc.includes("DEFAULT_SHADCN_REGISTRY_BASE") && cliSrc.includes("--shadcn") && cliSrc.includes("bricks.zerorapid.in"), "CLI must support --shadcn flag and bricks.zerorapid.in registry host");
 
   const nextConfigSrc = fs.readFileSync(path.join(rootDir, "next.config.mjs"), "utf8");
   assert.ok(nextConfigSrc.includes("/r/:path*") && nextConfigSrc.includes("Access-Control-Allow-Origin"), "next.config.mjs must allow CORS on public registry payloads");

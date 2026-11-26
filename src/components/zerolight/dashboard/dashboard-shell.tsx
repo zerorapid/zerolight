@@ -20,6 +20,7 @@ import {
   Search,
   Bell,
   ExternalLink,
+  Terminal,
   Menu,
   X,
 } from "lucide-react";
@@ -29,9 +30,10 @@ import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 import { OverviewTab } from "./overview-tab";
 import { DesignSystemTab } from "./design-system-tab";
+import { CliRegistryTab } from "./cli-registry-tab";
 import { SettingsTab } from "./settings-tab";
 
-export type DashboardTab = "overview" | "docs" | "settings";
+export type DashboardTab = "overview" | "docs" | "cli" | "settings";
 export type DocsTier = "foundations" | "atoms" | "molecules" | "organisms" | "templates" | "pages";
 export type DocsSubView =
   | "catalog"
@@ -167,7 +169,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get("tab") as DashboardTab | null;
-    if (tabParam && ["overview", "docs", "settings"].includes(tabParam)) {
+    if (tabParam && ["overview", "docs", "cli", "settings"].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, []);
@@ -260,6 +262,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   const navItems = [
     { id: "overview", label: "Overview", icon: <Home className="w-4 h-4" /> },
     { id: "docs", label: "Design System", icon: <Layers className="w-4 h-4" />, badge: "120" },
+    { id: "cli", label: "CLI & Registry", icon: <Terminal className="w-4 h-4" /> },
     { id: "settings", label: "Settings & MCP", icon: <Settings className="w-4 h-4" /> },
   ];
 
@@ -803,6 +806,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
           <span className="text-zinc-700 font-semibold capitalize">
             {activeTab === "overview" && "Overview"}
             {activeTab === "docs" && `Design System / ${activeTierData.label}`}
+            {activeTab === "cli" && "CLI & Registry"}
             {activeTab === "settings" && "Settings & MCP"}
           </span>
         </div>
@@ -834,6 +838,8 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
               setDocsSubView={setDocsSubView}
             />
           )}
+
+          {activeTab === "cli" && <CliRegistryTab />}
 
           {activeTab === "settings" && (
             <SettingsTab

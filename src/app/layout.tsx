@@ -43,9 +43,29 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "ZeroLight Component Platform",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web",
+    url: SITE_URL,
+    creator: {
+      "@type": "Organization",
+      name: "Zerorapid",
+      url: "https://zerorapid.in",
+    },
+    description:
+      "Token-driven B2B SaaS design system, 200+ production React UI components, and shadcn-compatible registry.",
+  };
+
   return (
     <html lang="en" className="light" style={{ colorScheme: "light" }}>
       <body className="min-h-screen bg-[#F8FAFC] text-[#09090B] antialiased selection:bg-neutral-200">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {children}
       </body>
     </html>

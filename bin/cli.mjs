@@ -5,10 +5,19 @@ import https from "node:https";
 import http from "node:http";
 
 const PKG_VERSION = "0.1.0";
-const DEFAULT_REGISTRY_BASE = process.env.ZEROLIGHT_REGISTRY_URL || "https://ui.zerorapid.in/registry";
-const DEFAULT_SHADCN_REGISTRY_BASE = process.env.ZEROLIGHT_SHADCN_REGISTRY_URL || "https://ui.zerorapid.in/r";
+const DEFAULT_REGISTRY_BASE = process.env.ZERORAPID_REGISTRY_URL || process.env.ZEROLIGHT_REGISTRY_URL || "https://bricks.zerorapid.in/registry";
+const DEFAULT_SHADCN_REGISTRY_BASE = process.env.ZEROLIGHT_SHADCN_REGISTRY_URL || "https://bricks.zerorapid.in/r";
 const GITHUB_REGISTRY_FALLBACK = "https://raw.githubusercontent.com/zerorapid/zerolight/main/public/registry";
 const GITHUB_SHADCN_FALLBACK = "https://raw.githubusercontent.com/zerorapid/zerolight/main/public/r";
+
+const BLOCK_ALIASES = {
+  "block/billing-portal": "billing-portal",
+  "block/tenant-kit": "tenant-kit",
+  "block/team-permissions": "team-permissions",
+  "block/geo-breakdown": "geo-breakdown",
+  "block/data-table": "data-table",
+  "block/bento-showcase": "bento-showcase",
+};
 
 function printBanner() {
   console.log(`
@@ -52,7 +61,11 @@ function parseArgs(argv) {
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
     const client = url.startsWith("https") ? https : http;
-    client.get(url, (res) => {
+    const headers = {};
+    if (process.env.ZERORAPID_REGISTRY_TOKEN) {
+      headers["x-zerolight-token"] = process.env.ZERORAPID_REGISTRY_TOKEN;
+    }
+    client.get(url, { headers }, (res) => {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
         return resolve(fetchJson(res.headers.location));
       }
@@ -171,7 +184,8 @@ async function handleAdd(flags) {
   console.log(`Resolving components & registry dependencies...`);
 
   while (queue.length > 0) {
-    const name = queue.shift();
+    const rawName = queue.shift();
+    const name = BLOCK_ALIASES[rawName] || rawName.replace(/^block\//, "");
     if (!name || visited.has(name)) continue;
     visited.add(name);
 

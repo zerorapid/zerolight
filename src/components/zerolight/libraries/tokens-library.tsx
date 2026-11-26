@@ -8,11 +8,6 @@ import {
   Terminal,
 } from "lucide-react";
 import { useZeroLight } from "../context";
-import { Button } from "../atoms/button";
-import { Badge } from "../atoms/badge";
-import { Input } from "../atoms/input";
-import { Switch } from "../atoms/switch";
-import { DynamicIcon } from "../atoms/dynamic-icon";
 import { LibraryHeader } from "./common";
 
 export function SaaSTokensLibrary() {
@@ -21,8 +16,6 @@ export function SaaSTokensLibrary() {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [motionTrigger, setMotionTrigger] = useState<string | null>(null);
   const [elevationMode, setElevationMode] = useState<"flat" | "soft" | "elevated">(tokens.elevation || "soft");
-  const [liveSwitch, setLiveSwitch] = useState(true);
-  const [liveInput, setLiveInput] = useState("prod-cluster@zerolight.dev");
 
   const copyToClipboard = (text: string, id: string) => {
     navigator.clipboard?.writeText(text);
@@ -95,47 +88,6 @@ export function SaaSTokensLibrary() {
           </button>
         }
       />
-
-      {/* ── LIVE RUNTIME PRIMITIVE TOKEN STRIP ── */}
-      <div
-        style={{
-          borderRadius: `${scaled.scaledCardRadius}px`,
-          borderColor: tokens.universalBorderColor,
-          borderWidth: `${tokens.borderWidth}px`,
-          backgroundColor: tokens.universalFillColor,
-        }}
-        className="p-5 border shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4"
-      >
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Badge variant="healthy" size="xs" showDot>Live Runtime Token Feed</Badge>
-            <span className="text-[11px] font-semibold text-zinc-500 tabular-nums">
-              Radius: {tokens.cornerRadius ?? 12}px &bull; Font: {tokens.fontFamily || "Plus Jakarta Sans"} &bull; Icons: {(tokens.iconLibrary || "lucide").toUpperCase()}
-            </span>
-          </div>
-          <p className="text-xs text-zinc-500">
-            All real ZeroLight atoms below bind directly to live <code className="font-mono text-[11px]">useZeroLight()</code> context tokens.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="w-48">
-            <Input
-              value={liveInput}
-              onChange={(e) => setLiveInput(e.target.value)}
-              placeholder="Live token input..."
-            />
-          </div>
-          <Switch checked={liveSwitch} onChange={setLiveSwitch} />
-          <div className="p-2 rounded-lg border border-zinc-200/80 flex items-center gap-1.5">
-            <DynamicIcon name="shield-check" size={16} library={tokens.iconLibrary} strokeWidth={tokens.iconStrokeWidth || 1.75} color={primColor} />
-            <DynamicIcon name="zap" size={16} library={tokens.iconLibrary} strokeWidth={tokens.iconStrokeWidth || 1.75} color={primColor} />
-          </div>
-          <Button variant="primary" size="sm">
-            Primary Token CTA
-          </Button>
-        </div>
-      </div>
 
       {/* =========================================================================
            SECTION 1: TACTILE CALM & PRINCIPLES
@@ -406,50 +358,6 @@ export function SaaSTokensLibrary() {
               </motion.button>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* =========================================================================
-           SECTION 6: TERMINAL CLI & MCP REGISTRY
-      ========================================================================= */}
-      <section className="space-y-3">
-        <div>
-          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">
-            6. Terminal CLI & MCP Registry
-          </h3>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            Distributed component registry CLI, schema-validated MCP toolkits, and agent bindings.
-          </p>
-        </div>
-
-        <div className="p-5 rounded-xl border border-zinc-200/80 dark:border-white/10 bg-zinc-950 text-white shadow-md space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs">
-            <div className="flex items-center gap-2 text-zinc-400">
-              <Terminal className="w-4 h-4 text-emerald-400" />
-              <span className="font-sans font-bold text-zinc-200">ZeroLight Distribution Registry</span>
-            </div>
-            <span className="text-[10px] text-zinc-500 font-sans tabular-nums">v2.4.0 Engine Active</span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {[
-              { cmd: "npx zerolight add button", label: "Button & Triggers" },
-              { cmd: "npx zerolight add input", label: "Inputs & Fields" },
-              { cmd: "npx zerolight tokens export", label: "Tailwind Tokens Export" },
-            ].map((cli) => (
-              <div
-                key={cli.cmd}
-                onClick={() => copyToClipboard(cli.cmd, cli.cmd)}
-                className="group p-3 rounded-lg bg-white/5 border border-white/10 hover:border-white/20 transition cursor-pointer flex items-center justify-between"
-              >
-                <div>
-                  <div className="text-[10px] text-zinc-400 mb-1">{cli.label}</div>
-                  <div className="text-xs font-sans tabular-nums text-emerald-400 font-semibold">{cli.cmd}</div>
-                </div>
-                <Copy className="w-3.5 h-3.5 text-zinc-500 group-hover:text-white transition shrink-0" />
-              </div>
-            ))}
-          </div>
         </div>
       </section>
     </div>
