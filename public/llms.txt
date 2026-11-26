@@ -11,15 +11,46 @@
 1. **Token-Driven Surfaces Only (`useZeroLight()`)**: Never hardcode hex colors (`#3B82F6`), arbitrary radii, or shadows. Bind to `tokens.universalFillColor`, `tokens.universalBorderColor`, `tokens.textIconColor`, `tokens.primaryButtonColor`, `scaled.scaledCardRadius`, `scaled.scaledRadius`, and `scaled.cardShadow`.
 2. **Tabular Numerals**: Use `font-sans tabular-nums` on all KPIs, currency, counts, SKUs, and tables.
 3. **Popups Over Sidebars**: Use centered `Modal` / `DetailDrawer` popups for secondary details instead of edge slide-over sidebars.
-4. **Morphic Evolution (`M1 | M2 | M3`)**: Use `stage="M1"` (Compact ERP), `stage="M2"` (Tactile SaaS), or `stage="M3"` (Enterprise Full-Context).
+4. **Morphic Evolution (`M1 | M2 | M3`)**: `stage?: "M1" | "M2" | "M3"` (or `<MorphicScope stage="M2">`) is supported on core primitives & ERP modules (`Button`, `Input`, `Card`, `StatCard`, `InventoryStockHealth`, `ApprovalWorkflow`, `ThreeWayMatch`, `LedgerBalancer`, `LineItemMatrix`).
 
-## Component Tiers (130 Items)
-- Foundations & Core (3): types, context, morphic-engine
-- Atoms (43): button, icon-button, input, checkbox, switch, slider, progress-bar, badge, tag-chip, kbd, avatar, skeleton, separator, spinner, card, etc.
-- Molecules (47): stat-card, form-field, input-group, search-bar, select, date-range-picker, area-chart, bar-chart, donut-chart, world-map, inventory-stock-health, etc.
-- Organisms (23): data-table, billing-portal, tenant-kit, team-permissions, geo-breakdown, audit-log, quota-matrix, filter-builder, command-palette, detail-drawer, modal, approval-workflow, three-way-match, ledger-balancer, line-item-matrix, bento-showcase
-- Templates (5): dashboard-template, analytics-report-template, console-table-template, chat-workspace-template
-- Views (8): finexy-view, billing-view, donations-view, dev-console-view, school-attendance-view
+## Verified Prop Signatures (Compile-Ready Reference)
+Use these exact TypeScript prop names when generating TSX from `@/components/zerolight`:
+
+- **`StatCard`**:
+  `label: string; value: string | number; delta?: string; trend?: "up" | "down" | "neutral"; comparisonText?: string; stage?: 1 | 2 | 3 | "M1" | "M2" | "M3";`
+  *(Note: uses `label` and `comparisonText`, NOT `title`/`description`.)*
+
+- **`Button`**:
+  `variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive"; size?: "sm" | "md" | "lg"; loading?: boolean; iconLeft?: ReactNode; iconRight?: ReactNode; stage?: "M1" | "M2" | "M3"; onClick?: () => void;`
+
+- **`Badge`**:
+  `variant?: "healthy" | "degraded" | "syncing" | "critical" | "neutral" | "info"; size?: "xs" | "sm" | "md"; showDot?: boolean;`
+
+- **`Modal`**:
+  `isOpen: boolean; onClose: () => void; title?: ReactNode; description?: ReactNode; footer?: ReactNode; size?: "sm" | "md" | "lg" | "xl"; children?: ReactNode;`
+  *(Note: uses `isOpen` and `onClose`, NOT `open`/`onOpenChange`.)*
+
+- **`BarChart`**:
+  `data: Array<{ label: string; value: number; secondaryValue?: number }>; title?: string; subtitle?: string; primaryLabel?: string; secondaryLabel?: string; mode?: "grouped" | "stacked";`
+
+- **`DataTable<T>`**:
+  `columns?: Array<{ key: string; header: ReactNode; align?: "left" | "right" | "center"; render?: (row: T) => ReactNode }>; rows?: T[]; rowKey?: (row: T, index: number) => string; onRowClick?: (row: T) => void; showToolbar?: boolean;`
+  *(Note: uses `rows` and `columns[{ key, header }]`, NOT `data` or `accessorKey`.)*
+
+- **`InventoryStockHealth`**:
+  `sku: string; name: string; warehouseBin: string[]; onHand: number; reorderPoint: number; maxCapacity: number; unit?: string; onReorder?: (sku: string) => void; stage?: "M1" | "M2" | "M3";`
+
+- **`ApprovalWorkflow`**:
+  `documentId: string; title: string; amountLabel: string; requester: string; budgetImpact: string; steps: Array<{ id: string; role: string; approver: string; status: "approved" | "pending" | "rejected" | "waiting"; timestamp?: string }>; onApprove?: (comment: string) => void; onReject?: (reason: string) => void; stage?: "M1" | "M2" | "M3";`
+
+- **`ThreeWayMatch`**:
+  `poNumber: string; grnNumber: string; invoiceNumber: string; currency?: string; lines: Array<{ sku: string; description: string; poQty: number; grnQty: number; invoiceQty: number; poUnitPrice: number; invoiceUnitPrice: number }>; stage?: "M1" | "M2" | "M3";`
+
+- **`LedgerBalancer`**:
+  `journalId?: string; fiscalPeriod?: string; periodLocked?: boolean; currency?: string; initialLines: Array<{ id: string; accountCode: string; accountName: string; debit: number; credit: number }>; onPostJournal?: (lines) => void; stage?: "M1" | "M2" | "M3";`
+
+- **`LineItemMatrix`**:
+  `title?: string; currency?: string; initialItems: Array<{ id: string; sku: string; name: string; qty: number; unitPrice: number; taxPct: number }>; onSave?: (items, grandTotal) => void; stage?: "M1" | "M2" | "M3";`
 
 ## CLI Installation
 - Node CLI: `npx zerolight add <component|block/name>`
