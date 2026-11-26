@@ -1130,7 +1130,7 @@ test("Enterprise Authentication Gate and Floating Sidebar Dashboard Shell exist 
   assert.ok(dashboardContent.includes("Vector Map Studio & Asset Downloader"), "DashboardShell Overview must feature Tools preview card");
   assert.ok(dashboardContent.includes("Visual Studio Dock"), "DashboardShell must have DS Editor trigger");
   assert.ok(dashboardContent.includes("Design System"), "DashboardShell must have Design System Docs view");
-  assert.ok(dashboardContent.includes('label: "Tools"'), "DashboardShell must expose unified Tools label");
+  assert.ok(!dashboardContent.includes('label: "Tools"'), "DashboardShell must not expose removed Tools label");
   assert.ok(dashboardContent.includes("Settings & MCP"), "DashboardShell must have Settings view with MCP status");
 
   const homePage = fs.readFileSync(path.join(rootDir, "src/app/page.tsx"), "utf8");
@@ -1175,7 +1175,7 @@ test("WorldAtlasMap: 2D flat canvas, 6 customizable render styles, floating cont
   assert.ok(zlIndex.includes("WorldAtlasMap"), "src/components/zerolight/index.ts must export WorldAtlasMap");
 
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
-  assert.ok(dashboardContent.includes("<WorldAtlasMap"), "DashboardShell must integrate WorldAtlasMap");
+  assert.ok(!dashboardContent.includes("<WorldAtlasMap"), "DashboardShell must not integrate removed WorldAtlasMap tool");
 });
 
 // -----------------------------------------------------------------
@@ -1210,7 +1210,7 @@ test("ZeroLightDocsPortal: Visual Foundations, UI Components, Brand Assets & Zer
 
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
   assert.ok(dashboardContent.includes("<ZeroLightDocsPortal"), "DashboardShell must integrate ZeroLightDocsPortal for docs tab");
-  assert.ok(dashboardContent.includes("Vector Map Studio & Asset Generator"), "DashboardShell must feature Map Studio in tools tab");
+  assert.ok(!dashboardContent.includes("Vector Map Studio & Asset Generator"), "DashboardShell must not feature Map Studio tool");
 });
 
 test("Visual Studio Logo Variations Manager & My Themes Persistence", () => {
@@ -2275,10 +2275,9 @@ console.log("\n=== Suite 45: Unified Tools Directory, Morphic Evolution & shadcn
 
 test("Single Component Platform, Employee Password Gate, Morphic Evolution & shadcn r/ Registry", () => {
   const dashboardContent = fs.readFileSync(path.join(rootDir, "src/components/zerolight/dashboard/dashboard-shell.tsx"), "utf8");
-  assert.ok(dashboardContent.includes("TOOLS_VIEWS") && dashboardContent.includes('useState<DashboardTab>("docs")'), "DashboardShell must open directly into the Design System Component Catalog");
-  assert.ok(!dashboardContent.includes("toolsMenuExpanded") && !dashboardContent.includes("GenUIStudioTool"), "Sidebar Tools item must have no submenu and GenUIStudioTool must be removed");
-  assert.ok(!dashboardContent.includes("<ZeroFlashTool") && !dashboardContent.includes("<ZeroAuditorTool"), "ZeroFlash and ZeroAuditor must be cleanly separated from the Single Component Platform");
-  assert.ok(dashboardContent.includes("<WorldAtlasMap") && dashboardContent.includes("Visual Studio Dock"), "Platform must retain Visual Studio Dock and WorldAtlasMap");
+  assert.ok(dashboardContent.includes('useState<DashboardTab>("docs")'), "DashboardShell must open directly into the Design System Component Catalog");
+  assert.ok(!dashboardContent.includes("toolsMenuExpanded") && !dashboardContent.includes("GenUIStudioTool"), "Sidebar must have no Tools submenu and GenUIStudioTool must be removed");
+  assert.ok(!dashboardContent.includes("<ZeroFlashTool") && !dashboardContent.includes("<ZeroAuditorTool") && !dashboardContent.includes("<TokenStudioSidebar"), "Tools studios must be cleanly removed from DashboardShell");
 
   // Verify Server-Side Employee Password Gate
   const middlewarePath = path.join(rootDir, "src/middleware.ts");
@@ -2288,10 +2287,7 @@ test("Single Component Platform, Employee Password Gate, Morphic Evolution & sha
   const middlewareSrc = fs.readFileSync(middlewarePath, "utf8");
   assert.ok(middlewareSrc.includes("ZERORAPID_TEAM_PASSWORD") && middlewareSrc.includes("zl_team_session"), "Middleware must enforce ZERORAPID_TEAM_PASSWORD session cookie");
 
-  const atlasSrc = fs.readFileSync(path.join(rootDir, "src/components/WorldAtlasMap.tsx"), "utf8");
-  assert.ok(atlasSrc.includes("useZeroLight") && atlasSrc.includes("SegmentedControl") && atlasSrc.includes("Slider") && atlasSrc.includes("Switch"), "WorldAtlasMap must bind controls to ZeroLight primitives and tokens");
-
-  assert.ok(fs.existsSync(path.join(rootDir, "src/app/studio/page.tsx")), "Dedicated full-page Visual Studio Dock route must exist");
+  assert.ok(!fs.existsSync(path.join(rootDir, "src/app/studio/page.tsx")), "Visual Studio Dock /studio route must be removed");
 
   const genUiPath = path.join(rootDir, "src/components/zerolight/gen-ui/gen-ui-renderer.tsx");
   assert.ok(fs.existsSync(genUiPath), "gen-ui-renderer.tsx must exist");

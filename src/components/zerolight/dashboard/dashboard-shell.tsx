@@ -44,7 +44,6 @@ import {
 } from "lucide-react";
 import { useAuth } from "../auth/auth-context";
 import { useZeroLight } from "../context";
-import { WorldAtlasMap } from "../../WorldAtlasMap";
 import { ZeroLightDocsPortal } from "../docs/zerolight-docs-portal";
 import { SaaSTokensLibrary, SaaSButtonLibrary, SaaSInputFieldLibrary, SaaSSelectionLibrary, SaaSIndicatorLibrary, SaaSDividerLibrary, SaaSTooltipLibrary, SaaSFeedbackLibrary, SaaSOverlaysLibrary, SaaSNavigationLibrary, SaaSDataLibrary, SaaSBusinessLibrary, SaaSLayoutLibrary, SaaSAppScreensLibrary, SaaSEdgeCasesLibrary } from "../libraries";
 import { Badge } from "../atoms/badge";
@@ -52,11 +51,8 @@ import { Button } from "../atoms/button";
 import { Card } from "../atoms/card";
 import { DynamicIcon } from "../atoms/dynamic-icon";
 import { SegmentedControl } from "../molecules/segmented-control";
-import { TokenStudioSidebar } from "../studio/token-studio-sidebar";
-import { SaasTemplateStage, SaasTemplateKey } from "../studio/saas-template-stage";
 
-export type DashboardTab = "overview" | "docs" | "tools" | "settings";
-export type ToolsSubView = "studio" | "atlas";
+export type DashboardTab = "overview" | "docs" | "settings";
 export type DocsTier = "foundations" | "atoms" | "molecules" | "organisms" | "templates" | "pages";
 export type DocsSubView =
   | "catalog"
@@ -150,16 +146,6 @@ export const DOCS_TIERS: {
   },
 ];
 
-export const TOOLS_VIEWS: {
-  id: ToolsSubView;
-  label: string;
-  badge: string;
-  desc: string;
-}[] = [
-  { id: "studio", label: "Visual Studio Dock", badge: "Tokens", desc: "Live token customizer and interactive SaaS template workbench" },
-  { id: "atlas", label: "World Atlas Map", badge: "Vector", desc: "2D flat monochrome vector maps with 6 pattern styles & SVG export" },
-];
-
 interface GlobalSearchEntry {
   id: string;
   label: string;
@@ -168,8 +154,6 @@ interface GlobalSearchEntry {
   tab: DashboardTab;
   docsTier?: DocsTier;
   docsSubView?: DocsSubView;
-  toolsSubView?: ToolsSubView;
-  saasTemplate?: SaasTemplateKey;
 }
 
 const GLOBAL_SEARCH_ENTRIES: GlobalSearchEntry[] = [
@@ -184,23 +168,11 @@ const GLOBAL_SEARCH_ENTRIES: GlobalSearchEntry[] = [
       docsSubView: sub.id,
     }))
   ),
-  ...TOOLS_VIEWS.map((tool) => ({
-    id: `tool-${tool.id}`,
-    label: tool.label,
-    tierLabel: `Tools / ${tool.label}`,
-    keywords: `${tool.label} ${tool.desc} tools`.toLowerCase(),
-    tab: "tools" as DashboardTab,
-    toolsSubView: tool.id,
-  })),
   { id: "comp-charts", label: "AreaChart, BarChart & DonutChart", tierLabel: "Molecules Directory", keywords: "chart analytics data viz svg bezier graph telemetry", tab: "docs", docsTier: "molecules", docsSubView: "catalog-molecules" },
-  { id: "comp-stageshow", label: "ProductWindow, HeroShowcase & BentoShowcase", tierLabel: "Tools / Visual Studio Dock", keywords: "hero stageshow bento cursor animation showcase window", tab: "tools", toolsSubView: "studio", saasTemplate: "hero_showcase" },
   { id: "comp-datatable", label: "Enterprise DataTable & Kanban", tierLabel: "Organisms / Data & Tables", keywords: "table grid csv tsv export filter kanban sort", tab: "docs", docsTier: "organisms", docsSubView: "data" },
   { id: "comp-otp", label: "OTP Input, Currency & Calendar", tierLabel: "Atoms / Inputs & Fields", keywords: "otp phone pin password datepicker currency inr usd", tab: "docs", docsTier: "atoms", docsSubView: "inputs" },
   { id: "comp-cmdk", label: "Command Palette (⌘K), Modals & Drawers", tierLabel: "Organisms / Overlays", keywords: "modal dialog drawer cmdk command palette overlay sheet", tab: "docs", docsTier: "organisms", docsSubView: "overlays" },
-  { id: "comp-atlas", label: "Vector World Atlas Map Studio", tierLabel: "Tools / World Atlas Map", keywords: "world map svg vector continent atlas geo", tab: "tools", toolsSubView: "atlas" },
   { id: "comp-mcp", label: "MCP Agent Server & Security Settings", tierLabel: "Settings & MCP", keywords: "mcp json-rpc api key webhook compliance soc2", tab: "settings" },
-  { id: "comp-console", label: "Enterprise Console Template", tierLabel: "Tools / Visual Studio Dock", keywords: "console enterprise clusters workloads template", tab: "tools", toolsSubView: "studio", saasTemplate: "unified_enterprise" },
-  { id: "comp-crm", label: "CRM Pipeline Template", tierLabel: "Tools / Visual Studio Dock", keywords: "crm sales deals pipeline template", tab: "tools", toolsSubView: "studio", saasTemplate: "customer_crm" },
 ];
 
 export interface DashboardShellProps {
@@ -210,15 +182,13 @@ export interface DashboardShellProps {
 export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   const { isAuthenticated, user, logout } = useAuth();
   const { tokens } = useZeroLight();
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState<DashboardTab>("docs");
-  const [toolsSubView, setToolsSubView] = useState<ToolsSubView>("studio");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const tabParam = params.get("tab") as DashboardTab | null;
-    if (tabParam && ["overview", "docs", "tools", "settings"].includes(tabParam)) {
+    if (tabParam && ["overview", "docs", "settings"].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, []);
@@ -236,7 +206,6 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   }, [docsSubView, docsTier]);
 
   const activeTierData = DOCS_TIERS.find((t) => t.id === docsTier) || DOCS_TIERS[0];
-  const activeToolData = TOOLS_VIEWS.find((t) => t.id === toolsSubView) || TOOLS_VIEWS[0];
   const leaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const searchContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -258,15 +227,10 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
     setActiveTab(entry.tab);
     if (entry.docsTier) setDocsTier(entry.docsTier);
     if (entry.docsSubView) setDocsSubView(entry.docsSubView);
-    if (entry.toolsSubView) setToolsSubView(entry.toolsSubView);
-    if (entry.saasTemplate) setActiveSaasTemplate(entry.saasTemplate);
     if (entry.tab === "docs") setDocsMenuExpanded(true);
     setGlobalSearch("");
     setSearchFocused(false);
   };
-
-  // Visual Studio Dock State
-  const [activeSaasTemplate, setActiveSaasTemplate] = useState<SaasTemplateKey>("zerolight_core");
   const [brandName, setBrandName] = useState("ZeroLight OS");
   const [brandMark, setBrandMark] = useState("ZL");
   const [brandLogoUrl, setBrandLogoUrl] = useState<string | null>(null);
@@ -398,7 +362,6 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   const navItems = [
     { id: "overview", label: "Overview", icon: <Home className="w-4 h-4" /> },
     { id: "docs", label: "Design System", icon: <Layers className="w-4 h-4" />, badge: "120" },
-    { id: "tools", label: "Tools", icon: <Wrench className="w-4 h-4" />, badge: "4" },
     { id: "settings", label: "Settings & MCP", icon: <Settings className="w-4 h-4" /> },
   ];
 
@@ -445,7 +408,6 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                     type="button"
                     onClick={() => {
                       setActiveTab(item.id as DashboardTab);
-                      if (item.id === "tools") setToolsSubView("studio");
                       setMobileNavOpen(false);
                     }}
                     className={`w-full px-3 py-2.5 rounded-xl flex items-center gap-2.5 text-xs font-medium ${
@@ -546,9 +508,6 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                             setDocsTier("foundations");
                             setDocsSubView("catalog");
                           }
-                        } else if (item.id === "tools") {
-                          setActiveTab("tools");
-                          setToolsSubView("studio");
                         } else {
                           setActiveTab(item.id as DashboardTab);
                         }
@@ -946,18 +905,13 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
           <span className="text-zinc-700 font-semibold capitalize">
             {activeTab === "overview" && "Overview"}
             {activeTab === "docs" && `Design System / ${activeTierData.label}`}
-            {activeTab === "tools" && `Tools / ${activeToolData.label}`}
             {activeTab === "settings" && "Settings & MCP"}
           </span>
         </div>
 
         {/* ── BIG ROUNDED WHITE WORKSPACE CARD (ONLY THIS BOX HAS OVERFLOW-Y-AUTO EXCEPT STUDIO DOCK WHICH IS A FULL-HEIGHT DOCK) ── */}
         <main
-          className={`flex-1 rounded-[18px] border shadow-xs min-h-0 print:border-0 print:shadow-none print:rounded-none print:overflow-visible print:h-auto print:block ${
-            activeTab === "tools" && toolsSubView === "studio"
-              ? "overflow-hidden flex flex-col p-0"
-              : "overflow-y-auto p-4 sm:p-6 md:p-8"
-          }`}
+          className="flex-1 rounded-[18px] border shadow-xs min-h-0 print:border-0 print:shadow-none print:rounded-none print:overflow-visible print:h-auto print:block overflow-y-auto p-4 sm:p-6 md:p-8"
           style={{
             backgroundColor: tokens.universalFillColor,
             borderColor: tokens.universalBorderColor,
@@ -1133,22 +1087,23 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
 
               <div
                 onClick={() => {
-                  setActiveTab("tools");
-                  setToolsSubView("atlas");
+                  setActiveTab("docs");
+                  setDocsTier("organisms");
+                  setDocsSubView("data");
                 }}
                 className="p-5 rounded-2xl bg-white border border-zinc-200/90 hover:border-zinc-400 transition-all cursor-pointer shadow-xs group space-y-2"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Wrench className="w-4 h-4 text-indigo-600" />
+                    <Layers className="w-4 h-4 text-indigo-600" />
                     <span className="font-bold text-xs text-zinc-950">
-                      Vector Map Studio & Asset Downloader
+                      Organisms, Templates &amp; Views
                     </span>
                   </div>
                   <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-950 transition-colors" />
                 </div>
                 <p className="text-xs text-zinc-500">
-                  Customize 6 pattern render styles, focus regions, and download standalone high-resolution SVG vector maps.
+                  Browse enterprise data tables, billing portals, multi-tenant kits, and full-page SaaS layouts.
                 </p>
               </div>
             </div>
@@ -1169,15 +1124,10 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2 shrink-0">
-                {/* Live Token Sync Status Pills (Connected to Visual Studio Dock inside Tools) */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveTab("tools");
-                    setToolsSubView("studio");
-                  }}
-                  className="px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200/80 text-[11px] font-semibold text-zinc-700 hover:border-zinc-400 transition flex items-center gap-2 cursor-pointer"
-                  title="Edit active Design System tokens in Visual Studio Dock"
+                {/* Live Token Sync Status Pills */}
+                <div
+                  className="px-2.5 py-1 rounded-full bg-zinc-100 border border-zinc-200/80 text-[11px] font-semibold text-zinc-700 flex items-center gap-2"
+                  title="Active Design System Tokens"
                 >
                   <span
                     className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
@@ -1190,8 +1140,8 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                   </span>
                   <span className="text-zinc-300">•</span>
                   <DynamicIcon name="sparkles" size={12} library={tokens.iconLibrary} />
-                  <span className="text-zinc-500">Tune Tokens</span>
-                </button>
+                  <span className="text-zinc-500">Live Tokens</span>
+                </div>
                 <Badge variant="healthy">295 SaaS Pattern Variants Active</Badge>
               </div>
             </div>
@@ -1273,133 +1223,6 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
           </div>
         )}
 
-          {/* TAB 3: UNIFIED TOOLS HUB (COLLECTION PREVIEW CARDS FIRST -> DEDICATED TOOL WORKSPACE) */}
-        {activeTab === "tools" && (
-          <div className={toolsSubView === "studio" ? "w-full flex-1 flex flex-col min-h-0 animate-in fade-in duration-200" : "max-w-7xl mx-auto space-y-6 animate-in fade-in duration-200"}>
-              <>
-                {/* Studio / Atlas Switcher Bar */}
-                <div
-                  data-zl-studio-chrome="true"
-                  className={
-                    toolsSubView === "studio"
-                      ? "px-4 py-2 border-b flex flex-wrap items-center justify-between gap-2 shrink-0 print:hidden"
-                      : "pb-3 border-b flex flex-wrap items-center justify-between gap-3 print:hidden"
-                  }
-                  style={{
-                    borderColor: tokens.universalBorderColor,
-                    backgroundColor: toolsSubView === "studio" ? tokens.universalFillColor : undefined,
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant={toolsSubView === "studio" ? "primary" : "outline"}
-                      size="sm"
-                      onClick={() => setToolsSubView("studio")}
-                    >
-                      Visual Studio Dock
-                    </Button>
-                    <Button
-                      variant={toolsSubView === "atlas" ? "primary" : "outline"}
-                      size="sm"
-                      onClick={() => setToolsSubView("atlas")}
-                    >
-                      World Atlas Map
-                    </Button>
-                  </div>
-
-                  {toolsSubView === "studio" && (
-                    <div className="flex flex-wrap items-center gap-2 shrink-0">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => window.print()}
-                        iconLeft={<Printer className="w-3.5 h-3.5" />}
-                      >
-                        Print PDF
-                      </Button>
-                      <Link href="/studio">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          iconLeft={<ExternalLink className="w-3.5 h-3.5" />}
-                        >
-                          Full Studio
-                        </Button>
-                      </Link>
-                    </div>
-                  )}
-                </div>
-
-                {toolsSubView === "studio" && (
-                  <>
-                    <div className="w-full flex-1 min-h-0 flex flex-col lg:flex-row items-stretch overflow-y-auto lg:overflow-hidden print:block print:h-auto print:overflow-visible">
-                      <div
-                        className="flex-1 min-w-0 min-h-[540px] lg:min-h-0 flex flex-col lg:h-full overflow-hidden print:h-auto print:min-h-0 print:overflow-visible print:block"
-                        style={{
-                          backgroundColor:
-                            tokens.universalFillColor === "#FFFFFF" ? "#FAFAFA" : tokens.universalFillColor,
-                        }}
-                      >
-                        <SaasTemplateStage
-                          activeTemplate={activeSaasTemplate}
-                          onTemplateChange={setActiveSaasTemplate}
-                          brandName={brandName}
-                          brandMark={brandMark}
-                          brandLogoUrl={brandLogoUrl}
-                          selectedIconMark={selectedIconMark}
-                          className="h-full"
-                        />
-                      </div>
-                      <div
-                        className="w-full lg:w-[320px] shrink-0 lg:h-full flex flex-col border-t lg:border-t-0 lg:border-l bg-white print:hidden"
-                        style={{ borderColor: tokens.universalBorderColor }}
-                      >
-                        <TokenStudioSidebar
-                          brandName={brandName}
-                          onBrandNameChange={setBrandName}
-                          brandMark={brandMark}
-                          onBrandMarkChange={setBrandMark}
-                          brandLogoUrl={brandLogoUrl}
-                          onBrandLogoUpload={setBrandLogoUrl}
-                          selectedIconMark={selectedIconMark}
-                          onSelectedIconMarkChange={setSelectedIconMark}
-                          className="h-full"
-                        />
-                      </div>
-                    </div>
-                    <span className="sr-only">Visual Studio Dock Component Test Bench</span>
-                  </>
-                )}
-
-                {toolsSubView === "atlas" && (
-                  <div className="space-y-6">
-                    <div
-                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b"
-                      style={{ borderColor: tokens.universalBorderColor }}
-                    >
-                      <div>
-                        <h1 className="text-xl font-bold tracking-tight" style={{ color: tokens.textIconColor }}>
-                          Vector Map Studio & Asset Generator
-                        </h1>
-                        <p className="text-xs opacity-70" style={{ color: tokens.textIconColor }}>
-                          Interactive tool for styling 2D monochrome vector maps, regional focus, and downloading standalone SVG assets.
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Badge variant="healthy">6 Styles Active</Badge>
-                        <Badge variant="neutral">SVG Export Ready</Badge>
-                      </div>
-                    </div>
-
-                    <WorldAtlasMap className="w-full min-h-[580px]" />
-                  </div>
-                )}
-
-              </>
-          </div>
-        )}
-
           {/* TAB 5: COMPREHENSIVE ENTERPRISE SETTINGS & MCP INTEGRATION */}
         {activeTab === "settings" && (
           !isAuthenticated ? (
@@ -1418,8 +1241,8 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
                   <Button variant="primary" size="sm" onClick={() => onRequireAuth?.()}>
                     Sign In to Admin Settings
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => setActiveTab("tools")}>
-                    Back to Tools
+                  <Button variant="outline" size="sm" onClick={() => setActiveTab("docs")}>
+                    Back to Design System
                   </Button>
                 </div>
               </Card>

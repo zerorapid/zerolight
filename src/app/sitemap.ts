@@ -1,11 +1,10 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ui.zerorapid.in";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bricks.zerorapid.in";
   const routes = [
     "",
     "/dashboard",
-    "/studio",
     "/docs/atoms",
     "/docs/molecules",
     "/docs/organisms",

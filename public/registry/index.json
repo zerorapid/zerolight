@@ -55,11 +55,10 @@
         "gen-ui-renderer",
         "libraries",
         "sign-in-card",
-        "tools",
         "types",
         "zerolight-docs-portal"
       ],
-      "lines": 16,
+      "lines": 15,
       "registryUrl": "/registry/zerolight-index.json",
       "shadcnUrl": "/r/zerolight-index.json"
     },
