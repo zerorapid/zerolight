@@ -4,7 +4,7 @@ import path from "node:path";
 import https from "node:https";
 import http from "node:http";
 
-const PKG_VERSION = "0.1.0";
+const PKG_VERSION = "0.1.1";
 const DEFAULT_REGISTRY_BASE = process.env.ZERORAPID_REGISTRY_URL || process.env.ZEROLIGHT_REGISTRY_URL || "https://bricks.zerorapid.in/registry";
 const DEFAULT_SHADCN_REGISTRY_BASE = process.env.ZEROLIGHT_SHADCN_REGISTRY_URL || "https://bricks.zerorapid.in/r";
 const GITHUB_REGISTRY_FALLBACK = "https://raw.githubusercontent.com/zerorapid/zerolight/main/public/registry";
