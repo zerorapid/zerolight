@@ -1024,10 +1024,10 @@ export function WizardOverlay() {
             </div>
           )}
 
-          {/* V07, V08, V09: Slide-Over Drawers (Right edge) */}
+          {/* V07, V08, V09: Centered Detail Popups */}
           {(activeOverlayId === "v07" || activeOverlayId === "v08" || activeOverlayId === "v09") && (
             <div
-              className={`fixed inset-y-0 right-0 z-50 w-full ${sizeConfig.drawerWidth} bg-white dark:bg-[#121215] border-l border-zinc-200 dark:border-white/10 shadow-2xl p-6 flex flex-col justify-between animate-in slide-in-from-right duration-200`}
+              className="w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-2xl p-6 flex flex-col justify-between animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               <div>
@@ -1141,10 +1141,10 @@ export function WizardOverlay() {
             </div>
           )}
 
-          {/* V10: Left Slide-Over Mobile Navigation Drawer */}
+          {/* V10: Centered Navigation Popup */}
           {activeOverlayId === "v10" && (
             <div
-              className={`fixed inset-y-0 left-0 z-50 w-full ${sizeConfig.drawerWidth} bg-white dark:bg-[#121215] border-r border-zinc-200 dark:border-white/10 shadow-2xl p-6 flex flex-col justify-between animate-in slide-in-from-left duration-200`}
+              className="w-full max-w-md max-h-[85vh] overflow-y-auto rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-2xl p-6 flex flex-col justify-between animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               <div>

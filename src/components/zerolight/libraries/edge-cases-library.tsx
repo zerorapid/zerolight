@@ -831,41 +831,49 @@ export function RetryBanner({ onRetry }: { onRetry: () => void }) {
         </section>
       </div>
 
-      {/* Slide-Over Drawer Sample */}
+      {/* Centered Popup Modal Sample */}
       {isSampleDrawerOpen && (
-        <aside className="fixed right-0 top-0 bottom-0 w-full sm:w-[400px] bg-white dark:bg-[#121215] border-l border-zinc-200 dark:border-white/10 z-50 shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-200">
-          <div className="p-5 border-b border-zinc-100 dark:border-white/5 flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-bold text-zinc-950 dark:text-white font-sans tabular-nums">#INV-9042 Inspector</h4>
-              <p className="text-xs text-zinc-400">Spring physics transition demonstration</p>
+        <div
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setIsSampleDrawerOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-white/10 shadow-2xl flex flex-col justify-between animate-in zoom-in-95 duration-200"
+          >
+            <div className="p-5 border-b border-zinc-100 dark:border-white/5 flex items-center justify-between">
+              <div>
+                <h4 className="text-sm font-bold text-zinc-950 dark:text-white font-sans tabular-nums">#INV-9042 Inspector</h4>
+                <p className="text-xs text-zinc-400">Spring physics popup demonstration</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSampleDrawerOpen(false)}
+                className="p-1 rounded text-zinc-400 hover:text-zinc-900 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsSampleDrawerOpen(false)}
-              className="p-1 rounded text-zinc-400 hover:text-zinc-900 dark:hover:text-white cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="p-5 space-y-4 text-xs flex-1 overflow-y-auto">
-            <div className="p-3 bg-zinc-50 dark:bg-white/5 border rounded-xl space-y-1">
-              <span className="text-zinc-400 font-medium">Billed Amount</span>
-              <div className="text-xl font-bold font-sans tabular-nums">₹1,25,000</div>
+            <div className="p-5 space-y-4 text-xs flex-1 overflow-y-auto">
+              <div className="p-3 bg-zinc-50 dark:bg-white/5 border rounded-xl space-y-1">
+                <span className="text-zinc-400 font-medium">Billed Amount</span>
+                <div className="text-xl font-bold font-sans tabular-nums">₹1,25,000</div>
+              </div>
+              <p className="text-zinc-600 dark:text-zinc-300 leading-relaxed text-[12px]">
+                Centered popup utilizes calibrated spring physics for natural entrance without edge sidebar crowding.
+              </p>
             </div>
-            <p className="text-zinc-600 dark:text-zinc-300 leading-relaxed text-[12px]">
-              Slide-over drawer utilizes cubic-bezier(0.16, 1, 0.3, 1) spring physics for natural entrance without jarring deceleration.
-            </p>
+            <div className="p-5 border-t border-zinc-100 dark:border-white/5 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsSampleDrawerOpen(false)}
+                className="px-4 py-2 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 cursor-pointer"
+              >
+                Close Popup
+              </button>
+            </div>
           </div>
-          <div className="p-5 border-t border-zinc-100 dark:border-white/5 flex justify-end">
-            <button
-              type="button"
-              onClick={() => setIsSampleDrawerOpen(false)}
-              className="px-4 py-2 rounded-lg text-xs font-semibold bg-zinc-950 text-white dark:bg-white dark:text-zinc-950 cursor-pointer"
-            >
-              Close Drawer
-            </button>
-          </div>
-        </aside>
+        </div>
       )}
 
       {/* Code Modal */}

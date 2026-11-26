@@ -113,9 +113,7 @@ export function DetailDrawer({
           aria-modal="true"
           aria-labelledby={titleId}
           aria-describedby={descId}
-          className={`fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex ${
-            scaled.isRtl ? "justify-start" : "justify-end"
-          }`}
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               onClose();
@@ -124,18 +122,20 @@ export function DetailDrawer({
         >
           <motion.div
             ref={drawerRef}
-            initial={{ x: scaled.isRtl ? "-100%" : "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: scaled.isRtl ? "-100%" : "100%" }}
-            transition={scaled.motionConfig.drawerTransition}
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={scaled.motionConfig.transition}
             style={{
               borderColor: tokens.universalBorderColor,
-              borderWidth: 0,
-              borderLeftWidth: scaled.isRtl ? 0 : `${tokens.borderWidth}px`,
-              borderRightWidth: scaled.isRtl ? `${tokens.borderWidth}px` : 0,
+              borderWidth: `${tokens.borderWidth}px`,
+              borderStyle: "solid",
+              borderRadius: `${scaled.scaledCardRadius}px`,
               backgroundColor: tokens.universalFillColor,
             }}
-            className="w-full max-w-[420px] h-full shadow-2xl flex flex-col justify-between select-none transform-gpu"
+            className={`w-full max-w-lg max-h-[85vh] overflow-hidden shadow-2xl flex flex-col justify-between select-none transform-gpu ${
+              scaled.isRtl ? "text-right" : "text-left"
+            }`}
           >
             {/* Drawer Header */}
             <div
