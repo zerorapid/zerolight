@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Terminal, Copy, Check, Blocks, Cpu, ShieldCheck } from "lucide-react";
 import { useZeroLight } from "../context";
+import { trackZeroLightEvent } from "../analytics";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 import { Input } from "../atoms/input";
@@ -88,6 +89,7 @@ export function CliRegistryTab() {
   const copyCommand = (cmd: string) => {
     navigator.clipboard?.writeText(cmd);
     setCopiedCmd(cmd);
+    trackZeroLightEvent("zl_cli_copied", { command: cmd, source: "cli_registry_tab" });
     setTimeout(() => setCopiedCmd(null), 1800);
   };
 

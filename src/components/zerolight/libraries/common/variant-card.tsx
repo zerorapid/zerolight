@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Code2, Copy, Check } from "lucide-react";
 import { useZeroLight } from "../../context";
+import { trackZeroLightEvent } from "../../analytics";
 import { MorphicScope, type MorphicStage } from "../../morphic-engine";
 import type { ScaledTokens, ZeroLightTokens } from "../../types";
 
@@ -85,6 +86,7 @@ export function VariantCard({
   const handleCopyCli = () => {
     navigator.clipboard?.writeText(cliCommand);
     setCopiedCli(true);
+    trackZeroLightEvent("zl_cli_copied", { component: slug, command: cliCommand, morphicStage });
     setTimeout(() => setCopiedCli(false), 1600);
   };
 
@@ -120,7 +122,10 @@ export function VariantCard({
                 <button
                   key={stage}
                   type="button"
-                  onClick={() => setMorphicStage(stage)}
+                  onClick={() => {
+                    setMorphicStage(stage);
+                    trackZeroLightEvent("zl_morphic_stage_changed", { component: slug, stage });
+                  }}
                   title={`${stage} ${MORPHIC_STYLES[stage].label}`}
                   className={`px-1.5 py-0.5 rounded text-[10px] font-bold transition cursor-pointer ${
                     morphicStage === stage
@@ -146,7 +151,10 @@ export function VariantCard({
             {onViewCode && (
               <button
                 type="button"
-                onClick={onViewCode}
+                onClick={() => {
+                  trackZeroLightEvent("zl_code_viewed", { component: slug, morphicStage });
+                  onViewCode();
+                }}
                 className="px-2 py-0.5 rounded-md text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 hover:bg-zinc-100 transition flex items-center gap-1 cursor-pointer"
               >
                 <Code2 className="w-3 h-3" />

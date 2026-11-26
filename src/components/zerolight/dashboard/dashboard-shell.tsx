@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../auth/auth-context";
 import { useZeroLight } from "../context";
+import { trackZeroLightEvent } from "../analytics";
 import { Badge } from "../atoms/badge";
 import { Button } from "../atoms/button";
 import { OverviewTab } from "./overview-tab";
@@ -204,6 +205,7 @@ export function DashboardShell({ onRequireAuth }: DashboardShellProps = {}) {
   }, [globalSearch]);
 
   const handleSelectSearchResult = (entry: GlobalSearchEntry) => {
+    trackZeroLightEvent("zl_search_selected", { id: entry.id, label: entry.label, tier: entry.tierLabel });
     setActiveTab(entry.tab);
     if (entry.docsTier) setDocsTier(entry.docsTier);
     if (entry.docsSubView) setDocsSubView(entry.docsSubView);

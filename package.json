@@ -17,12 +17,14 @@
     "registry:add": "node scripts/add-component.mjs"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "d3": "^7.9.2",
     "exceljs": "^4.4.0",
     "framer-motion": "^14.9.1",
     "html2canvas": "^1.4.1",
     "lucide-react": "^1.69.0",
     "next": "^15.1.0",
+    "posthog-js": "^1.455.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "topojson-client": "^3.1.0",

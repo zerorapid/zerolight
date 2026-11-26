@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ZeroLightAnalytics } from "@/components/zerolight/analytics";
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://bricks.zerorapid.in";
@@ -67,6 +68,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
+        <ZeroLightAnalytics />
       </body>
     </html>
   );

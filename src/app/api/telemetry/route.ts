@@ -51,8 +51,20 @@ export async function POST(req: Request) {
       );
     }
 
+    const demographics = {
+      country: req.headers.get("x-vercel-ip-country") || "unknown",
+      region: req.headers.get("x-vercel-ip-country-region") || "unknown",
+      city: req.headers.get("x-vercel-ip-city") || "unknown",
+      userAgent: (req.headers.get("user-agent") || "unknown").slice(0, 120),
+    };
+
     const recorded = globalTelemetry.recordGeneration(parseResult.data);
-    return NextResponse.json({ ok: true, eventId: recorded.id, timestamp: recorded.timestamp });
+    return NextResponse.json({
+      ok: true,
+      eventId: recorded.id,
+      timestamp: recorded.timestamp,
+      demographics,
+    });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     return NextResponse.json({ ok: false, error: msg }, { status: 500 });
