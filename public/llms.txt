@@ -1,17 +1,27 @@
 # ZeroLight Design System by Zerorapid
 
-> Token-driven B2B SaaS design system with 125+ registry payloads, 6-tier atomic architecture, and shadcn `/r/` compatibility.
+> Public, token-driven B2B SaaS & ERP design system at https://bricks.zerorapid.in with 130 registry payloads, 6-tier atomic architecture, Mathematical Morphic Evolution (M1/M2/M3), and shadcn `/r/` compatibility.
 
-## Architecture
-- Foundations: Live runtime tokens, YIQ auto-contrast, spring motion physics, elevation
-- Atoms (43): Buttons, Inputs, Switches, Checkboxes, Badges, Skeletons, Spinners, Kbd, Avatars
-- Molecules (46): FormFields, SearchBars, Selects, DateRangePicker, AreaChart, BarChart, DonutChart, WorldMap
-- Organisms (19): BillingPortal, TenantKit, TeamPermissions, DataTable, CommandPalette, GeoBreakdown, BentoShowcase
-- Templates (5): DashboardTemplate, AnalyticsReportTemplate, ConsoleTableTemplate, ChatWorkspaceTemplate
-- Views (8): FinexyView, BillingView, DonationsView, DevConsoleView, SchoolAttendanceView
+## Quick Endpoints for AI Web Chats & Agents
+- Component Index (130 items): https://bricks.zerorapid.in/r/index.json
+- Individual Component TSX + Props: https://bricks.zerorapid.in/r/{name}.json
+- Native ZeroLight Registry: https://bricks.zerorapid.in/registry/{name}.json
 
-## CLI & Registry
+## Non-Negotiable Design Rules (ZeroLight Tactile Calm)
+1. **Token-Driven Surfaces Only (`useZeroLight()`)**: Never hardcode hex colors (`#3B82F6`), arbitrary radii, or shadows. Bind to `tokens.universalFillColor`, `tokens.universalBorderColor`, `tokens.textIconColor`, `tokens.primaryButtonColor`, `scaled.scaledCardRadius`, `scaled.scaledRadius`, and `scaled.cardShadow`.
+2. **Tabular Numerals**: Use `font-sans tabular-nums` on all KPIs, currency, counts, SKUs, and tables.
+3. **Popups Over Sidebars**: Use centered `Modal` / `DetailDrawer` popups for secondary details instead of edge slide-over sidebars.
+4. **Morphic Evolution (`M1 | M2 | M3`)**: Use `stage="M1"` (Compact ERP), `stage="M2"` (Tactile SaaS), or `stage="M3"` (Enterprise Full-Context).
+
+## Component Tiers (130 Items)
+- Foundations & Core (3): types, context, morphic-engine
+- Atoms (43): button, icon-button, input, checkbox, switch, slider, progress-bar, badge, tag-chip, kbd, avatar, skeleton, separator, spinner, card, etc.
+- Molecules (47): stat-card, form-field, input-group, search-bar, select, date-range-picker, area-chart, bar-chart, donut-chart, world-map, inventory-stock-health, etc.
+- Organisms (23): data-table, billing-portal, tenant-kit, team-permissions, geo-breakdown, audit-log, quota-matrix, filter-builder, command-palette, detail-drawer, modal, approval-workflow, three-way-match, ledger-balancer, line-item-matrix, bento-showcase
+- Templates (5): dashboard-template, analytics-report-template, console-table-template, chat-workspace-template
+- Views (8): finexy-view, billing-view, donations-view, dev-console-view, school-attendance-view
+
+## CLI Installation
 - Node CLI: `npx zerolight add <component|block/name>`
-- Native Rust CLI: `rust-cli/` (`zerolight add`, `zerolight list`, `zerolight check`, `zerolight diff`)
+- Native Rust CLI: `zerolight add <component>`, `zerolight check ./src`, `zerolight diff <component>`
 - MCP Server: `node bin/zerolight-mcp.mjs`
-- Registry Formats: `/registry/<name>.json` and `/r/<name>.json` (shadcn-compatible)

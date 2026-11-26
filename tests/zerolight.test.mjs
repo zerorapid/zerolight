@@ -2291,13 +2291,14 @@ test("Single Component Platform, Employee Password Gate, Morphic Evolution & sha
   assert.ok(!dashboardContent.includes("toolsMenuExpanded") && !dashboardContent.includes("GenUIStudioTool"), "Sidebar must have no Tools submenu and GenUIStudioTool must be removed");
   assert.ok(!dashboardContent.includes("<ZeroFlashTool") && !dashboardContent.includes("<ZeroAuditorTool") && !dashboardContent.includes("<TokenStudioSidebar"), "Tools studios must be cleanly removed from DashboardShell");
 
-  // Verify Server-Side Employee Password Gate
+  // Verify Public Access Middleware & AEO llms.txt
   const middlewarePath = path.join(rootDir, "src/middleware.ts");
   const loginPagePath = path.join(rootDir, "src/app/login/page.tsx");
   const authApiPath = path.join(rootDir, "src/app/api/auth/team/route.ts");
-  assert.ok(fs.existsSync(middlewarePath) && fs.existsSync(loginPagePath) && fs.existsSync(authApiPath), "Edge middleware, /login page, and /api/auth/team route must exist for employee password protection");
+  assert.ok(fs.existsSync(middlewarePath) && fs.existsSync(loginPagePath) && fs.existsSync(authApiPath), "Edge middleware, /login page, and /api/auth/team route must exist");
   const middlewareSrc = fs.readFileSync(middlewarePath, "utf8");
-  assert.ok(middlewareSrc.includes("ZERORAPID_TEAM_PASSWORD") && middlewareSrc.includes("zl_team_session"), "Middleware must enforce ZERORAPID_TEAM_PASSWORD session cookie");
+  assert.ok(middlewareSrc.includes("NextResponse.next()"), "Middleware must allow public access to ZeroLight platform and /r/ registry");
+  assert.ok(fs.existsSync(path.join(rootDir, "public/llms.txt")), "public/llms.txt must exist for AI web chat discovery");
 
   assert.ok(!fs.existsSync(path.join(rootDir, "src/app/studio/page.tsx")), "Visual Studio Dock /studio route must be removed");
 
