@@ -22,3 +22,6 @@ export * from "./three-way-match";
 export * from "./ledger-balancer";
 export * from "./line-item-matrix";
 export * from "./prompt-composer";
+export * from "./permission-matrix";
+export * from "./code-diff-viewer";
+export * from "./artifact-viewer";

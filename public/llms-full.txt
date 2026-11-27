@@ -1,6 +1,6 @@
 # ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)
 
-> Generated automatically from source files (141 items). Public registry: https://bricks.zerorapid.in/r/index.json
+> Generated automatically from source files (144 items). Public registry: https://bricks.zerorapid.in/r/index.json
 
 ## AI Prompt-to-Tier Governance (Read Before Generating UI)
 
@@ -1650,6 +1650,21 @@ export interface ApprovalWorkflowProps {
 }
 ```
 
+## artifact-viewer (registry:ui)
+- Install: `npx zerolight add artifact-viewer`
+- Registry JSON: https://bricks.zerorapid.in/r/artifact-viewer.json
+- Exports: ArtifactViewer
+```ts
+export interface ArtifactViewerProps {
+  title: string;
+  artifactType?: "code" | "document" | "json" | "spec";
+  content: string;
+  previewNode?: React.ReactNode;
+  onDownload?: () => void;
+  className?: string;
+}
+```
+
 ## audit-log (registry:ui)
 - Install: `npx zerolight add audit-log`
 - Registry JSON: https://bricks.zerorapid.in/r/audit-log.json
@@ -1697,6 +1712,20 @@ export interface ChatConversationProps {
   peerName?: string;
   peerRole?: string;
   peerAvatar?: string;
+  className?: string;
+}
+```
+
+## code-diff-viewer (registry:ui)
+- Install: `npx zerolight add code-diff-viewer`
+- Registry JSON: https://bricks.zerorapid.in/r/code-diff-viewer.json
+- Exports: CodeDiffViewer
+```ts
+export interface CodeDiffViewerProps {
+  filePath: string;
+  lines: CodeDiffLine[];
+  onAccept?: () => void;
+  onReject?: () => void;
   className?: string;
 }
 ```
@@ -1884,6 +1913,22 @@ export interface ContentSectionProps {
   description?: React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
+  className?: string;
+}
+```
+
+## permission-matrix (registry:ui)
+- Install: `npx zerolight add permission-matrix`
+- Registry JSON: https://bricks.zerorapid.in/r/permission-matrix.json
+- Exports: PermissionMatrix
+```ts
+export interface PermissionMatrixProps {
+  roleName?: string;
+  resources: PermissionResourceRow[];
+  actions?: PermissionAction[];
+  onChange?: (updated: PermissionResourceRow[]) => void;
+  onSave?: (updated: PermissionResourceRow[]) => void;
+  readOnly?: boolean;
   className?: string;
 }
 ```

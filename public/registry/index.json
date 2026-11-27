@@ -1,12 +1,12 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 141,
+  "totalCount": 144,
   "tiers": {
     "core": 3,
     "atoms": 45,
     "molecules": 51,
-    "organisms": 24,
+    "organisms": 27,
     "templates": 9,
     "views": 8,
     "tools": 0,
@@ -1563,6 +1563,24 @@
       "shadcnUrl": "/r/approval-workflow.json"
     },
     {
+      "name": "artifact-viewer",
+      "title": "Artifact Viewer",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/artifact-viewer.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "lines": 111,
+      "registryUrl": "/registry/artifact-viewer.json",
+      "shadcnUrl": "/r/artifact-viewer.json"
+    },
+    {
       "name": "audit-log",
       "title": "Audit Log",
       "type": "registry:ui",
@@ -1645,6 +1663,24 @@
       "lines": 277,
       "registryUrl": "/registry/chat-conversation.json",
       "shadcnUrl": "/r/chat-conversation.json"
+    },
+    {
+      "name": "code-diff-viewer",
+      "title": "Code Diff Viewer",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/code-diff-viewer.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "lines": 120,
+      "registryUrl": "/registry/code-diff-viewer.json",
+      "shadcnUrl": "/r/code-diff-viewer.json"
     },
     {
       "name": "command-palette",
@@ -1832,6 +1868,24 @@
       "lines": 98,
       "registryUrl": "/registry/page-layout.json",
       "shadcnUrl": "/r/page-layout.json"
+    },
+    {
+      "name": "permission-matrix",
+      "title": "Permission Matrix",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/permission-matrix.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "lines": 147,
+      "registryUrl": "/registry/permission-matrix.json",
+      "shadcnUrl": "/r/permission-matrix.json"
     },
     {
       "name": "prompt-composer",

@@ -1654,6 +1654,25 @@
       ]
     },
     {
+      "name": "artifact-viewer",
+      "type": "registry:component",
+      "title": "Artifact Viewer",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/artifact-viewer.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "audit-log",
       "type": "registry:component",
       "title": "Audit Log",
@@ -1737,6 +1756,25 @@
       "files": [
         {
           "path": "src/components/zerolight/organisms/chat-conversation.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "code-diff-viewer",
+      "type": "registry:component",
+      "title": "Code Diff Viewer",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/code-diff-viewer.tsx",
           "type": "registry:component"
         }
       ]
@@ -1935,6 +1973,25 @@
       "files": [
         {
           "path": "src/components/zerolight/organisms/page-layout.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "permission-matrix",
+      "type": "registry:component",
+      "title": "Permission Matrix",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/permission-matrix.tsx",
           "type": "registry:component"
         }
       ]

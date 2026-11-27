@@ -1,4 +1,4 @@
-# ZeroLight Design System — CORE Reference (92 items)
+# ZeroLight Design System — CORE Reference (94 items)
 
 ## types (registry:lib)
 - Install: `npx zerolight add types`
@@ -1195,6 +1195,20 @@ export interface AppShellProps {
 }
 ```
 
+## artifact-viewer (registry:ui)
+- Install: `npx zerolight add artifact-viewer`
+- Registry: https://bricks.zerorapid.in/r/artifact-viewer.json
+```ts
+export interface ArtifactViewerProps {
+  title: string;
+  artifactType?: "code" | "document" | "json" | "spec";
+  content: string;
+  previewNode?: React.ReactNode;
+  onDownload?: () => void;
+  className?: string;
+}
+```
+
 ## bento-showcase (registry:ui)
 - Install: `npx zerolight add bento-showcase`
 - Registry: https://bricks.zerorapid.in/r/bento-showcase.json
@@ -1203,6 +1217,19 @@ export interface BentoShowcaseProps {
   className?: string;
   title?: string;
   subtitle?: string;
+}
+```
+
+## code-diff-viewer (registry:ui)
+- Install: `npx zerolight add code-diff-viewer`
+- Registry: https://bricks.zerorapid.in/r/code-diff-viewer.json
+```ts
+export interface CodeDiffViewerProps {
+  filePath: string;
+  lines: CodeDiffLine[];
+  onAccept?: () => void;
+  onReject?: () => void;
+  className?: string;
 }
 ```
 

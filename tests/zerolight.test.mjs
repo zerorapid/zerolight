@@ -2435,6 +2435,18 @@ test("Product DNA archetypes, state machines, laws, MCP & CLI architect exist", 
   assert.ok(cliSrc.includes("handleArchitect"), "CLI must support architect command");
 });
 
+console.log("\n=== Suite 50: PermissionMatrix, CodeDiffViewer, ArtifactViewer & CLI Telemetry ===");
+
+test("Enterprise RBAC/AI organisms and CLI telemetry opt-out exist", () => {
+  const orgIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  for (const mod of ["permission-matrix", "code-diff-viewer", "artifact-viewer"]) {
+    assert.ok(orgIdx.includes(mod), `organisms/index.ts must export ${mod}`);
+    assert.ok(fs.existsSync(path.join(rootDir, "src/components/zerolight/organisms", `${mod}.tsx`)), `${mod}.tsx must exist`);
+  }
+  const cliSrc = fs.readFileSync(path.join(rootDir, "bin/cli.mjs"), "utf8");
+  assert.ok(cliSrc.includes("reportTelemetry") && cliSrc.includes("--no-telemetry"), "CLI must include opt-out install telemetry");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

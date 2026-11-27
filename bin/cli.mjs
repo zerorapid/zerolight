@@ -53,6 +53,7 @@ function parseArgs(argv) {
     withSkill: false,
     tier: "simple",
     preset: null,
+    noTelemetry: process.env.ZEROLIGHT_TELEMETRY === "0",
   };
 
   for (let i = 1; i < argv.length; i++) {
@@ -69,6 +70,8 @@ function parseArgs(argv) {
       flags.tier = argv[++i] || "simple";
     } else if (a === "--preset") {
       flags.preset = argv[++i] || null;
+    } else if (a === "--no-telemetry") {
+      flags.noTelemetry = true;
     } else if (a === "--force" || a === "-f") {
       flags.force = true;
     } else if (a === "-y" || a === "--yes") {
@@ -243,6 +246,35 @@ async function handleList(flags) {
   }
 }
 
+function reportTelemetry(componentsUsed, noTelemetry) {
+  if (noTelemetry || componentsUsed.length === 0) return;
+  try {
+    const payload = JSON.stringify({
+      intent: `cli:add (${componentsUsed.join(", ")})`,
+      source: "human_studio",
+      componentsUsed,
+    });
+    const req = https.request(
+      "https://bricks.zerorapid.in/api/telemetry",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(payload),
+        },
+        timeout: 1500,
+      },
+      () => {}
+    );
+    req.on("error", () => {});
+    req.on("timeout", () => req.destroy());
+    req.write(payload);
+    req.end();
+  } catch {
+    // Non-blocking telemetry
+  }
+}
+
 async function handleAdd(flags) {
   if (flags.components.length === 0) {
     console.log("Please specify one or more components to add.");
@@ -297,6 +329,8 @@ async function handleAdd(flags) {
     console.log(`\nRequired npm packages:`);
     console.log(`  \x1b[33mnpm install ${Array.from(npmDeps).join(" ")}\x1b[0m\n`);
   }
+
+  reportTelemetry(Array.from(visited), flags.noTelemetry);
 }
 
 function handleArchitect(flags) {

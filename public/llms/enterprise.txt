@@ -1,4 +1,4 @@
-# ZeroLight Design System — ENTERPRISE Reference (7 items)
+# ZeroLight Design System — ENTERPRISE Reference (8 items)
 
 ## audit-timestamp (registry:ui)
 - Install: `npx zerolight add audit-timestamp`
@@ -70,6 +70,21 @@ export interface DataTableProps<T = NodeRecord> {
   pinSelectionColumn?: boolean;
   pinActionsColumn?: boolean;
   onPasteRows?: (pastedRows: Partial<T>[]) => void;
+  className?: string;
+}
+```
+
+## permission-matrix (registry:ui)
+- Install: `npx zerolight add permission-matrix`
+- Registry: https://bricks.zerorapid.in/r/permission-matrix.json
+```ts
+export interface PermissionMatrixProps {
+  roleName?: string;
+  resources: PermissionResourceRow[];
+  actions?: PermissionAction[];
+  onChange?: (updated: PermissionResourceRow[]) => void;
+  onSave?: (updated: PermissionResourceRow[]) => void;
+  readOnly?: boolean;
   className?: string;
 }
 ```
