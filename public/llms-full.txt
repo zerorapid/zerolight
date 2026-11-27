@@ -1,6 +1,6 @@
 # ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)
 
-> Generated automatically from source files (147 items). Public registry: https://bricks.zerorapid.in/r/index.json
+> Generated automatically from source files (150 items). Public registry: https://bricks.zerorapid.in/r/index.json
 
 ## AI Prompt-to-Tier Governance (Read Before Generating UI)
 
@@ -1952,6 +1952,17 @@ export interface PermissionMatrixProps {
 }
 ```
 
+## product-architect-studio (registry:ui)
+- Install: `npx zerolight add product-architect-studio`
+- Registry JSON: https://bricks.zerorapid.in/r/product-architect-studio.json
+- Exports: ProductArchitectStudio
+```ts
+export interface ProductArchitectStudioProps {
+  defaultPrompt?: string;
+  className?: string;
+}
+```
+
 ## prompt-composer (registry:ui)
 - Install: `npx zerolight add prompt-composer`
 - Registry JSON: https://bricks.zerorapid.in/r/prompt-composer.json
@@ -2204,6 +2215,18 @@ export interface ConsoleTableTemplateProps {
 }
 ```
 
+## crm-pipeline-block (registry:ui)
+- Install: `npx zerolight add crm-pipeline-block`
+- Registry JSON: https://bricks.zerorapid.in/r/crm-pipeline-block.json
+- Exports: CRMPipelineBlock
+```ts
+export interface CRMPipelineBlockProps {
+  title?: string;
+  subtitle?: string;
+  className?: string;
+}
+```
+
 ## dashboard-template (registry:ui)
 - Install: `npx zerolight add dashboard-template`
 - Registry JSON: https://bricks.zerorapid.in/r/dashboard-template.json
@@ -2238,6 +2261,18 @@ export interface DashboardTemplateProps {
     headerRight?: React.ReactNode;
     footerAction?: React.ReactNode;
   };
+  className?: string;
+}
+```
+
+## fintech-reconciliation-block (registry:ui)
+- Install: `npx zerolight add fintech-reconciliation-block`
+- Registry JSON: https://bricks.zerorapid.in/r/fintech-reconciliation-block.json
+- Exports: FintechReconciliationBlock
+```ts
+export interface FintechReconciliationBlockProps {
+  title?: string;
+  subtitle?: string;
   className?: string;
 }
 ```

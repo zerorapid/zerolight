@@ -27,3 +27,4 @@ export * from "./code-diff-viewer";
 export * from "./artifact-viewer";
 export * from "./webhook-inspector";
 export * from "./virtual-data-grid";
+export * from "./product-architect-studio";

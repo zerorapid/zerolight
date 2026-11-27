@@ -2464,6 +2464,24 @@ test("VirtualDataGrid, MaskedInput, WebhookInspector & DevConsole telemetry exis
   assert.ok(devView.includes("/api/telemetry"), "DevConsoleView must fetch /api/telemetry usage events");
 });
 
+console.log("\n=== Suite 52: Upstash Telemetry, CRM/FinTech Blocks & ProductArchitectStudio ===");
+
+test("Upstash telemetry fallback, CRM/FinTech blocks & ProductArchitectStudio exist", () => {
+  const telemetryApi = fs.readFileSync(path.join(rootDir, "src/app/api/telemetry/route.ts"), "utf8");
+  assert.ok(telemetryApi.includes("UPSTASH_REDIS_REST_URL"), "telemetry route must support optional Upstash Redis persistence");
+
+  for (const file of [
+    "src/components/zerolight/templates/crm-pipeline-block.tsx",
+    "src/components/zerolight/templates/fintech-reconciliation-block.tsx",
+    "src/components/zerolight/organisms/product-architect-studio.tsx",
+  ]) {
+    assert.ok(fs.existsSync(path.join(rootDir, file)), `${file} must exist`);
+  }
+
+  const orgIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  assert.ok(orgIdx.includes("product-architect-studio"), "organisms/index.ts must export product-architect-studio");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

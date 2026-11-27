@@ -1,13 +1,13 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 147,
+  "totalCount": 150,
   "tiers": {
     "core": 3,
     "atoms": 46,
     "molecules": 51,
-    "organisms": 29,
-    "templates": 9,
+    "organisms": 30,
+    "templates": 11,
     "views": 8,
     "tools": 0,
     "gen-ui": 1
@@ -1902,6 +1902,26 @@
       "shadcnUrl": "/r/permission-matrix.json"
     },
     {
+      "name": "product-architect-studio",
+      "title": "Product Architect Studio",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/product-architect-studio.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "composition-engine",
+        "context",
+        "product-dna"
+      ],
+      "lines": 127,
+      "registryUrl": "/registry/product-architect-studio.json",
+      "shadcnUrl": "/r/product-architect-studio.json"
+    },
+    {
       "name": "prompt-composer",
       "title": "Prompt Composer",
       "type": "registry:ui",
@@ -2128,6 +2148,27 @@
       "shadcnUrl": "/r/console-table-template.json"
     },
     {
+      "name": "crm-pipeline-block",
+      "title": "Crm Pipeline Block",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/crm-pipeline-block.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "async-combobox",
+        "badge",
+        "button",
+        "data-table",
+        "layout-grammar",
+        "stat-card"
+      ],
+      "lines": 109,
+      "registryUrl": "/registry/crm-pipeline-block.json",
+      "shadcnUrl": "/r/crm-pipeline-block.json"
+    },
+    {
       "name": "dashboard-template",
       "title": "Dashboard Template",
       "type": "registry:ui",
@@ -2141,6 +2182,26 @@
       "lines": 159,
       "registryUrl": "/registry/dashboard-template.json",
       "shadcnUrl": "/r/dashboard-template.json"
+    },
+    {
+      "name": "fintech-reconciliation-block",
+      "title": "Fintech Reconciliation Block",
+      "type": "registry:ui",
+      "tier": "templates",
+      "targetPath": "src/components/zerolight/templates/fintech-reconciliation-block.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "layout-grammar",
+        "ledger-balancer",
+        "stat-card",
+        "three-way-match"
+      ],
+      "lines": 75,
+      "registryUrl": "/registry/fintech-reconciliation-block.json",
+      "shadcnUrl": "/r/fintech-reconciliation-block.json"
     },
     {
       "name": "layout-grammar",

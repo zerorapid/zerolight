@@ -1,4 +1,4 @@
-# ZeroLight Design System — BLOCKS Reference (17 items)
+# ZeroLight Design System — BLOCKS Reference (19 items)
 
 ## tree-view (registry:ui)
 - Install: `npx zerolight add tree-view`
@@ -135,6 +135,17 @@ export interface ConsoleTableTemplateProps {
 }
 ```
 
+## crm-pipeline-block (registry:ui)
+- Install: `npx zerolight add crm-pipeline-block`
+- Registry: https://bricks.zerorapid.in/r/crm-pipeline-block.json
+```ts
+export interface CRMPipelineBlockProps {
+  title?: string;
+  subtitle?: string;
+  className?: string;
+}
+```
+
 ## dashboard-template (registry:ui)
 - Install: `npx zerolight add dashboard-template`
 - Registry: https://bricks.zerorapid.in/r/dashboard-template.json
@@ -168,6 +179,17 @@ export interface DashboardTemplateProps {
     headerRight?: React.ReactNode;
     footerAction?: React.ReactNode;
   };
+  className?: string;
+}
+```
+
+## fintech-reconciliation-block (registry:ui)
+- Install: `npx zerolight add fintech-reconciliation-block`
+- Registry: https://bricks.zerorapid.in/r/fintech-reconciliation-block.json
+```ts
+export interface FintechReconciliationBlockProps {
+  title?: string;
+  subtitle?: string;
   className?: string;
 }
 ```

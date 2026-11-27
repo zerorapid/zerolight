@@ -59,6 +59,20 @@ export async function POST(req: Request) {
     };
 
     const recorded = globalTelemetry.recordGeneration(parseResult.data);
+
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+    if (redisUrl && redisToken) {
+      await fetch(`${redisUrl}/lpush/zerolight:telemetry/${encodeURIComponent(JSON.stringify({ ...recorded, demographics }))}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${redisToken}` },
+      }).catch(() => {});
+      await fetch(`${redisUrl}/ltrim/zerolight:telemetry/0/99`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${redisToken}` },
+      }).catch(() => {});
+    }
+
     return NextResponse.json({
       ok: true,
       eventId: recorded.id,
@@ -72,6 +86,25 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
+  const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+  const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (redisUrl && redisToken) {
+    try {
+      const res = await fetch(`${redisUrl}/lrange/zerolight:telemetry/0/29`, {
+        headers: { Authorization: `Bearer ${redisToken}` },
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const events = Array.isArray(data?.result)
+          ? data.result.map((raw: string) => JSON.parse(raw)).reverse()
+          : [];
+        return NextResponse.json({ total: events.length, source: "upstash", events });
+      }
+    } catch {
+      // Fallback to local collector
+    }
+  }
   const events = globalTelemetry.getHistory(30);
-  return NextResponse.json({ total: events.length, events });
+  return NextResponse.json({ total: events.length, source: "local", events });
 }

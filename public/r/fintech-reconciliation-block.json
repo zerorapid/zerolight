@@ -1,0 +1,23 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fintech-reconciliation-block",
+  "type": "registry:component",
+  "title": "Fintech Reconciliation Block",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "button",
+    "layout-grammar",
+    "ledger-balancer",
+    "stat-card",
+    "three-way-match"
+  ],
+  "files": [
+    {
+      "path": "src/components/zerolight/templates/fintech-reconciliation-block.tsx",
+      "content": "\"use client\";\n\nimport React from \"react\";\nimport { Scale, CheckCircle2, AlertTriangle, Landmark, Download, Plus } from \"lucide-react\";\nimport { Button } from \"../atoms/button\";\nimport { StatCard } from \"../molecules/stat-card\";\nimport { ThreeWayMatch } from \"../organisms/three-way-match\";\nimport { LedgerBalancer } from \"../organisms/ledger-balancer\";\nimport { Page, MetricGrid, Split } from \"./layout-grammar\";\n\nexport interface FintechReconciliationBlockProps {\n  title?: string;\n  subtitle?: string;\n  className?: string;\n}\n\n/**\n * Tier 3 FinTech & Accounting Reconciliation Block — ThreeWayMatch + LedgerBalancer.\n */\nexport function FintechReconciliationBlock({\n  title = \"Financial Reconciliation Desk\",\n  subtitle = \"Three-way invoice matching, ledger balancing, and exception resolution.\",\n  className = \"\",\n}: FintechReconciliationBlockProps) {\n  return (\n    <Page density=\"compact\" className={className}>\n      <div className=\"flex flex-wrap items-center justify-between gap-3\">\n        <div>\n          <h1 className=\"text-xl font-bold tracking-tight\">{title}</h1>\n          <p className=\"text-xs opacity-65 mt-0.5\">{subtitle}</p>\n        </div>\n        <div className=\"flex items-center gap-2\">\n          <Button variant=\"outline\" size=\"sm\" iconLeft={<Download className=\"w-3.5 h-3.5\" />}>Export Audit CSV</Button>\n          <Button variant=\"primary\" size=\"sm\" iconLeft={<Plus className=\"w-3.5 h-3.5\" />}>New Journal Entry</Button>\n        </div>\n      </div>\n\n      <MetricGrid columns={4} density=\"compact\">\n        <StatCard label=\"Matched Volume\" value=\"$2.84M\" delta=\"98.2%\" trend=\"up\" icon={<CheckCircle2 className=\"w-4 h-4\" />} />\n        <StatCard label=\"Open Variances\" value=\"04\" delta=\"-2\" trend=\"up\" icon={<AlertTriangle className=\"w-4 h-4\" />} />\n        <StatCard label=\"Trial Balance\" value=\"$0.00\" delta=\"Balanced\" trend=\"up\" icon={<Scale className=\"w-4 h-4\" />} />\n        <StatCard label=\"Settlement Pool\" value=\"$612,400\" delta=\"+5.4%\" trend=\"up\" icon={<Landmark className=\"w-4 h-4\" />} />\n      </MetricGrid>\n\n      <Split\n        ratio=\"1:1\"\n        density=\"compact\"\n        left={\n          <ThreeWayMatch\n            poNumber=\"PO-2026-0842\"\n            grnNumber=\"GRN-2026-0411\"\n            invoiceNumber=\"INV-2026-0842\"\n            currency=\"$\"\n            lines={[\n              { sku: \"ALU-6061-RAW\", description: \"Aluminium Alloy Sheets\", poQty: 1200, grnQty: 1200, invoiceQty: 1200, poUnitPrice: 42.5, invoiceUnitPrice: 42.5 },\n              { sku: \"STL-304-COIL\", description: \"Stainless Steel Coils\", poQty: 800, grnQty: 780, invoiceQty: 800, poUnitPrice: 68, invoiceUnitPrice: 68 },\n            ]}\n          />\n        }\n        right={\n          <LedgerBalancer\n            journalId=\"JRN-2026-114\"\n            fiscalPeriod=\"Nov 2026\"\n            currency=\"$\"\n            initialLines={[\n              { id: \"l1\", accountCode: \"1400\", accountName: \"Raw Material Inventory\", debit: 105400, credit: 0 },\n              { id: \"l2\", accountCode: \"2000\", accountName: \"Accounts Payable\", debit: 0, credit: 105400 },\n            ]}\n          />\n        }\n      />\n    </Page>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ]
+}

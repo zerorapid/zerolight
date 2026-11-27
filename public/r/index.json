@@ -2012,6 +2012,27 @@
       ]
     },
     {
+      "name": "product-architect-studio",
+      "type": "registry:component",
+      "title": "Product Architect Studio",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "composition-engine",
+        "context",
+        "product-dna"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/product-architect-studio.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "prompt-composer",
       "type": "registry:component",
       "title": "Prompt Composer",
@@ -2251,6 +2272,28 @@
       ]
     },
     {
+      "name": "crm-pipeline-block",
+      "type": "registry:component",
+      "title": "Crm Pipeline Block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "async-combobox",
+        "badge",
+        "button",
+        "data-table",
+        "layout-grammar",
+        "stat-card"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/templates/crm-pipeline-block.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "dashboard-template",
       "type": "registry:component",
       "title": "Dashboard Template",
@@ -2262,6 +2305,27 @@
       "files": [
         {
           "path": "src/components/zerolight/templates/dashboard-template.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "fintech-reconciliation-block",
+      "type": "registry:component",
+      "title": "Fintech Reconciliation Block",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "layout-grammar",
+        "ledger-balancer",
+        "stat-card",
+        "three-way-match"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/templates/fintech-reconciliation-block.tsx",
           "type": "registry:component"
         }
       ]

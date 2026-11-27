@@ -1,4 +1,4 @@
-# ZeroLight Design System — CORE Reference (97 items)
+# ZeroLight Design System — CORE Reference (98 items)
 
 ## types (registry:lib)
 - Install: `npx zerolight add types`
@@ -1339,6 +1339,16 @@ export interface ContentSectionProps {
   description?: React.ReactNode;
   actions?: React.ReactNode;
   children: React.ReactNode;
+  className?: string;
+}
+```
+
+## product-architect-studio (registry:ui)
+- Install: `npx zerolight add product-architect-studio`
+- Registry: https://bricks.zerorapid.in/r/product-architect-studio.json
+```ts
+export interface ProductArchitectStudioProps {
+  defaultPrompt?: string;
   className?: string;
 }
 ```

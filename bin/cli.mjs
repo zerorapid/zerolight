@@ -31,6 +31,8 @@ const BLOCK_ALIASES = {
   "block/fintech/reconciliation-desk": "three-way-match",
   "block/erp/general-ledger": "ledger-balancer",
   "block/ai/agent-command-center": "ai-agent-console-block",
+  "block/crm/sales-pipeline": "crm-pipeline-block",
+  "block/fintech/reconciliation-workbench": "fintech-reconciliation-block",
 };
 
 function printBanner() {
