@@ -1784,7 +1784,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 211,
+      "lines": 214,
       "registryUrl": "/registry/command-palette.json",
       "shadcnUrl": "/r/command-palette.json"
     },
@@ -1927,7 +1927,7 @@
       "registryDependencies": [
         "context"
       ],
-      "lines": 162,
+      "lines": 185,
       "registryUrl": "/registry/modal.json",
       "shadcnUrl": "/r/modal.json"
     },
