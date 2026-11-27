@@ -25,3 +25,5 @@ export * from "./prompt-composer";
 export * from "./permission-matrix";
 export * from "./code-diff-viewer";
 export * from "./artifact-viewer";
+export * from "./webhook-inspector";
+export * from "./virtual-data-grid";

@@ -1,6 +1,6 @@
 # ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)
 
-> Generated automatically from source files (144 items). Public registry: https://bricks.zerorapid.in/r/index.json
+> Generated automatically from source files (147 items). Public registry: https://bricks.zerorapid.in/r/index.json
 
 ## AI Prompt-to-Tier Governance (Read Before Generating UI)
 
@@ -412,6 +412,25 @@ export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> 
   required?: boolean;
   hint?: string;
   error?: boolean;
+}
+```
+
+## masked-input (registry:ui)
+- Install: `npx zerolight add masked-input`
+- Registry JSON: https://bricks.zerorapid.in/r/masked-input.json
+- Exports: MaskedInput
+```ts
+export interface MaskedInputProps {
+  value?: string;
+  defaultValue?: string;
+  onChange?: (formatted: string, raw: string) => void;
+  mask?: InputMaskPreset;
+  customPattern?: string; // e.g. "###-###-####" where # = digit
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  disabled?: boolean;
+  className?: string;
 }
 ```
 
@@ -2025,6 +2044,34 @@ export interface ThreeWayMatchProps {
 export interface TreeViewProps {
   data?: TreeNode[];
   onSelectNode?: (node: TreeNode) => void;
+  className?: string;
+}
+```
+
+## virtual-data-grid (registry:ui)
+- Install: `npx zerolight add virtual-data-grid`
+- Registry JSON: https://bricks.zerorapid.in/r/virtual-data-grid.json
+- Exports: VirtualDataGrid
+```ts
+export interface VirtualDataGridProps<T extends Record<string, unknown>> {
+  rows: T[];
+  columns: VirtualGridColumn<T>[];
+  rowHeight?: number;
+  viewportHeight?: number;
+  searchable?: boolean;
+  searchPlaceholder?: string;
+  className?: string;
+}
+```
+
+## webhook-inspector (registry:ui)
+- Install: `npx zerolight add webhook-inspector`
+- Registry JSON: https://bricks.zerorapid.in/r/webhook-inspector.json
+- Exports: WebhookInspector
+```ts
+export interface WebhookInspectorProps {
+  deliveries: WebhookDelivery[];
+  onReplay?: (deliveryId: string) => void;
   className?: string;
 }
 ```

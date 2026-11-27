@@ -43,3 +43,4 @@ export * from "./typography";
 export * from "./dynamic-icon";
 export * from "./currency-input";
 export * from "./input-otp";
+export * from "./masked-input";

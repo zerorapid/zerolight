@@ -1,4 +1,4 @@
-# ZeroLight Design System — CORE Reference (94 items)
+# ZeroLight Design System — CORE Reference (97 items)
 
 ## types (registry:lib)
 - Install: `npx zerolight add types`
@@ -357,6 +357,24 @@ export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> 
   required?: boolean;
   hint?: string;
   error?: boolean;
+}
+```
+
+## masked-input (registry:ui)
+- Install: `npx zerolight add masked-input`
+- Registry: https://bricks.zerorapid.in/r/masked-input.json
+```ts
+export interface MaskedInputProps {
+  value?: string;
+  defaultValue?: string;
+  onChange?: (formatted: string, raw: string) => void;
+  mask?: InputMaskPreset;
+  customPattern?: string; // e.g. "###-###-####" where # = digit
+  label?: string;
+  placeholder?: string;
+  error?: string;
+  disabled?: boolean;
+  className?: string;
 }
 ```
 
@@ -1360,6 +1378,32 @@ export interface QuotaMatrixProps {
 ## toast (registry:ui)
 - Install: `npx zerolight add toast`
 - Registry: https://bricks.zerorapid.in/r/toast.json
+
+## virtual-data-grid (registry:ui)
+- Install: `npx zerolight add virtual-data-grid`
+- Registry: https://bricks.zerorapid.in/r/virtual-data-grid.json
+```ts
+export interface VirtualDataGridProps<T extends Record<string, unknown>> {
+  rows: T[];
+  columns: VirtualGridColumn<T>[];
+  rowHeight?: number;
+  viewportHeight?: number;
+  searchable?: boolean;
+  searchPlaceholder?: string;
+  className?: string;
+}
+```
+
+## webhook-inspector (registry:ui)
+- Install: `npx zerolight add webhook-inspector`
+- Registry: https://bricks.zerorapid.in/r/webhook-inspector.json
+```ts
+export interface WebhookInspectorProps {
+  deliveries: WebhookDelivery[];
+  onReplay?: (deliveryId: string) => void;
+  className?: string;
+}
+```
 
 ## layout-grammar (registry:ui)
 - Install: `npx zerolight add layout-grammar`

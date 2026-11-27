@@ -417,6 +417,21 @@
       ]
     },
     {
+      "name": "masked-input",
+      "type": "registry:component",
+      "title": "Masked Input",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/atoms/masked-input.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "message-status",
       "type": "registry:component",
       "title": "Message Status",
@@ -2123,6 +2138,42 @@
       "files": [
         {
           "path": "src/components/zerolight/organisms/tree-view.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "virtual-data-grid",
+      "type": "registry:component",
+      "title": "Virtual Data Grid",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/virtual-data-grid.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "webhook-inspector",
+      "type": "registry:component",
+      "title": "Webhook Inspector",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "files": [
+        {
+          "path": "src/components/zerolight/organisms/webhook-inspector.tsx",
           "type": "registry:component"
         }
       ]

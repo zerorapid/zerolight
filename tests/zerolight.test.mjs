@@ -2447,6 +2447,23 @@ test("Enterprise RBAC/AI organisms and CLI telemetry opt-out exist", () => {
   assert.ok(cliSrc.includes("reportTelemetry") && cliSrc.includes("--no-telemetry"), "CLI must include opt-out install telemetry");
 });
 
+console.log("\n=== Suite 51: VirtualDataGrid, MaskedInput, WebhookInspector & Usage Telemetry ===");
+
+test("VirtualDataGrid, MaskedInput, WebhookInspector & DevConsole telemetry exist", () => {
+  const atomIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/atoms/index.ts"), "utf8");
+  assert.ok(atomIdx.includes("masked-input"), "atoms/index.ts must export masked-input");
+  assert.ok(fs.existsSync(path.join(rootDir, "src/components/zerolight/atoms/masked-input.tsx")));
+
+  const orgIdx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/organisms/index.ts"), "utf8");
+  for (const mod of ["webhook-inspector", "virtual-data-grid"]) {
+    assert.ok(orgIdx.includes(mod), `organisms/index.ts must export ${mod}`);
+    assert.ok(fs.existsSync(path.join(rootDir, "src/components/zerolight/organisms", `${mod}.tsx`)));
+  }
+
+  const devView = fs.readFileSync(path.join(rootDir, "src/components/zerolight/views/dev-console-view.tsx"), "utf8");
+  assert.ok(devView.includes("/api/telemetry"), "DevConsoleView must fetch /api/telemetry usage events");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

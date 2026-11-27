@@ -1,12 +1,12 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 144,
+  "totalCount": 147,
   "tiers": {
     "core": 3,
-    "atoms": 45,
+    "atoms": 46,
     "molecules": 51,
-    "organisms": 27,
+    "organisms": 29,
     "templates": 9,
     "views": 8,
     "tools": 0,
@@ -398,6 +398,20 @@
       "lines": 48,
       "registryUrl": "/registry/label.json",
       "shadcnUrl": "/r/label.json"
+    },
+    {
+      "name": "masked-input",
+      "title": "Masked Input",
+      "type": "registry:ui",
+      "tier": "atoms",
+      "targetPath": "src/components/zerolight/atoms/masked-input.tsx",
+      "dependencies": [],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 94,
+      "registryUrl": "/registry/masked-input.json",
+      "shadcnUrl": "/r/masked-input.json"
     },
     {
       "name": "message-status",
@@ -2012,6 +2026,40 @@
       "shadcnUrl": "/r/tree-view.json"
     },
     {
+      "name": "virtual-data-grid",
+      "title": "Virtual Data Grid",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/virtual-data-grid.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "context"
+      ],
+      "lines": 147,
+      "registryUrl": "/registry/virtual-data-grid.json",
+      "shadcnUrl": "/r/virtual-data-grid.json"
+    },
+    {
+      "name": "webhook-inspector",
+      "title": "Webhook Inspector",
+      "type": "registry:ui",
+      "tier": "organisms",
+      "targetPath": "src/components/zerolight/organisms/webhook-inspector.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "context"
+      ],
+      "lines": 123,
+      "registryUrl": "/registry/webhook-inspector.json",
+      "shadcnUrl": "/r/webhook-inspector.json"
+    },
+    {
       "name": "ai-agent-console-block",
       "title": "Ai Agent Console Block",
       "type": "registry:ui",
@@ -2215,7 +2263,7 @@
         "context",
         "types"
       ],
-      "lines": 392,
+      "lines": 428,
       "registryUrl": "/registry/dev-console-view.json",
       "shadcnUrl": "/r/dev-console-view.json"
     },

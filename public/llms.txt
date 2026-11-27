@@ -1,6 +1,6 @@
 # ZeroLight Design System
 
-> Source-installable React design system for SaaS, AI, and Enterprise apps (144 registry items).
+> Source-installable React design system for SaaS, AI, and Enterprise apps (147 registry items).
 
 ## Default AI Workflow
 1. Match user intent to a tier (`simple`, `operational`, `enterprise`).
@@ -10,7 +10,7 @@
 5. Use `tabular-nums` with `font-sans` for KPIs, currency, and counts.
 
 ## Domain References
-- Core UI (94): https://bricks.zerorapid.in/llms/core.txt
+- Core UI (97): https://bricks.zerorapid.in/llms/core.txt
 - Charts & Geo (13): https://bricks.zerorapid.in/llms/charts.txt
 - AI & Chat (7): https://bricks.zerorapid.in/llms/ai.txt
 - Enterprise SaaS (8): https://bricks.zerorapid.in/llms/enterprise.txt

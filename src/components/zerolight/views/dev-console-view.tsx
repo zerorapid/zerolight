@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ConsoleTableTemplate,
   Badge,
@@ -90,6 +90,16 @@ export function DevConsoleView() {
   const [selectedKey, setSelectedKey] = useState<ApiKeyRecord | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
+  const [telemetryEvents, setTelemetryEvents] = useState<Array<{ id: string; timestamp: string; intent: string; componentsUsed: string[] }>>([]);
+
+  useEffect(() => {
+    fetch("/api/telemetry")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && Array.isArray(d.events)) setTelemetryEvents(d.events);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleCopy = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
@@ -386,6 +396,32 @@ export function DevConsoleView() {
           />
         }
       />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+        <div className="rounded-xl border border-neutral-200 bg-white p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-neutral-900">Component Usage Telemetry</h3>
+              <p className="text-xs text-neutral-500">Recent CLI & AI registry installs reported to /api/telemetry</p>
+            </div>
+            <Badge variant="healthy" size="xs">{telemetryEvents.length} events</Badge>
+          </div>
+          {telemetryEvents.length === 0 ? (
+            <p className="text-xs text-neutral-400">No telemetry events recorded in this session yet.</p>
+          ) : (
+            <div className="divide-y divide-neutral-100 text-xs">
+              {telemetryEvents.slice(-5).reverse().map((ev) => (
+                <div key={ev.id} className="py-2 flex items-center justify-between gap-2">
+                  <span className="font-medium text-neutral-800 truncate">{ev.intent}</span>
+                  <span className="text-neutral-500 font-sans tabular-nums shrink-0">
+                    {ev.componentsUsed.join(", ") || "core"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
