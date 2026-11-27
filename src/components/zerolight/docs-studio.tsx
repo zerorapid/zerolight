@@ -104,6 +104,7 @@ import { StudioCategory, StudioInspector } from "./studio/studio-inspector";
 import { ExportRegistryModal } from "./studio/export-registry-modal";
 import { TemplatesShowcase } from "./studio/templates-showcase";
 import { PagesShowcase } from "./studio/pages-showcase";
+import { ProductArchitectStudio } from "./organisms/product-architect-studio";
 import { ZeroLightProvider } from "./context";
 import {
   Skeleton,
@@ -5177,14 +5178,17 @@ export function ZeroLightStudio({ initialTier = "atoms" }: { initialTier?: "atom
                 VIEW D: TEMPLATES (ATOMIC TIER 4 REUSABLE BLUEPRINTS)
                ══════════════════════════════════════════════════════════ */}
             {activeTier === "templates" && (
-              <TemplatesShowcase
-                activeTemplateTab={activeTemplateTab}
-                setActiveTemplateTab={setActiveTemplateTab}
-                tokens={tokens}
-                scaled={scaled}
-                cardStyle={cardStyle}
-                triggerToast={triggerToast}
-              />
+              <div className="space-y-6">
+                <ProductArchitectStudio />
+                <TemplatesShowcase
+                  activeTemplateTab={activeTemplateTab}
+                  setActiveTemplateTab={setActiveTemplateTab}
+                  tokens={tokens}
+                  scaled={scaled}
+                  cardStyle={cardStyle}
+                  triggerToast={triggerToast}
+                />
+              </div>
             )}
 
             {/* ══════════════════════════════════════════════════════════

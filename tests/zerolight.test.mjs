@@ -2482,6 +2482,28 @@ test("Upstash telemetry fallback, CRM/FinTech blocks & ProductArchitectStudio ex
   assert.ok(orgIdx.includes("product-architect-studio"), "organisms/index.ts must export product-architect-studio");
 });
 
+console.log("\n=== Suite 53: CSS Variable Bridge, Money Math, Design Profiles & Core Resolution ===");
+
+test("CSS variable bridge, lib/money.ts, DESIGN_PROFILES, /llms/recipes.txt & MCP validate_page exist", () => {
+  const ctx = fs.readFileSync(path.join(rootDir, "src/components/zerolight/context.tsx"), "utf8");
+  for (const v of ["--zl-primary", "--background", "--foreground", "--primary", "--radius"]) {
+    assert.ok(ctx.includes(v), `context.tsx must emit CSS variable ${v}`);
+  }
+
+  const money = fs.readFileSync(path.join(rootDir, "src/components/zerolight/lib/money.ts"), "utf8");
+  assert.ok(money.includes("toMinorUnits") && money.includes("summarizeLineItems"), "lib/money.ts must expose minor-unit arithmetic");
+
+  const typesSrc = fs.readFileSync(path.join(rootDir, "src/components/zerolight/types.ts"), "utf8");
+  assert.ok(typesSrc.includes("DESIGN_PROFILES") && typesSrc.includes("institutional"), "types.ts must export DESIGN_PROFILES");
+
+  assert.ok(fs.existsSync(path.join(rootDir, "public/llms/recipes.txt")), "public/llms/recipes.txt must exist");
+  assert.ok(fs.existsSync(path.join(rootDir, "public/registry/morphic-engine.json")), "morphic-engine.json must exist in registry for fresh installs");
+  assert.ok(fs.existsSync(path.join(rootDir, "public/registry/WorldAtlasMap.json")), "WorldAtlasMap.json must exist in registry for fresh installs");
+
+  const mcpSrc = fs.readFileSync(path.join(rootDir, "bin/zerolight-mcp.mjs"), "utf8");
+  assert.ok(mcpSrc.includes("get_examples") && mcpSrc.includes("validate_page"), "MCP must expose get_examples and validate_page");
+});
+
 console.log("\n==================================================");
 console.log(`TEST RUN COMPLETE: ${passed} Passed, ${failed} Failed`);
 console.log("==================================================");

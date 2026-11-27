@@ -5,6 +5,7 @@ import { Plus, Trash2, Receipt } from "lucide-react";
 import { useZeroLight } from "../context";
 import { useMorphic, MorphicSlot, type MorphicStage } from "../morphic-engine";
 import { Button } from "../atoms/button";
+import { summarizeLineItems } from "../lib/money";
 
 export interface MatrixLineItem {
   id: string;
@@ -63,9 +64,7 @@ export function LineItemMatrix({
     setItems((prev) => prev.filter((it) => it.id !== id));
   };
 
-  const subtotal = items.reduce((s, it) => s + it.qty * it.unitPrice, 0);
-  const taxTotal = items.reduce((s, it) => s + it.qty * it.unitPrice * (it.taxPct / 100), 0);
-  const grandTotal = subtotal + taxTotal;
+  const { subtotal, taxTotal, grandTotal } = summarizeLineItems(items);
 
   return (
     <div

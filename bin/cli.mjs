@@ -54,6 +54,7 @@ function parseArgs(argv) {
     yes: false,
     withSkill: false,
     tier: "simple",
+    profile: "institutional",
     preset: null,
     noTelemetry: process.env.ZEROLIGHT_TELEMETRY === "0",
   };
@@ -70,6 +71,8 @@ function parseArgs(argv) {
       flags.withSkill = true;
     } else if (a === "--tier") {
       flags.tier = argv[++i] || "simple";
+    } else if (a === "--profile") {
+      flags.profile = argv[++i] || "institutional";
     } else if (a === "--preset") {
       flags.preset = argv[++i] || null;
     } else if (a === "--no-telemetry") {
@@ -158,7 +161,7 @@ async function handleInit(flags) {
   fs.mkdirSync(targetDir, { recursive: true });
 
   console.log(`Fetching core foundation tokens and context...`);
-  const coreItems = ["types", "context", "utils"];
+  const coreItems = ["types", "context", "morphic-engine", "money"];
   for (const item of coreItems) {
     try {
       const data = await loadRegistryItem(item, flags.localRegistry, flags.shadcn);
@@ -189,6 +192,7 @@ async function handleInit(flags) {
       {
         version: PKG_VERSION,
         tier: flags.tier,
+        profile: flags.profile,
         preset: parsedPreset,
         registry: flags.shadcn ? "https://bricks.zerorapid.in/r" : "https://bricks.zerorapid.in/registry",
       },
@@ -222,6 +226,15 @@ description: ZeroLight Design System governance skill. Enforces token invariants
       "utf8"
     );
     console.log(`  \x1b[32m+\x1b[0m .claude/skills/zerolight/SKILL.md`);
+
+    const cursorDir = path.join(flags.outDir, ".cursor", "rules");
+    fs.mkdirSync(cursorDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(cursorDir, "zerolight.mdc"),
+      `---\ndescription: Enforce ZeroLight tokens, LayoutGrammar, and Tier ${flags.tier} budgets\nglobs: **/*.tsx\n---\nUse ZeroLight components from @/components/zerolight, bind styles via useZeroLight(), use lucide-react icons on StatCard/Button, and respect ${flags.tier} tier budgets.\n`,
+      "utf8"
+    );
+    console.log(`  \x1b[32m+\x1b[0m .cursor/rules/zerolight.mdc`);
   }
 
   console.log(`\n\x1b[32m✓ ZeroLight initialized successfully.\x1b[0m`);

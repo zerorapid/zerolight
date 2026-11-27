@@ -1,6 +1,6 @@
 # ZeroLight Design System — Complete Component & Prop Reference (llms-full.txt)
 
-> Generated automatically from source files (150 items). Public registry: https://bricks.zerorapid.in/r/index.json
+> Generated automatically from source files (155 items). Public registry: https://bricks.zerorapid.in/r/index.json
 
 ## AI Prompt-to-Tier Governance (Read Before Generating UI)
 
@@ -20,7 +20,7 @@ Match the user's prompt to ONE complexity tier instead of blindly dumping heavy 
 ## types (registry:lib)
 - Install: `npx zerolight add types`
 - Registry JSON: https://bricks.zerorapid.in/r/types.json
-- Exports: GOOGLE_FONT_CATALOG, FONT_PAIRING_PRESETS, DEFAULT_TOKENS, THEME_PRESETS
+- Exports: GOOGLE_FONT_CATALOG, FONT_PAIRING_PRESETS, DEFAULT_TOKENS, THEME_PRESETS, DESIGN_PROFILES
 
 ## context (registry:lib)
 - Install: `npx zerolight add context`
@@ -37,6 +37,55 @@ export interface ZeroLightProviderProps {
 ## zerolight-index (registry:lib)
 - Install: `npx zerolight add zerolight-index`
 - Registry JSON: https://bricks.zerorapid.in/r/zerolight-index.json
+
+## morphic-engine (registry:lib)
+- Install: `npx zerolight add morphic-engine`
+- Registry JSON: https://bricks.zerorapid.in/r/morphic-engine.json
+- Exports: GOLDEN_RATIO, MAJOR_THIRD, MorphicScope, MorphicSlot
+
+## composition-engine (registry:lib)
+- Install: `npx zerolight add composition-engine`
+- Registry JSON: https://bricks.zerorapid.in/r/composition-engine.json
+- Exports: ARCHETYPE_BUDGETS, COMPONENT_COMPOSITION_META
+
+## product-dna (registry:lib)
+- Install: `npx zerolight add product-dna`
+- Registry JSON: https://bricks.zerorapid.in/r/product-dna.json
+- Exports: PRODUCT_ARCHETYPES, PRODUCT_LAWS
+
+## money (registry:lib)
+- Install: `npx zerolight add money`
+- Registry JSON: https://bricks.zerorapid.in/r/money.json
+
+## WorldAtlasMap (registry:lib)
+- Install: `npx zerolight add WorldAtlasMap`
+- Registry JSON: https://bricks.zerorapid.in/r/WorldAtlasMap.json
+- Exports: WorldAtlasMap
+```ts
+export interface WorldAtlasMapProps {
+  className?: string;
+  defaultStyle?: MapRenderStyle;
+  defaultDensity?: PatternDensity;
+  defaultScale?: number; // 0.4 to 0.95
+  defaultProjection?: MapProjection;
+  defaultRegion?: MapRegion;
+  selectedCountryIds?: string[];
+  onSelectCountry?: (countryId: string, multi: boolean) => void;
+  showTelemetryMarkers?: boolean;
+  showChoropleth?: boolean;
+  interactive?: boolean;
+  showToolbar?: boolean;
+  showSearch?: boolean;
+  showStyleSwitcher?: boolean;
+  showAdvancedButton?: boolean;
+  showZoomControls?: boolean;
+  showSelectedBadges?: boolean;
+  compactMode?: "auto" | "micro" | "compact" | "full";
+  aspectRatio?: "16/9" | "2/1" | "4/3" | "auto";
+  height?: number | string;
+  accentColor?: string;
+}
+```
 
 ## aperture-action (registry:ui)
 - Install: `npx zerolight add aperture-action`

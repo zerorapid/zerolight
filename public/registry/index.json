@@ -1,9 +1,9 @@
 {
   "name": "zerolight",
   "version": "0.1.0",
-  "totalCount": 150,
+  "totalCount": 155,
   "tiers": {
-    "core": 3,
+    "core": 8,
     "atoms": 46,
     "molecules": 51,
     "organisms": 30,
@@ -21,7 +21,7 @@
       "targetPath": "src/components/zerolight/types.ts",
       "dependencies": [],
       "registryDependencies": [],
-      "lines": 852,
+      "lines": 920,
       "registryUrl": "/registry/types.json",
       "shadcnUrl": "/r/types.json"
     },
@@ -35,7 +35,7 @@
       "registryDependencies": [
         "types"
       ],
-      "lines": 112,
+      "lines": 124,
       "registryUrl": "/registry/context.json",
       "shadcnUrl": "/r/context.json"
     },
@@ -64,6 +64,81 @@
       "lines": 18,
       "registryUrl": "/registry/zerolight-index.json",
       "shadcnUrl": "/r/zerolight-index.json"
+    },
+    {
+      "name": "morphic-engine",
+      "title": "Morphic Engine",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/zerolight/morphic-engine.tsx",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 183,
+      "registryUrl": "/registry/morphic-engine.json",
+      "shadcnUrl": "/r/morphic-engine.json"
+    },
+    {
+      "name": "composition-engine",
+      "title": "Composition Engine",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/zerolight/composition-engine.ts",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 280,
+      "registryUrl": "/registry/composition-engine.json",
+      "shadcnUrl": "/r/composition-engine.json"
+    },
+    {
+      "name": "product-dna",
+      "title": "Product Dna",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/zerolight/product-dna.ts",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 250,
+      "registryUrl": "/registry/product-dna.json",
+      "shadcnUrl": "/r/product-dna.json"
+    },
+    {
+      "name": "money",
+      "title": "Money",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/zerolight/lib/money.ts",
+      "dependencies": [],
+      "registryDependencies": [],
+      "lines": 47,
+      "registryUrl": "/registry/money.json",
+      "shadcnUrl": "/r/money.json"
+    },
+    {
+      "name": "WorldAtlasMap",
+      "title": "WorldAtlasMap",
+      "type": "registry:lib",
+      "tier": "core",
+      "targetPath": "src/components/WorldAtlasMap.tsx",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "context",
+        "icon-button",
+        "input",
+        "kbd",
+        "segmented-control",
+        "slider",
+        "switch",
+        "tag-chip",
+        "world-map-data"
+      ],
+      "lines": 1007,
+      "registryUrl": "/registry/WorldAtlasMap.json",
+      "shadcnUrl": "/r/WorldAtlasMap.json"
     },
     {
       "name": "aperture-action",
@@ -1832,9 +1907,10 @@
       "registryDependencies": [
         "button",
         "context",
+        "money",
         "morphic-engine"
       ],
-      "lines": 185,
+      "lines": 184,
       "registryUrl": "/registry/line-item-matrix.json",
       "shadcnUrl": "/r/line-item-matrix.json"
     },

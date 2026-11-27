@@ -1,4 +1,4 @@
-# ZeroLight Design System — CORE Reference (98 items)
+# ZeroLight Design System — CORE Reference (103 items)
 
 ## types (registry:lib)
 - Install: `npx zerolight add types`
@@ -18,6 +18,51 @@ export interface ZeroLightProviderProps {
 ## zerolight-index (registry:lib)
 - Install: `npx zerolight add zerolight-index`
 - Registry: https://bricks.zerorapid.in/r/zerolight-index.json
+
+## morphic-engine (registry:lib)
+- Install: `npx zerolight add morphic-engine`
+- Registry: https://bricks.zerorapid.in/r/morphic-engine.json
+
+## composition-engine (registry:lib)
+- Install: `npx zerolight add composition-engine`
+- Registry: https://bricks.zerorapid.in/r/composition-engine.json
+
+## product-dna (registry:lib)
+- Install: `npx zerolight add product-dna`
+- Registry: https://bricks.zerorapid.in/r/product-dna.json
+
+## money (registry:lib)
+- Install: `npx zerolight add money`
+- Registry: https://bricks.zerorapid.in/r/money.json
+
+## WorldAtlasMap (registry:lib)
+- Install: `npx zerolight add WorldAtlasMap`
+- Registry: https://bricks.zerorapid.in/r/WorldAtlasMap.json
+```ts
+export interface WorldAtlasMapProps {
+  className?: string;
+  defaultStyle?: MapRenderStyle;
+  defaultDensity?: PatternDensity;
+  defaultScale?: number; // 0.4 to 0.95
+  defaultProjection?: MapProjection;
+  defaultRegion?: MapRegion;
+  selectedCountryIds?: string[];
+  onSelectCountry?: (countryId: string, multi: boolean) => void;
+  showTelemetryMarkers?: boolean;
+  showChoropleth?: boolean;
+  interactive?: boolean;
+  showToolbar?: boolean;
+  showSearch?: boolean;
+  showStyleSwitcher?: boolean;
+  showAdvancedButton?: boolean;
+  showZoomControls?: boolean;
+  showSelectedBadges?: boolean;
+  compactMode?: "auto" | "micro" | "compact" | "full";
+  aspectRatio?: "16/9" | "2/1" | "4/3" | "auto";
+  height?: number | string;
+  accentColor?: string;
+}
+```
 
 ## aperture-action (registry:ui)
 - Install: `npx zerolight add aperture-action`

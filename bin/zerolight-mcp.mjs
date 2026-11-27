@@ -146,6 +146,28 @@ const TOOLS = [
       required: ["prompt"],
     },
   },
+  {
+    name: "get_examples",
+    description: "Return tested usage examples with lucide-react icons and useZeroLight() bindings for any ZeroLight component.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: { type: "string", description: "Component slug (e.g. 'stat-card', 'geo-breakdown', 'approval-workflow')" },
+      },
+      required: ["name"],
+    },
+  },
+  {
+    name: "validate_page",
+    description: "Run static ZL001/ZL008/ZL009/ZL016 design lint checks on generated React TSX source before delivering to the user.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        tsx: { type: "string", description: "Generated TSX page source code" },
+      },
+      required: ["tsx"],
+    },
+  },
 ];
 
 function handleToolCall(name, args) {
@@ -394,6 +416,35 @@ function handleToolCall(name, args) {
         },
       };
       return blueprints[archetype];
+    }
+
+    case "get_examples": {
+      const n = String(args?.name || "").toLowerCase().trim();
+      const examples = {
+        "stat-card": '<StatCard label="Open PO Value" value="$4.82M" delta="+8.3%" trend="up" icon={<DollarSign className="w-4 h-4" />} />',
+        "geo-breakdown": '<GeoBreakdown title="Regional Breakdown" subtitle="Global supplier distribution" />',
+        "approval-workflow": '<ApprovalWorkflow layout="vertical" documentId="PO-0842" title="Raw Material Procurement" amountLabel="$172,756" requester="Arjun Mehta" budgetImpact="Within Cap" steps={steps} />',
+        "line-item-matrix": '<LineItemMatrix title="PO-2026-0842" currency="$" initialItems={items} />',
+      };
+      return {
+        component: n,
+        example: examples[n] || `import { useZeroLight } from "@/components/zerolight";\n// Run: npx zerolight add ${n}`,
+        install: `npx zerolight add ${n}`,
+      };
+    }
+
+    case "validate_page": {
+      const src = String(args?.tsx || "");
+      const issues = [];
+      const hex = src.match(/#[0-9A-Fa-f]{6}\b/g) || [];
+      if (hex.length > 0 && src.includes("zerolight")) issues.push(`ZL001: ${hex.length} hardcoded hex color(s) found.`);
+      const prim = src.match(/variant=["']primary["']/g) || [];
+      if (prim.length > 2) issues.push(`ZL008: ${prim.length} primary buttons found; keep 1 dominant CTA.`);
+      const cards = src.match(/<StatCard\b/g) || [];
+      if (cards.length > 4) issues.push(`ZL009: ${cards.length} StatCards exceeds recommended 4-card budget.`);
+      if (/\bfont-mono\b/.test(src) && src.includes("StatCard")) issues.push("ZL016: Use font-sans tabular-nums on KPIs instead of font-mono.");
+      const score = Math.max(0, 100 - issues.length * 10);
+      return { score, passed: score >= 85, issues };
     }
 
     default:

@@ -59,6 +59,86 @@
       ]
     },
     {
+      "name": "morphic-engine",
+      "type": "registry:lib",
+      "title": "Morphic Engine",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/zerolight/morphic-engine.tsx",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "composition-engine",
+      "type": "registry:lib",
+      "title": "Composition Engine",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/zerolight/composition-engine.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "product-dna",
+      "type": "registry:lib",
+      "title": "Product Dna",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/zerolight/product-dna.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "money",
+      "type": "registry:lib",
+      "title": "Money",
+      "dependencies": [],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "src/components/zerolight/lib/money.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "WorldAtlasMap",
+      "type": "registry:lib",
+      "title": "WorldAtlasMap",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "badge",
+        "button",
+        "card",
+        "context",
+        "icon-button",
+        "input",
+        "kbd",
+        "segmented-control",
+        "slider",
+        "switch",
+        "tag-chip",
+        "world-map-data"
+      ],
+      "files": [
+        {
+          "path": "src/components/WorldAtlasMap.tsx",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
       "name": "aperture-action",
       "type": "registry:component",
       "title": "Aperture Action",
@@ -1935,6 +2015,7 @@
       "registryDependencies": [
         "button",
         "context",
+        "money",
         "morphic-engine"
       ],
       "files": [

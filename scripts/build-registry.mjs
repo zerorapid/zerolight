@@ -71,8 +71,17 @@ function parseImports(content, filePath) {
 function collectFiles() {
   const entries = [];
 
-  // Core runtime files
-  for (const coreFile of ["types.ts", "context.tsx", "index.ts"]) {
+  // Core runtime & engine files (ensures 100% self-contained fresh-project CLI resolution)
+  for (const coreFile of [
+    "types.ts",
+    "context.tsx",
+    "index.ts",
+    "morphic-engine.tsx",
+    "composition-engine.ts",
+    "product-dna.ts",
+    "lib/money.ts",
+    "../WorldAtlasMap.tsx",
+  ]) {
     const fullPath = path.join(ZEROLIGHT_DIR, coreFile);
     if (!fs.existsSync(fullPath)) continue;
     const base = path.basename(coreFile, path.extname(coreFile));
@@ -345,6 +354,7 @@ function main() {
     `- Enterprise SaaS (${domainBuckets.enterprise.length}): https://bricks.zerorapid.in/llms/enterprise.txt`,
     `- ERP & Supply Chain (${domainBuckets.erp.length}): https://bricks.zerorapid.in/llms/erp.txt`,
     `- Full-Page Blocks (${domainBuckets.blocks.length}): https://bricks.zerorapid.in/llms/blocks.txt`,
+    `- Task Recipes & @zerolight Shadcn Interop: https://bricks.zerorapid.in/llms/recipes.txt`,
     `- Product DNA (Archetypes, Entities & State Machines): https://bricks.zerorapid.in/llms/product-dna.txt`,
     `- Complete Reference: https://bricks.zerorapid.in/llms-full.txt`,
     `- Registry Index: https://bricks.zerorapid.in/r/index.json`,
@@ -361,6 +371,29 @@ function main() {
       "utf-8"
     );
   }
+
+  fs.writeFileSync(
+    path.join(llmsDir, "recipes.txt"),
+    [
+      "# ZeroLight Task Recipes & @zerolight Shadcn Interoperability",
+      "",
+      "## 1. Use @zerolight inside an existing shadcn/ui project",
+      "Add to components.json:",
+      "```json",
+      '{ "registries": { "@zerolight": "https://bricks.zerorapid.in/r/{name}.json" } }',
+      "```",
+      "Then run: `npx shadcn@latest add @zerolight/approval-workflow` or `npx zerolight add virtual-data-grid`.",
+      "",
+      "## 2. Canonical Composition Recipes (Copy-Paste Pattern)",
+      "- Simple SaaS Analytics (`Tier 1`): `npx zerolight add block/analytics/simple-overview`",
+      "- Supply Chain & PO Desk (`Tier 3`): `npx zerolight add block/supply-chain/po-desk`",
+      "- AI Agent Command Center (`Tier 3`): `npx zerolight add block/ai/agent-command-center`",
+      "- CRM Sales Pipeline (`Tier 3`): `npx zerolight add block/crm/sales-pipeline`",
+      "- FinTech Reconciliation (`Tier 3`): `npx zerolight add block/fintech/reconciliation-workbench`",
+      "",
+    ].join("\n"),
+    "utf-8"
+  );
 
   console.log(
     `Built ZeroLight registry: ${indexItems.length} items (${Object.entries(tierCounts)

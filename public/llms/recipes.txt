@@ -1,0 +1,15 @@
+# ZeroLight Task Recipes & @zerolight Shadcn Interoperability
+
+## 1. Use @zerolight inside an existing shadcn/ui project
+Add to components.json:
+```json
+{ "registries": { "@zerolight": "https://bricks.zerorapid.in/r/{name}.json" } }
+```
+Then run: `npx shadcn@latest add @zerolight/approval-workflow` or `npx zerolight add virtual-data-grid`.
+
+## 2. Canonical Composition Recipes (Copy-Paste Pattern)
+- Simple SaaS Analytics (`Tier 1`): `npx zerolight add block/analytics/simple-overview`
+- Supply Chain & PO Desk (`Tier 3`): `npx zerolight add block/supply-chain/po-desk`
+- AI Agent Command Center (`Tier 3`): `npx zerolight add block/ai/agent-command-center`
+- CRM Sales Pipeline (`Tier 3`): `npx zerolight add block/crm/sales-pipeline`
+- FinTech Reconciliation (`Tier 3`): `npx zerolight add block/fintech/reconciliation-workbench`

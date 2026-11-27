@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "money",
+  "type": "registry:lib",
+  "title": "Money",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "src/components/zerolight/lib/money.ts",
+      "content": "/**\n * Exact minor-unit monetary arithmetic (integer cents/paise) to avoid floating-point drift\n * across LineItemMatrix, LedgerBalancer, ThreeWayMatch, and BillingPortal.\n */\n\nexport function toMinorUnits(amount: number): number {\n  return Math.round((Number.isFinite(amount) ? amount : 0) * 100);\n}\n\nexport function fromMinorUnits(minor: number): number {\n  return Math.round(minor) / 100;\n}\n\nexport function computeLineTotals(qty: number, unitPrice: number, taxPct: number) {\n  const safeQty = Number.isFinite(qty) ? qty : 0;\n  const unitMinor = toMinorUnits(unitPrice);\n  const netMinor = Math.round(safeQty * unitMinor);\n  const taxMinor = Math.round((netMinor * (Number.isFinite(taxPct) ? taxPct : 0)) / 100);\n  const grossMinor = netMinor + taxMinor;\n  return {\n    netMinor,\n    taxMinor,\n    grossMinor,\n    net: fromMinorUnits(netMinor),\n    tax: fromMinorUnits(taxMinor),\n    gross: fromMinorUnits(grossMinor),\n  };\n}\n\nexport function summarizeLineItems(\n  items: Array<{ qty: number; unitPrice: number; taxPct: number }>\n) {\n  let subtotalMinor = 0;\n  let taxMinor = 0;\n  for (const item of items) {\n    const line = computeLineTotals(item.qty, item.unitPrice, item.taxPct);\n    subtotalMinor += line.netMinor;\n    taxMinor += line.taxMinor;\n  }\n  const grandTotalMinor = subtotalMinor + taxMinor;\n  return {\n    subtotal: fromMinorUnits(subtotalMinor),\n    taxTotal: fromMinorUnits(taxMinor),\n    grandTotal: fromMinorUnits(grandTotalMinor),\n  };\n}\n",
+      "type": "registry:lib"
+    }
+  ]
+}

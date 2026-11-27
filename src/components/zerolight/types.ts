@@ -326,6 +326,74 @@ export const THEME_PRESETS: Record<ThemePresetId, ThemePresetDefinition> = {
   },
 };
 
+export type DesignProfileId = "precision" | "institutional" | "editorial" | "operational" | "intelligence";
+
+export const DESIGN_PROFILES: Record<DesignProfileId, { label: string; description: string; tokens: Partial<ZeroLightTokens> }> = {
+  precision: {
+    label: "01. Precision",
+    description: "Developer tools, compact tables, and high-signal workspaces.",
+    tokens: {
+      fontFamily: "Inter",
+      headingFontFamily: "Inter",
+      cornerRadius: 8,
+      heightDensity: 36,
+      motionPhysics: "snappy",
+      borderWidth: 1,
+    },
+  },
+  institutional: {
+    label: "02. Institutional",
+    description: "Banking, finance, ERP, and procurement workflows.",
+    tokens: {
+      fontFamily: "Plus Jakarta Sans",
+      headingFontFamily: "Plus Jakarta Sans",
+      cornerRadius: 8,
+      heightDensity: 40,
+      motionPhysics: "damped",
+      tabularNums: true,
+      borderWidth: 1,
+    },
+  },
+  editorial: {
+    label: "03. Editorial",
+    description: "Documents, knowledge bases, and long-form reading.",
+    tokens: {
+      fontFamily: "Inter",
+      headingFontFamily: "Newsreader",
+      cornerRadius: 16,
+      lineHeight: "relaxed",
+      heightDensity: 48,
+      motionPhysics: "gentle",
+      elevation: "flat",
+    },
+  },
+  operational: {
+    label: "04. Operational",
+    description: "Control towers, supply chain telemetry, and logistics.",
+    tokens: {
+      fontFamily: "Inter",
+      headingFontFamily: "Plus Jakarta Sans",
+      cornerRadius: 8,
+      heightDensity: 36,
+      motionPhysics: "snappy",
+      tabularNums: true,
+      elevation: "soft",
+    },
+  },
+  intelligence: {
+    label: "05. Intelligence",
+    description: "AI copilots, agent command centers, and artifact studios.",
+    tokens: {
+      fontFamily: "Inter",
+      headingFontFamily: "Space Grotesk",
+      cornerRadius: 16,
+      heightDensity: 44,
+      motionPhysics: "elastic",
+      elevation: "elevated",
+    },
+  },
+};
+
 export interface MotionConfig {
   physics: MotionPhysicsPreset;
   speedMultiplier: number;
